@@ -1,0 +1,821 @@
+# CQB-App: Konzept
+
+**Status:** Entwurf, Stand 16.11.2026, mit dem Regelwerk abgeglichen. Planungsgrundlage für die Entwicklung. Noch kein Code.
+
+**Leser:** Eine Claude-Code-Instanz ohne Vorwissen. Dieses Dokument, [datenformat.md](datenformat.md) und das Regelwerk (Markdown-Dateien, im App-Repo unter `regelwerk/`) genügen, um mit der Entwicklung zu beginnen. [§ 4 Regelkern](#4-regelkern) fasst die Rechnungen zusammen, die die App ausführt. **Maßgeblich ist das Regelwerk:** Widerspricht ihm dieses Dokument, gilt das Regelwerk. Verweise der Form „(Kampfsystem, Lage)“ nennen Datei und Abschnitt im Regelwerk.
+
+---
+
+## 1. Ziel
+
+CQB ist ein Tabletop-Rollenspiel mit Fokus auf Schusswaffengefechten in kleinen Scharmützeln. Die App ist ein **digitaler Charakterbogen** für den Spieltisch:
+
+- Sie **zeigt** alle Werte eines Charakters.
+- Sie **rechnet** Zielwerte, Krit-Schwellen und Haltezahlen aus, damit am Tisch niemand Tabellen wälzt.
+- Sie **führt mit**, was sich im Spiel ändert: Leiter, HP, Wunden, Zustände, Munition, Heilung.
+
+Die App ist nur für Spieler. Eine Ansicht für die SL (Gegner, mehrere Charaktere) ist nicht vorgesehen.
+
+Gewürfelt wird mit echten Würfeln. Die App kennt weder Gegner noch Zugreihenfolge; diese führt die SL. Die App nimmt Ergebnisse entgegen, wo sie Folgen berechnet (z. B. Erholungsprobe). Ein eingebauter Würfler kommt eventuell später; die Umsetzung muss ihn vorbereiten ([§ 2, Leitlinie 6](#leitlinien-für-die-umsetzung)).
+
+## 2. Plattform und Rahmen
+
+| Punkt | Festlegung |
+| --- | --- |
+| Gerät | Handy, Hochformat, Bedienung mit einer Hand. Tablet und PC sollen funktionieren, sind aber nicht maßgeblich. |
+| Form | **PWA**: installierbar auf dem Startbildschirm, **voll offline** nach der ersten Installation. |
+| Technik | **Svelte 5 mit Vite**, TypeScript. Tests mit **Vitest**. PWA über `vite-plugin-pwa`. Speicher über IndexedDB (kleine Hilfsbibliothek wie `idb` erlaubt). Weitere Abhängigkeiten nur, wenn sie deutlich Code sparen. |
+| Hosting | GitHub Pages aus dem App-Repo (HTTPS ist Voraussetzung für die Installation). Eine **GitHub Action** baut bei jedem Push auf `main` und veröffentlicht; Tests müssen vorher grün sein, sonst wird nicht veröffentlicht. |
+| Pflege | Der Nutzer programmiert nicht. Alle Änderungen macht Claude Code. Deshalb: Code und Daten klar getrennt, jede Regelfunktion getestet, kurze Anleitung im Repo, wie Daten geändert werden. |
+| Speicher | Charaktere lokal auf dem Gerät (IndexedDB). Kein Server, kein Konto. |
+| Backup | **Export und Import** einzelner Charaktere als JSON-Datei. Pflichtfunktion von Anfang an, weil lokale Daten verloren gehen können (Browser-Speicher löschen; iOS räumt Daten selten genutzter Seiten). |
+| Updates | Der Service Worker lädt neue Versionen beim nächsten Start mit Netz. Die App zeigt an, wenn ein Update bereitsteht, und lädt es auf Tipp. |
+| Sprache | Deutsch. Begriffe exakt wie im Regelwerk (Malstep, Stepshield, Breakaction, Haltezahl …). Ausnahmen und Formulierung in der Oberfläche: [§ 2, Texte in der Oberfläche](#texte-in-der-oberfläche). |
+
+### Texte in der Oberfläche
+
+- **Kein Wort „Leiter“.** In diesen Dokumenten heißt die gemeinsame Skala von Ruhepuls und Adrenalin „Leiter“ (wie im Regelwerk). In der Oberfläche erscheint sie nie unter diesem Namen. Angezeigt wird immer der Stand selbst: **„Adrenalin 2“**, **„Ruhepuls 1“**, **„Over the Edge“** (Adrenalin 4). Bei 0 zeigt die App keinen Text und keine Zusammenfassung; nur das markierte Feld 0 in der Leiste. Als Quelle eines Steps steht derselbe Name, z. B. „Adrenalin 2 · Control ▼1“. Der Bereich am unteren Rand heißt „Adrenalin“.
+- **Keine Kürzel** wie A1, A2, R1, R2 in der Oberfläche; Symptome erscheinen mit Namen („Sprint“, „Tunnelblick“).
+- **Begriffsart erkennbar:** Vor jedem Namen eines **Stats**, **Skills** oder **Perks** stehen überall dasselbe Zeichen und dieselbe Farbe: ■ Stat (grün), ⬢ Skill (violett), ◆ Perk (blau). Das gilt in Listen, Rechnern, Berichten und Hinweisen („◆ Triple Tap“, „⬢ Reflexe“, „■ Twitch“). Zeichen und Farbe zusammen, damit es auch ohne Farbsehen lesbar ist; festgelegt in `darstellung.json` (`typen`).
+- **▲ und ▼** bedeuten immer Stepshields bzw. Malsteps und werden für nichts anderes verwendet.
+- **Auswahlknöpfe** sind so beschriftet, dass sie mit der Überschrift einen Satz bilden: Überschrift als Substantiv, Knopf als Adjektiv oder Partizip. Beispiel: „Stand des Ziels: stehend · hockend · liegend“. Die Texte stehen in den Daten (`name`) und folgen dieser Regel.
+
+### Leitlinien für die Umsetzung
+
+1. **Regeln ändern sich noch.** Viele Werte sind vorläufig. Alle Zahlen, die eine Regel festlegt (Step-Faktoren, Leiter, Malsteps der Zustände, Heilwerte …), stehen in `public/data/regeln.json`, nicht im Code ([datenformat.md § regeln.json](datenformat.md#regelnjson)).
+2. **Spieldaten getrennt vom Code.** Waffen, Munition, Skills, Perks, Körperzonen, Schutz und Klassen liegen als JSON unter `public/data/`. Neue Waffe = neuer JSON-Eintrag, keine Codeänderung.
+3. **Rechenlogik testbar halten.** Die Regelfunktionen (Zielwert, Krit-Schwelle, Haltezahl, Schaden …) sind reine Funktionen ohne UI und bekommen Unit-Tests mit den Werten aus [§ 4](#4-regelkern).
+4. **Speicherformat versionieren.** Jeder gespeicherte Charakter trägt eine Schemaversion; beim Laden älterer Versionen wird migriert.
+5. **Klein starten.** Reihenfolge der Umsetzung: [§ 5](#5-umsetzungsreihenfolge).
+8. **Drei Schichten.** (a) **Daten:** JSON unter `public/data/`, zur Laufzeit geladen und vom Service Worker offline gehalten; eine geänderte Zahl braucht keinen Codeumbau. (b) **Regelkern:** reine TypeScript-Funktionen unter `src/lib/regeln/`, ohne Svelte, ohne Zugriff auf UI oder Speicher; sie bekommen Charakter und Daten als Eingabe und liefern Ergebnisse. (c) **Oberfläche:** Svelte-Komponenten, die nur den Regelkern aufrufen und anzeigen. Abgeleitete Werte (Statwert, Zielwert, Zugang, Kampfunfähigkeit …) entstehen als berechnete Werte aus Charakter und Daten, nie als gespeicherte Kopie.
+9. **Daten prüfen.** Für jede JSON-Datei gibt es einen Typ und einen Test, der die Datei dagegen prüft (Pflichtfelder, gültige IDs, Verweise zwischen Dateien, Rank-Vorschlag passt zum Rank-Set). Ein Fehler in den Daten fällt so vor der Veröffentlichung auf.
+6. **Würfler vorbereiten.** Jede Stelle, an der ein Würfelergebnis entsteht, läuft über eine gemeinsame Würfelkomponente (Würfelart: W100, W10, W8, 2W10; Rückgabe: Ergebnis und Quelle `app` oder `hand`). Sie kann beides: selbst würfeln oder eine Eingabe von Hand annehmen. Je Stelle ist festgelegt, was Standard ist. Heute würfelt die App nur die **Abweichung** selbst ([§ 3.0](#30-charaktererstellung-m-r)); überall sonst ist die Eingabe von Hand Standard. Später lässt sich das Würfeln für weitere Stellen einschalten, ohne dass sich diese Stellen ändern. Wo nur der Ausgang zählt (Krit / gelungen / misslungen), bietet die Komponente zusätzlich drei Schaltflächen an; die App kann den Ausgang aber auch aus Ergebnis, Zielwert und Krit-Schwelle selbst bestimmen.
+7. **Bericht vor jeder Sammeländerung.** Ändert die App auf einmal mehr als einen Wert, zeigt sie vorher einen Bericht ([§ 3.0c](#30c-bericht-was-ist-passiert-a)). Nichts ändert sich ohne diesen Schritt.
+
+## 3. Inhalt des Bogens
+
+Jeder Bereich ist als **Anzeige** (A), **Rechnung** (R) oder **Mitführen** (M) gekennzeichnet.
+
+### 3.0 Charaktererstellung (M, R)
+Ein geführter Ablauf in Schritten. Er folgt der Reihenfolge des Regelwerks ([§ 4.11](#411-charaktererstellung-und-aufstieg)).
+
+**Bedienung.** Ein Bildschirm pro Schritt. Oben eine Fortschrittsleiste mit den sieben Schritten; erledigte Schritte sind abgehakt, und jeder lässt sich antippen, um zurückzuspringen. Unten **Zurück** und **Weiter**; „Weiter“ nennt, was im Schritt noch fehlt, statt grau zu sein. Name und Aussehen stehen im ersten Schritt, damit der Charakter von Anfang an einen Namen hat.
+
+0. **Name und Aussehen** (Teil von Schritt 1): Name (Pflicht) und **Aussehen** als kurzer Freitext (optional, z. B. Größe, Statur, Gesicht, Kleidung, Merkmale).
+1. **Klasse wählen** → Rank-Set, Vorratslevel, freie Punkte. Liegt die Klasse über Stufe 2, wählt der Spieler den Weg dorthin (Spezialisierung; bei Meistern auch die Stufe-4-Klasse). Die App legt ihn als Klassenweg an ([datenformat.md § Charakter](datenformat.md#klassenweg)). Alternativ **ohne Klasse** (freie Erstellung, z. B. für Tests): Ränge und Vorratslevel werden von Hand gesetzt, ohne Prüfung gegen ein Rank-Set.
+2. **Ränge eintragen:**
+	- **Mit Klasse** trägt die App die Ränge des Rank-Sets sofort ein, nach dem Verteilungsvorschlag der Klasse ([datenformat.md § klassen.json](datenformat.md#klassenjson)). Der Spieler kann die Verteilung ändern, indem er die Ränge zweier Stats tauscht. So bleibt das Rank-Set immer vollständig.
+	- **Ohne Klasse** trägt der Spieler jeden Rang von Hand ein.
+3. **Abweichung:** Sobald ein Stat einen Rang hat, würfelt die App seine Abweichung automatisch (Positiv- und Negativwürfel, je W10). Statt dessen kann der Spieler die beiden Würfel von Hand eingeben ([§ 2, Leitlinie 6](#leitlinien-für-die-umsetzung)). Die Abweichung gehört zum Stat, nicht zum Rang: Tauscht der Spieler Ränge, behält jeder Stat seine Abweichung. Sie wird nicht neu gewürfelt.
+4. **Mindestskills und vorgegebene Perks** der Klasse eintragen. Bei Meistern wählt der Spieler die zwei Skills auf 5 (einer exklusiv).
+5. **Freie Punkte ausgeben:** Skill-Level, Statrank-Up, Perks, wie im Aufstiegsmodus ([§ 3.0a](#30a-modi-lesen-aufstieg-schreiben-m)).
+6. **Hintergrund** (ein Bildschirm; Regelwerk: Schulden, Coups und Verträge):
+	- Drei Karten **Schulden**, **Coup**, **Vertrag**, je an/aus. Schulden und Coup mit den Größen klein · mittel · groß. Diese Optionen gibt es **nur bei der Erstellung**.
+	- Eine aktive Karte klappt ihre Felder auf: Schulden – Gläubiger, Frist (in Aufträgen), Sicherheit; Coup – Beute, Feind; Vertrag – Auftraggeber, Verpflichtung. Der Haken steht als Satz dabei („Rückzahlung 1500 $ bis zur Frist“; „Feind: eine Bande oder Firma“).
+	- Oben läuft das **Startgeld** live mit: Ersparnisse + gewählte Optionen + Einstiegsgehalt (Klasse ab Stufe 2 und Vertrag). Beträge aus `regeln.json` (`geld`).
+	- Darunter Freitext: Geburtsort, wichtige Personen, Lebensmittelpunkt.
+	- Mit Abschluss des Schritts bucht die App das Startgeld ins Kassenbuch ([§ 3.13](#313-geld-und-aufträge-m-r)).
+7. **Ausrüstung:** Einkauf im **Laden** ([§ 3.14](#314-laden-kaufen-und-verkaufen-m-r)) mit dem Startgeld; danach Trageorte zuweisen (Reiter Ausrüstung, [§ 3.0f](#30f-körperbild-silhouette-a-r)).
+
+Bis zum Abschluss lässt sich jeder Schritt zurücknehmen, außer den Würfen der Abweichung. Danach ist der Charakter **fertig**.
+
+**Klassen** kommen aus `klassen.json`. Eine neue Klasse ist ein neuer Eintrag dort, ohne Codeänderung ([datenformat.md § klassen.json](datenformat.md#klassenjson)). Alle Klassen der Stufen 1–5 stehen im Regelwerk.
+
+### 3.0a Modi: Lesen, Aufstieg, Schreiben (M)
+Ein fertiger Charakter hat drei Modi. Umgeschaltet wird über das **Menü** ([§ 3.0g](#30g-start-charaktere-und-menü-m)). Das **Statusfeld** im Kopf zeigt immer den Modus (im Lesemodus nichts); während der Erstellung zeigt es „Erstellung“.
+
+**Lesemodus** (Standard): Ein Charakter öffnet immer im Lesemodus, auch nach Neustart oder Import. Die Werte des Charakters sind gesperrt. Der Spielstand bleibt bedienbar: Leiter, HP, Wunden, Munition, Zustände, Heilung, Proben- und Schussrechner.
+
+**Aufstiegsmodus:** Steigern nach den Regeln, gegen freie Charakterpunkte ([§ 4.11](#411-charaktererstellung-und-aufstieg)).
+- **Leiste und „Jetzt möglich“:** Im Aufstiegsmodus steht oben im Reiter Werte fest eine Leiste mit den freien Punkten („5 Punkte frei“). Darunter zeigt der Abschnitt **Jetzt möglich** alles, was bezahlbar ist und dessen Voraussetzungen erfüllt sind: nächstes Level jedes steigerbaren ⬢ Skills, ■ Statrank-Ups, kaufbare ◆ Perks, jeweils mit Kosten. Ein Tipp kauft (mit Bestätigung). Ein Schalter blendet auch aus, was nur an Punkten scheitert („in Reichweite“).
+- **Session abschließen:** +5 freie Punkte.
+- **Statrank-Up:** Schaltfläche an jedem Stat; nur sichtbar, wenn genug Punkte da sind und der Rang unter S liegt. Nach Bestätigung zieht die App den Punkt ab, hebt den Rang um 1 und würfelt die Abweichung **automatisch neu** (oder der Spieler gibt die Würfel von Hand ein). Danach zeigt sie alten und neuen Statwert, auch wenn der Wert gesunken ist.
+- **Skill-Level und Perks:** kaufen mit Anzeige der Kosten und Prüfung der Voraussetzungen (Höchststufe der Skills, Stat-Mindestwerte, vorausgesetzte Perks, Zugang über die Klasse).
+- **Klassenwechsel** (Beförderung, Laufbahnwechsel, zweite Spezialisierung): eigener Dialog ([§ 3.0d](#30d-klassenwechsel-m)).
+- Ein Aufstiegsschritt lässt sich nicht zurücknehmen; Fehler korrigiert man im Schreibmodus. So kann niemand eine Abweichung durch Zurücknehmen neu würfeln.
+- Jeder Schritt wird protokolliert (Datum, was, Kosten, Würfe).
+
+**Schreibmodus:** Für Sonderregeln, Boni und Mali, die die SL beschließt, und für Korrekturen.
+- Alle Werte sind direkt änderbar, ohne Punktkosten und ohne Prüfung der Voraussetzungen: Ränge, Abweichungen, Skills, Perks, Grundwerte, Ausrüstung, Klasse, Geld, freie Punkte.
+- **Dauerhafte Anpassungen:** Neben dem direkten Überschreiben kann der Schreibmodus **Anpassungen** anlegen: Modifikatoren ([§ 3.0b](#30b-herkunft-von-werten-a-r)) mit einem Grund (Freitext, z. B. „Bonus der SL: Ortskenntnis“). Anpassungen fließen automatisch in alle Rechnungen ein und lassen sich einzeln abschalten oder löschen.
+- **Kennzeichnung:** Überschriebene und angepasste Werte tragen die Herkunftsmarkierung ([§ 3.0b](#30b-herkunft-von-werten-a-r)).
+- Jede Änderung wird mit `art: korrektur` bzw. `anpassung` protokolliert (vorher, nachher).
+
+### 3.1 Stammdaten (A, M)
+Name, Aussehen (Freitext), Klasse (aktuelle; antippen zeigt den Klassenweg), Laufbahn, Stufe, Vorratslevel und Gehalt (aus der Klasse), Hintergrund (Optionen und Freitext), freie Charakterpunkte (Zähler), Notizen.
+
+### 3.0b Herkunft von Werten (A, R)
+Perks, Anpassungen der SL und Zustände verändern Werte automatisch. Damit das nachvollziehbar bleibt, zeigt die App bei jedem veränderten Wert, woher die Änderung kommt.
+
+**Modifikator.** Alle automatischen Änderungen laufen über ein gemeinsames Format: Ziel (Grundwert, Stat, Skill, Probenart oder alle Proben), Wirkung (fester Wert ± oder Stepshields/Malsteps) und Quelle. Perks und Anpassungen der SL sind Modifikatoren ([datenformat.md § Modifikator](datenformat.md#modifikator)). Leiter, Zustände und Lage liefern ihre Steps zur Laufzeit im selben Format. Es gibt nur einen Rechenweg; die Aufschlüsselung ergibt sich daraus.
+
+**Markierung am Wert.** Ein veränderter Wert trägt oben rechts ein Zeichen je Quelle. Mehrere Quellen → mehrere Zeichen. Standard:
+
+| Quelle | Zeichen | Farbe |
+| --- | --- | --- |
+| Perk | ◆ | blau |
+| Anpassung der SL | ★ | orange |
+| von Hand überschrieben | ✎ | gestrichelter Rahmen um den Wert |
+
+Formen und Farben unterscheiden sich, damit die Markierung auch ohne Farbsehen lesbar ist. Zeichen und Farben stehen in `public/data/darstellung.json` und lassen sich dort ändern, ohne den Code anzufassen ([datenformat.md § darstellung.json](datenformat.md#darstellungjson)).
+
+**Aufschlüsselung.** Antippen (Handy) oder Hovern (PC) eines markierten Werts öffnet eine kleine Rechnung: Grundwert, je Quelle eine Zeile mit Zeichen, Name und Wirkung, Ergebnis. Jede Zeile ist antippbar und springt zum Perk bzw. zur Anpassung.
+
+**Rückverweis.** Ein ausgeklappter Perk und eine Anpassung zeigen „Wirkt auf: …“ mit Sprung zu den betroffenen Werten.
+
+**Hinweise für Sonderregeln.** Perks, die die App nicht rechnen kann (z. B. Triple Tap, Starrsinn), nennen, wo sie greifen (`hinweis_bei`). Dort erscheint ein Hinweis mit Zeichen und Kurzbeschreibung, z. B. im Schussrechner „◆ Triple Tap: bei Ansage Bauch Folgetreffer Brust, dann Kopf“. Gerechnet wird nichts.
+
+**Probenrechner.** Er zeigt jeden Step mit seiner Quelle: Lage, Leiter, Zustand, Perk, Anpassung der SL ([§ 3.6](#36-probenrechner-r)).
+
+### 3.0c Bericht „Was ist passiert“ (A)
+Immer wenn die App mehr als einen Wert auf einmal ändert, zeigt sie zuerst einen **Bericht**. Das gilt u. a. für: Treffer erhalten, Schießen, Rundenende, Gefecht starten und beenden, Ruhetag, Aufstiegsschritte.
+
+- **Ablauf:** Eingabe → Bericht → **Weiter**. Erst „Weiter“ übernimmt die Änderungen. **Zurück** führt zur Eingabe, ohne dass etwas geändert wurde.
+- **Inhalt:** in ganzen Sätzen, aus Sicht des Charakters („Du …“). Zuerst das Ereignis, dann die Rechnung in einem Satz mit den Zahlen in Klammern, dann jede Änderung mit altem und neuem Wert. Wichtiges (Stagger, kampfunfähig, Tod, Over the Edge) fett.
+- **Beispiel** (Treffer):
+  > **Du wirst in die Brust getroffen.**
+  > Die Kugel durchschlägt deine Weste (DK 2 gegen Schutz 1).
+  > Du erleidest 6 Schaden (MW 3 × 2). Deine HP sinken von 8 auf 2.
+  > Du erleidest einen **Stagger**: Deine Breakaction in dieser Runde verfällt.
+  > Eine neue Wunde wird notiert: Brust, 6 Schaden, blutet.
+  > Für das Rundenende sind angehakt: getroffen, verletzt, Stagger.
+- **Danach** leuchten die geänderten Werte im Bogen kurz auf.
+- Die Sätze entstehen aus Textbausteinen; die Bausteine liegen gesammelt an einer Stelle im Code, damit sie sich leicht anpassen lassen.
+
+### 3.0d Klassenwechsel (M)
+Im Aufstiegsmodus öffnet die Schaltfläche **Klasse wechseln** einen Dialog. Er listet die Klassen, in die der Charakter wechseln kann, und prüft jede gegen die Regeln ([§ 4.11](#411-charaktererstellung-und-aufstieg)).
+
+**Auswahl.** Angeboten werden:
+- **Beförderung:** die Klassen der nächsten Stufe in der eigenen Laufbahn (Stufe 2 → Spezialisierungen; Spezialisierung → ihre erweiterte Form oder eine zweite Spezialisierung; Stufe 4 → Meister).
+- **Laufbahnwechsel:** Klassen anderer Laufbahnen, höchstens auf der eigenen Stufe.
+
+**Prüfung.** Je Bedingung ein Häkchen oder der Hinweis, was fehlt:
+1. Rank-Set der Zielstufe (Ränge absteigend verglichen).
+2. Mindestskills; bei Meistern zusätzlich die Wahl der zwei Skills auf 5.
+3. Stat auf Rang A (Spezialisierung, erweiterte Form, zweite Spezialisierung).
+4. Weg: Die erweiterte Form verlangt ihre Spezialisierung im Klassenweg, der Meister eine Stufe-4-Klasse seiner Laufbahn.
+5. **Freigabe der SL:** ein Häkchen, das der Spieler setzt (Bedingungen der Laufbahn, Anlass eines Laufbahnwechsels). Die App prüft es nicht.
+
+Fehlende Ränge oder Skills lassen sich nicht im Dialog kaufen; der Spieler kauft sie vorher im Aufstiegsmodus. Der Dialog nennt die Kosten in freien Punkten.
+
+**Vorschau vor dem Bestätigen:**
+- Skills, die **eingefroren** werden (im Charakter, aber nicht im neuen Zugang).
+- Skills, die **wieder steigerbar** werden.
+- Neue Perks und exklusive Skills im Zugang.
+- Neues Vorratslevel und Gehalt.
+
+Stats, Skills und Perks des Charakters ändert der Wechsel nicht. Bestätigt der Spieler, hängt die App einen Eintrag an den Klassenweg und protokolliert den Wechsel. Wie jeder Aufstiegsschritt ist er nicht rücknehmbar; Korrekturen im Schreibmodus.
+
+### 3.0e Gefecht und Ruhe (M)
+Unabhängig von den Modi Lesen, Aufstieg und Schreiben ([§ 3.0a](#30a-modi-lesen-aufstieg-schreiben-m)) ist ein Charakter entweder **in Ruhe** oder **im Gefecht**.
+
+**In Ruhe** (Standard):
+- Keine Aktionsleiste, keine Zähler, keine Initiative. Der Bereich „Adrenalin“ ist eingeklappt.
+- Verfügbar: Bogen, Probenrechner, Waffen (Nachladen, Wechsel, Aufsätze frei, ohne Aktion), **Getroffen** ([§ 3.7c](#37c-treffer-ausgehend-und-eingehend-m-r)), Wunden, Versorgen, Heilung, Ausrüstung.
+- Am unteren Rand steht groß **Gefecht starten**.
+
+**Im Gefecht** (nach „Gefecht starten“, [§ 3.7](#37-leiter-m-r)):
+- Am unteren Rand erscheinen das Wählrad „Adrenalin“ ([§ 3.7](#37-leiter-m-r)) und darüber die Aktionsleiste mit **Main · Break · Bewegung · Stand · Getroffen · Ereignis** ([§ 3.7a](#37a-aktionsleiste-m-r)).
+- Das Statusfeld im Kopf zeigt zusätzlich „Gefecht · Runde n“, daneben die kleinen Knöpfe **Nächste Runde** und **Gefecht beenden**.
+- Der **Aufstiegsmodus** ist gesperrt (Steigern gehört nicht in die Runde). Der **Schreibmodus** bleibt erreichbar für Korrekturen.
+
+**Kampfunfähig.** Die App sperrt nichts; die Entscheidung der SL geht vor. Sie **markiert** aber deutlich, dass der Charakter nach den Regeln keine Aktionen hat ([§ 4.5](#45-zustände)):
+- **Gefecht starten** trägt eine Warnmarkierung (Warnfarbe und Zeichen) mit dem Grund, z. B. „kampfunfähig: 0 HP – im Gefecht keine Aktionen“.
+- **Im Gefecht** tragen die vier Aktionsknöpfe dieselbe Markierung, und über der Aktionsleiste steht ein Banner „kampfunfähig: keine Aktionen“. Die Zähler zählen weiter wie sonst. Wer trotzdem eine Aktion wählt, sieht vorher einen Hinweis und bestätigt „Trotzdem ausführen“; der Bericht vermerkt es.
+- Das Gefecht läuft weiter, auch wenn der Charakter darin kampfunfähig wird; weitere Treffer, Blutungsfristen und Adrenalinschock hängen am Gefechtsende.
+
+### Aufbau der App
+Die App hat vier Reiter in einer Leiste am unteren Rand: **Figur · Werte · Ausrüstung · Verlauf**. Oben links öffnet **☰** das Menü ([§ 3.0g](#30g-start-charaktere-und-menü-m)).
+
+**Figur** (Startbildschirm). Die Silhouette ([§ 3.0f](#30f-körperbild-silhouette-a-r)) steht groß in der Mitte, damit der Zustand des Charakters immer vor Augen ist.
+- **Darüber:** Kopfzeile mit Name und Statusfeld ([§ 3.0a](#30a-modi-lesen-aufstieg-schreiben-m), [§ 3.0e](#30e-gefecht-und-ruhe-m)), HP als Balken mit Zahl, Adrenalin bzw. Ruhepuls (nur wenn nicht 0), aktive Zustände als Chips (z. B. Geblendet 1, Adrenalinschock).
+- **Mitte:** die Silhouette mit Stand, Rüstung, Deckung, Wunden und Folgen; die aktive Waffe in der Hand mit Magazinstand.
+- **Darunter:** in Ruhe die Knöpfe **Probe** (Probenrechner), **Getroffen**, **Heilung** und groß **Gefecht starten**; im Gefecht Aktionsleiste und Bereich „Adrenalin“ ([§ 3.7](#37-leiter-m-r), [§ 3.7a](#37a-aktionsleiste-m-r)).
+- **Antippen einer Zone** öffnet die Übersicht der Zone: Rüstung, Deckung, Wunden mit Status, andauernde Folgen; von dort Versorgen und Getroffen (Zone vorbelegt).
+
+**Werte:** Stammdaten (eingeklappt) · **Stats** · **Skills** · **Perks** · Grundwerte. Stats, Skills und Perks stehen direkt untereinander, weil sie beim Spielen zusammen gebraucht werden ([§ 3.1](#31-stammdaten-a-m) bis [§ 3.5](#35-perks-a-m)). Auch Aufstieg und Klassenwechsel finden hier statt.
+
+**Ausrüstung:** Silhouette mit Trageorten ([§ 3.0f](#30f-körperbild-silhouette-a-r), Schicht Ausrüstung), darunter die Listen: Waffen mit Munition und Aufsätzen, Nahkampfwaffen, Vorrat, Rüstung, Schild, Zubehör, **Geld** (Kontostand, Schulden; [§ 3.13](#313-geld-und-aufträge-m-r)).
+
+**Verlauf:** Gefechtsprotokoll, Aufstiegsprotokoll, **Kassenbuch**, Wundliste mit Heildauer, Notizen.
+
+Dialoge (Treffer, Proben, Klassenwechsel …) öffnen sich über dem jeweiligen Reiter. Wo ein Dialog die Silhouette braucht, zeigt er eine **eigene Instanz** davon mit den Schichten, die er braucht; die Figur auf dem Startbildschirm ändert sich erst mit „Weiter“ im Bericht.
+
+### 3.0g Start, Charaktere und Menü (M)
+
+**Erster Start** (kein Charakter auf dem Gerät): ein Bildschirm mit zwei großen Knöpfen **Charakter erstellen** ([§ 3.0](#30-charaktererstellung-m-r)) und **Charakter importieren** (JSON-Datei, [§ 2](#2-plattform-und-rahmen), Backup).
+
+**Mehrere Charaktere.** Auf einem Gerät können beliebig viele Charaktere liegen. Die App öffnet den zuletzt benutzten. Gewechselt wird über das Menü; jeder Charakter behält seinen eigenen Spielstand (auch ein laufendes Gefecht).
+
+**Menü ☰** (oben links; klappt von links als Seitenleiste auf, schließt mit Wischen nach links oder Tipp daneben):
+- **Charaktere:** Liste mit Name, Klasse und HP; Antippen wechselt. Darunter **Neu erstellen**, **Importieren**. Je Charakter (über ⋯): **Exportieren**, **Duplizieren**, **Löschen** (mit Bestätigung durch Eintippen des Namens).
+- **Modus:** **Aufstieg** und **Schreibmodus** ([§ 3.0a](#30a-modi-lesen-aufstieg-schreiben-m)); im Gefecht ist Aufstieg ausgegraut ([§ 3.0e](#30e-gefecht-und-ruhe-m)). Ein aktiver Modus wird oben im Statusfeld angezeigt und dort mit „Fertig“ beendet.
+- **Abschließen:** **Session abschließen** (+5 freie Charakterpunkte) und **Auftrag abschließen** ([§ 3.13](#313-geld-und-aufträge-m-r)). Beide mit Bericht.
+- **Einstellungen:** Darstellung (hell, dunkel, System; Zeichen der Herkunftsmarkierung), Würfeln (je Stelle: App würfelt oder Eingabe von Hand, [§ 2, Leitlinie 6](#leitlinien-für-die-umsetzung)).
+- **Über die App:** Version der App und der Daten, Hinweis auf Updates, kurze Anleitung zum Export als Sicherung.
+
+Selten gebrauchte Funktionen gehören ins Menü, nicht auf die Reiter; die Reiter bleiben für das Spiel frei.
+
+### 3.0f Körperbild (Silhouette) (A, R)
+Die Silhouette ist **ein Baustein**, der überall gleich aussieht. Jede Instanz blendet die **Schichten** ein, die ihr Ort braucht. Sie ist die Verbindung zwischen Regeln und Bild: Körperzonen (Regelwerk: Körperzonen), Deckung, Rüstung, Wunden und Stand werden am Körper gezeigt, nicht in Listen.
+
+**Grundform.**
+- Zehn antippbare Flächen nach `koerperzonen.json`: Kopf, Brust, Bauch, Unterleib, beide Arme, beide Beine; „Rumpf“ fasst Brust, Bauch und Unterleib zusammen, wo eine Regel das verlangt.
+- Drei Haltungen nach dem Stand: **stehend**, **hockend**, **liegend**. Die Zonen bleiben in jeder Haltung antippbar.
+- Gezeichnet als SVG; die Zonen tragen die IDs aus `koerperzonen.json`. Rechts und links sind aus Sicht des Charakters beschriftet, damit W8-Ansagen der SL eindeutig sind.
+- Groß genug für den Daumen: Jede Zone ist mindestens 44 × 44 Pixel, auch im Liegen (dort wird die Figur breiter dargestellt).
+
+**Schichten**
+
+| Schicht | Zeigt | Figur | Getroffen | Deckung setzen | Ausrüstung | Granate |
+| --- | --- | --- | --- | --- | --- | --- |
+| Stand | Haltung | ✔ | ✔ | ✔ | – | ✔ |
+| Rüstung | Schutzwert je Zone als kleine Zahl, Rüstungsart als Kontur | ✔ | ✔ | ✔ | ✔ | ✔ |
+| Deckung | verdeckte Zonen schraffiert, Deckungswert; Schild von vorn | ✔ | ✔ | ✔ (bearbeitbar) | – | ✔ (vom Explosionspunkt) |
+| Wunden | Punkt je Wunde: rot gefüllt = blutet, grau = versorgt, rot umrandet = kritisch; Prellungen als Schatten | ✔ | ✔ | – | – | – |
+| Folgen | andauernde Folgen als Zeichen (humpelt, Arm verletzt) | ✔ | – | – | – | – |
+| Waffe | aktive Waffe in der Hand mit Magazinstand | ✔ | – | – | ✔ | – |
+| Vorschau | Ausgang eines Treffers je Zone (unten) | – | ✔ | – | – | ✔ |
+| Splitter | Zahl der Splitter je Zone | – | – | – | – | ✔ |
+| Ausrüstung | Trageorte mit Gegenständen (unten) | – | – | – | ✔ | – |
+
+**Vorschau beim eingehenden Treffer** (Getroffen, [§ 3.7c](#37c-treffer-ausgehend-und-eingehend-m-r)). Sobald feststeht, was trifft (DK/MW, stumpf, Kugeln), rechnet die App den Schadensablauf ([§ 4.7](#47-schadensablauf)) für **jede** Zone vor und färbt die Figur, bevor eine Zone gewählt ist:
+- **grau:** gestoppt (Deckung hält), kein Schaden;
+- **gelb:** Wuchttreffer, mit Schaden;
+- **rot:** Durchschlag, mit Schaden (Multiplikator eingerechnet);
+- zusätzlich je Zone ein Zeichen, wenn der Treffer dort einen **Stagger** auslöst, **kampfunfähig** macht oder **tödlich** wäre (HP ≤ −1 bzw. Krit-Folge „sofort Tod“, wenn Krit eingeschaltet ist).
+
+Ändert der Spieler DK/MW, Kugeln, Krit oder die Deckung, färbt sich die Figur sofort neu. Das Antippen einer Zone wählt sie; der Bericht bestätigt nur noch, was die Figur schon gezeigt hat. Für den **ausgehenden** Treffer gibt es dieselbe Vorschau auf einer **Ziel-Figur**, wenn der Spieler Deckung und Rüstung des Ziels eingibt (optional, [§ 3.8](#38-waffen-und-schießen-a-m-r), Schritt 5).
+
+**Ausrüstung an der Figur** (Reiter Ausrüstung). Um die Silhouette liegen die **Trageorte** als Felder an der passenden Stelle: Schlinge (Schulter), Weste/Rig (Brust), Holster und Gürtel (Hüfte), Rücken, Rucksack (neben der Figur). Jedes Feld zeigt seine Gegenstände als Symbol mit Anzahl bzw. Magazinstand.
+- **Antippen** eines Felds öffnet seine Liste; ein Gegenstand lässt sich dort einem anderen Trageort zuweisen. Der Trageort bestimmt die Kosten des Waffenwechsels (Kampfsystem, Waffe wechseln); das Feld zeigt sie klein an („Main“, „ohne Aktion“).
+- **Rüstung** liegt als Kontur auf den Zonen, die sie schützt; der Schutzwert steht in der Zone. Antippen der Zone zeigt, welche Rüstung dort wirkt (bei mehreren der höchste Wert).
+- Die aktive Waffe liegt in der Hand. Antippen einer anderen Waffe macht sie zur aktiven (in Ruhe frei; im Gefecht über die Aktion „Waffe wechseln“ mit ihren Kosten).
+
+**Splitter** (Granate eingehend, [§ 3.8a](#38a-werfen-a-m-r)). Nach dem W8 für den ersten Splitter zeigt die Figur je Zone die Zahl der Splitter; Zonen mit gleicher Zahl werden als ein Treffer abgewickelt. Die Vorschau färbt jede Zone wie oben.
+
+### 3.2 Stats (A, R)
+Neun Stats in drei Gruppen ([§ 4.1](#41-stats)). Gruppe A/B ist sichtbar, weil die Leiter danach wirkt.
+- **Sichtbar** ist je Stat der **Statwert** und seine **Step-Reihe**: Zielwert bei 0 bis 5 Malsteps ([§ 4.2](#42-steps-und-zielwert)).
+- **Detail** per Antippen (kein Hover, da Handy): Rang, Abweichung, die beiden Würfel (positiv, negativ) und ob die App oder der Spieler gewürfelt hat.
+- **Vorkalkuliert:** Statwert und Step-Reihe ändern sich im Spiel nicht. Die App berechnet sie neu, sobald Rang oder Wurf sich ändern (Erstellung, Aufstieg, Schreibmodus), und hält sie sonst fest. Probenrechner und Schussrechner lesen daraus ab.
+
+### 3.3 Grundwerte (A, R)
+HP (Höchstwert), Schmerzresistenz, Nahkampfschaden, Wurfweite. Startwerte aus `regeln.json`, erhöht durch Perks ([§ 4.10](#410-grundwerte)).
+
+### 3.4 Skills (A, M)
+Direkt unter den Stats. Je Skill: Name, Stufe (0–5), zugehöriger Stat.
+- **Standardansicht:** nur Skills mit Stufe ≥ 1.
+- **Aufklappfeld „Alle Skills“:** alle Skills aus `skills.json`, auch mit Stufe 0.
+- Antippen eines Skills öffnet den Probenrechner mit Stat und Skill vorausgewählt ([§ 3.6](#36-probenrechner-r)).
+- **Aufstiegsmodus:** Neben jedem steigerbaren Skill stehen die Kosten der nächsten Stufe und eine Schaltfläche zum Steigern. Steigerbar ist nur, was die aktuelle Klasse anbietet ([§ 4.11](#411-charaktererstellung-und-aufstieg)).
+- **Eingefrorene Skills:** Ein Skill mit Stufe ≥ 1, den die aktuelle Klasse nicht anbietet, bleibt in der Standardansicht und wirkt normal. Er trägt ein Schloss-Zeichen; im Aufstiegsmodus steht dort „eingefroren: nicht im Zugang von <Klasse>“ statt der Schaltfläche.
+
+### 3.5 Perks (A, M)
+Direkt unter den Skills.
+- **Eingeklappt** (Standard): Name und **Kurzbeschreibung** (eine Zeile).
+- **Ausgeklappt** per Antippen: vollständiger Wirkungstext, Rang (= Kosten) und Voraussetzungen.
+- **Aufstiegsmodus:** Der Rang (= Kosten) ist immer sichtbar; dazu die Liste der Perks im Zugang der aktuellen Klasse mit Voraussetzungen und Kauf-Schaltfläche. Gekaufte Perks wirken immer, auch wenn die aktuelle Klasse sie nicht mehr anbietet. Perks, deren Voraussetzungen fehlen, sind ausgegraut und nennen, was fehlt (z. B. „braucht Zäh I“).
+- Perks mit Modifikatoren wirken automatisch; betroffene Werte tragen die Markierung ◆ ([§ 3.0b](#30b-herkunft-von-werten-a-r)). Ausgeklappt zeigt der Perk „Wirkt auf: …“.
+
+### 3.6 Probenrechner (R)
+Das zentrale Werkzeug am Tisch. Eingabe:
+- Stat (Pflicht), Skill (optional),
+- Lage-Auswahl ([§ 3.8c](#38c-lage-auswahl-r)): automatische Steps, Sicht nach Bedarf, Malsteps und Stepshields der SL mit Grund.
+
+Automatisch einbezogen: Steps aus der Leiter und aus Zuständen ([§ 4.5](#45-zustände)).
+
+**Skill austauschen.** Wo immer ein Ablauf einen Skill vorwählt (Probenrechner, Schießen, Werfen, Nahkampf, Breakaction …), kann der Spieler ihn durch einen anderen Skill ersetzen. Die SL erlaubt das mit guten Argumenten (Regelwerk: Stats, Skills und Perks, Skills). Der Bericht nennt den verwendeten Skill.
+Ausgabe: **Zielwert**, **Krit-Schwelle**, oder „keine Probe möglich“ ([§ 4.2](#42-steps-und-zielwert), [§ 4.3](#43-krit)). Die App zeigt die Herkunft jedes Steps mit Zeichen und Namen ([§ 3.0b](#30b-herkunft-von-werten-a-r)), außerdem die Hinweise passender Perks.
+
+### 3.7 Leiter (M, R)
+Regeln: [§ 4.4](#44-die-leiter). Ziel: höchstens zwei Handgriffe pro Runde; alles Weitere rechnet die App.
+
+**Wählrad** (in der Oberfläche: Bereich „Adrenalin“, [§ 2, Texte in der Oberfläche](#texte-in-der-oberfläche)).
+- **Nur im Gefecht** ([§ 3.0e](#30e-gefecht-und-ruhe-m)). In Ruhe gibt es kein Rad; außerhalb des Gefechts ist der Stand immer 0. Ein Adrenalinschock erscheint als Chip in der Kopfzeile.
+- **Ort:** eine Zeile am unteren Rand, zwischen Aktionsleiste und Reiterleiste (Daumenbereich).
+- **Form:** ein horizontales Rad mit acht Stufen. Die aktuelle Stufe steht groß in der Mitte und ausgeschrieben („Adrenalin 2“); links und rechts sind die Nachbarstufen kleiner angeschnitten zu sehen. Bei 0 bleibt die Mitte leer (nur ein neutraler Strich).
+- **Bedienung:** Wischen nach rechts oder links dreht das Rad um eine Stufe weiter (Einrasten pro Stufe, kurzes haptisches Feedback, wo das Gerät es kann). An den Enden (Ruhepuls 3, Over the Edge) geht es nicht weiter; das Rad federt zurück. Wischen setzt die Stufe direkt, jederzeit, auch ohne die Abläufe unten.
+- **Schutz vor Versehen:** Nur ein waagerechtes Wischen auf dem Rad selbst dreht es; senkrechtes Scrollen der Seite dreht es nie. Jede Änderung zeigt kurz „Adrenalin 2 → 3 · Rückgängig“.
+- **Farbe:** Das Rad und die Zeile färben sich nach Stufe: Ruhepuls blau, 0 neutral, Adrenalin orange bis rot, Over the Edge schwarz-rot (Farben in `darstellung.json`).
+- **Zusammenfassung** in derselben Zeile neben der Mitte, gekürzt auf die Symptome: „✔ Sprint, Schmerz ignorieren · ✖ keine Ansage, Tunnelblick“.
+- **Antippen der Mitte** öffnet das **Detail** als Blatt von unten: Steps je Gruppe (mit den Stats), Symptome im Volltext, **Senken**, **Verbündete verschieben**, **Rückgängig** (letzte Änderung, auch aus den Abläufen). Wischen nach unten schließt es.
+- **Nächste Runde** und **Gefecht beenden** stehen nicht am Rad, sondern als kleine Knöpfe in der Kopfzeile neben „Gefecht · Runde n“ ([§ 3.0e](#30e-gefecht-und-ruhe-m)).
+
+**Folgen im Bogen.**
+- **Stats:** In der Step-Reihe jedes Stats ist der Wert hervorgehoben, der mit den Steps der Leiter gilt; die Markierung ♥ zeigt, dass Adrenalin bzw. Ruhepuls mitwirkt ([§ 3.0b](#30b-herkunft-von-werten-a-r)).
+- **Rechner:** Proben- und Schussrechner rechnen die Leiter automatisch ein. Ab Adrenalin 1 bietet der Schussrechner keine Ansage an; die Symptome Empfindlich und Schmerz ignorieren gehen in die Stagger-Prüfung ein ([§ 3.10](#310-treffer-wunden-und-blutung-m-r)).
+- **Over the Edge:** deutliches Banner „Over the Edge: nur 1 Aktion pro Runde“; der Adrenalinschock wird für das Gefechtsende vorgemerkt.
+
+**Abläufe als Knöpfe.**
+- **Gefecht starten:** Auswahl normal / überrascht → Anzeige von Zielwert und Krit-Schwelle der Nerve-Probe → Ergebnis antippen (Krit / gelungen / misslungen) → Leiter springt auf die Startstufe → weiter zur Initiative der ersten Runde ([§ 3.7b](#37b-initiative-und-breakaction-m-r)). Bei „überrascht“ rechnet die App in Runde 1 je 1 Malstep auf Initiative und Breakaction ein.
+- **Nächste Runde:** Die App weiß nicht, wann eine Runde vorbei ist; das sagt die SL. Der Spieler tippt dann **Nächste Runde**. Es folgen in einem Ablauf: (1) Rundenende der Leiter (unten), (2) Zähler der Aktionsleiste zurücksetzen, (3) Initiative der neuen Runde ([§ 3.7b](#37b-initiative-und-breakaction-m-r)).
+- **Rundenende** (Teil von „Nächste Runde“): Checkliste der Auslöser mit großen Kästchen (Liste aus `regeln.json`). Darunter z. B. „3 Auslöser → Nerve-Probe mit 3 Malsteps: Zielwert 34, Krit ≤ 3“ bzw. „keine Probe möglich“ ab 6 Malsteps. Ergebnis antippen: Krit / gelungen / misslungen / Verzichten → Leiter bewegt sich. Ohne Auslöser: keine Probe, Stufe bleibt. Wurde in der Runde gesenkt: Probe und Anstieg entfallen. Danach leert sich die Checkliste und der Rundenzähler steigt.
+- **Senken:** Knopf → Nerve-Probe anzeigen → Ergebnis antippen → Leiter sinkt; die App merkt sich „gesenkt“ für das Rundenende.
+- **Gefecht beenden:** Leiter auf 0, Adrenalinschock setzen (falls Adrenalin 4 erreicht), Blutungsfristen starten ([§ 3.10](#310-treffer-wunden-und-blutung-m-r)).
+
+### 3.7a Aktionsleiste (M, R)
+Nur im Gefecht ([§ 3.0e](#30e-gefecht-und-ruhe-m)) liegen über dem Wählrad die Knöpfe **Main · Break · Bewegung · Stand**, daneben groß **Getroffen** und kleiner am Rand **Ereignis**. Die ersten vier bilden die Aktionen der Runde ab ([§ 4.12](#412-aktionen)); so sieht der Spieler jederzeit, was er noch tun kann.
+
+**Zähler.** Jeder der vier Aktionsknöpfe trägt eine kleine Zahl: wie oft die Aktion in dieser Runde noch verfügbar ist. Bei 0 ist der Knopf ausgegraut. „Nächste Runde“ ([§ 3.7](#37-leiter-m-r)) setzt alle Zähler zurück. Die App verfolgt nicht, wer am Zug ist: Main, Bewegung und Standwechsel stehen die ganze Runde bereit und lassen sich so oft ausführen, wie der Zähler erlaubt. Wann der Charakter dran ist, sagt die SL. Die App passt die Zähler selbst an:
+- **Sprint** (Symptom A2): Bewegung 2.
+- **Over the Edge:** ein gemeinsamer Zähler 1 für alle vier Knöpfe; nach einer Aktion sind alle grau.
+- **Initiative-Krit:** Break 2 (Kampfsystem, Action Economy).
+- **Stagger:** Break sofort 0.
+- **Konzentration:** Startet eine Mainaction mit Konzentration, wird Break für diese Runde 0.
+- **Standwechsel als Breakaction:** verbraucht Break statt Stand.
+- **Krit beim Ladehemmung beheben:** Main wird nicht verbraucht.
+- **Kampfunfähig:** Die vier Aktionsknöpfe tragen eine Warnmarkierung; Ausführen nur nach Bestätigung ([§ 3.0e](#30e-gefecht-und-ruhe-m)).
+
+Ein **langer Druck** auf einen Knopf erlaubt ±1 von Hand (Sonderregeln, Fehltipper).
+
+**Menüs.** Antippen öffnet die Liste der Optionen. Optionen ohne Rechnung zeigen nur den Regeltext und „Ausführen“; das verbraucht den Zähler. Optionen mit Rechnung führen in ihren Ablauf; der Zähler sinkt erst mit „Weiter“ im Bericht ([§ 3.0c](#30c-bericht-was-ist-passiert-a)).
+
+| Knopf | Option | führt zu |
+| --- | --- | --- |
+| Main | Skill/Probe einsetzen | Probenrechner ([§ 3.6](#36-probenrechner-r)); Skills mit Konzentration setzen die Beschränkung ([§ 4.12](#412-aktionen)) |
+| | Nachladen | keine Probe; Ablauf nach Ladeart ([§ 3.8](#38-waffen-und-schießen-a-m-r)) |
+| | Ladehemmung beheben | Probe (Control + Waffenskill); Waffe wieder frei ([§ 3.8](#38-waffen-und-schießen-a-m-r)) |
+| | Waffe wechseln | Auswahl der neuen aktiven Waffe; Kosten nach Trageort (ohne Aktion / Main / Main mit leichter Konzentration / 2 Runden; Kampfsystem, Waffe wechseln) |
+| | Aufsatz anbringen/abnehmen | Main mit leichter Konzentration (Schusswaffen, Aufsätze) |
+| | Adrenalin senken | Leiter-Ablauf ([§ 3.7](#37-leiter-m-r)) |
+| | Verbündete verschieben | Probe (Empathy + Führung) |
+| | Wunde versorgen | Probe mit voller Konzentration; Wundliste ([§ 3.10](#310-treffer-wunden-und-blutung-m-r)) |
+| | Wurfaktion | Werfen ([§ 3.8a](#38a-werfen-a-m-r)) |
+| | Nahkampfangriff | Vergleichsprobe ([§ 3.8b](#38b-nahkampf-m-r)) |
+| | Hechten | bis 2 m in Hocke oder Liegen; setzt den Stand und „gehechtet“ für die Lage; gesperrt im Liegen und ab Ruhepuls 2 |
+| | Zielen | nur mit Symptom „Ruhige Hand“: Stepshield schon für den nächsten Schuss dieser Runde |
+| | Wachsamkeit, Ballistik | Probenrechner; Ballistik: Erfolg/Krit merkt 1/2 Malsteps weniger Reichweite für den nächsten Schuss auf das Ziel |
+| | Sonderfähigkeit | Perks wie Offangle und Overwatch: Regeltext und Merker bis zum nächsten Zug; sonst Freitext |
+| Break | *zuerst* | ohne Probe, Reaktion oder Antizipation ([§ 3.7b](#37b-initiative-und-breakaction-m-r)); danach eine der folgenden Aktionen |
+| | **Schießen** | Schussrechner ([§ 3.8](#38-waffen-und-schießen-a-m-r)) |
+| | Zielen | merkt 1 Stepshield für den nächsten Schuss (nächste Runde); mit Atemkontrolle 2, mit Gezielter Schuss stattdessen „keine Malsteps der Reichweite“ |
+| | Hechten | wie unter Main |
+| | Standwechsel | setzt den Stand |
+| | Nahkampfangriff, Abfangen | nur mit kurzer bzw. langer Nahkampfwaffe ([§ 3.8b](#38b-nahkampf-m-r)) |
+| | Werfen | nur mit Perk Quickthrow |
+| | Nachladen | nur mit Perk Schnell nachladen; nur Magazin, Schnelllader, Ladestreifen |
+| | Eingreifen | nur mit Perk Schutzreflex (Abschirmen: bis 3 m) |
+| Bewegung | Kriechen, Gehen, Laufen, Rennen | merkt die Art für diese Runde (Lage-Malsteps, Hörbarkeit); erlaubt nach Stand (Stehen: alle außer Kriechen; Hocke: Gehen; Liegen: Kriechen) und gesperrt durch Konzentration, Schutzanzug und Schild (höchstens Gehen) |
+| Stand | Stehen, Hocke, Liegen | merkt den Stand; die Silhouette zeigt ihn an. Der Stand fließt in Lage, Splitter und Nahkampf ein (überlegener Stand, Kampfsystem, Stand im Nahkampf). |
+
+Stand, Bewegung, Hechten und Zielen fließen in die Rechner ein: eigene Bewegung und Hechten als Lage-Malsteps, Zielen als Stepshield auf die Trefferprobe, liegend als Stepshield **nur auf die Haltezahl** (Kampfsystem, Treffen, Rückstoß abfangen). Die Werte stehen in `regeln.json`.
+
+**Getroffen** steht als eigener großer Knopf neben der Aktionsleiste ([§ 3.7c](#37c-treffer-ausgehend-und-eingehend-m-r)). **Ereignis** ist unabhängig vom Rundenablauf; kein Zähler. Optionen: Beschossen (nur Auslöser), Granate in der Nähe ([§ 3.8a](#38a-werfen-a-m-r)), Verbündeter ausgeschaltet (nur Auslöser).
+
+### 3.7b Initiative und Breakaction (M, R)
+Regeln: Kampfsystem (Action Economy; Die Breakaction benutzen; Reaktion und Antizipation), Würfelmechanik (Contested Rolls). Zusammenfassung: [§ 4.12](#412-aktionen).
+
+**Grundsatz.** Die App kennt keine Zugreihenfolge und nicht die Würfe der anderen. Die SL ordnet und sagt an, wer wann handelt. Die App sagt dem Spieler, was er würfeln und ansagen muss, und führt seine Zähler.
+
+**Initiative** (am Ende von „Nächste Runde“ und nach „Gefecht starten“):
+1. Anzeige von Zielwert und Krit-Schwelle auf **Decisiveness**, ohne Skill (kein Malstep für Skill 0). Eingerechnet: Adrenalin bzw. Ruhepuls, Überraschung in Runde 1, Perks (z. B. Lagebild, Überfall, Entschlossen), Lage-Block 1 und 3 ([§ 3.8c](#38c-lage-auswahl-r)).
+2. Wurf eintragen.
+3. Die App zeigt groß, was anzusagen ist: Stufe und Wurf („**Erfolg · 54**“), bei Misserfolg zusätzlich den Zielwert („**Misserfolg · Zielwert 47**“), weil er dann die Reihenfolge bestimmt.
+4. Bei Krit: Break-Zähler 2 für diese Runde.
+
+Das Ergebnis bleibt bis zur nächsten Runde oben in der Aktionsleiste sichtbar, falls die SL nachfragt.
+
+**Breakaction** (Knopf Break):
+1. **Mit oder ohne Probe** wählen; drei Knöpfe:
+	- **Ohne Probe:** im eigenen Zug, oder die SL lässt die Unterbrechung ohne Wurf zu.
+	- **Reaktion:** Twitch + Reflexe.
+	- **Antizipation:** Intellect + Lagegespür. Gesperrt bei Tunnelblick (Adrenalin 2 und höher).
+2. Bei Reaktion und Antizipation: Hinweis „**Braucht eine Information über den Akteur**“ mit Kurzfassung der Malsteps nach Wahrnehmung bzw. Güte und Alter (Regeltext). Die App fragt nicht nach der Information; die Malsteps legt die SL fest und der Spieler trägt sie in Lage-Block 3 ein. Eingerechnet werden automatisch: Adrenalin bzw. Ruhepuls, Überraschung in Runde 1, Perks (z. B. Overwatch, Offangle des Gegners als SL-Malstep, Gegner einschätzen, Dynamischer Zugriff), Sichtstufe bei Reaktion auf Gesehenes.
+3. Wurf eintragen. Die App zeigt groß, was anzusagen ist: „**Krit · 07**“, „**Erfolg · 54**“ oder „**Misserfolg**“. Einen Vergleich mit anderen rechnet sie nicht; die Reihenfolge sagt die SL an. Ein Krit hat keine weitere Folge.
+4. **Aktion wählen:** Schießen, Zielen, Hechten, Standwechsel, Nahkampfangriff, Abfangen, Werfen, Nachladen, Eingreifen ([§ 3.7a](#37a-aktionsleiste-m-r)). Sie führt in ihren Ablauf; Break −1.
+
+Probe und Aktion sind getrennt, damit der Spieler die Probe würfeln und ansagen kann, bevor die SL die Reihenfolge festlegt. Verliert der Charakter seine Breakaction durch einen Stagger, bevor er handelt, setzt der Treffer den Zähler auf 0 ([§ 3.10](#310-treffer-wunden-und-blutung-m-r)); die Probe verfällt.
+
+### 3.7c Treffer: ausgehend und eingehend (M, R)
+Alles, was Schaden austeilt oder einsteckt, läuft über **einen Dialog in zwei Richtungen** mit **derselben Gliederung**. Wer einen kennt, kennt beide.
+
+| Schritt | Ausgehend (ich greife an) | Eingehend (ich werde getroffen) |
+| --- | --- | --- |
+| **Start** | Aktionsknopf: Break → Schießen ([§ 3.8](#38-waffen-und-schießen-a-m-r)), Main → Werfen ([§ 3.8a](#38a-werfen-a-m-r)), Main/Break → Nahkampfangriff ([§ 3.8b](#38b-nahkampf-m-r)) | Knopf **Getroffen** ([§ 3.10](#310-treffer-wunden-und-blutung-m-r)), im Gefecht und in Ruhe |
+| **1. Was** | vorbelegt aus der Aktion: aktive Waffe mit Munition und Feuermodus, Wurfgegenstand oder Nahkampfwaffe | Art wählen: **Schuss · Nahkampf · Splitter/Explosion · Sonstiges**, dann Einzelheiten (Kaliber und Munitionstyp oder DK/MW; Nahkampfwaffe oder MW, stumpf/scharf; Sprengwaffe und Band; bei Sonstiges Schaden direkt) |
+| **2. Probe** | eigene Probe mit Lage-Auswahl ([§ 3.8c](#38c-lage-auswahl-r)) | nur wo der Charakter selbst würfelt: Verteidigung im Nahkampf, Reaktion auf eine Sprengwaffe; sonst entfällt der Schritt |
+| **3. Wo und wie viel** | Ansage oder W8; Rückstoßwürfel, Folgetreffer, Kugeln | Kugeln bzw. Splitter, Krit (Schalter, wie die SL ansagt), dann Zone auf der Silhouette mit **Vorschau** des Ausgangs je Zone ([§ 3.0f](#30f-körperbild-silhouette-a-r)) oder W8 |
+| **4. Ausgang** | aus dem eigenen Wurf; bei Vergleichsproben tippt der Spieler den Ausgang, den die SL ansagt | bei Vergleichsproben tippt der Spieler den Ausgang, den die SL ansagt; sonst getroffen |
+| **5. Bericht** | was beim Ziel ankommt, mit Block **„Für die SL“**; optional Schutz des Ziels → Schaden vorrechnen | Schadensablauf am eigenen Charakter: Deckung, Rüstung, Wunde/Prellung, Stagger, HP |
+
+**Gemeinsam für beide Richtungen:**
+- Ein Bildschirm, Schritte untereinander; erledigte Schritte klappen auf eine Zeile zusammen und bleiben antippbar.
+- Was die App schon weiß, ist vorbelegt und markiert (Herkunftszeichen, [§ 3.0b](#30b-herkunft-von-werten-a-r)); alles bleibt änderbar.
+- Der Bericht ([§ 3.0c](#30c-bericht-was-ist-passiert-a)) übernimmt erst mit „Weiter“; Eintrag im Gefechtsprotokoll.
+- **Im Gefecht** setzen beide Richtungen die Auslöser der Rundenend-Checkliste (ausgehend: geschossen; eingehend: beschossen, getroffen, verletzt, Stagger, im Nahkampf angegriffen) und verbrauchen Zähler. **In Ruhe** gibt es keine Auslöser und keine Zähler.
+
+### 3.8 Waffen und Schießen (A, M, R)
+
+**Waffen.** Je Waffe: Werte aus `waffen.json`, angebrachte Aufsätze, gewählter Munitionstyp (DK/MW), Zustand, Ladehemmung (keine / einfach / schwer) und der **Magazinstand**:
+- **im Magazin:** aktueller Inhalt des eingesetzten Magazins (inklusive Patrone im Lauf). Jeder abgegebene Schuss wird abgezogen, auch Schüsse, die ins Leere gehen.
+- **Reserve:** Liste der Ersatzmagazine mit ihrem Inhalt (z. B. 30, 30, 12), weil auch angebrochene Magazine mitgeführt werden.
+- **Aktive Waffe:** Es ist immer genau eine Waffe aktiv. Sie steht oben im Waffenbereich; alle Rechner beziehen sich auf sie. Wechseln ist eine Aktion („Waffe wechseln“, [§ 3.7a](#37a-aktionsleiste-m-r)); dabei wählt der Spieler die neue Waffe aus seiner Ausrüstung. Außerhalb des Gefechts ist der Wechsel frei.
+- **Aufsätze** kommen aus `aufsaetze.json`; ihre Wirkung ist dort hinterlegt, nicht bei der Waffe, weil ein Aufsatz an mehrere Waffen passt ([datenformat.md § aufsaetze.json](datenformat.md#aufsaetzejson)). Ob ein Aufsatz an eine Waffe passt, ergibt sich aus den Anschlüssen der Waffe (Schiene oben/unten/seitlich, Mündung Pistole/Gewehr, Magazin).
+  - Manche Aufsätze wirken **immer**, solange sie angebracht sind (z. B. erweitertes Magazin).
+  - Andere wirken nur, wenn sie **im Einsatz** sind; das ergibt sich aus dem Spielfluss. Für sie zeigt der Schussablauf einen **Schalter**, aber nur, wenn die aktive Waffe den Aufsatz hat. Beispiel: **Zweibein aufgesetzt** → 1 Stepshield auf die Haltezahl ([§ 4.6](#46-schießen)).
+
+**Schießen** (Break → Schießen):
+1. **Eingabe:** Feuermodus (Modi der aktiven Waffe; bei Burst die Zahl der Bursts), Anzahl Schüsse (bis Feuerrate, höchstens Inhalt des Magazins), Ansage (gesperrt ab Adrenalin 1 und bei Sichtstufe keine), Lage mit Entfernung zum Ziel ([§ 3.8c](#38c-lage-auswahl-r)), Schalter der Aufsätze im Einsatz (z. B. Zweibein aufgesetzt; nur wenn vorhanden). Automatisch: eigene Bewegung und Hechten dieser Runde, Stand (liegend nur für die Haltezahl), Zielen, Leiter, Zustände, Perks, Anpassungen, ständig wirkende Aufsätze (Visiere je nach Band).
+   Ist die Waffe leer oder hat eine Ladehemmung, ist Schießen gesperrt; das Menü zeigt stattdessen den Weg zu Nachladen bzw. Ladehemmung beheben.
+   **Sonderfälle:** Ziel im Nahkampf (Schalter): 1 Malstep, ein Fehlschuss trifft einen anderen Beteiligten (Zone W8, kein Krit; Kampfsystem, Schießen in den Nahkampf). Schrotflinte mit Buckshot: Schrotzahl je Band aus `munition.json`, Zonen fortlaufend nach unten (Kampfsystem, Schrotflinten). Werfer: statt Zone der Landepunkt ([§ 3.8a](#38a-werfen-a-m-r)).
+2. **Vor dem Wurf:** Trefferwert, Krit-Schwelle und bei mehr als einem Schuss Haltezahl, jeweils mit aufgeschlüsselter Herkunft der Steps ([§ 3.0b](#30b-herkunft-von-werten-a-r)). Hinweise passender Perks (z. B. Triple Tap).
+3. **Ladehemmung prüfen:** Die App zeigt die aktuelle Ladehemmungsrate (Feuermodus + Zuschlag für Zustand und Zuverlässigkeit) und den Wurfbereich, der eine Ladehemmung auslöst (größer als 100 − Rate; 100 = schwer). Die Prüfung steckt im Trefferwurf (Kampfsystem, Ladehemmung). Bei Ladehemmung endet der Ablauf hier: kein Schuss, keine Munition verbraucht, die Waffe ist blockiert.
+4. **Würfe eintragen:** W100, W8 (falls keine Ansage), Rückstoßwürfel (bei mehr als einem Schuss).
+5. **Bericht** ([§ 3.0c](#30c-bericht-was-ist-passiert-a)): Treffer oder nicht, Zone, Krit, Haltezahl − Rückstoßwürfel, Folgetreffer mit Kugeln (begrenzt auf angesagte Schüsse − 1), Magazinstand alt → neu, verbrauchter Zielen-Stepshield, Auslöser „geschossen“. Am Ende ein Block **„Für die SL“** in Kurzform (Zonen, Krit, Kugeln, Munition mit DK/MW). Optional: Deckung und Rüstung des Ziels eingeben; dann rechnet die App den Schaden je Treffer vor ([§ 4.7](#47-schadensablauf)).
+6. **Weiter:** übernimmt; Break-Zähler −1; Eintrag im Gefechtsprotokoll.
+
+**Nachladen** (Main; Break nur mit Perk Schnell nachladen). Keine Probe. Der Ablauf hängt von der **Ladeart** der Waffe ab (Kampfsystem, Nachladen):
+- **Wechselmagazin:** Der Spieler wählt das neue Magazin aus der Reserve (vorgewählt: das vollste). Das eingesetzte Magazin geht mit seinem Rest in die Reserve; eine Patrone im Lauf bleibt in der Waffe. Leere Magazine werden aus der Reserve entfernt.
+- **Trommel, Röhrenmagazin, festes Magazin** ohne Zubehör: **einzeln laden**, Main mit leichter Konzentration, bis zu 2 Patronen (Perk Fingerfertig: 3) aus der losen Munition. Nie als Break. Bei Unterbrechung bleiben bereits geladene Patronen drin; nur die der laufenden Runde fehlen.
+- **Mit Schnelllader oder Ladestreifen** (Zubehör im Charakter): füllt auf einmal wie ein Magazin. Leere Schnelllader und Ladestreifen werden einzeln gefüllt.
+- **Werfer** (Magazingröße 1): Main mit voller Konzentration. Der Magazinstand ist das geladene Geschoss. Nachladen nimmt ein passendes Geschoss aus dem **Vorrat** (Anzahl −1, Auswahl nach Typ, z. B. OG-7V oder PG-7V); Schießen verbraucht es. Der Bericht nennt statt Zone den Landepunkt ([§ 3.8a](#38a-werfen-a-m-r)).
+
+**Vorrat.** Wurfwaffen, Granaten und Geschosse werden als Anzahl geführt. Sie sinkt automatisch beim Werfen und beim Laden eines Werfers. Von Hand lässt sie sich jederzeit wieder erhöhen, z. B. für eingesammelte Wurfmesser nach dem Gefecht.
+
+**Ladehemmung beheben** (Main): einfache Ladehemmung per Probe auf Control mit Waffenskill, Malsteps LH-Behebenmod. + Sichtstufe + Leiter (Krit: Main nicht verbraucht); schwere Ladehemmung ist im Gefecht nicht behebbar (nur Hinweis; außerhalb: Intellect-Probe, Zustand −1).
+
+### 3.8a Werfen (A, M, R)
+Main → Wurfaktion (Break nur mit Perk Quickthrow). Regeln: Kampfsystem (Werfen), Sprengwirkung.
+
+**Ausgehend (Main → Werfen):**
+1. **Gegenstand:** Wurfwaffen und Granaten aus dem Vorrat (mit Anzahl) oder „sonstiger Gegenstand“.
+2. **Ziel:** Reichweitenband; die App zeigt, bis wohin der Wurf genau ist (Grundwert Wurfweite + Wurfarm, [§ 4.10](#410-grundwerte)). Ein Band weiter: 2 Malsteps; darüber hinaus nicht möglich. Bei Granaten mit Zeitzünder: Schalter „Kochen lassen“ (1 Malstep, Verzögerung −1). Wurfwaffe gegen eine Person: Ansage wie beim Schießen. Sprengwaffe: Zielpunkt.
+3. **Vor dem Wurf:** Zielwert und Krit-Schwelle auf Agility mit Herkunft der Steps. Skill: Wurfwaffen oder Granaten, je nach Gegenstand vorgewählt (austauschbar, [§ 3.6](#36-probenrechner-r)).
+4. **Würfe eintragen:** W100; Wurfwaffe: W8 für die Zone (ohne Ansage); Sprengwaffe: W8 für die Richtung bei Misserfolg.
+5. **Bericht:** Wurfwaffe: Treffer, Zone, Krit, DK/MW (Schadensablauf wie beim Schießen). Sprengwaffe: Landepunkt (Krit genau, Erfolg bedrängt, Misserfolg nah + Richtung), Zünder und Verzögerung, Splitterzahlen je Band. Vorrat −1; Block **„Für die SL“**.
+6. **Weiter:** Main −1; Eintrag im Gefechtsprotokoll.
+
+**Eingehend (Ereignis → Granate in der Nähe):**
+1. **Lage:** Bereich, in dem der Charakter steht (aus den `bereiche` der Sprengwaffe), Stand, eigene Deckung vom Explosionspunkt aus (von der Silhouette vorbelegt, [§ 3.9](#39-schutz-a-m)).
+2. **Reaktion:** Hechten, in Deckung, nichts; Zurückwerfen als Wurfaktion im eigenen Zug, als Breakaction nur mit Perk. Breakaction nach den üblichen Regeln; im Moment der Detonation einfache Probe auf Reaktion oder Antizipation (Sprengwirkung, Zündung).
+3. **Schaden:** über „Getroffen“ ([§ 3.10](#310-treffer-wunden-und-blutung-m-r)). Splitterzahl aus dem Bereich; ein W8 für den ersten Splitter, die App verteilt die übrigen fortlaufend auf die Zonen und fasst gleiche Zonen zusammen. Im Kern zusätzlich die Druckwelle als stumpfer Treffer auf den Rumpf; Stehende und Hockende fallen ins Liegen. Regeln: Grundmechanik/Sprengwirkung.
+
+### 3.8c Lage-Auswahl (R)
+Die Lage-Auswahl ist ein Baustein, den Schussrechner ([§ 3.8](#38-waffen-und-schießen-a-m-r)), Werfen ([§ 3.8a](#38a-werfen-a-m-r)) und Probenrechner ([§ 3.6](#36-probenrechner-r)) gemeinsam nutzen. Regeln: Kampfsystem (Lage), Wahrnehmung (Sehen). Werte und Umstände: `regeln.json` (`lage`, `sicht`).
+
+**Ziel:** In der Regel ein bis zwei Fingertipps pro Schuss. Alles, was die App schon weiß, trägt sie selbst ein. Die SL kann jederzeit eigene Malsteps oder Stepshields dazugeben.
+
+**Kopfzeile** (immer sichtbar, aktualisiert sich bei jeder Änderung): Summe Malsteps · Summe Stepshields · Netto · **Zielwert** · **Krit-Schwelle**, z. B. „▼ 5 · ▲ 2 · netto 3 → 24 · Krit ≤ 2“. Antippen klappt die vollständige Aufschlüsselung mit Herkunftszeichen auf ([§ 3.0b](#30b-herkunft-von-werten-a-r)).
+
+**Block 1: Automatisch.** Was die App aus Charakter und Gefecht kennt, als Chips mit Zahl und Herkunftszeichen:
+- Ansage,
+- eigene Bewegung und Hechten dieser Runde (aus der Aktionsleiste, [§ 3.7a](#37a-aktionsleiste-m-r)),
+- Sichtstufe (Einstellung im Gefecht, [§ 3.11](#311-zustände-a-m)),
+- Adrenalin bzw. Ruhepuls (beschriftet mit dem Stand, z. B. „Adrenalin 2“), Zustände, Zielen, Aufsätze, Perks, Anpassungen,
+- SL-Umstände für das ganze Gefecht (Block 3).
+
+Antippen eines Chips zeigt Regeltext und Herkunft. Das kleine **×** am Chip schaltet ihn für diesen Schuss aus (z. B. die SL wertet eine Bewegung anders); der Chip bleibt durchgestrichen sichtbar, das × wird zu ↺ (wieder einschalten), und der Bericht nennt es. Mit dem nächsten Schuss ist er wieder an.
+
+**Block 2: Ziel und Schütze.** Die Umstände aus `regeln.json` in ihren Gruppen, als Reihen großer Knöpfe:
+- **Entfernung zum Ziel:** bedrängt · nah · mittel · weit · sehr weit · fern (genau eins). Jeder Knopf zeigt die Malsteps der aktiven Waffe für dieses Band; Bänder, in die die Waffe nicht reicht, sind gesperrt. Kein Standard: Beim ersten Schuss auf ein Ziel ist noch nichts gewählt, und die Kopfzeile zeigt „Entfernung wählen“.
+- **Bewegung des Ziels:** ruhend oder gehend · laufend · rennend oder hechtend · im Nahkampf (genau eins).
+- **Stand des Ziels:** stehend · hockend · liegend · liegend, von oben beschossen (genau eins).
+- **Größe des Ziels:** Person · kopfgroß · handgroß · groß, Gegenstand (genau eins).
+- **Schütze:** Waffe aufgelegt (Schalter).
+
+Vorgewählt ist jeweils der Standard (Grundfall: stillstehendes, stehendes Ziel; keine Steps). Die App setzt Regeln selbst um und zeigt sie am Knopf:
+- **Gesperrt:** „aufgelegt“ nach eigener Bewegung in dieser Runde; ist das Zweibein aufgesetzt, ist „aufgelegt“ automatisch an.
+- **Ohne Wirkung:** Hocke und Liegen im Band bedrängt (ausgegraut, „wirkt nicht im Band bedrängt“).
+- **Hinweis:** „im Nahkampf“ blendet ein, dass ein Fehlschuss einen anderen Beteiligten trifft; der Bericht wertet das aus ([§ 3.8](#38-waffen-und-schießen-a-m-r)).
+- Umstände mit `nicht_fuer` fehlen im jeweiligen Ablauf (z. B. „aufgelegt“ beim Werfen).
+
+**Merken.** Die Auswahl bleibt für den nächsten Schuss stehen, weil man meist dasselbe Ziel weiter beschießt. Wann sie zurückfällt, legt `zuruecksetzen` je Gruppe fest: Bewegung des Ziels und „aufgelegt“ zum **Rundenende**; Entfernung, Stand und Größe beim Knopf **Neues Ziel**. Die Entfernung bleibt also stehen, auch wenn sich jemand bewegt hat. Die App weist nur auf das hin, was sie wissen kann: auf die eigene Bewegung dieser Runde (aus der Aktionsleiste) und auf eine Bewegung des Ziels, die in der Lage-Auswahl schon eingetragen ist. Ob sich das Ziel bewegt hat, weiß die App sonst nicht; das sagt die SL an. Gefechtsende setzt alles zurück.
+
+**Block 3: SL.** Zwei Zähler, **+ Malstep** und **+ Stepshield**, mit großem ± und einem optionalen Feld **Grund**. Unter dem Feld stehen die zuletzt verwendeten Gründe zum Antippen.
+- Standard: gilt **nur für diesen Schuss**.
+- Schalter **für das ganze Gefecht:** Der Umstand wandert in Block 1 und gilt für alle folgenden Proben, die der Spieler beim Anlegen wählt (Schießen, Werfen, alle Proben). Er bleibt bis Gefechtsende oder bis er dort über sein × gelöscht wird.
+- Der Bericht und das Gefechtsprotokoll nennen SL-Steps mit Grund.
+
+**Im Probenrechner** ([§ 3.6](#36-probenrechner-r)) zeigt die Lage-Auswahl nur Block 1 (ohne Ansage) und Block 3; eine Entfernung gibt es dort nicht. Ein Schalter **braucht Sicht** nimmt die Sichtstufe hinzu; bei Proben, deren Ablauf Sicht verlangt (Ladehemmung beheben, Nahkampf, Reaktion auf Gesehenes), ist er vorgewählt.
+
+**Beim Werfen** gilt Block 2 ohne „aufgelegt“; die Entfernung bringt Malsteps nach der Wurfweite ([§ 4.12](#412-aktionen)), Bänder jenseits davon sind gesperrt.
+
+### 3.8b Nahkampf (M, R)
+Regeln: Kampfsystem (Nahkampf). Zusammenfassung: [§ 4.12](#412-aktionen). Gliederung wie [§ 3.7c](#37c-treffer-ausgehend-und-eingehend-m-r).
+
+**Ausgehend** (Main → Nahkampfangriff; Break → Nahkampfangriff mit kurzer Waffe oder Abfangen mit langer Waffe):
+1. **Was:** Nahkampfwaffe aus der Ausrüstung, Körperwaffen oder Einsatz mit der aktiven Schusswaffe (Kolben, Lauf, Pistolengriff); Länge, Art (stumpf/scharf), MW und DK aus den Daten.
+2. **Probe:** Agility + Nahkampf. Eingerechnet: eigener Stand und **Stand des Gegners** (Auswahl stehend · hockend · liegend; die App bestimmt den überlegenen Stand und rechnet 1 Malstep für den Unterlegenen ein bzw. zeigt „Gegner hat 1 Malstep“), lange Waffe in Armeslänge (Schalter), Adrenalin bzw. Ruhepuls, Lage-Block 1 und 3. Anzeige zum Ansagen: „**Erfolg · 54**“.
+3. **Wo:** Ansage oder W8 wie beim Schießen.
+4. **Ausgang** (die SL vergleicht): **getroffen** · **nicht getroffen**. Bei „getroffen“: Krit-Schalter, falls der eigene Wurf ein Krit war (vorbelegt); bei überlegenem Stand Auswahl der Kampfkunst-Wirkung aus den eigenen Perks (höchstens eine).
+5. **Bericht „Für die SL“:** Zone, MW (Nahkampfschaden + MW der Waffe), DK bzw. stumpf, Krit-Folge (scharf: Spalte „Krit“; stumpf: Stagger), Kampfkunst-Wirkung.
+
+**Eingehend** (Getroffen → Nahkampf):
+1. **Was:** Waffe des Angreifers: Auswahl aus `nahkampfwaffen.json` (MW und DK übernommen, MW des Angreifers ergänzen) oder MW und DK direkt; stumpf/scharf.
+2. **Probe (Verteidigung):** Schalter **Angreifer wahrgenommen** (Standard: an). Aus: keine Verteidigung, weiter mit Schritt 3. An: Agility + Nahkampf mit Stand beider Seiten, **Verteidigungen in dieser Runde** (die App zählt mit: je weitere 1 Malstep), Adrenalin bzw. Ruhepuls, Lage-Block 1 und 3. Anzeige zum Ansagen. Die Verteidigung kostet keine Aktion und unterbricht eine Aktion mit Konzentration (die App bricht sie ab).
+3. **Ausgang** (die SL vergleicht): **getroffen** · **abgewehrt** · **unentschieden** (wie abgewehrt). Bei „abgewehrt“ mit eigenem Krit: Hinweis „Abstand bestimmen“; mit überlegenem Stand: Auswahl der Kampfkunst-Wirkung aus den eigenen Perks.
+4. **Bei „getroffen“:** Zone, Krit (Schalter), dann Schadensablauf wie jeder eingehende Treffer ([§ 3.10](#310-treffer-wunden-und-blutung-m-r)). Eine Kampfkunst-Wirkung des Gegners (umgerissen, fixiert, entwaffnet, Stagger) wählt der Spieler hier aus, wenn die SL sie ansagt; die App setzt Stand, Hinweis oder Stagger.
+
+### 3.9 Schutz (A, M)
+- **Rüstung** je Zone (Wert aus `schutz.json`), aus der Ausrüstung.
+- **Deckung** im Gefecht auf der **Silhouette** ([§ 3.0f](#30f-körperbild-silhouette-a-r), Schicht Deckung, bearbeitbar). Erreichbar über langes Antippen der Figur auf dem Startbildschirm oder den Knopf „Deckung“ über ihr:
+  - **Deckungskante ziehen:** von unten nach oben (Autotür, Mauer) oder von links bzw. rechts (Hausecke, Türrahmen). Die Kante rastet an Zonengrenzen ein. Stufen von unten: Beine → Unterleib → Bauch → Brust (mit beiden Armen) → Kopf. Stufen von der Seite: Arm und Bein dieser Seite → Kopf und Rumpf → alles.
+  - **Zonen antippen:** einzelne Zonen als verdeckt an- oder abwählen (z. B. Fenster: nur Kopf frei). Kombinierbar mit der Kante.
+  - **Regeln** ([§ 4.7](#47-schadensablauf)): Ist eine Rumpfzone verdeckt, gilt der ganze Rumpf als verdeckt. Verdeckt die Kante von unten die Brust, sind beide Arme verdeckt. Die App zeigt das auf der Silhouette mit an.
+  - Verdeckte Zonen sind schraffiert; darunter steht der **Deckungswert** (Zahl oder Auswahl aus `schutz.json`).
+  - Die Deckung bleibt bestehen, bis der Spieler sie ändert oder das Gefecht endet. „Keine Deckung“ ist ein Knopf.
+
+### 3.10 Treffer, Wunden und Blutung (M, R)
+
+**„Getroffen“** ist die eingehende Richtung des Treffer-Dialogs ([§ 3.7c](#37c-treffer-ausgehend-und-eingehend-m-r)). Der Knopf steht **immer** zur Verfügung: im Gefecht groß an der Aktionsleiste, in Ruhe im Bereich Wunden. Zuerst die **Art**: Schuss · Nahkampf ([§ 3.8b](#38b-nahkampf-m-r)) · Splitter/Explosion ([§ 3.8a](#38a-werfen-a-m-r), eingehend) · Sonstiges. Für einen **Schuss** in der Reihenfolge, in der die SL ansagt:
+1. **Geschoss** (zuerst, damit die Vorschau rechnen kann, [§ 3.0f](#30f-körperbild-silhouette-a-r)): Kaliber und Typ aus `munition.json` oder DK/MW direkt als zwei Zahlen. Schalter **stumpf** (Gummigeschoss, stumpfe Nahkampfwaffe, Körperwaffe, Druckwelle): keine DK, immer Wuchttreffer mit vollem Rüstungswert als Restschutz; Krit löst immer Stagger aus (Schaden, Blutung und Verletzungen, Stumpfe Treffer).
+2. **Kugeln:** Standard 1, ± für Folgetreffer. **Krit:** Schalter.
+3. **Zone:** auf der Silhouette mit Vorschau antippen oder W8-Zahl eingeben.
+
+Selbst ergänzt: Rüstung der Zone, aktuelle Deckung (nur wenn die Zone verdeckt ist, [§ 3.9](#39-schutz-a-m)), Symptome der Leiter für die Stagger-Prüfung. Der Spieler kann die Deckung für diesen Treffer ändern.
+
+Dann folgt der **Bericht** ([§ 3.0c](#30c-bericht-was-ist-passiert-a)). „Weiter“ übernimmt:
+- Wunde (Durchschlag) oder Prellung (Wuchttreffer) anlegen, HP abziehen ([§ 4.7](#47-schadensablauf)).
+- Folgen der Zone als Hinweis (z. B. „Gegenstand fallen lassen“).
+- Auslöser **getroffen**, **verletzt**, **Stagger** in der Rundenend-Checkliste anhaken.
+- Banner bei Kampfunfähigkeit oder Tod.
+
+**Schnellknopf** (nur im Gefecht, unter Ereignis): „Beschossen“ (nur Auslöser beschossen, ohne Treffer). Kein Bericht nötig, da nur ein Wert sich ändert. Ein Nahkampfangriff auf den Charakter läuft immer über Getroffen → Nahkampf, auch wenn er abgewehrt wird; der Auslöser „im Nahkampf angegriffen“ wird dabei gesetzt.
+
+**Sonstiges** (direkter Schaden): Schaden und Zone eingeben, Wunde oder Prellung wählen (z. B. Sturz, Falle). Ohne Schadensablauf; mit Bericht.
+
+**Wundliste:** Zone, Schaden, kritisch, Blutungsstatus, versorgt (Druckverband / Tourniquet / Operation), Nachsorge-Ergebnis, Rest-Heildauer.
+
+**Fristen nach dem Gefecht:** Countdown je blutender Wunde ([§ 4.8](#48-blutung)). Bei Ablauf: halber Schaden bzw. Tod, mit Bericht.
+
+**Gefechtsprotokoll:** Jeder übernommene Treffer (und später jeder Schuss) wird mit Runde und Uhrzeit protokolliert. Jeder Eintrag lässt sich einzeln rückgängig machen; Wunde, HP und Auslöser werden dann zurückgesetzt (mit Bericht).
+
+### 3.11 Zustände (A, M)
+Adrenalin/Ruhepuls (über die Leiter), Adrenalinschock (mit 4-Stunden-Ruhe-Abhaken), Kampfunfähigkeit (automatisch aus HP und offenen kritischen Wunden), **Geblendet** (Rundenzähler ab der Detonation; setzt für den Charakter die Sichtstufe keine), **Gereizt** (Schalter „in der Wolke“; endet am Ende der Runde nach dem Verlassen). Jeder aktive Zustand zeigt seine Wirkung als Kurztext und fließt mit seinen Malsteps in alle Rechner ein ([§ 4.5](#45-zustände)).
+
+**Sichtstufe** (klar, eingeschränkt, schlecht, keine) ist kein Zustand, sondern eine Einstellung im Gefecht. Sie gilt für alle Proben, die Sicht brauchen (Wahrnehmung, Sehen), bis der Spieler sie ändert. Geblendet erzwingt „keine“.
+
+### 3.12 Heilung (M, R)
+- **Nacht Ruhe:** Prellungen zurück.
+- **Ruhetag:** Erholungsprobe vorbereiten (Zielwert auf Grit mit Malsteps je unversorgter Wunde + Umstände, Stepshields aus Pflege), Ergebnis eintragen → HP. Alle versorgten Wunden zählen einen Tag herunter ([§ 4.9](#49-heilung)).
+
+### 3.13 Geld und Aufträge (M, R)
+Regeln: Schulden, Coups und Verträge; Klassen (Gehalt).
+
+**Kassenbuch.** Der Kontostand ist die Summe aller Buchungen; er wird nie direkt gesetzt. Jede Buchung hat Datum, Betrag (±), Art und Grund (Freitext). Arten: **Startgeld**, **Auftrag**, **Kauf**, **Verkauf**, **Rate** (Schuldenrückzahlung), **Korrektur** (nur im Schreibmodus, [§ 3.0a](#30a-modi-lesen-aufstieg-schreiben-m)). Das Kassenbuch steht im Reiter Verlauf; der Kontostand im Reiter Ausrüstung.
+
+**Einnahmen** kommen nach der Erstellung nur aus **Aufträgen** (und aus Verkäufen eigener Ausrüstung). **Auftrag abschließen** (Menü):
+1. Gehalt der aktuellen Klasse, wenn ein Vertrag besteht (vorbelegt, änderbar).
+2. Weitere Einnahmen aus dem Auftrag (Betrag und Grund, optional; z. B. Prämie, Beute).
+3. Schulden: Frist −1 Auftrag. Ist sie abgelaufen und die Restschuld nicht getilgt, zeigt die App eine Warnung („Frist abgelaufen – die SL entscheidet“).
+4. Bericht, dann Buchung.
+
+**Schulden** (falls bei der Erstellung gewählt): Restschuld (Betrag + 50 %), verbleibende Frist in Aufträgen, Gläubiger, Sicherheit. **Rate zahlen** bucht einen frei wählbaren Betrag ab und senkt die Restschuld. Bei Restschuld 0 sind die Schulden getilgt.
+
+**Kauf und Verkauf** laufen über den Laden ([§ 3.14](#314-laden-kaufen-und-verkaufen-m-r)) und buchen automatisch.
+
+### 3.14 Laden: Kaufen und Verkaufen (M, R)
+Regeln: Schusswaffen (Begriffserklärung: Geldwertspanne, Vorratslevel; Zustand: Preis, Verhandeln); Stats, Skills und Perks (Skillproben: Beschaffen). Erreichbar bei der Erstellung (Schritt 7) und im Spiel über den Reiter Ausrüstung („Kaufen“, „Verkaufen“). Im Gefecht nicht verfügbar.
+
+**Aufbau.** Oben der **Kontostand**, der bei jeder Auswahl mitläuft (Stand nach dem Kauf). Darunter Reiter: **Waffen · Munition · Nahkampf · Sprengmittel · Rüstung · Zubehör und Aufsätze**. Je Eintrag: Name, wichtigste Werte, Vorratslevel, Geldwertspanne.
+
+**Vorratslevel.** Ware bis zum Vorratslevel der Klasse ist frei kaufbar. Ware darüber ist ausgegraut mit dem Hinweis „nur über ⬢ Beschaffen“; Perk ◆ Kontakte wird berücksichtigt. Hat der Charakter Beschaffen, öffnet Antippen die Probe (Probenrechner, 2 Malsteps je Stufe über dem Vorratslevel, höchstens 2 Stufen darüber). Gelingt sie, ist der Kauf frei; Preis und Lieferzeit nennt die SL.
+
+**Kaufen.**
+1. Eintrag wählen; bei Waffen den **Zustand** A–D. Die App zeigt das zugehörige Viertel der Geldwertspanne als Preisrahmen.
+2. **Preis** eintragen, wie ihn die SL nennt (vorbelegt: Mitte des Viertels). Optional **Verhandeln**: Probe Empathy + ⬢ Verhandeln anzeigen; der Spieler tippt den Ausgang (gewonnen · verloren · unentschieden, Krit des Siegers), die App setzt den Preis nach der Regel.
+3. Menge (bei Munition, Vorrat und Zubehör).
+4. **In den Korb.** Mehrere Käufe sammeln sich; der Korb zeigt Summe und Kontostand danach. Reicht das Geld nicht, ist „Kaufen“ gesperrt und nennt den Fehlbetrag (bei der Erstellung wie im Spiel).
+5. **Kaufen:** Bericht, dann Buchung im Kassenbuch (je Posten eine Zeile) und Aufnahme in die Ausrüstung (Waffen mit Zustand, leerem Magazin und Trageort „Rucksack“ als Vorgabe).
+
+**Verkaufen.** Gegenstand aus der eigenen Ausrüstung wählen; die App zeigt das Viertel nach seinem aktuellen Zustand, unbrauchbare Waffen bis zur Untergrenze. Preis wie beim Kauf (Verhandeln mit vertauschten Rollen). Bericht, Buchung, Gegenstand entfernt.
+
+**Bei der Erstellung** ist der Laden Schritt 7; der Korb bleibt bis zum Abschluss der Erstellung änderbar.
+
+## 4. Regelkern
+
+Stand der Regeln: 16.11.2026. Werte mit *(v)* sind vorläufig und gehören in `regeln.json`. Maßgeblich ist das Regelwerk; dieser Abschnitt fasst nur zusammen, was die App rechnet.
+
+### 4.1 Stats
+- Stats: **Gruppe A** Twitch, Brawn, Agility, Grit · **Gruppe B** Control, Empathy, Intellect, Decisiveness · **Gruppe C** Nerve.
+- **Statwert = Rang + Abweichung.** Ränge: S 90, A 80, B 70, C 60, D 50, E 40, F 30. Abweichung −9 bis +9. Spanne damit 21–99, fest.
+
+### 4.2 Steps und Zielwert
+Probe: W100 (01–100). Gelungen, wenn Ergebnis ≤ Zielwert.
+
+1. **Malsteps** sammeln: Lage + Leiter + Zustände.
+2. **Abzug** = Skillstufe + Stepshields (Leiter, Zielen, Umstände …). Bei Skill 0 in einer Skillprobe stattdessen **+1 Malstep**.
+3. **Netto-Malsteps** = max(0, Malsteps − Abzug). **Übrig** = max(0, Abzug − Malsteps).
+4. **Netto ≥ 6:** keine Probe möglich, die Handlung misslingt.
+5. **Zielwert** = Statwert × Faktor[Netto], einmal kaufmännisch gerundet (ab ,5 auf). Immer vom Statwert rechnen.
+
+| Netto-Malsteps | 0 | 1 | 2 | 3 | 4 | 5 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Faktor *(v)* | 1 | 0,85 | 0,638 | 0,414 | 0,228 | 0,103 |
+
+Prüfwerte: 79 → 67, 50, 33, 18, 8 · 54 → 46, 34, 22, 12, 6 · 35 → 30, 22, 15, 8, 4.
+
+### 4.3 Krit
+**Krit-Schwelle** = Zehnerstelle des Zielwerts + Übrig (aus [4.2](#42-steps-und-zielwert)), mindestens 0. Bei Zielwert 100 ist die Zehnerstelle 10.
+Eine gelungene Probe mit Ergebnis ≤ Krit-Schwelle ist ein Krit.
+
+### 4.4 Die Leiter
+Stufen: Ruhepuls 3, 2, 1, **0**, Adrenalin 1, 2, 3, 4 (Over the Edge). Speichern als Ganzzahl −3 … +4.
+
+| Stand | Gruppe A | Gruppe B | Symptome |
+| --- | --- | --- | --- |
+| Ruhepuls 1 | – | – | R1 |
+| Ruhepuls 2 / 3 | 1 / 2 Malsteps | 1 / 2 Stepshields | R1, R2 |
+| 0 | – | – | – |
+| Adrenalin 1 | – | – | A1 |
+| Adrenalin 2 / 3 | 1 / 2 Stepshields | 1 / 2 Malsteps | A1, A2 |
+| Adrenalin 4 (Over the Edge) | 2 Malsteps | 2 Malsteps | nur die Verluste von A1, A2; genau eine Aktion pro Runde |
+
+Nerve (Gruppe C) wird nie beeinflusst.
+
+**Symptome** (Gewinn / Verlust):
+- **A1:** Schmerz ignorieren (kein Stagger) / Keine Ansage einer Trefferzone.
+- **A2:** Sprint (zweite Bewegung) / Tunnelblick (keine Antizipation; Breakaction nur gegen Gesehene).
+- **R1** *(v)*: Ruhige Hand (Zielen als Mainaction, Stepshield schon für den nächsten Schuss dieser Runde) / Empfindlich (Stagger schon bei Schaden = Schmerzresistenz).
+- **R2** *(v)*: Weitblick (Antizipationsinformation gilt eine Runde jünger) / Kein Hechten.
+
+**Gefechtsbeginn** (Nerve-Probe, Pflicht):
+
+| Ergebnis | normal | überrascht |
+| --- | --- | --- |
+| Krit | Ruhepuls 1 | 0 |
+| gelungen | 0 | Adrenalin 1 |
+| misslungen | Adrenalin 1 | Adrenalin 2 |
+
+Überrascht: in Runde 1 je 1 Malstep auf Initiative und Breakaction (Perk Entschlossen: keiner).
+
+**Rundenende:** Auslöser als Checkliste, jeder zählt höchstens einmal: beschossen, im Nahkampf angegriffen, getroffen, verletzt, Stagger, selbst auf jemanden geschossen, Verbündeter ausgeschaltet, sonstiges (SL).
+- Mindestens ein Auslöser → +1 Stufe (max. +4).
+- Vorher freiwillige Nerve-Probe, je Auslöser 1 Malstep: gelungen → bleibt; Krit → −1 Stufe; misslungen → +1.
+- Wurde in dieser Runde gesenkt: kein Anstieg, keine Probe.
+
+**Senken** (Mainaction, Nerve + Selbstbeherrschung): gelungen −1, Krit −2 (min. −3). **Verbündete verschieben** (Mainaction, Empathy + Führung): ±1, Krit ±2.
+
+**Gefechtsende:** Leiter → 0. War Adrenalin 4 erreicht → Adrenalinschock.
+
+### 4.5 Zustände
+Malsteps aus Zuständen gelten für alle Proben; Skill und Stepshields helfen dagegen.
+
+| Zustand | Auslöser | Wirkung | Ende |
+| --- | --- | --- | --- |
+| Adrenalin/Ruhepuls | Leiter ≠ 0 | [§ 4.4](#44-die-leiter) | Gefechtsende |
+| Adrenalinschock | Adrenalin 4 im Gefecht erreicht; ab Gefechtsende | 3 Malsteps *(v)* auf alle Proben | 4 h ununterbrochene Ruhe |
+| Kampfunfähigkeit | HP = 0 oder offene kritische Wunde | im Gefecht: keine Aktionen; sonst: nur kriechend/gestützt, keine körperliche Anstrengung, übrige Proben 3 Malsteps *(v)*, mit Perk Durchbeißen 2; **nicht** auf die Erholungsprobe | HP ≥ 1 und keine kritische Wunde offen |
+| Geblendet | Blendgranate (bedrängt 2 Runden, nah 1 Runde bei freiem Kopf; nicht bei gelungener Reaktion) | Sichtstufe keine; Antizipation nur über Gehör | Ende der letzten Runde |
+| Gereizt | in der Reizgaswolke, Grit-Probe zu Beginn des Zuges misslungen (Gasmaske: keine Probe) | 2 Malsteps auf alle Proben | Ende der Runde nach Verlassen der Wolke |
+
+Adrenalinschock mit Perk Eiserne Nerven: 2 Malsteps. Malsteps aus Geblendet (über die Sichtstufe) und Gereizt zählen zusammen.
+
+### 4.6 Schießen
+
+**Trefferwert:** Probe auf **Control** mit dem Waffenskill der Waffe ([4.2](#42-steps-und-zielwert)). Malsteps:
+- Reichweitenband der Waffe (Tabelle der Waffe; „n/A“ = Schuss nicht möglich),
+- Ansage: Rumpf 1, einzelne Zone 2 (Adrenalin 1+ und Sichtstufe keine: Ansage nicht möglich),
+- Lage *(v)*: eigene Bewegung (Kriechen, Gehen 1; Laufen, Hechten 2; Rennen 4; Perk Feuer in Bewegung −1), Ziel bewegt sich (Laufen 1; Rennen, Hechten 2), Ziel im Nahkampf 1 (ersetzt den Wert für seine Bewegung, der höhere zählt), Stand des Ziels (Hocke 1, Liegen 2; nicht im Band bedrängt; von oben auf Liegende 0), Sichtstufe (0–3, nur die schlechteste), kleines Ziel (kopfgroß 2, handgroß 3). Bewegung zählt vom Beginn der Bewegung bis Rundenende; bei Sprint die schnellere,
+- Leiter und Zustände auf Control.
+
+Stepshields: Zielen (1; Atemkontrolle 2), Lage (Waffe aufgelegt 1, nur ohne eigene Bewegung; großes Ziel 1, nur Gegenstände), Aufsätze (Reflexvisier bedrängt/nah 1; Zielfernrohr ab weit 1, bedrängt 1 Malstep), Leiter, Perks.
+
+Bänder: bedrängt (bis 2 m, Armeslänge), nah (3–15 m), mittel (16–30 m), weit (31–100 m), sehr weit (101–250 m), fern (251 m bis Maximum).
+
+**Trefferzone:** W8 oder Ansage.
+
+| W8 | Zone | Multiplikator | Normal | Krit |
+| --- | --- | --- | --- | --- |
+| 8 | Kopf | ×3 | Blutung | sofort Tod |
+| 7 | Brust | ×2 | Blutung | sofort Tod |
+| 6 | Bauch | ×2 | Blutung | kampfunfähig; verbluten in 1 min |
+| 5 | Unterleib | ×2 | Blutung | kampfunfähig; verbluten in 1 min |
+| – | Rumpf (nur Ansage) | ×2 | Blutung | kampfunfähig; verbluten in 1 min |
+| 4 | R. Arm | ×1 | Blutung; Gegenstand fallen lassen | kampfunfähig; verbluten in 5 min |
+| 3 | L. Arm | ×1 | Blutung; Gegenstand fallen lassen | kampfunfähig; verbluten in 5 min |
+| 2 | R. Bein | ×1 | Blutung; Sturz im Lauf; humpeln | kampfunfähig; verbluten in 5 min |
+| 1 | L. Bein | ×1 | Blutung; Sturz im Lauf; humpeln | kampfunfähig; verbluten in 5 min |
+
+**Krit:** nur der erste Schuss.
+
+**Ladehemmung:** steckt im Trefferwurf, einmal pro Feuerstoß. Rate = LH des Modus + Zuschlag nach Zustand und Zuverlässigkeit (+2 mit Trommelmagazin). Wurf > 100 − Rate → Ladehemmung (kein Schuss, kein Munitionsverbrauch, Waffe blockiert); Wurf 100 bei Rate > 0 → schwere Ladehemmung. Beheben (einfach): Main, Control + Waffenskill, Malsteps LH-Behebenmod. + Sichtstufe + Leiter.
+
+**Ziel im Nahkampf:** Fehlschuss trifft einen zufälligen anderen Beteiligten (Zone W8, kein Krit, Folgetreffer ebenso).
+
+**Schrotflinte (Buckshot):** Bei Treffer so viele Kugeln wie die Schrotzahl des Bands; erste Kugel Zone aus W8/Ansage (Ansage Rumpf: Brust), jede weitere die nächstniedrigere Zonennummer (nach 1 wieder 8). Kugeln einer Zone = ein Treffer (Schaden × Kugeln). Jeder Folgetreffer bringt die volle Schrotzahl erneut. Nur die erste Kugel kann critten.
+
+**Folgeschüsse** (angesagt 2 bis Feuerrate des Modus): Bei misslungener Trefferprobe gehen alle ins Leere.
+- **Haltezahl:** Wert auf **Brawn**, aber ohne Lage-Malsteps (keine Probe, kann nicht critten). Malsteps = Rückstoß des Modus + Leiter-Malsteps auf Brawn. Abzug = Skill Rückstoßkontrolle + Stepshields (Leiter auf Brawn; Rückstoß abfangen *(v)*: liegend 1, Zweibein aufgesetzt 1, Vordergriff 1, Kompensator 1). Skill 0 → +1 Malstep.
+- **Burst:** Zahl der Bursts ansagen; Schüsse = Bursts × Burst-Länge; Rückstoß wie EF, kein Garbenfaktor.
+  Netto ≥ 6 → Haltezahl 0. Sonst Haltezahl = Zehnerstelle des Werts + Übrig, höchstens 10.
+- **Folgetreffer** = max(0, Haltezahl − Rückstoßwürfel W10, 0 = 10).
+- **Kugeln:** Bei VA zählt jeder Folgetreffer so viele Kugeln wie der Garbenfaktor, sonst 1. Summe aller Kugeln der Folgetreffer ≤ angesagte Schüsse − 1.
+- Folgetreffer treffen die Zone des ersten Schusses (Ausnahme: Perk Triple Tap). Jeder Folgetreffer ist ein Treffer im Schadensablauf mit Schaden × Kugeln; für den Stagger zählt der gesamte Schaden dieses Treffers.
+- Verbraucht werden alle angesagten Schüsse.
+
+### 4.7 Schadensablauf
+1. **Deckung** (nur wenn die getroffene Zone verdeckt ist): DK < Deckungswert → gestoppt, kein Schaden. Sonst Rest-DK = DK − Deckungswert. Ist eine Rumpfzone verdeckt, gilt der ganze Rumpf als verdeckt. Deckung von unten bis zur Brust verdeckt auch beide Arme; bis Bauch oder Unterleib nicht.
+2. **Rüstung** der getroffenen Zone: Rest-DK ≥ Rüstung → **Durchschlag**, sonst **Wuchttreffer**.
+3. **Durchschlag:** Schaden = MW × Multiplikator (× Kugeln). Folgen der Zone; bei Krit Spalte „Krit“. Erzeugt eine Wunde.
+4. **Wuchttreffer:** Schaden = max(0, MW − (Rüstung − Rest-DK)) (× Kugeln). Keine Zonenfolgen, kein Krit. Erzeugt eine **Prellung**, keine Wunde.
+5. **Stagger:** Schaden des Treffers > Schmerzresistenz (bei Symptom „Empfindlich“: ≥; bei „Schmerz ignorieren“: nie). Gilt für Durchschlag und Wuchttreffer. Wirkung: Konzentration unterbrochen, Breakaction dieser Runde verfällt.
+
+**Stumpfe Treffer** (Körperwaffen, stumpfe Nahkampfwaffen, Gummigeschosse, Druckwelle): keine DK. Verdeckte Zone → kein Schaden. Sonst immer Wuchttreffer mit vollem Rüstungswert als Restschutz. Krit → immer Stagger.
+
+**Splitter:** ohne Probe, kein Krit. Splitterzahl des Bands (liegend halbiert, abgerundet); W8 für den ersten, jeder weitere nächstniedrigere Zone; gleiche Zonen als ein Treffer. Deckung zählt vom Explosionspunkt aus. Druckwelle nur im Kern (bedrängt): stumpf auf den Rumpf, wirft Stehende und Hockende mit freiem Rumpf ins Liegen.
+6. **HP:** 0 → kampfunfähig; ≤ −1 → tot.
+
+### 4.8 Blutung
+Im Gefecht keine Blutung. Fristen beginnen mit Gefechtsende.
+
+| Wunde | Frist | Unversorgt bei Ablauf | Versorgung |
+| --- | --- | --- | --- |
+| normal | 10 min | halber Schaden der Wunde (aufgerundet), dann Ende; Schaden zählt zur Wunde | Druckverband (Erste Hilfe; nach dem Gefecht ab Skill 1 ohne Probe) |
+| kritisch, Gliedmaßen | 5 min | Tod | Tourniquet (Erste Hilfe) |
+| kritisch, Rumpf | 1 min | Tod | Druckverband verdoppelt die Frist einmal; stoppen nur durch Operation (Skill Operation) |
+
+Versorgen ist eine Mainaction mit voller Konzentration (Perk Feldversorgung: leicht). Druckverband und Tourniquet: eine Mainaction; Operation: mehrere Runden, Dauer legt die SL fest (Notoperation: halbiert). Misslungene Proben dürfen wiederholt werden, solange die Frist läuft *(v)*.
+
+### 4.9 Heilung
+Nur an **Ruhetagen** (kein Gefecht, keine schwere Anstrengung).
+- **Prellungen:** nach einer Nacht Ruhe vollständig zurück.
+- **Erholungsprobe** (1× pro Ruhetag, Grit): Krit +2 HP, gelungen +1, misslungen +0 *(v)*. Höchstens bis HP-Höchstwert. Auch bei 0 HP. Malsteps: 1 je unversorgte Wunde + Umstände (Eingabe). Pflege durch Betreuer (Erste Hilfe; bei offener kritischer Wunde Operation): gelungen 1 Stepshield, Krit 2.
+- **Wunden:** Heildauer = Schaden der Wunde; normal in Ruhetagen, kritisch in Wochen aus Ruhetagen (= Schaden × 7 Ruhetage). Nur versorgte Wunden heilen. Nachsorge-Probe (einmal je Wunde; Erste Hilfe, kritisch Operation): Krit → Heildauer halbiert (aufgerundet); gelungen → unverändert; misslungen oder keine → ×2. Mehrere Wunden heilen gleichzeitig. Offene Wunden behalten andauernde Zonenfolgen (humpeln). Eine geheilte Wunde wird gestrichen; HP kommen **nicht** mit der Wunde zurück.
+
+### 4.10 Grundwerte
+| Grundwert | Start | Perks (je +1) |
+| --- | --- | --- |
+| HP | 8 | Zäh I, Zäh II |
+| Schmerzresistenz | 1 | Schmerzunempfindlich I, II |
+| Nahkampfschaden | 1 | Schlagkraft I, II |
+| Wurfweite | genau auf „nah“ | Wurfarm I, II (je +1 Band) |
+
+Perk I: Rang 1, Stat ≥ 50. Perk II: Rang 2, Stat ≥ 70 und Perk I *(v)*. Stat: Brawn, bei Schmerzunempfindlich Grit.
+
+**Perks allgemein:** Rang = Kosten in freien Punkten. Perks haben keine Stufen; abgestufte Wirkung entsteht durch eigenständige Perks. Voraussetzungen: Mindest-Statwert und/oder ein anderer Perk.
+
+### 4.11 Charaktererstellung und Aufstieg
+- **Rank-Set:** 9 Ränge je Stufe der Klasse, frei auf die 9 Stats verteilt. Lehrling: F, F, E, E, E, E, D, D, C.
+- **Abweichung:** je Stat zwei W10, vorher als Positiv- und Negativwürfel festgelegt. Abweichung = Positiv − Negativ (−9 … +9; Würfel 0 zählt als 10).
+- **Freie Punkte:** bei der Erstellung laut Klasse (derzeit alle 5); im Spiel 5 pro Session. Nicht ausgegebene Punkte bleiben.
+- **Kosten:**
+  - Skill-Level: 1 Punkt je Level, höchstens 5.
+  - Statrank-Up: 1 Punkt, +1 Rang (nicht über S), Abweichung neu würfeln. Der Statwert kann sinken; der Rang steigt trotzdem.
+  - Perk: Punkte = Rang; einmal erworben, keine Stufen.
+- **Zugang:** Steigern und kaufen nur, was die **aktuelle Klasse** anbietet; das gilt auch für weitere Level eines vorhandenen Skills. Aufgelöst wird er aus `klassen.json` ([datenformat.md § klassen.json](datenformat.md#klassenjson)):
+  1. Aktuelle Klasse = letzter Eintrag im Klassenweg. Ohne Klasse: alles zugänglich.
+  2. Listen der Klasse auflösen (IDs und Gruppen), dann rekursiv die Klasse aus `wie` dazunehmen.
+  3. Exklusive Skills und Perks dazunehmen, deren Feld `exklusiv` die Klasse oder eine Klasse aus der `wie`-Kette nennt.
+  4. Zweite Spezialisierung: Vereinigung der Zugänge beider Spezialisierungen.
+  5. Meister (`laufbahn_gesamt`): Vereinigung der Zugänge aller Klassen der Laufbahn.
+- **Besitz:** Skills und Perks gehören dem Charakter. Ein Klassenwechsel ändert sie nicht. Skills außerhalb des Zugangs sind **eingefroren**: Sie wirken, steigen aber nicht. Perks haben keine Stufen und wirken immer.
+- **Klassenwechsel:** Ränge des Charakters und Rank-Set der neuen Klasse jeweils absteigend sortieren; jeder Rang des Charakters muss ≥ dem Rang an gleicher Stelle sein. Verglichen werden Ränge, nicht Statwerte. Dazu Mindestskills, Stat auf Rang A, Weg und Freigabe der SL ([§ 3.0d](#30d-klassenwechsel-m)). Der Wechsel gibt keine Punkte.
+- **Ränge sinken nie.**
+- **Grundwerte** sind fest und steigen nur über Perks ([§ 4.10](#410-grundwerte)).
+
+### 4.12 Aktionen
+**Runde** ≈ 3 Sekunden *(v)*. Je Zug einmal: **Mainaction**, **Bewegung**, **Standwechsel**; sie verbrauchen sich nicht gegenseitig. Je Runde einmal: **Breakaction**. Standwechsel ist auch als Breakaction möglich und verbraucht dann diese. Hechten ist Main- oder Breakaction und keine Bewegung. Schießen ist eine Breakaction. Over the Edge: genau eine der vier Aktionen pro Runde. Kampfunfähig: keine.
+
+**Initiative:** zu Beginn jeder Runde Decisiveness ohne Skill (kein Malstep für Skill 0). Reihenfolge: Krits vor Erfolgen vor Misserfolgen; Krits und Erfolge: höherer Wurf zuerst; Misserfolge: höherer Zielwert zuerst; Gleichstand: Spielercharaktere vor NSC, sonst W10. Kein Zurückstellen. Krit: eine zusätzliche Breakaction in dieser Runde *(v)*.
+
+**Breakaction im fremden Zug:** Voraussetzung: den aktiven Akteur wahrnehmen oder antizipieren, Breakaction noch vorhanden. Im Unterbrechungsmoment sagen alle vor dem Wurf an (Unterbrecher, der aktive Akteur zur Verteidigung, seine Verbündeten). Jeder würfelt Reaktion (Twitch + Reflexe; gesehen 0, nur gehört 1 Malstep, dazu Sichtstufe) oder Antizipation (Intellect + Lagegespür; Malsteps nach Güte und Alter der Information *(v)*). Rangfolge wie beim Contested Roll; Gleichauf und alle Misserfolge handeln gleichzeitig; wer durch eine frühere Breakaction einen Stagger erleidet, verliert seine. Keine Krit-Folge. Lässt der aktive Akteur die Unterbrechung zu und spielt die Reihenfolge keine Rolle: kein Wurf. Im eigenen Zug: ohne Probe.
+
+**Contested Roll:** Jeder würfelt seine eigene Probe. Krit > Erfolg > Misserfolg; gleiche Stufe: höherer Wurf gewinnt; beide misslungen oder gleiche Stufe und gleicher Wurf: Unentschieden. Nur der Krit des Siegers wirkt. Die SL nennt Stufe und Wurf des Gegners.
+
+**Nahkampf:** Angriff = Mainaction (mit kurzer Waffe gegen Armeslänge oder als Abfangen mit langer Waffe auch Breakaction). Contested Roll Agility + Nahkampf; Verteidigung kostet keine Aktion, braucht Wahrnehmung des Angreifers und unterbricht Konzentration. Angreifer gewinnt → Treffer; sonst kein Treffer. Je weitere Verteidigung in der Runde +1 Malstep. Lange Waffe gegen Ziel in Armeslänge: 1 Malstep. **Stand:** Liegen schlägt Stehen, Stehen schlägt Hocke, Hocke schlägt Liegen; überlegener Stand gibt dem Gegner 1 Malstep; Sieg mit überlegenem Stand löst die Wirkung eines passenden Kampfkunst-Perks aus (höchstens eine). Treffer: Zone wie beim Schießen, MW = Nahkampfschaden + MW der Waffe, dann Schadensablauf.
+
+**Werfen:** Mainaction (Break mit Quickthrow), Agility + Wurfwaffen/Granaten. Malsteps: Reichweite (bis zur genauen Wurfweite 0, ein Band darüber 2, weiter unmöglich) + Lage (ohne „aufgelegt“) + Leiter auf Agility. Wurfwaffe wie ein Schuss; Sprengwaffe: Landepunkt (Krit genau, Erfolg bedrängt, Misserfolg nah in Richtung W8). Kochen lassen: 1 Malstep, Verzögerung −1.
+
+**Konzentration:** nur ohne zuvor eingesetzte Breakaction; danach keine Breakaction in dieser Runde; leicht: Bewegung höchstens Gehen; voll: keine Bewegung, kein Standwechsel. Kann mehrere Runden dauern (Probe in der letzten). Stagger, Nahkampfverteidigung und Verstoß gegen die Beschränkung unterbrechen; die Aktion ist dann wirkungslos. Liste in `regeln.json`.
+
+**Krit-Folgen im Kampf:** Tabelle in `regeln.json` (`krit_folgen`); Proben ohne Eintrag haben keine.
+
+## 5. Umsetzungsreihenfolge
+
+1. Grundgerüst: Svelte/Vite-Projekt, GitHub Action (Tests, Build, Pages), PWA (Manifest, Service Worker, Offline-Test), Laden der JSON-Daten mit Datenprüfung ([§ 2, Leitlinie 9](#leitlinien-für-die-umsetzung)), Charaktere speichern/exportieren/importieren, Würfeleingabe-Komponente.
+2. Regelfunktionen mit Unit-Tests ([§ 4.2](#42-steps-und-zielwert)–[4.7](#47-schadensablauf), [4.11](#411-charaktererstellung-und-aufstieg)).
+3. Charaktererstellung ([§ 3.0](#30-charaktererstellung-m-r)) und Modi ([§ 3.0a](#30a-modi-lesen-aufstieg-schreiben-m)).
+4. Bogen: Stammdaten, Stats mit Step-Reihe, Grundwerte, Skills, Perks.
+5. Probenrechner und Leiter.
+6. Aktionsleiste, Waffen und Schussrechner, Munition.
+7. Treffer eintragen, Wunden, Blutungsfristen, Zustände.
+8. Heilung und Aufstieg.
+9. Feinschliff für den Spieltisch (große Tippflächen, Dunkelmodus, schnelle Wege zu Probenrechner und Leiter).
+
+## 6. Offene Fragen
+
+**Entschieden (13.11.2026):**
+- Keine SL-Ansicht; die App ist nur für Spieler.
+- Kein allgemeiner Würfler; er soll später einfach nachrüstbar sein. Ausnahme: Die Abweichung würfelt die App von Anfang an selbst ([§ 2, Leitlinie 6](#leitlinien-für-die-umsetzung)).
+- Ränge werden mit Klasse automatisch nach deren Vorschlag eingetragen (tauschbar) oder ohne Klasse von Hand ([§ 3.0](#30-charaktererstellung-m-r)).
+- Drei Modi: Lesen, Aufstieg, Schreiben ([§ 3.0a](#30a-modi-lesen-aufstieg-schreiben-m)).
+- Charaktere werden in der App erstellt ([§ 3.0](#30-charaktererstellung-m-r)).
+- Neue Klassen werden als Einträge in `klassen.json` ergänzt.
+- Geld als Kassenbuch; Schulden, Coup und Vertrag nur bei der Erstellung; Einnahmen danach über Aufträge (16.11.2026, [§ 3.13](#313-geld-und-aufträge-m-r)).
+- Mehrere Charaktere auf einem Gerät; Start ohne Charakter mit „Erstellen“ oder „Importieren“; Menü ☰ für Charaktere, Modi und Abschlüsse (16.11.2026, [§ 3.0g](#30g-start-charaktere-und-menü-m)).
+- Herkunftsmarkierung mit Aufschlüsselung; Zeichen änderbar ([§ 3.0b](#30b-herkunft-von-werten-a-r)).
+- Schreibmodus mit Anpassungen für Sonderregeln der SL ([§ 3.0a](#30a-modi-lesen-aufstieg-schreiben-m)).
+- Technik: Svelte 5 mit Vite und TypeScript, weil der Bogen viele voneinander abhängige Werte hat und Regeln und Werte sich noch ändern. Der Nutzer programmiert nicht; Build per GitHub Action (16.11.2026, [§ 2](#2-plattform-und-rahmen)).
+- Skills und Perks gehören dem Charakter und bleiben bei jedem Klassenwechsel erhalten; die aktuelle Klasse bestimmt nur, was gesteigert und gekauft werden kann. Skills außerhalb des Zugangs sind eingefroren (16.11.2026, [§ 3.0d](#30d-klassenwechsel-m)).
+
+**Offen** (vor oder während der Entwicklung mit dem Nutzer klären):
+
+1. **Technik:** entschieden (16.11.2026): Svelte 5 mit Vite und TypeScript, Build und Veröffentlichung per GitHub Action ([§ 2](#2-plattform-und-rahmen)).
+2. **Lage-Malsteps:** entschieden (16.11.2026): Lage-Auswahl mit drei Blöcken (automatisch, Ziel und Schütze, SL) ([§ 3.8c](#38c-lage-auswahl-r)).
+3. **Initiative:** entschieden (16.11.2026): Knopf „Nächste Runde“ führt zu Rundenende und Initiative; die App zeigt Stufe und Wurf zum Ansagen, die SL ordnet ([§ 3.7b](#37b-initiative-und-breakaction-m-r)).
+4. **Contested Rolls, Breakaction, Nahkampf:** entschieden (16.11.2026). Breakaction: ohne Probe, Reaktion oder Antizipation ([§ 3.7b](#37b-initiative-und-breakaction-m-r)). Nahkampf: ausgehend über den Aktionsknopf, eingehend über Getroffen; die App zeigt Stufe und Wurf zum Ansagen, die SL vergleicht, der Spieler tippt den Ausgang ([§ 3.7c](#37c-treffer-ausgehend-und-eingehend-m-r), [§ 3.8b](#38b-nahkampf-m-r)).
+7. **Tisch-Modus** (später, nicht Teil der ersten Fassung): Geräte am Tisch verbinden für eine gemeinsame Zugreihenfolge. Bräuchte eine Verbindung zwischen den Geräten und eine Ansicht für die SL; widerspricht dem Grundsatz „offline, kein Server“. Würfe und Ergebnisse liegen deshalb schon jetzt als Daten im Gefechtsprotokoll vor.
+5. **Ladehemmung:** Regel steht und ist im Konzept beschrieben ([§ 4.6](#46-schießen), `regeln.json` `ladehemmung`).
+6. **Klassen:** Regel steht für alle Stufen (Klassen; Charakteraufstieg, Klassenwechsel). Datenformat mit Zugang, Klassenweg und eingefrorenen Skills: [datenformat.md § klassen.json](datenformat.md#klassenjson); Ablauf: [§ 3.0d](#30d-klassenwechsel-m). Fehlen bei einer Klasse Angaben, lässt die Erstellung alle Skills und Perks zu und das Vorratslevel frei wählen.
