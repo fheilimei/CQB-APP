@@ -1,6 +1,25 @@
 // Datei speichern und öffnen im Browser (Export und Import von Charakteren).
 
-export function dateiSpeichern(name: string, inhalt: string): void {
+/**
+ * Gibt die Datei ab: über das Teilen-Menü des Geräts, wenn es Dateien teilen kann
+ * (behält den Dateinamen auch in Browsern, die ihn beim Herunterladen verwerfen),
+ * sonst als Download. Muss direkt aus einem Antippen heraus aufgerufen werden.
+ */
+export async function dateiSpeichern(name: string, inhalt: string): Promise<void> {
+  const datei = new File([inhalt], name, { type: 'application/json' });
+  if (navigator.canShare?.({ files: [datei] })) {
+    try {
+      await navigator.share({ files: [datei], title: name });
+      return;
+    } catch (e) {
+      if ((e as DOMException).name === 'AbortError') return; // Spieler hat das Menü geschlossen
+      // sonst: Teilen ging schief, weiter mit Download
+    }
+  }
+  herunterladen(name, inhalt);
+}
+
+function herunterladen(name: string, inhalt: string): void {
   const url = URL.createObjectURL(new Blob([inhalt], { type: 'application/json' }));
   const a = document.createElement('a');
   a.href = url;

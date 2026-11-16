@@ -99,7 +99,7 @@
   }
 
   function exportieren(c: Charakter) {
-    dateiSpeichern(dateiname(c), exportiereText($state.snapshot(c) as Charakter));
+    void dateiSpeichern(dateiname(c), exportiereText($state.snapshot(c) as Charakter));
   }
 
   async function duplizieren(c: Charakter) {
