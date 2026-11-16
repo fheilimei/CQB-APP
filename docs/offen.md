@@ -23,11 +23,11 @@ Die App wird erst entwickelt, wenn die Regeln weitgehend stehen ([[App/docs/konz
 
 Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorläufigen Lösung, mit der die App arbeitet.
 
-1. **Rank-Vorschlag der Klassen.** Konzept § 3.0 sieht vor, dass die App die Ränge „nach dem Verteilungsvorschlag der Klasse“ einträgt. Das Regelwerk nennt für keine Klasse einen Vorschlag. *Vorläufig:* `rank_vorschlag` fehlt überall; der Spieler verteilt das Rank-Set selbst. Frage: Sollen Vorschläge ins Regelwerk (Klassen)?
-2. **M4 Carbine, Magazingröße.** Magazingröße 20+1, Anschluss „Magazin (30, Trommel 100)“. Bei der M16A4 ist es 30+1. *Vorläufig* wie im Regelwerk übernommen (Standard 20, erweitert 30 und Trommel 100). Tippfehler?
-3. **Gummi- und Unterschallmunition an Waffen.** Die Waffenblöcke nennen nur FMJ/HP/AP; das Kapitel Munitionstypen erlaubt Gummi und Unterschall „wie gewöhnliche Munition des Kalibers“. *Vorläufig:* Jede Waffe verschießt alle Typen ihres Kalibers.
-4. **Kompensator.** Das Regelwerk nennt keine Kaliberklasse (Pistole/Gewehr). *Vorläufig:* zwei Aufsätze, „Kompensator (Pistole)“ und „Kompensator (Gewehr)“.
-5. **Aufsätze ohne Preis und Vorratslevel.** Reflexvisier, Zielfernrohr, Zweibein, Vordergriff, Lampe, Schalldämpfer, Kompensator und erweiterte Magazine haben im Regelwerk keine Geldwertspanne und kein Vorratslevel. Für den Laden (§ 3.14) werden sie gebraucht.
+1. **Rank-Vorschlag der Klassen.** Entschieden (16.11.2026): kein Vorschlag; der Spieler verteilt das Rank-Set selbst. Konzept § 3.0 angepasst.
+2. **M4 Carbine und M16A4, Magazingröße.** Entschieden (16.11.2026): Die M4 bleibt bei 20+1 (erweitert 30, Trommel 100). Die M16A4 bekommt ebenfalls 20+1 mit erweitertem Magazin 30 und Trommel 100. In `waffen.json` und `aufsaetze.json` schon so eingetragen. **Im Regelwerk (Repo CQB, Schusswaffen, M16A4) noch nachzutragen**; bis dahin weicht die App an dieser Stelle von der Kopie in `regelwerk/` ab.
+3. **Gummi- und Unterschallmunition an Waffen.** *Vorläufig:* Jede Waffe verschießt alle Typen ihres Kalibers (Munitionstypen: Gummi und Unterschall gelten „wie gewöhnliche Munition des Kalibers“).
+4. **Kompensator.** Entschieden (16.11.2026): für Pistole und Gewehr, je ein eigener Aufsatz.
+5. **Aufsätze ohne Preis und Vorratslevel.** Zurückgestellt (16.11.2026) bis zum Bau des Ladens. Reflexvisier, Zielfernrohr, Zweibein, Vordergriff, Lampe, Schalldämpfer, Kompensator und erweiterte Magazine haben im Regelwerk keine Geldwertspanne und kein Vorratslevel. Für den Laden (§ 3.14) werden sie gebraucht.
 6. **Gewehrkolben und Gewehrlauf „mit jeder Langwaffe“.** *Vorläufig:* Kategorien AR, SG, DMR, SR, LMG; nicht SMG und Werfer.
 7. **Wurfwaffen.** Das Datenformat-Beispiel nennt ein Wurfmesser als Vorratsgegenstand; das Regelwerk führt keine eigenen Wurfwaffen. *Vorläufig:* nicht übernommen; werfbar ist das Kampfmesser.
 8. **Exklusive Skills ohne Gruppe.** Tarnen, Ballistik, Sprengstoff, Einschüchtern, Schlösser, Beschaffen, Taktisches Fahren, Aufbrechen und Verhören stehen im Regelwerk nur unter „Exklusive Skills“. *Vorläufig:* Gruppe `exklusiv` (nur für die Anzeige; über Gruppen werden sie ohnehin nie freigegeben).

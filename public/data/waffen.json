@@ -360,7 +360,7 @@
         "max": 600
       },
       "munition": "556x45",
-      "magazin": 30,
+      "magazin": 20,
       "patrone_im_lauf": true,
       "ladeart": "wechselmagazin",
       "feuermodi": {
@@ -394,6 +394,7 @@
         "magazin"
       ],
       "magazine": [
+        30,
         100
       ],
       "besonderheiten": "genau, langer Lauf; in engen Räumen unhandlicher als die M4."

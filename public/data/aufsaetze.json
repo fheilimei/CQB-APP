@@ -339,6 +339,24 @@
       "hinweis": null
     },
     {
+      "id": "magazin_m16a4_30",
+      "name": "Erweitertes Magazin (30)",
+      "passt_an": {
+        "anschluss": [
+          "magazin"
+        ],
+        "waffen": [
+          "m16a4"
+        ]
+      },
+      "einsatz": "immer",
+      "werte": {
+        "magazin": 30
+      },
+      "modifikatoren": [],
+      "hinweis": null
+    },
+    {
       "id": "trommel_m16a4_100",
       "name": "Trommelmagazin (100)",
       "passt_an": {

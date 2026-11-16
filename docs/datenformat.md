@@ -607,8 +607,9 @@ Die Wirkung eines Aufsatzes steht hier, nicht bei der Waffe, weil ein Aufsatz an
 - `modifikatoren`: [Modifikatoren](#modifikator); Quelle in der Herkunftsanzeige ist der Aufsatz (Zeichen wie Perk oder eigenes, siehe `darstellung.json`).
 - `werte`: ersetzt Werte der Waffe, solange der Aufsatz angebracht ist (z. B. `magazin`). `trommelmagazin: true`: Zuschlag auf die Ladehemmungsrate aus `regeln.json` (`ladehemmung.trommelmagazin_zuschlag`).
 - `waffe`: Aufsatz, der selbst eine Waffe ist (Unterlaufwerfer M203 → `waffen.json`). `nahkampfwaffe`: Aufsatz, der eine Nahkampfwaffe ist (Bajonett → `nahkampfwaffen.json`).
-- Mündungsaufsätze gibt es je Kaliberklasse (`schalldaempfer_pistole`, `schalldaempfer_gewehr`, `kompensator_pistole`, `kompensator_gewehr`). Erweiterte Magazine heißen `magazin_<waffe>_<größe>` bzw. `trommel_<waffe>_<größe>`.
+- Mündungsaufsätze gibt es je Kaliberklasse (`schalldaempfer_pistole`, `schalldaempfer_gewehr`, `kompensator_pistole`, `kompensator_gewehr`; Kompensator für beide Klassen entschieden 16.11.2026). Erweiterte Magazine heißen `magazin_<waffe>_<größe>` bzw. `trommel_<waffe>_<größe>`.
 - **`zubehoer`** (zweite Liste in der Datei): mitgeführtes Zubehör mit `id`, `name`, `passt_zu` (Text), `vorratslevel`, `preis`, `wirkung`. Waffen nennen passendes Zubehör im Feld `zubehoer`.
+- Aufsätze haben noch keinen `preis` und kein `vorratslevel`; das Regelwerk nennt keine. Geklärt wird das, wenn der Laden gebaut wird (offen.md).
 - `setzt`: Umstand der Lage, den der eingeschaltete Aufsatz auslöst (Zweibein: Waffe gilt als aufgelegt).
 - `hinweis`: Text für Wirkungen, die die App nicht rechnet.
 
@@ -807,7 +808,7 @@ Die Datei bildet das Regelwerk „Klassen“ ab: Stufen, Laufbahnen und Klassen.
 - `stufe`: verweist auf `stufen`; daraus kommen Rank-Set und Richtgehalt. Die Klasse speichert kein eigenes Rank-Set.
 - `erweitert`: nur bei `erweiterte_form`: die Spezialisierung, die sie erweitert.
 - `voraussetzung_stat`: ab Stufe 3 der Stat auf Rang A (Regelwerk: Klassen, Spezialisierungen); bei Grundklassen und Meistern `null`.
-- `rank_vorschlag`: ordnet jedem Stat einen Rang zu und muss genau das Rank-Set der Stufe ergeben. Die App trägt ihn bei der Erstellung ein; der Spieler kann Ränge tauschen ([konzept.md § 3.0](konzept.md#30-charaktererstellung-m-r)). Fehlt er, verteilt der Spieler selbst. Das Regelwerk nennt derzeit für keine Klasse einen Vorschlag; das Feld fehlt deshalb überall (offen.md).
+- `rank_vorschlag`: ordnet jedem Stat einen Rang zu und muss genau das Rank-Set der Stufe ergeben. **Derzeit nicht genutzt:** Der Spieler verteilt das Rank-Set selbst (entschieden 16.11.2026, [konzept.md § 3.0](konzept.md#30-charaktererstellung-m-r)); das Feld fehlt in allen Klassen. Die Datenprüfung prüft es weiter, falls es einmal eingetragen wird.
 - `mindestskills`: Skill-ID → Mindestwert. Bei der Erstellung trägt die App sie ein; beim Klassenwechsel sind sie Voraussetzung.
 - `mindestskills_wahl`: nur bei Meistern. Zusätzlich zu den Mindestskills der Stufe-4-Klasse, aus der der Charakter kommt: `anzahl` Skills auf `wert`, davon `davon_exklusiv` ein exklusiver Skill einer Spezialisierung aus seinem Klassenweg (Regelwerk: Klassen, Meister).
 - `perks_vorgegeben`: Perks, die die App bei der Erstellung einträgt.

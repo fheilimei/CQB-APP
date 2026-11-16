@@ -64,7 +64,7 @@ Ein geführter Ablauf in Schritten. Er folgt der Reihenfolge des Regelwerks ([§
 0. **Name und Aussehen** (Teil von Schritt 1): Name (Pflicht) und **Aussehen** als kurzer Freitext (optional, z. B. Größe, Statur, Gesicht, Kleidung, Merkmale).
 1. **Klasse wählen** → Rank-Set, Vorratslevel, freie Punkte. Liegt die Klasse über Stufe 2, wählt der Spieler den Weg dorthin (Spezialisierung; bei Meistern auch die Stufe-4-Klasse). Die App legt ihn als Klassenweg an ([datenformat.md § Charakter](datenformat.md#klassenweg)). Alternativ **ohne Klasse** (freie Erstellung, z. B. für Tests): Ränge und Vorratslevel werden von Hand gesetzt, ohne Prüfung gegen ein Rank-Set.
 2. **Ränge eintragen:**
-	- **Mit Klasse** trägt die App die Ränge des Rank-Sets sofort ein, nach dem Verteilungsvorschlag der Klasse ([datenformat.md § klassen.json](datenformat.md#klassenjson)). Der Spieler kann die Verteilung ändern, indem er die Ränge zweier Stats tauscht. So bleibt das Rank-Set immer vollständig.
+	- **Mit Klasse** zeigt die App die Ränge des Rank-Sets der Stufe. Der Spieler ordnet jeden Rang einem Stat zu; jeder Rang des Sets wird genau einmal vergeben. Zugeordnete Ränge lassen sich zwischen zwei Stats tauschen. „Weiter“ nennt, welche Ränge noch nicht vergeben sind. Einen Verteilungsvorschlag der Klasse gibt es nicht (entschieden 16.11.2026).
 	- **Ohne Klasse** trägt der Spieler jeden Rang von Hand ein.
 3. **Abweichung:** Sobald ein Stat einen Rang hat, würfelt die App seine Abweichung automatisch (Positiv- und Negativwürfel, je W10). Statt dessen kann der Spieler die beiden Würfel von Hand eingeben ([§ 2, Leitlinie 6](#leitlinien-für-die-umsetzung)). Die Abweichung gehört zum Stat, nicht zum Rang: Tauscht der Spieler Ränge, behält jeder Stat seine Abweichung. Sie wird nicht neu gewürfelt.
 4. **Mindestskills und vorgegebene Perks** der Klasse eintragen. Bei Meistern wählt der Spieler die zwei Skills auf 5 (einer exklusiv).
@@ -799,7 +799,7 @@ Perk I: Rang 1, Stat ≥ 50. Perk II: Rang 2, Stat ≥ 70 und Perk I *(v)*. Stat
 **Entschieden (13.11.2026):**
 - Keine SL-Ansicht; die App ist nur für Spieler.
 - Kein allgemeiner Würfler; er soll später einfach nachrüstbar sein. Ausnahme: Die Abweichung würfelt die App von Anfang an selbst ([§ 2, Leitlinie 6](#leitlinien-für-die-umsetzung)).
-- Ränge werden mit Klasse automatisch nach deren Vorschlag eingetragen (tauschbar) oder ohne Klasse von Hand ([§ 3.0](#30-charaktererstellung-m-r)).
+- Ränge verteilt der Spieler selbst: mit Klasse aus deren Rank-Set (tauschbar), ohne Klasse frei von Hand. Einen Verteilungsvorschlag der Klasse gibt es nicht (16.11.2026, [§ 3.0](#30-charaktererstellung-m-r)).
 - Drei Modi: Lesen, Aufstieg, Schreiben ([§ 3.0a](#30a-modi-lesen-aufstieg-schreiben-m)).
 - Charaktere werden in der App erstellt ([§ 3.0](#30-charaktererstellung-m-r)).
 - Neue Klassen werden als Einträge in `klassen.json` ergänzt.
