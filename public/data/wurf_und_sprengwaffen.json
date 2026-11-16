@@ -1,0 +1,372 @@
+{
+  "version": "2026-11-16",
+  "eintraege": [
+    {
+      "id": "m67",
+      "name": "M67 Splittergranate",
+      "art": "splitter",
+      "einsatz": "wurf",
+      "vorratslevel": 4,
+      "preis": {
+        "min": 100,
+        "max": 400
+      },
+      "zuender": "zeit",
+      "verzoegerung": 1,
+      "bereiche": {
+        "bedraengt": 4,
+        "nah": 2,
+        "mittel": 1
+      },
+      "kern": [
+        "bedraengt"
+      ],
+      "splitter": {
+        "dk": 0,
+        "mw": 1
+      },
+      "druckwelle": {
+        "mw": 2
+      },
+      "strahl": null,
+      "sonderwirkung": null,
+      "ausloeser": [
+        "beschossen"
+      ],
+      "besonderheiten": "Defensivgranate: Die Splitter reichen weiter als ein Wurf; der Werfer sollte selbst in Deckung sein.",
+      "vorlaeufig": true
+    },
+    {
+      "id": "mk3a2",
+      "name": "Mk3A2 Offensivgranate",
+      "art": "splitter",
+      "einsatz": "wurf",
+      "vorratslevel": 4,
+      "preis": {
+        "min": 80,
+        "max": 300
+      },
+      "zuender": "zeit",
+      "verzoegerung": 1,
+      "bereiche": {
+        "bedraengt": 2,
+        "nah": 1
+      },
+      "kern": [
+        "bedraengt"
+      ],
+      "splitter": {
+        "dk": 0,
+        "mw": 1
+      },
+      "druckwelle": {
+        "mw": 4
+      },
+      "strahl": null,
+      "sonderwirkung": null,
+      "ausloeser": [
+        "beschossen"
+      ],
+      "besonderheiten": "Wirkt vor allem durch die Druckwelle. Kleiner Wirkungsbereich; der Werfer kann auch ohne Deckung angreifen.",
+      "vorlaeufig": true
+    },
+    {
+      "id": "rgo",
+      "name": "RGO Kontaktgranate",
+      "art": "splitter",
+      "einsatz": "wurf",
+      "vorratslevel": 4,
+      "preis": {
+        "min": 120,
+        "max": 450
+      },
+      "zuender": "kontakt",
+      "verzoegerung": 0,
+      "bereiche": {
+        "bedraengt": 5,
+        "nah": 2,
+        "mittel": 1
+      },
+      "kern": [
+        "bedraengt"
+      ],
+      "splitter": {
+        "dk": 0,
+        "mw": 1
+      },
+      "druckwelle": {
+        "mw": 2
+      },
+      "strahl": null,
+      "sonderwirkung": null,
+      "ausloeser": [
+        "beschossen"
+      ],
+      "besonderheiten": "Defensivgranate. Detoniert beim Aufschlag. Landet sie nicht (z. B. gefangen), detoniert sie nach Verzögerung 1 (Zeitzünder als Rückfall).",
+      "vorlaeufig": true
+    },
+    {
+      "id": "m84",
+      "name": "M84 Blendgranate",
+      "art": "blend",
+      "einsatz": "wurf",
+      "vorratslevel": 3,
+      "preis": {
+        "min": 50,
+        "max": 150
+      },
+      "zuender": "zeit",
+      "verzoegerung": 0,
+      "bereiche": {},
+      "kern": [
+        "bedraengt"
+      ],
+      "splitter": null,
+      "druckwelle": {
+        "mw": 1
+      },
+      "strahl": null,
+      "sonderwirkung": {
+        "art": "blendung",
+        "text": "bedrängt: Stagger und Geblendet für 2 Runden; nah: Geblendet für 1 Runde, wenn der Kopf vom Explosionspunkt aus nicht verdeckt ist.",
+        "geblendet_runden": {
+          "bedraengt": 2,
+          "nah": 1
+        },
+        "stagger": [
+          "bedraengt"
+        ]
+      },
+      "ausloeser": [
+        "beschossen"
+      ],
+      "besonderheiten": "Kurzer Zünder; detoniert kurz nach der Landung. Für das Stürmen von Räumen.",
+      "vorlaeufig": true
+    },
+    {
+      "id": "m18",
+      "name": "M18 Rauchgranate",
+      "art": "rauch",
+      "einsatz": "wurf",
+      "vorratslevel": 2,
+      "preis": {
+        "min": 20,
+        "max": 60
+      },
+      "zuender": "zeit",
+      "verzoegerung": 0,
+      "bereiche": {},
+      "kern": [
+        "bedraengt"
+      ],
+      "splitter": null,
+      "druckwelle": null,
+      "strahl": null,
+      "sonderwirkung": {
+        "art": "rauch",
+        "text": "Ab der Runde nach der Detonation deckt die Wolke die Bänder bedrängt und nah ab, etwa 20 Runden; darin und hindurch gilt Sichtstufe keine.",
+        "baender": [
+          "bedraengt",
+          "nah"
+        ],
+        "dauer_runden": 20
+      },
+      "ausloeser": [
+        "beschossen"
+      ],
+      "besonderheiten": "Farbiger Rauch zum Markieren erhältlich.",
+      "vorlaeufig": true
+    },
+    {
+      "id": "m7a3",
+      "name": "M7A3 Reizgasgranate (CS)",
+      "art": "gas",
+      "einsatz": "wurf",
+      "vorratslevel": 3,
+      "preis": {
+        "min": 30,
+        "max": 90
+      },
+      "zuender": "zeit",
+      "verzoegerung": 0,
+      "bereiche": {},
+      "kern": [
+        "bedraengt"
+      ],
+      "splitter": null,
+      "druckwelle": null,
+      "strahl": null,
+      "sonderwirkung": {
+        "art": "reizgas",
+        "text": "Wolke wie Rauch. Wer zu Beginn seines Zuges in der Wolke steht, legt eine Probe auf Grit ab; misslingt sie, ist er Gereizt.",
+        "baender": [
+          "bedraengt",
+          "nah"
+        ],
+        "dauer_runden": 20
+      },
+      "ausloeser": [
+        "beschossen"
+      ],
+      "besonderheiten": "Brennt ab; wird heiß und lässt sich schlecht zurückwerfen.",
+      "vorlaeufig": true
+    },
+    {
+      "id": "og7v",
+      "name": "OG-7V Splittergeschoss",
+      "art": "splitter",
+      "einsatz": "geschoss",
+      "vorratslevel": 4,
+      "preis": {
+        "min": 150,
+        "max": 500
+      },
+      "zuender": "aufschlag",
+      "verzoegerung": 0,
+      "bereiche": {
+        "bedraengt": 4,
+        "nah": 2,
+        "mittel": 1
+      },
+      "kern": [
+        "bedraengt"
+      ],
+      "splitter": {
+        "dk": 1,
+        "mw": 1
+      },
+      "druckwelle": {
+        "mw": 3
+      },
+      "strahl": null,
+      "sonderwirkung": null,
+      "ausloeser": [
+        "beschossen"
+      ],
+      "besonderheiten": "Splittergeschoss gegen Personen und leichte Deckung.",
+      "vorlaeufig": true,
+      "verwendet_in": [
+        "rpg7"
+      ]
+    },
+    {
+      "id": "pg7v",
+      "name": "PG-7V Hohlladungsgeschoss",
+      "art": "splitter",
+      "einsatz": "geschoss",
+      "vorratslevel": 4,
+      "preis": {
+        "min": 150,
+        "max": 500
+      },
+      "zuender": "aufschlag",
+      "verzoegerung": 0,
+      "bereiche": {
+        "bedraengt": 2,
+        "nah": 1
+      },
+      "kern": [
+        "bedraengt"
+      ],
+      "splitter": {
+        "dk": 0,
+        "mw": 1
+      },
+      "druckwelle": {
+        "mw": 2
+      },
+      "strahl": {
+        "dk": 8,
+        "mw": 4
+      },
+      "sonderwirkung": null,
+      "ausloeser": [
+        "beschossen"
+      ],
+      "besonderheiten": "Hohlladung gegen Fahrzeuge und feste Deckung. Gegen Personen im Freien schwächer als das OG-7V.",
+      "vorlaeufig": true,
+      "verwendet_in": [
+        "rpg7"
+      ]
+    },
+    {
+      "id": "m406_he",
+      "name": "M406 HE",
+      "art": "splitter",
+      "einsatz": "geschoss",
+      "vorratslevel": 4,
+      "preis": {
+        "min": 40,
+        "max": 150
+      },
+      "zuender": "aufschlag",
+      "verzoegerung": 0,
+      "bereiche": {
+        "bedraengt": 3,
+        "nah": 1
+      },
+      "kern": [
+        "bedraengt"
+      ],
+      "splitter": {
+        "dk": 0,
+        "mw": 1
+      },
+      "druckwelle": {
+        "mw": 1
+      },
+      "strahl": null,
+      "sonderwirkung": null,
+      "ausloeser": [
+        "beschossen"
+      ],
+      "besonderheiten": "Splittergeschoss gegen Personen.",
+      "vorlaeufig": true,
+      "verwendet_in": [
+        "m79",
+        "m203"
+      ]
+    },
+    {
+      "id": "m433_hedp",
+      "name": "M433 HEDP",
+      "art": "splitter",
+      "einsatz": "geschoss",
+      "vorratslevel": 4,
+      "preis": {
+        "min": 50,
+        "max": 180
+      },
+      "zuender": "aufschlag",
+      "verzoegerung": 0,
+      "bereiche": {
+        "bedraengt": 3,
+        "nah": 1
+      },
+      "kern": [
+        "bedraengt"
+      ],
+      "splitter": {
+        "dk": 0,
+        "mw": 1
+      },
+      "druckwelle": {
+        "mw": 1
+      },
+      "strahl": {
+        "dk": 5,
+        "mw": 2
+      },
+      "sonderwirkung": null,
+      "ausloeser": [
+        "beschossen"
+      ],
+      "besonderheiten": "Mehrzweckgeschoss: Splitter gegen Personen, kleine Hohlladung gegen leichte Panzerung und Deckung.",
+      "vorlaeufig": true,
+      "verwendet_in": [
+        "m79",
+        "m203"
+      ]
+    }
+  ]
+}

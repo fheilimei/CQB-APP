@@ -1,0 +1,1524 @@
+{
+  "version": "2026-11-16",
+  "eintraege": [
+    {
+      "id": "zaeh_1",
+      "gruppe": "grundwerte",
+      "name": "Zäh I",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "brawn",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "+1 Lebenspunkt",
+      "wirkung": "Erhöht den Grundwert Lebenspunkte um 1.",
+      "modifikatoren": [
+        {
+          "ziel": {
+            "art": "grundwert",
+            "id": "hp"
+          },
+          "wirkung": {
+            "wert": 1
+          }
+        }
+      ],
+      "hinweis_bei": [],
+      "vorlaeufig": true
+    },
+    {
+      "id": "zaeh_2",
+      "gruppe": "grundwerte",
+      "name": "Zäh II",
+      "rang": 2,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "brawn",
+            "min": 70
+          }
+        ],
+        "perks": [
+          "zaeh_1"
+        ]
+      },
+      "kurz": "+1 Lebenspunkt (zusätzlich zu Zäh I)",
+      "wirkung": "Erhöht den Grundwert Lebenspunkte um 1. Setzt Zäh I voraus; die Wirkungen addieren sich.",
+      "modifikatoren": [
+        {
+          "ziel": {
+            "art": "grundwert",
+            "id": "hp"
+          },
+          "wirkung": {
+            "wert": 1
+          }
+        }
+      ],
+      "hinweis_bei": [],
+      "vorlaeufig": true
+    },
+    {
+      "id": "schlagkraft_1",
+      "gruppe": "grundwerte",
+      "name": "Schlagkraft I",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "brawn",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "+1 Nahkampfschaden",
+      "wirkung": "Erhöht den Grundwert Nahkampfschaden um 1.",
+      "modifikatoren": [
+        {
+          "ziel": {
+            "art": "grundwert",
+            "id": "nahkampfschaden"
+          },
+          "wirkung": {
+            "wert": 1
+          }
+        }
+      ],
+      "hinweis_bei": [],
+      "vorlaeufig": true
+    },
+    {
+      "id": "schlagkraft_2",
+      "gruppe": "grundwerte",
+      "name": "Schlagkraft II",
+      "rang": 2,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "brawn",
+            "min": 70
+          }
+        ],
+        "perks": [
+          "schlagkraft_1"
+        ]
+      },
+      "kurz": "+1 Nahkampfschaden (zusätzlich zu Schlagkraft I)",
+      "wirkung": "Erhöht den Grundwert Nahkampfschaden um 1. Setzt Schlagkraft I voraus; die Wirkungen addieren sich.",
+      "modifikatoren": [
+        {
+          "ziel": {
+            "art": "grundwert",
+            "id": "nahkampfschaden"
+          },
+          "wirkung": {
+            "wert": 1
+          }
+        }
+      ],
+      "hinweis_bei": [],
+      "vorlaeufig": true
+    },
+    {
+      "id": "wurfarm_1",
+      "gruppe": "grundwerte",
+      "name": "Wurfarm I",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "brawn",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "genaue Wurfweite +1 Reichweitenband",
+      "wirkung": "Die genaue Wurfweite reicht ein Reichweitenband weiter.",
+      "modifikatoren": [
+        {
+          "ziel": {
+            "art": "grundwert",
+            "id": "wurfweite_band"
+          },
+          "wirkung": {
+            "wert": 1
+          }
+        }
+      ],
+      "hinweis_bei": [],
+      "vorlaeufig": true
+    },
+    {
+      "id": "wurfarm_2",
+      "gruppe": "grundwerte",
+      "name": "Wurfarm II",
+      "rang": 2,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "brawn",
+            "min": 70
+          }
+        ],
+        "perks": [
+          "wurfarm_1"
+        ]
+      },
+      "kurz": "genaue Wurfweite +1 Reichweitenband (zusätzlich zu Wurfarm I)",
+      "wirkung": "Die genaue Wurfweite reicht ein weiteres Reichweitenband weiter. Setzt Wurfarm I voraus; die Wirkungen addieren sich.",
+      "modifikatoren": [
+        {
+          "ziel": {
+            "art": "grundwert",
+            "id": "wurfweite_band"
+          },
+          "wirkung": {
+            "wert": 1
+          }
+        }
+      ],
+      "hinweis_bei": [],
+      "vorlaeufig": true
+    },
+    {
+      "id": "schmerzunempfindlich_1",
+      "gruppe": "grundwerte",
+      "name": "Schmerzunempfindlich I",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "grit",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "+1 Schmerzresistenz",
+      "wirkung": "Erhöht den Grundwert Schmerzresistenz um 1.",
+      "modifikatoren": [
+        {
+          "ziel": {
+            "art": "grundwert",
+            "id": "schmerzresistenz"
+          },
+          "wirkung": {
+            "wert": 1
+          }
+        }
+      ],
+      "hinweis_bei": [],
+      "vorlaeufig": true
+    },
+    {
+      "id": "schmerzunempfindlich_2",
+      "gruppe": "grundwerte",
+      "name": "Schmerzunempfindlich II",
+      "rang": 2,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "grit",
+            "min": 70
+          }
+        ],
+        "perks": [
+          "schmerzunempfindlich_1"
+        ]
+      },
+      "kurz": "+1 Schmerzresistenz (zusätzlich zu Schmerzunempfindlich I)",
+      "wirkung": "Erhöht den Grundwert Schmerzresistenz um 1. Setzt Schmerzunempfindlich I voraus; die Wirkungen addieren sich.",
+      "modifikatoren": [
+        {
+          "ziel": {
+            "art": "grundwert",
+            "id": "schmerzresistenz"
+          },
+          "wirkung": {
+            "wert": 1
+          }
+        }
+      ],
+      "hinweis_bei": [],
+      "vorlaeufig": true
+    },
+    {
+      "id": "boxen",
+      "gruppe": "kampfkunst",
+      "name": "Boxen",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "agility",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Stehen über Hocke: Erschüttern",
+      "wirkung": "Sieg mit überlegenem Stand im Nahkampf: Stehen über Hocke: Erschüttern.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "nahkampf"
+      ],
+      "kampfkunst": {
+        "liegen_ueber_stehen": null,
+        "stehen_ueber_hocke": "Erschüttern",
+        "hocke_ueber_liegen": null
+      },
+      "vorlaeufig": true
+    },
+    {
+      "id": "judo",
+      "gruppe": "kampfkunst",
+      "name": "Judo",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "agility",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Stehen über Hocke: Umreißen · Hocke über Liegen: Fixieren",
+      "wirkung": "Sieg mit überlegenem Stand im Nahkampf: Stehen über Hocke: Umreißen; Hocke über Liegen: Fixieren.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "nahkampf"
+      ],
+      "kampfkunst": {
+        "liegen_ueber_stehen": null,
+        "stehen_ueber_hocke": "Umreißen",
+        "hocke_ueber_liegen": "Fixieren"
+      },
+      "vorlaeufig": true
+    },
+    {
+      "id": "brazilian_jiu_jitsu",
+      "gruppe": "kampfkunst",
+      "name": "Brazilian Jiu-Jitsu",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "agility",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Liegen über Stehen: Umreißen · Hocke über Liegen: Fixieren",
+      "wirkung": "Sieg mit überlegenem Stand im Nahkampf: Liegen über Stehen: Umreißen; Hocke über Liegen: Fixieren.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "nahkampf"
+      ],
+      "kampfkunst": {
+        "liegen_ueber_stehen": "Umreißen",
+        "stehen_ueber_hocke": null,
+        "hocke_ueber_liegen": "Fixieren"
+      },
+      "vorlaeufig": true
+    },
+    {
+      "id": "krav_maga",
+      "gruppe": "kampfkunst",
+      "name": "Krav Maga",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "agility",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Stehen über Hocke: Erschüttern · Hocke über Liegen: Entwaffnen",
+      "wirkung": "Sieg mit überlegenem Stand im Nahkampf: Stehen über Hocke: Erschüttern; Hocke über Liegen: Entwaffnen.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "nahkampf"
+      ],
+      "kampfkunst": {
+        "liegen_ueber_stehen": null,
+        "stehen_ueber_hocke": "Erschüttern",
+        "hocke_ueber_liegen": "Entwaffnen"
+      },
+      "vorlaeufig": true
+    },
+    {
+      "id": "cqb",
+      "gruppe": "kampf",
+      "name": "CQB",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "twitch",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "bedrängt: keine Malsteps der Reichweite",
+      "wirkung": "Im Band bedrängt bringt die Reichweite deiner Waffe keine Malsteps.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "schiessen"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "entschlossen",
+      "gruppe": "kampf",
+      "name": "Entschlossen",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "decisiveness",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "überrascht: kein Malstep auf Initiative und Breakaction",
+      "wirkung": "Wirst du überrascht, hast du in der ersten Runde keinen Malstep auf Initiative und Breakaction.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "breakaction",
+        "leiter"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "feuer_in_bewegung",
+      "gruppe": "kampf",
+      "name": "Feuer in Bewegung",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "brawn",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "eigene Bewegung: 1 Malstep weniger beim Schießen",
+      "wirkung": "Deine eigene Bewegung bringt beim Schießen 1 Malstep weniger.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "schiessen"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "fingerfertig",
+      "gruppe": "kampf",
+      "name": "Fingerfertig",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "control",
+            "min": 40
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "einzeln laden: 3 statt 2 Patronen",
+      "wirkung": "Beim einzeln Laden lädst du bis zu 3 statt 2 Patronen pro Mainaction.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "schiessen"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "funkdisziplin",
+      "gruppe": "kampf",
+      "name": "Funkdisziplin",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "intellect",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Funk zählt beim Antizipieren wie gesehen",
+      "wirkung": "Per Funk gemeldete Informationen zählen beim Antizipieren wie gesehen: 0 statt 1 Malstep für die Güte.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "breakaction"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "gegner_einschaetzen",
+      "gruppe": "kampf",
+      "name": "Gegner einschätzen",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "empathy",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "einmal pro Gefecht: 1 Stepshield auf Antizipation gegen einen Gegner",
+      "wirkung": "Einmal pro Gefecht wählst du ohne Aktion einen Gegner, den du wahrnimmst. Gegen ihn hast du bis zum Ende des Gefechts 1 Stepshield auf Antizipation. Fällt er aus, darfst du neu wählen.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "breakaction"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "gezielter_schuss",
+      "gruppe": "kampf",
+      "name": "Gezielter Schuss",
+      "rang": 2,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "control",
+            "min": 70
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Zielen ohne Bewegung: nächster Schuss ohne Malsteps der Reichweite",
+      "wirkung": "Zielst du und bewegst dich in dieser Runde nicht, ignoriert dein nächster Schuss in der folgenden Runde die Malsteps der Reichweite. Das ersetzt den Stepshield des Zielens.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "schiessen"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "improvisieren",
+      "gruppe": "kampf",
+      "name": "Improvisieren",
+      "rang": 2,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "decisiveness",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "einmal pro Gefecht: nach misslungener Mainaction eine andere",
+      "wirkung": "Einmal pro Gefecht: Misslingt deine Mainaction, darfst du im selben Zug eine andere Mainaction ausführen.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "probe"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "niederhalten",
+      "gruppe": "kampf",
+      "name": "Niederhalten",
+      "rang": 2,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "control",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Feuerstoß ab 3 Schuss: Ziel 1 Malstep auf Schießen",
+      "wirkung": "Gibst du einen Feuerstoß von mindestens 3 Schüssen auf einen Gegner ab, hat er bis zu deinem nächsten Zug 1 Malstep auf Schießen. Das gilt auch, wenn alle Schüsse ins Leere gehen.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "schiessen"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "offangle",
+      "gruppe": "kampf",
+      "name": "Offangle",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "intellect",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "in Gebäuden: Unterbrecher haben 1 Malstep",
+      "wirkung": "Nur in Gebäuden. Als Mainaction nimmst du einen Offangle ein. Bis zu deinem nächsten Zug hat jeder, der dich mit einer Breakaction unterbricht, 1 Malstep auf Reaktion oder Antizipation. Bewegst du dich, endet die Wirkung.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "breakaction"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "overwatch",
+      "gruppe": "kampf",
+      "name": "Overwatch",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "intellect",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Sektor: 1 Stepshield auf Reaktion und Antizipation",
+      "wirkung": "Als Mainaction wählst du einen Sektor, z. B. eine Tür, einen Gang oder einen Straßenabschnitt. Du darfst dich in dieser Runde nicht bewegen. Bis zu deinem nächsten Zug hast du 1 Stepshield auf Reaktion und Antizipation gegen Akteure in diesem Sektor. Bewegst du dich, endet die Wirkung.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "breakaction"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "schutzreflex",
+      "gruppe": "kampf",
+      "name": "Schutzreflex",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "twitch",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Breakaction: Verbündeten zu Boden reißen oder in die Schussbahn werfen",
+      "wirkung": "Wird ein Verbündeter in Armeslänge angegriffen, kannst du mit deiner Breakaction eingreifen: Du reißt ihn zu Boden (beide liegen), oder du wirfst dich in die Schussbahn (der Angriff trifft dich statt ihn).",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "breakaction"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "quickthrow",
+      "gruppe": "kampf",
+      "name": "Quickthrow",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "agility",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Wurfaktion auch als Breakaction",
+      "wirkung": "Du kannst die Wurfaktion auch als Breakaction einsetzen, z. B. um eine Granate zurückzuwerfen.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "breakaction"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "rueckhalt",
+      "gruppe": "kampf",
+      "name": "Rückhalt",
+      "rang": 2,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "empathy",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Verbündete in Hörweite: 1 Stepshield gegen den Anstieg",
+      "wirkung": "Verbündete, die dich hören, haben 1 Stepshield auf ihre Nerve-Probe gegen den Anstieg. Hören sie mehrere Charaktere mit diesem Perk, bleibt es bei 1 Stepshield.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "leiter"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "kernschuss",
+      "gruppe": "kampf",
+      "name": "Kernschuss",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "control",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Präzisionsgewehr: Krit-Schwelle +1",
+      "wirkung": "Mit dem Skill Präzisionsgewehr steigt deine Krit-Schwelle um 1.",
+      "modifikatoren": [
+        {
+          "ziel": {
+            "art": "skill",
+            "id": "waffe_praezision"
+          },
+          "wirkung": {
+            "krit_schwelle": 1
+          }
+        }
+      ],
+      "hinweis_bei": [],
+      "vorlaeufig": true
+    },
+    {
+      "id": "schnell_nachladen",
+      "gruppe": "kampf",
+      "name": "Schnell nachladen",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "control",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Nachladen auch als Breakaction",
+      "wirkung": "Nachladen mit Magazin, Schnelllader oder Ladestreifen kannst du auch als Breakaction einsetzen. Gilt nicht für einzeln Laden.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "schiessen",
+        "breakaction"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "schnellzieher",
+      "gruppe": "kampf",
+      "name": "Schnellzieher",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "twitch",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Holster, Scheide, Gürtel: ziehen ohne Aktion",
+      "wirkung": "Eine Waffe aus Holster, Scheide oder Gürtel ziehst oder steckst du ohne Aktion statt mit einer Mainaction.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "schiessen"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "triple_tap",
+      "gruppe": "kampf",
+      "name": "Triple Tap",
+      "rang": 2,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "control",
+            "min": 70
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Ansage Bauch: Folgetreffer Brust, dann Kopf",
+      "wirkung": "Sagst du den Bauch als Zone an, trifft der erste Folgetreffer die Brust, der zweite und alle weiteren den Kopf. Ohne den Perk oder bei anderer Zone treffen alle Folgetreffer die Zone des ersten Schusses.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "schiessen"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "ueberfall",
+      "gruppe": "exklusiv",
+      "name": "Überfall",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "twitch",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Gegner überrascht: 1 Stepshield auf Initiative und Schießen in Runde 1",
+      "wirkung": "In der ersten Runde eines Gefechts, in dem die Gegner überrascht sind, hast du 1 Stepshield auf Initiative und Schießen.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "schiessen",
+        "breakaction"
+      ],
+      "exklusiv": [
+        "kommandosoldat"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "einsamer_wolf",
+      "gruppe": "exklusiv",
+      "name": "Einsamer Wolf",
+      "rang": 2,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "grit",
+            "min": 70
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "kein Verbündeter hörbar: 1 Stepshield gegen Anstieg und beim Senken",
+      "wirkung": "Hörst du keinen Verbündeten, hast du 1 Stepshield auf Nerve-Proben gegen den Anstieg und beim Senken.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "leiter"
+      ],
+      "exklusiv": [
+        "einzelkaempfer"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "atemkontrolle",
+      "gruppe": "exklusiv",
+      "name": "Atemkontrolle",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "control",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "liegend oder aufgelegt: Zielen bringt 2 Stepshields",
+      "wirkung": "Liegst du oder ist deine Waffe aufgelegt, bringt Zielen 2 Stepshields statt 1.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "schiessen"
+      ],
+      "exklusiv": [
+        "scharfschuetze"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "geduld",
+      "gruppe": "exklusiv",
+      "name": "Geduld",
+      "rang": 2,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "nerve",
+            "min": 70
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "3 Runden unbewegt liegend: keine Steps der Leiter auf Control beim Schießen",
+      "wirkung": "Liegst du seit mindestens 3 Runden unbewegt in Stellung, gelten beim Schießen keine Steps der Leiter auf Control.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "schiessen"
+      ],
+      "exklusiv": [
+        "fernspaeher"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "korrektur",
+      "gruppe": "exklusiv",
+      "name": "Korrektur",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "brawn",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Fehlwurf: Richtung zweimal würfeln, eine wählen",
+      "wirkung": "Misslingt dein Wurf oder Werferschuss, würfelst du die Richtung zweimal und wählst eine.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "schiessen"
+      ],
+      "exklusiv": [
+        "grenadier"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "gerichtete_ladung",
+      "gruppe": "exklusiv",
+      "name": "Gerichtete Ladung",
+      "rang": 2,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "intellect",
+            "min": 70
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "eigene Ladung: eine Seite ohne Splitter",
+      "wirkung": "Bei einer Ladung, die du anbringst, bestimmst du eine Seite; dorthin fliegen keine Splitter.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "probe"
+      ],
+      "exklusiv": [
+        "pionier"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "feldversorgung",
+      "gruppe": "exklusiv",
+      "name": "Feldversorgung",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "intellect",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Erste Hilfe mit leichter Konzentration",
+      "wirkung": "Erste Hilfe braucht leichte statt voller Konzentration.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "heilung"
+      ],
+      "exklusiv": [
+        "sanitaeter"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "unter_feuer",
+      "gruppe": "exklusiv",
+      "name": "Unter Feuer",
+      "rang": 2,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "decisiveness",
+            "min": 70
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Stagger unterbricht die Versorgung nicht",
+      "wirkung": "Ein Stagger unterbricht deine Versorgung nicht.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "heilung",
+        "schaden"
+      ],
+      "exklusiv": [
+        "gefechtssanitaeter"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "abreibung",
+      "gruppe": "exklusiv",
+      "name": "Abreibung",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "brawn",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "nach gelungenem Nahkampfangriff: 1 Stepshield auf Einschüchtern",
+      "wirkung": "Nach einem gelungenen Nahkampfangriff hast du gegen dieses Ziel bis zum Ende des Auftrags 1 Stepshield auf Einschüchtern.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "nahkampf",
+        "probe"
+      ],
+      "exklusiv": [
+        "vollstrecker"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "kaltbluetig",
+      "gruppe": "exklusiv",
+      "name": "Kaltblütig",
+      "rang": 2,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "nerve",
+            "min": 70
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Ziel nimmt dich nicht wahr: erster Schuss Krit-Schwelle +5",
+      "wirkung": "Nimmt dich das Ziel nicht wahr, steigt bei deinem ersten Schuss auf es die Krit-Schwelle um 5.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "schiessen"
+      ],
+      "exklusiv": [
+        "auftragskiller"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "lautlos",
+      "gruppe": "exklusiv",
+      "name": "Lautlos",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "agility",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Arbeit an Schlössern, Türen und Fenstern unhörbar",
+      "wirkung": "Deine Arbeit an Schlössern, Türen und Fenstern ist nicht zu hören.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "probe"
+      ],
+      "exklusiv": [
+        "einbrecher"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "fingerspitzengefuehl",
+      "gruppe": "exklusiv",
+      "name": "Fingerspitzengefühl",
+      "rang": 2,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "intellect",
+            "min": 70
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Schlösser über mehrere Runden: halbe Dauer",
+      "wirkung": "Schlösser-Proben, die mehrere Runden dauern, brauchen halb so viele Runden, aufgerundet.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "probe"
+      ],
+      "exklusiv": [
+        "safeknacker"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "kontakte",
+      "gruppe": "exklusiv",
+      "name": "Kontakte",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "empathy",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "einmal pro Auftrag: Vorratslevel beim Kauf 1 niedriger",
+      "wirkung": "Einmal pro Auftrag zählt beim Kauf das Vorratslevel der Ware 1 niedriger.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "probe"
+      ],
+      "exklusiv": [
+        "fixer"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "plan_b",
+      "gruppe": "exklusiv",
+      "name": "Plan B",
+      "rang": 2,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "decisiveness",
+            "min": 70
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "einmal pro Auftrag: Verbündeter wiederholt eine Probe",
+      "wirkung": "Einmal pro Auftrag darf ein Verbündeter eine misslungene Probe wiederholen.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "probe"
+      ],
+      "exklusiv": [
+        "drahtzieher"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "abschirmen",
+      "gruppe": "exklusiv",
+      "name": "Abschirmen",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "nerve",
+            "min": 60
+          }
+        ],
+        "perks": [
+          "schutzreflex"
+        ]
+      },
+      "kurz": "Schutzreflex bis 3 m",
+      "wirkung": "Du kannst mit Schutzreflex auch für einen Verbündeten bis 3 m Entfernung eingreifen statt nur in Armeslänge.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "breakaction"
+      ],
+      "exklusiv": [
+        "leibwaechter"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "stimme_des_bosses",
+      "gruppe": "exklusiv",
+      "name": "Stimme des Bosses",
+      "rang": 2,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "empathy",
+            "min": 70
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Verbündete verschieben: zweiter Verbündeter ebenso",
+      "wirkung": "Gelingt dir Verbündete verschieben, verschiebst du einen zweiten Verbündeten ebenso.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "leiter"
+      ],
+      "exklusiv": [
+        "rechte_hand"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "dynamischer_zugriff",
+      "gruppe": "exklusiv",
+      "name": "Dynamischer Zugriff",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "twitch",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Raum betreten: 1 Stepshield auf Reaktion",
+      "wirkung": "In der Runde, in der du einen Raum betrittst, hast du 1 Stepshield auf Reaktion.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "breakaction"
+      ],
+      "exklusiv": [
+        "zugriffsbeamter"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "evakuieren",
+      "gruppe": "exklusiv",
+      "name": "Evakuieren",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "nerve",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Verbündeter in Armeslänge bewegt sich mit dir",
+      "wirkung": "Ein Verbündeter in Armeslänge bewegt sich ohne eigene Aktion mit dir, höchstens mit Gehen.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "probe"
+      ],
+      "exklusiv": [
+        "personenschuetzer"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "lagebild",
+      "gruppe": "exklusiv",
+      "name": "Lagebild",
+      "rang": 2,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "decisiveness",
+            "min": 70
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "einmal pro Gefecht: Verbündete 1 Stepshield auf Initiative",
+      "wirkung": "Einmal pro Gefecht haben alle Verbündeten, die dich hören, in der nächsten Runde 1 Stepshield auf Initiative.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "breakaction"
+      ],
+      "exklusiv": [
+        "schutzkommandofuehrer"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "menschenkenntnis",
+      "gruppe": "exklusiv",
+      "name": "Menschenkenntnis",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "intellect",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Wachsamkeit gegen Person: weißt, ob bewaffnet",
+      "wirkung": "Gelingt dir eine Wachsamkeits-Probe gegen eine Person in Sicht, weißt du, ob sie bewaffnet ist.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "probe"
+      ],
+      "exklusiv": [
+        "ermittler"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "legende",
+      "gruppe": "exklusiv",
+      "name": "Legende",
+      "rang": 2,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "empathy",
+            "min": 70
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "falsche Identität: 1 Stepshield im Contested Roll",
+      "wirkung": "Will jemand deine falsche Identität durchschauen, ist das ein Contested Roll; du hast 1 Stepshield.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "probe"
+      ],
+      "exklusiv": [
+        "verdeckter_ermittler"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "teamzugriff",
+      "gruppe": "exklusiv",
+      "name": "Teamzugriff",
+      "rang": 2,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "grit",
+            "min": 70
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Raum betreten: Verbündeten in Armeslänge mitnehmen",
+      "wirkung": "Betrittst du einen Raum, kannst du einen Verbündeten in Armeslänge mitnehmen, der in dieser Runde noch nicht am Zug war. Er bewegt sich während deines Zuges mit dir hinein; seine Bewegung ist damit verbraucht. Mainaction und Standwechsel behält er für seinen Zug; seine Breakaction kann er sofort einsetzen.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "breakaction"
+      ],
+      "exklusiv": [
+        "sek_beamter"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "stabilisieren",
+      "gruppe": "exklusiv",
+      "name": "Stabilisieren",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "control",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Druckverband verdoppelt Frist kritischer Rumpfblutung zweimal",
+      "wirkung": "Dein Druckverband verdoppelt die Frist einer kritischen Blutung am Rumpf zweimal statt einmal.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "heilung"
+      ],
+      "exklusiv": [
+        "rettungssanitaeter"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "notoperation",
+      "gruppe": "exklusiv",
+      "name": "Notoperation",
+      "rang": 2,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "intellect",
+            "min": 70
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Operation in halb so vielen Runden",
+      "wirkung": "Eine Operation braucht halb so viele Runden, aufgerundet.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "heilung"
+      ],
+      "exklusiv": [
+        "notarzt"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "durchbeissen",
+      "gruppe": "allgemein",
+      "name": "Durchbeißen",
+      "rang": 2,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "grit",
+            "min": 70
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Kampfunfähigkeit außerhalb des Gefechts: 2 statt 3 Malsteps",
+      "wirkung": "Kampfunfähigkeit bringt dir außerhalb des Gefechts 2 statt 3 Malsteps.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "probe",
+        "schaden"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "eiserne_nerven",
+      "gruppe": "allgemein",
+      "name": "Eiserne Nerven",
+      "rang": 2,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "nerve",
+            "min": 70
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Adrenalinschock: 2 statt 3 Malsteps",
+      "wirkung": "Der Adrenalinschock bringt dir 2 statt 3 Malsteps.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "probe",
+        "leiter"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "lucky_numbers",
+      "gruppe": "allgemein",
+      "name": "Lucky Numbers",
+      "rang": 2,
+      "voraussetzung": {
+        "stats": [],
+        "perks": []
+      },
+      "kurz": "gelungener Pasch ist ein Krit",
+      "wirkung": "Ist eine gelungene Probe ein Pasch (11, 22 … 99), ist sie ein Krit.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "probe",
+        "schiessen"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "ruestungstraeger",
+      "gruppe": "allgemein",
+      "name": "Rüstungsträger",
+      "rang": 2,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "grit",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Schutzanzug: 1 statt 2 Malsteps auf Agility; mit Anzug oder Schild laufen",
+      "wirkung": "Mit Schutzanzug hast du 1 statt 2 Malsteps auf Agility-Proben; mit Schutzanzug oder ballistischem Schild darfst du laufen.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "probe"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "schleicher",
+      "gruppe": "allgemein",
+      "name": "Schleicher",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "agility",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Gehen und Kriechen 1 Band leiser",
+      "wirkung": "Gehen und Kriechen sind ein Band weniger weit hörbar.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "probe"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "sprinter",
+      "gruppe": "allgemein",
+      "name": "Sprinter",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "agility",
+            "min": 60
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Rennen: 12 m statt 9 m",
+      "wirkung": "Beim Rennen kommst du 12 m weit statt 9 m.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "probe"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "starrsinn",
+      "gruppe": "allgemein",
+      "name": "Starrsinn",
+      "rang": 1,
+      "voraussetzung": {
+        "stats": [
+          {
+            "stat": "nerve",
+            "min": 50
+          }
+        ],
+        "perks": []
+      },
+      "kurz": "Verschiebung durch Führung ablehnen",
+      "wirkung": "Du darfst eine Verschiebung durch Führung ablehnen.",
+      "modifikatoren": [],
+      "hinweis_bei": [
+        "leiter"
+      ],
+      "vorlaeufig": true
+    }
+  ]
+}

@@ -1,8 +1,8 @@
 # CQB-App: Datenformat
 
-**Status:** Entwurf, Stand 13.11.2026. Gehört zu [konzept.md](konzept.md).
+**Status:** Entwurf, Stand 16.11.2026; mit den Dateien unter `public/data/` abgeglichen. Gehört zu [konzept.md](konzept.md).
 
-Alle Spieldaten liegen als JSON unter `data/`. Gespeicherte Charaktere folgen dem Schema in [§ Charakter](#charakter). Die Beispiele sind vollständig ausgefüllt; sie zeigen das Format, nicht den vollständigen Datenbestand.
+Alle Spieldaten liegen als JSON unter `public/data/`. Geprüft werden sie von `src/lib/daten/pruefen.ts` (Test `tests/daten.test.ts`). Gespeicherte Charaktere folgen dem Schema in [§ Charakter](#charakter). Die Beispiele sind vollständig ausgefüllt; sie zeigen das Format, nicht den vollständigen Datenbestand.
 
 ---
 
@@ -27,7 +27,7 @@ Alle Spieldaten liegen als JSON unter `data/`. Gespeicherte Charaktere folgen de
 | `munition.json` | Kaliber und Munitionstypen mit DK/MW |
 | `waffen.json` | Waffen |
 | `schutz.json` | Deckung und Rüstung |
-| `aufsaetze.json` | Waffenaufsätze mit Anschluss und Wirkung |
+| `aufsaetze.json` | Waffenaufsätze mit Anschluss und Wirkung; Zubehör (Schnelllader, Ladestreifen) |
 | `nahkampfwaffen.json` | Nahkampfwaffen mit Art, Länge, MW, DK |
 | `wurf_und_sprengwaffen.json` | Wurfwaffen, Granaten und Geschosse (Vorratsgegenstände) |
 | `klassen.json` | Stufen, Laufbahnen und Klassen mit Mindestskills, Zugang, Vorratslevel und Gehalt |
@@ -87,7 +87,7 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
   "zustaende": {
     "adrenalinschock": { "malsteps": 3, "ende_ruhe_stunden": 4 },
     "kampfunfaehig": { "malsteps_ausserhalb_gefecht": 3, "gilt_nicht_fuer": ["erholungsprobe"] },
-    "geblendet": { "sichtstufe": "keine" },
+    "geblendet": { "sichtstufe": "keine", "malsteps_mit_gereizt_addieren": true },
     "gereizt": { "malsteps": 2, "probe": "grit" }
   },
   "initiative": { "stat": "decisiveness", "skill": null, "krit_break_extra": 1, "ueberrascht_malsteps": 1 },
@@ -164,6 +164,7 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
   "ladehemmung": {
     "zustand_zuschlag": { "zuverlaessig": { "A": 0, "B": 1, "C": 3, "D": 6 }, "normal": { "A": 0, "B": 2, "C": 5, "D": 9 } },
     "trommelmagazin_zuschlag": 2,
+    "schwer_bei_wurf": 100,
     "vorlaeufig": true
   },
   "nahkampf": {
@@ -225,9 +226,18 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
     "schmerzresistenz": 1,
     "nahkampfschaden": 1,
     "wurfweite_band": "nah"
-  }
+  },
+  "aufstieg": { "statrank_up_kosten": 1, "skill_level_kosten": 1, "skill_min": 0, "skill_max": 5, "rang_max": "S" },
+  "wuerfel": { "w100_null_null": 100, "w10_null": 10 },
+  "krit": { "schwelle_min": 0, "zielwert_100_zehner": 10 },
+  "waffenzustand": { "stufen": ["A", "B", "C", "D"], "neu": "A",
+                     "namen": { "A": "neuwertig", "B": "gebraucht", "C": "verschlissen", "D": "schrottreif" },
+                     "preis_viertel": { "A": 4, "B": 3, "C": 2, "D": 1 }, "vorlaeufig": true },
+  "reizgas": { "probe": "grit", "wolke_baender": ["bedraengt", "nah"], "dauer_runden": 20 }
 }
 ```
+
+- **`aufstieg`**, **`wuerfel`**, **`krit`**: Kosten und Grenzen des Aufstiegs, Lesart der Würfel (0+0 beim W100 = 100, 0 beim W10 = 10), Untergrenze der Krit-Schwelle. **`waffenzustand.preis_viertel`**: Viertel der Geldwertspanne je Zustand (4 = oberstes). **`reizgas`**: Probe und Wolke der Gasgranate (Sprengwirkung, Reizgas).
 
 **Leiter:** `name` ist der Text in der Oberfläche; `null` bei 0 heißt: keine Anzeige. Das Wort „Leiter“ erscheint dort nie ([konzept.md § 2](konzept.md#texte-in-der-oberfläche)). **Vorzeichen:** In `gruppe_a`/`gruppe_b` bedeutet eine positive Zahl Stepshields, eine negative Malsteps.
 
@@ -283,7 +293,7 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
 }
 ```
 
-- `gruppe`: Gruppe aus dem Regelwerk (`waffen`, `kampf`, `koerper`, `technik`, `entscheidung`, `medizin`, `sozial`). Der Zugang einer Klasse kann ganze Gruppen freigeben ([§ klassen.json](#klassenjson)).
+- `gruppe`: Gruppe aus dem Regelwerk (`waffen`, `kampf`, `koerper`, `technik`, `entscheidung`, `medizin`, `sozial`). Exklusive Skills, die das Regelwerk nur unter „Exklusive Skills“ führt (Tarnen, Ballistik …), haben die Gruppe `exklusiv`; Operation bleibt in `medizin`. Der Zugang einer Klasse kann ganze Gruppen freigeben ([§ klassen.json](#klassenjson)).
 - `exklusiv`: nur bei exklusiven Skills. Liste der Spezialisierungen (IDs aus `klassen.json`), die den Skill zur Auswahl stellen. Ein exklusiver Skill wird nie über eine Gruppe freigegeben.
 
 ---
@@ -354,6 +364,7 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
 - `voraussetzung.stats`: Mindest-Statwerte (Statwert, nicht Rang). `voraussetzung.perks`: Perks, die der Charakter schon haben muss. Alle Bedingungen müssen erfüllt sein.
 - `rang` ist mindestens 1. Negative Perks sind vorerst gestrichen.
 - `gruppe`: `grundwerte`, `kampfkunst`, `kampf`, `allgemein` oder `exklusiv` (Abschnitte in Stats, Skills und Perks).
+- `kampfkunst`: nur bei Gruppe `kampfkunst`. Wirkung je Sieg mit überlegenem Stand: `liegen_ueber_stehen`, `stehen_ueber_hocke`, `hocke_ueber_liegen` (Text oder `null`).
 - `exklusiv`: nur bei Gruppe `exklusiv`. Liste der Klassen (IDs aus `klassen.json`), die den Perk zur Auswahl stellen, z. B. `["kommandosoldat"]`.
 
 **Offene Listen.** Skills und Perks werden nur über `skills.json` und `perks.json` ergänzt, ohne Codeänderung. Die App verwendet keine Skill- oder Perk-IDs fest im Code. Ein Perk ohne Modifikatoren erscheint als Hinweistext an den Stellen aus `hinweis_bei`.
@@ -385,7 +396,7 @@ Die **Quelle** steht nicht im Modifikator; sie ergibt sich aus dem Ort (Perk, An
   "version": "2026-11-13",
   "eintraege": [
     { "id": "kopf", "name": "Kopf", "w8": 8, "multiplikator": 3, "bereich": "kopf",
-      "normal": { "text": "Blutung", "dauerhaft": [] },
+      "normal": { "text": "Blutung", "blutung": "normal", "dauerhaft": [] },
       "krit": { "text": "Sofort Tod", "tot": true } },
     { "id": "bauch", "name": "Bauch", "w8": 6, "multiplikator": 2, "bereich": "rumpf",
       "normal": { "text": "Blutung", "dauerhaft": [] },
@@ -401,6 +412,7 @@ Die **Quelle** steht nicht im Modifikator; sie ergibt sich aus dem Ort (Perk, An
 ```
 
 - `bereich` bestimmt, welche Rüstung schützt (Westen: `rumpf`) und welche Blutungsregel gilt.
+- `normal.blutung` und `krit.blutung` verweisen auf `regeln.json` (`blutung`). `krit.tot`: sofort tot; `krit.kampfunfaehig`: kampfunfähig ab dem Treffer.
 - `dauerhaft` sind Folgen, die bestehen bleiben, solange die Wunde offen ist.
 - Brust, Bauch und Unterleib zählen für Rüstung zum Rumpf.
 
@@ -501,7 +513,8 @@ Die **Quelle** steht nicht im Modifikator; sie ergibt sich aus dem Ort (Perk, An
 ```
 
 - `kategorie`: `Pistole`, `SMG`, `AR`, `SG`, `DMR`, `SR`, `LMG`, `Werfer`. Bei Werfern ist `munition` eine Liste von Geschoss-IDs aus `wurf_und_sprengwaffen.json`. Bestimmt den Waffenskill (`skills.json`, Feld `waffenkategorien`).
-- `reichweite`: Malsteps je Band; `null` = Schuss nicht möglich.
+- `munitionstypen`: nur, wenn die Waffe nicht alle Typen ihres Kalibers verschießt. Fehlt das Feld, gelten alle Typen aus `munition.json` (auch Gummi und Unterschall).
+- `reichweite`: Malsteps je Band; `null` = Schuss nicht möglich. Bei Schrotflinten gilt „sehr weit (nur Slug)“ über die Schrotzahl: Buckshot hat dort keine Kugel.
 - `feuermodi`: Schlüssel `EF`, `Burst`, `VA`. Halbautomatik, Pump-Action und Repetieren sind `EF`. `garbenfaktor` nur bei `VA`. `Burst` hat zusätzlich `burst_laenge`; seine `feuerrate` ist ein Vielfaches davon, `rueckstoss` wie bei `EF`.
 - `zuverlaessigkeit`: `zuverlaessig` oder `normal`. Die Zuschläge je Zustand (A–D) stehen in `regeln.json`.
 - `patrone_im_lauf`: Magazingröße „30+1“ → `magazin: 30`, `patrone_im_lauf: true`.
@@ -535,7 +548,8 @@ Die **Quelle** steht nicht im Modifikator; sie ergibt sich aus dem Ort (Perk, An
 - `mw`: Bonus auf den Nahkampfschaden des Charakters. MW des Treffers = Nahkampfschaden + `mw`.
 - `mit_waffe`: Einsatz mit einer Schusswaffe dieser Kategorien (Kolben, Lauf, Pistolengriff); keine eigene Waffe im Inventar.
 - `werfbar`: kann als Wurfwaffe geworfen werden; Schaden wie im Nahkampf (Regelwerk: Kampfsystem, Werfen).
-- `varianten`: Waffen mit zwei Einsatzarten (Bajonett; Klappspaten mit Fläche als `stumpf`).
+- `haende`: `1`, `2`, `[1, 2]` (ein- oder zweihändig) oder `null` (Körperwaffen).
+- `varianten`: Waffen mit zwei Einsatzarten (Bajonett; Klappspaten mit Kante und Fläche). Jede Variante hat `name`, `haende`, `laenge`, `mw`, `dk` und optional `art`, wenn sie von der Waffe abweicht (Fläche des Klappspatens: `stumpf`).
 
 ---
 
@@ -550,7 +564,7 @@ Die Wirkung eines Aufsatzes steht hier, nicht bei der Waffe, weil ein Aufsatz an
     {
       "id": "zweibein",
       "name": "Zweibein",
-      "passt_an": { "anschluss": "schiene_unten", "waffen": [] },
+      "passt_an": { "anschluss": ["schiene_unten"], "waffen": [] },
       "einsatz": "schalter",
       "schalter_text": "Zweibein aufgesetzt",
       "modifikatoren": [ { "ziel": { "art": "probe", "id": "haltezahl" }, "wirkung": { "stepshields": 1 } } ],
@@ -561,16 +575,16 @@ Die Wirkung eines Aufsatzes steht hier, nicht bei der Waffe, weil ein Aufsatz an
     {
       "id": "reflexvisier",
       "name": "Reflexvisier",
-      "passt_an": { "anschluss": "schiene_oben", "waffen": [] },
+      "passt_an": { "anschluss": ["schiene_oben"], "waffen": [] },
       "einsatz": "immer",
       "modifikatoren": [ { "ziel": { "art": "probe", "id": "schiessen" }, "wirkung": { "stepshields": 1 }, "bedingung": { "baender": ["bedraengt", "nah"] } } ],
       "hinweis": null,
       "vorlaeufig": true
     },
     {
-      "id": "magazin_erweitert_20",
+      "id": "magazin_five_seven_20",
       "name": "Erweitertes Magazin (20)",
-      "passt_an": { "anschluss": "magazin", "waffen": ["five_seven"] },
+      "passt_an": { "anschluss": ["magazin"], "waffen": ["five_seven"] },
       "einsatz": "immer",
       "werte": { "magazin": 20 },
       "modifikatoren": [],
@@ -579,7 +593,7 @@ Die Wirkung eines Aufsatzes steht hier, nicht bei der Waffe, weil ein Aufsatz an
     {
       "id": "schalldaempfer_pistole",
       "name": "Schalldämpfer",
-      "passt_an": { "anschluss": "muendung_pistole", "waffen": [] },
+      "passt_an": { "anschluss": ["muendung_pistole"], "waffen": [] },
       "einsatz": "immer",
       "modifikatoren": [],
       "hinweis": "Schuss 1 Stufe leiser (Wahrnehmung)."
@@ -588,9 +602,13 @@ Die Wirkung eines Aufsatzes steht hier, nicht bei der Waffe, weil ein Aufsatz an
 }
 ```
 
+- `passt_an.anschluss`: Liste der Anschlüsse, an die der Aufsatz passt (Lampe: Schiene unten oder seitlich). `passt_an.waffen`: nur diese Waffen (erweiterte Magazine).
 - `einsatz`: `immer` (wirkt, solange angebracht) oder `schalter` (wirkt nur, wenn im Schussablauf eingeschaltet; Text des Schalters in `schalter_text`).
 - `modifikatoren`: [Modifikatoren](#modifikator); Quelle in der Herkunftsanzeige ist der Aufsatz (Zeichen wie Perk oder eigenes, siehe `darstellung.json`).
-- `werte`: ersetzt Werte der Waffe, solange der Aufsatz angebracht ist (z. B. `magazin`; Trommelmagazin zusätzlich `lh_zuschlag`).
+- `werte`: ersetzt Werte der Waffe, solange der Aufsatz angebracht ist (z. B. `magazin`). `trommelmagazin: true`: Zuschlag auf die Ladehemmungsrate aus `regeln.json` (`ladehemmung.trommelmagazin_zuschlag`).
+- `waffe`: Aufsatz, der selbst eine Waffe ist (Unterlaufwerfer M203 → `waffen.json`). `nahkampfwaffe`: Aufsatz, der eine Nahkampfwaffe ist (Bajonett → `nahkampfwaffen.json`).
+- Mündungsaufsätze gibt es je Kaliberklasse (`schalldaempfer_pistole`, `schalldaempfer_gewehr`, `kompensator_pistole`, `kompensator_gewehr`). Erweiterte Magazine heißen `magazin_<waffe>_<größe>` bzw. `trommel_<waffe>_<größe>`.
+- **`zubehoer`** (zweite Liste in der Datei): mitgeführtes Zubehör mit `id`, `name`, `passt_zu` (Text), `vorratslevel`, `preis`, `wirkung`. Waffen nennen passendes Zubehör im Feld `zubehoer`.
 - `setzt`: Umstand der Lage, den der eingeschaltete Aufsatz auslöst (Zweibein: Waffe gilt als aufgelegt).
 - `hinweis`: Text für Wirkungen, die die App nicht rechnet.
 
@@ -605,8 +623,8 @@ Wurfwaffen, Granaten und Geschosse für Werfer. Alle drei sind **Vorratsgegenst�
   "version": "2026-11-13",
   "eintraege": [
     {
-      "id": "splittergranate",
-      "name": "Splittergranate",
+      "id": "m67",
+      "name": "M67 Splittergranate",
       "art": "splitter",
       "einsatz": "wurf",
       "vorratslevel": 3,
@@ -657,9 +675,11 @@ Wurfwaffen, Granaten und Geschosse für Werfer. Alle drei sind **Vorratsgegenst�
 - `zuender`: `zeit`, `aufschlag`, `kontakt`. `verzoegerung`: Runden bis zur Detonation ([Sprengwirkung](../../Grundmechanik/Sprengwirkung.md), Zündung); Aufschlag- und Kontaktzünder 0. Bei langer Flugzeit ein Objekt je Reichweitenband, z. B. `{ "weit": 1, "sehr_weit": 2 }`.
 - `bereiche`: Splitterzahl je Reichweitenband (vom Explosionspunkt); fehlende Bänder: keine Wirkung. `kern`: Bänder, in denen die Druckwelle wirkt (Standard `["bedraengt"]`).
 - `splitter`: DK/MW je Splitter. `druckwelle`: MW der Druckwelle (stumpfer Treffer, nur im Kern). `strahl`: nur bei Hohlladungen `{ "dk": …, "mw": … }`, sonst `null`.
-- `sonderwirkung`: Text und/oder [Modifikatoren](#modifikator) (z. B. Malsteps durch Blendung).
+- `sonderwirkung`: `null` oder Objekt mit `art` (`blendung`, `rauch`, `reizgas`) und `text`; dazu Werte der Wirkung, z. B. `geblendet_runden` je Band und `stagger` (Bänder) bei der Blendgranate, `baender` und `dauer_runden` bei Rauch und Reizgas.
+- `besonderheiten`: Text aus dem Regelwerk.
+- Das Regelwerk führt derzeit keine eigenen Wurfwaffen (Wurfmesser o. Ä.). Werfbar ist das Kampfmesser aus `nahkampfwaffen.json` (`werfbar`). Das Beispiel `wurfmesser` oben zeigt nur das Format.
 - `ausloeser`: Auslöser der Leiter für Betroffene.
-- In der Ausrüstung des Charakters als Vorrat: `{ "id": "splittergranate", "anzahl": 2 }`.
+- In der Ausrüstung des Charakters als Vorrat: `{ "id": "m67", "anzahl": 2 }`.
 
 ---
 
@@ -787,7 +807,7 @@ Die Datei bildet das Regelwerk „Klassen“ ab: Stufen, Laufbahnen und Klassen.
 - `stufe`: verweist auf `stufen`; daraus kommen Rank-Set und Richtgehalt. Die Klasse speichert kein eigenes Rank-Set.
 - `erweitert`: nur bei `erweiterte_form`: die Spezialisierung, die sie erweitert.
 - `voraussetzung_stat`: ab Stufe 3 der Stat auf Rang A (Regelwerk: Klassen, Spezialisierungen); bei Grundklassen und Meistern `null`.
-- `rank_vorschlag`: ordnet jedem Stat einen Rang zu und muss genau das Rank-Set der Stufe ergeben. Die App trägt ihn bei der Erstellung ein; der Spieler kann Ränge tauschen ([konzept.md § 3.0](konzept.md#30-charaktererstellung-m-r)). Fehlt er, verteilt der Spieler selbst.
+- `rank_vorschlag`: ordnet jedem Stat einen Rang zu und muss genau das Rank-Set der Stufe ergeben. Die App trägt ihn bei der Erstellung ein; der Spieler kann Ränge tauschen ([konzept.md § 3.0](konzept.md#30-charaktererstellung-m-r)). Fehlt er, verteilt der Spieler selbst. Das Regelwerk nennt derzeit für keine Klasse einen Vorschlag; das Feld fehlt deshalb überall (offen.md).
 - `mindestskills`: Skill-ID → Mindestwert. Bei der Erstellung trägt die App sie ein; beim Klassenwechsel sind sie Voraussetzung.
 - `mindestskills_wahl`: nur bei Meistern. Zusätzlich zu den Mindestskills der Stufe-4-Klasse, aus der der Charakter kommt: `anzahl` Skills auf `wert`, davon `davon_exklusiv` ein exklusiver Skill einer Spezialisierung aus seinem Klassenweg (Regelwerk: Klassen, Meister).
 - `perks_vorgegeben`: Perks, die die App bei der Erstellung einträgt.
@@ -911,7 +931,7 @@ Speicherformat eines Charakters, lokal und als Exportdatei (`<name>.cqb.json`). 
     ],
     "nahkampfwaffen": [ { "id": "nk1", "waffe": "kampfmesser", "trageort": "weste" } ],
     "aktive_waffe": "wf1",
-    "vorrat": [ { "id": "splittergranate", "anzahl": 2, "trageort": "weste" }, { "id": "wurfmesser", "anzahl": 3, "trageort": "guertel" } ],
+    "vorrat": [ { "id": "m67", "anzahl": 2, "trageort": "weste" } ],
     "ruestung": [ "weste_einfach" ],
     "schild": null,
     "sonstiges": "2 Druckverbände, 1 Tourniquet"
@@ -968,7 +988,7 @@ Speicherformat eines Charakters, lokal und als Exportdatei (`<name>.cqb.json`). 
 
 ### Speicher auf dem Gerät
 
-Neben den Charakteren speichert die App: Liste der Charakter-IDs, `zuletzt_geoeffnet` (ID) und die Einstellungen (Darstellung, Würfeln). Jeder Charakter ist ein eigener Datensatz und wird einzeln exportiert.
+IndexedDB-Datenbank `cqb` mit zwei Speichern: `charaktere` (ein Datensatz je Charakter, Schlüssel `id`) und `meta` mit `zuletzt_geoeffnet` (ID) und `einstellungen` (`darstellung`: `system`, `hell`, `dunkel`; `wuerfeln`: je Würfelstelle `app` oder `hand`, fehlende Stellen haben ihren Standard). Jeder Charakter ist ein eigener Datensatz und wird einzeln exportiert.
 
 ### Felder außerhalb des Spielstands
 
@@ -1023,7 +1043,7 @@ Neben den Charakteren speichert die App: Liste der Charakter-IDs, `zuletzt_geoef
 
 ## Herkunft der Daten
 
-Die Daten stammen aus dem Obsidian-Vault **CQB** (Regelwerk, nicht Teil dieses Repos). Die Migration der vollständigen Bestände (alle Waffen, Munitionen, Skills, Perks, Zonen) erfolgt als eigener Schritt. Dabei gilt:
+Die Daten stammen aus dem Regelwerk unter `regelwerk/` (Kopie aus dem Repo CQB). Alle Bestände des Regelwerks sind übernommen (Stand 16.11.2026: 36 Skills, 61 Perks, 18 Schusswaffen, 15 Kaliber, 13 Nahkampfwaffen, 10 Granaten und Geschosse, 33 Klassen). Dabei gilt:
 - Malsteps aus dem Vault („−2“) werden positiv gespeichert.
 - „n/A“ → `null` bzw. fehlender Schlüssel (Munitionstypen).
 - Ideen und Notizen aus dem Vault (z. B. „Perk-Ideen“) werden nicht übernommen, solange sie nicht ausformuliert sind.

@@ -1,0 +1,442 @@
+{
+  "version": "2026-11-16",
+  "eintraege": [
+    {
+      "id": "reflexvisier",
+      "name": "Reflexvisier",
+      "passt_an": {
+        "anschluss": [
+          "schiene_oben"
+        ],
+        "waffen": []
+      },
+      "einsatz": "immer",
+      "modifikatoren": [
+        {
+          "ziel": {
+            "art": "probe",
+            "id": "schiessen"
+          },
+          "wirkung": {
+            "stepshields": 1
+          },
+          "bedingung": {
+            "baender": [
+              "bedraengt",
+              "nah"
+            ]
+          }
+        }
+      ],
+      "hinweis": null,
+      "vorlaeufig": true
+    },
+    {
+      "id": "zielfernrohr",
+      "name": "Zielfernrohr",
+      "passt_an": {
+        "anschluss": [
+          "schiene_oben"
+        ],
+        "waffen": []
+      },
+      "einsatz": "immer",
+      "modifikatoren": [
+        {
+          "ziel": {
+            "art": "probe",
+            "id": "schiessen"
+          },
+          "wirkung": {
+            "stepshields": 1
+          },
+          "bedingung": {
+            "baender": [
+              "weit",
+              "sehr_weit",
+              "fern"
+            ]
+          }
+        },
+        {
+          "ziel": {
+            "art": "probe",
+            "id": "schiessen"
+          },
+          "wirkung": {
+            "malsteps": 1
+          },
+          "bedingung": {
+            "baender": [
+              "bedraengt"
+            ]
+          }
+        }
+      ],
+      "hinweis": null,
+      "vorlaeufig": true
+    },
+    {
+      "id": "zweibein",
+      "name": "Zweibein",
+      "passt_an": {
+        "anschluss": [
+          "schiene_unten"
+        ],
+        "waffen": []
+      },
+      "einsatz": "schalter",
+      "schalter_text": "Zweibein aufgesetzt",
+      "modifikatoren": [
+        {
+          "ziel": {
+            "art": "probe",
+            "id": "haltezahl"
+          },
+          "wirkung": {
+            "stepshields": 1
+          }
+        }
+      ],
+      "setzt": {
+        "aufgelegt": true
+      },
+      "hinweis": null,
+      "vorlaeufig": true
+    },
+    {
+      "id": "vordergriff",
+      "name": "Vordergriff",
+      "passt_an": {
+        "anschluss": [
+          "schiene_unten"
+        ],
+        "waffen": []
+      },
+      "einsatz": "immer",
+      "modifikatoren": [
+        {
+          "ziel": {
+            "art": "probe",
+            "id": "haltezahl"
+          },
+          "wirkung": {
+            "stepshields": 1
+          }
+        }
+      ],
+      "hinweis": null,
+      "vorlaeufig": true
+    },
+    {
+      "id": "unterlaufwerfer_m203",
+      "name": "Unterlaufwerfer M203",
+      "passt_an": {
+        "anschluss": [
+          "schiene_unten"
+        ],
+        "waffen": []
+      },
+      "einsatz": "immer",
+      "waffe": "m203",
+      "modifikatoren": [],
+      "hinweis": "Ein Werfer unter dem Lauf; Gewehr und Werfer bleiben gleichzeitig einsatzbereit."
+    },
+    {
+      "id": "lampe",
+      "name": "Lampe",
+      "passt_an": {
+        "anschluss": [
+          "schiene_unten",
+          "schiene_seitlich"
+        ],
+        "waffen": []
+      },
+      "einsatz": "schalter",
+      "schalter_text": "Lampe eingeschaltet",
+      "modifikatoren": [],
+      "hinweis": "Ein Ziel in den Bändern bedrängt und nah, das du anleuchtest, siehst du mit Sichtstufe klar. Du selbst bist dabei für andere sichtbar, auch bei schlechter Sicht.",
+      "vorlaeufig": true
+    },
+    {
+      "id": "schalldaempfer_pistole",
+      "name": "Schalldämpfer (Pistole)",
+      "passt_an": {
+        "anschluss": [
+          "muendung_pistole"
+        ],
+        "waffen": []
+      },
+      "einsatz": "immer",
+      "modifikatoren": [],
+      "hinweis": "Der Schuss ist 1 Stufe leiser."
+    },
+    {
+      "id": "schalldaempfer_gewehr",
+      "name": "Schalldämpfer (Gewehr)",
+      "passt_an": {
+        "anschluss": [
+          "muendung_gewehr"
+        ],
+        "waffen": []
+      },
+      "einsatz": "immer",
+      "modifikatoren": [],
+      "hinweis": "Der Schuss ist 1 Stufe leiser."
+    },
+    {
+      "id": "kompensator_pistole",
+      "name": "Kompensator (Pistole)",
+      "passt_an": {
+        "anschluss": [
+          "muendung_pistole"
+        ],
+        "waffen": []
+      },
+      "einsatz": "immer",
+      "modifikatoren": [
+        {
+          "ziel": {
+            "art": "probe",
+            "id": "haltezahl"
+          },
+          "wirkung": {
+            "stepshields": 1
+          }
+        }
+      ],
+      "hinweis": null,
+      "vorlaeufig": true
+    },
+    {
+      "id": "kompensator_gewehr",
+      "name": "Kompensator (Gewehr)",
+      "passt_an": {
+        "anschluss": [
+          "muendung_gewehr"
+        ],
+        "waffen": []
+      },
+      "einsatz": "immer",
+      "modifikatoren": [
+        {
+          "ziel": {
+            "art": "probe",
+            "id": "haltezahl"
+          },
+          "wirkung": {
+            "stepshields": 1
+          }
+        }
+      ],
+      "hinweis": null,
+      "vorlaeufig": true
+    },
+    {
+      "id": "bajonett",
+      "name": "Bajonett",
+      "passt_an": {
+        "anschluss": [
+          "muendung_gewehr"
+        ],
+        "waffen": []
+      },
+      "einsatz": "immer",
+      "nahkampfwaffe": "bajonett",
+      "modifikatoren": [],
+      "hinweis": "Nahkampfwaffe am Gewehr."
+    },
+    {
+      "id": "magazin_five_seven_20",
+      "name": "Erweitertes Magazin (20)",
+      "passt_an": {
+        "anschluss": [
+          "magazin"
+        ],
+        "waffen": [
+          "five_seven"
+        ]
+      },
+      "einsatz": "immer",
+      "werte": {
+        "magazin": 20
+      },
+      "modifikatoren": [],
+      "hinweis": null
+    },
+    {
+      "id": "magazin_five_seven_30",
+      "name": "Erweitertes Magazin (30)",
+      "passt_an": {
+        "anschluss": [
+          "magazin"
+        ],
+        "waffen": [
+          "five_seven"
+        ]
+      },
+      "einsatz": "immer",
+      "werte": {
+        "magazin": 30
+      },
+      "modifikatoren": [],
+      "hinweis": null
+    },
+    {
+      "id": "trommel_ak47_75",
+      "name": "Trommelmagazin (75)",
+      "passt_an": {
+        "anschluss": [
+          "magazin"
+        ],
+        "waffen": [
+          "ak47"
+        ]
+      },
+      "einsatz": "immer",
+      "werte": {
+        "magazin": 75,
+        "trommelmagazin": true
+      },
+      "modifikatoren": [],
+      "hinweis": null
+    },
+    {
+      "id": "magazin_m4_30",
+      "name": "Erweitertes Magazin (30)",
+      "passt_an": {
+        "anschluss": [
+          "magazin"
+        ],
+        "waffen": [
+          "m4"
+        ]
+      },
+      "einsatz": "immer",
+      "werte": {
+        "magazin": 30
+      },
+      "modifikatoren": [],
+      "hinweis": null
+    },
+    {
+      "id": "trommel_m4_100",
+      "name": "Trommelmagazin (100)",
+      "passt_an": {
+        "anschluss": [
+          "magazin"
+        ],
+        "waffen": [
+          "m4"
+        ]
+      },
+      "einsatz": "immer",
+      "werte": {
+        "magazin": 100,
+        "trommelmagazin": true
+      },
+      "modifikatoren": [],
+      "hinweis": null
+    },
+    {
+      "id": "trommel_m16a4_100",
+      "name": "Trommelmagazin (100)",
+      "passt_an": {
+        "anschluss": [
+          "magazin"
+        ],
+        "waffen": [
+          "m16a4"
+        ]
+      },
+      "einsatz": "immer",
+      "werte": {
+        "magazin": 100,
+        "trommelmagazin": true
+      },
+      "modifikatoren": [],
+      "hinweis": null
+    },
+    {
+      "id": "magazin_scar_mk17_20",
+      "name": "Erweitertes Magazin (20)",
+      "passt_an": {
+        "anschluss": [
+          "magazin"
+        ],
+        "waffen": [
+          "scar_mk17"
+        ]
+      },
+      "einsatz": "immer",
+      "werte": {
+        "magazin": 20
+      },
+      "modifikatoren": [],
+      "hinweis": null
+    },
+    {
+      "id": "magazin_saiga12_12",
+      "name": "Erweitertes Magazin (12)",
+      "passt_an": {
+        "anschluss": [
+          "magazin"
+        ],
+        "waffen": [
+          "saiga12"
+        ]
+      },
+      "einsatz": "immer",
+      "werte": {
+        "magazin": 12
+      },
+      "modifikatoren": [],
+      "hinweis": null
+    },
+    {
+      "id": "trommel_saiga12_20",
+      "name": "Trommelmagazin (20)",
+      "passt_an": {
+        "anschluss": [
+          "magazin"
+        ],
+        "waffen": [
+          "saiga12"
+        ]
+      },
+      "einsatz": "immer",
+      "werte": {
+        "magazin": 20,
+        "trommelmagazin": true
+      },
+      "modifikatoren": [],
+      "hinweis": null
+    }
+  ],
+  "zubehoer": [
+    {
+      "id": "schnelllader",
+      "name": "Schnelllader",
+      "passt_zu": "Revolver (je Modell)",
+      "vorratslevel": 1,
+      "preis": {
+        "min": 5,
+        "max": 15
+      },
+      "wirkung": "Füllt die Trommel auf einmal; Nachladen wie mit Magazin.",
+      "vorlaeufig": true
+    },
+    {
+      "id": "ladestreifen",
+      "name": "Ladestreifen",
+      "passt_zu": "Repetiergewehre mit festem Magazin (je Kaliber)",
+      "vorratslevel": 1,
+      "preis": {
+        "min": 5,
+        "max": 15
+      },
+      "wirkung": "Füllt das Magazin auf einmal; Nachladen wie mit Magazin.",
+      "vorlaeufig": true
+    }
+  ]
+}

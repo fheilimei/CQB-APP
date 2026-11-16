@@ -1,0 +1,50 @@
+{
+  "version": "2026-11-16",
+  "eintraege": [
+    {
+      "id": "twitch",
+      "name": "Twitch",
+      "gruppe": "A"
+    },
+    {
+      "id": "brawn",
+      "name": "Brawn",
+      "gruppe": "A"
+    },
+    {
+      "id": "agility",
+      "name": "Agility",
+      "gruppe": "A"
+    },
+    {
+      "id": "grit",
+      "name": "Grit",
+      "gruppe": "A"
+    },
+    {
+      "id": "control",
+      "name": "Control",
+      "gruppe": "B"
+    },
+    {
+      "id": "empathy",
+      "name": "Empathy",
+      "gruppe": "B"
+    },
+    {
+      "id": "intellect",
+      "name": "Intellect",
+      "gruppe": "B"
+    },
+    {
+      "id": "decisiveness",
+      "name": "Decisiveness",
+      "gruppe": "B"
+    },
+    {
+      "id": "nerve",
+      "name": "Nerve",
+      "gruppe": "C"
+    }
+  ]
+}

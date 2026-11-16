@@ -1,0 +1,275 @@
+{
+  "version": "2026-11-16",
+  "eintraege": [
+    {
+      "id": "waffe_pistole",
+      "name": "Pistole",
+      "stat": "control",
+      "gruppe": "waffen",
+      "waffenkategorien": [
+        "Pistole"
+      ]
+    },
+    {
+      "id": "waffe_smg",
+      "name": "Maschinenpistole",
+      "stat": "control",
+      "gruppe": "waffen",
+      "waffenkategorien": [
+        "SMG"
+      ]
+    },
+    {
+      "id": "waffe_ar",
+      "name": "Sturmgewehr",
+      "stat": "control",
+      "gruppe": "waffen",
+      "waffenkategorien": [
+        "AR"
+      ]
+    },
+    {
+      "id": "waffe_schrot",
+      "name": "Schrotflinte",
+      "stat": "control",
+      "gruppe": "waffen",
+      "waffenkategorien": [
+        "SG"
+      ]
+    },
+    {
+      "id": "waffe_praezision",
+      "name": "Präzisionsgewehr",
+      "stat": "control",
+      "gruppe": "waffen",
+      "waffenkategorien": [
+        "DMR",
+        "SR"
+      ]
+    },
+    {
+      "id": "waffe_mg",
+      "name": "Maschinengewehr",
+      "stat": "control",
+      "gruppe": "waffen",
+      "waffenkategorien": [
+        "LMG"
+      ]
+    },
+    {
+      "id": "waffe_werfer",
+      "name": "Werfer",
+      "stat": "control",
+      "gruppe": "waffen",
+      "waffenkategorien": [
+        "Werfer"
+      ]
+    },
+    {
+      "id": "rueckstosskontrolle",
+      "name": "Rückstoßkontrolle",
+      "stat": "brawn",
+      "gruppe": "kampf"
+    },
+    {
+      "id": "nahkampf",
+      "name": "Nahkampf",
+      "stat": "agility",
+      "gruppe": "kampf"
+    },
+    {
+      "id": "wurfwaffen",
+      "name": "Wurfwaffen",
+      "stat": "agility",
+      "gruppe": "kampf"
+    },
+    {
+      "id": "granaten",
+      "name": "Granaten",
+      "stat": "agility",
+      "gruppe": "kampf"
+    },
+    {
+      "id": "reflexe",
+      "name": "Reflexe",
+      "stat": "twitch",
+      "gruppe": "kampf"
+    },
+    {
+      "id": "lagegespuer",
+      "name": "Lagegespür",
+      "stat": "intellect",
+      "gruppe": "kampf"
+    },
+    {
+      "id": "athletik",
+      "name": "Athletik",
+      "stat": "agility",
+      "gruppe": "koerper"
+    },
+    {
+      "id": "schleichen",
+      "name": "Schleichen",
+      "stat": "agility",
+      "gruppe": "koerper"
+    },
+    {
+      "id": "entbehrung",
+      "name": "Entbehrung",
+      "stat": "grit",
+      "gruppe": "koerper"
+    },
+    {
+      "id": "ueberleben",
+      "name": "Überleben",
+      "stat": "grit",
+      "gruppe": "koerper"
+    },
+    {
+      "id": "wachsamkeit",
+      "name": "Wachsamkeit",
+      "stat": "intellect",
+      "gruppe": "koerper"
+    },
+    {
+      "id": "selbstbeherrschung",
+      "name": "Selbstbeherrschung",
+      "stat": "nerve",
+      "gruppe": "koerper"
+    },
+    {
+      "id": "mechanik",
+      "name": "Mechanik",
+      "stat": "intellect",
+      "gruppe": "technik"
+    },
+    {
+      "id": "fahren",
+      "name": "Fahren",
+      "stat": "control",
+      "gruppe": "technik"
+    },
+    {
+      "id": "bildung",
+      "name": "Bildung",
+      "stat": "intellect",
+      "gruppe": "technik"
+    },
+    {
+      "id": "krisenmanagement",
+      "name": "Krisenmanagement",
+      "stat": "decisiveness",
+      "gruppe": "entscheidung"
+    },
+    {
+      "id": "erste_hilfe",
+      "name": "Erste Hilfe",
+      "stat": "control",
+      "gruppe": "medizin"
+    },
+    {
+      "id": "operation",
+      "name": "Operation",
+      "stat": "control",
+      "gruppe": "medizin",
+      "exklusiv": [
+        "sanitaeter",
+        "rettungssanitaeter"
+      ]
+    },
+    {
+      "id": "verhandeln",
+      "name": "Verhandeln",
+      "stat": "empathy",
+      "gruppe": "sozial"
+    },
+    {
+      "id": "fuehrung",
+      "name": "Führung",
+      "stat": "empathy",
+      "gruppe": "sozial"
+    },
+    {
+      "id": "tarnen",
+      "name": "Tarnen",
+      "stat": "intellect",
+      "gruppe": "exklusiv",
+      "exklusiv": [
+        "kommandosoldat"
+      ]
+    },
+    {
+      "id": "ballistik",
+      "name": "Ballistik",
+      "stat": "intellect",
+      "gruppe": "exklusiv",
+      "exklusiv": [
+        "scharfschuetze"
+      ]
+    },
+    {
+      "id": "sprengstoff",
+      "name": "Sprengstoff",
+      "stat": "intellect",
+      "gruppe": "exklusiv",
+      "exklusiv": [
+        "grenadier"
+      ]
+    },
+    {
+      "id": "einschuechtern",
+      "name": "Einschüchtern",
+      "stat": "brawn",
+      "gruppe": "exklusiv",
+      "exklusiv": [
+        "vollstrecker"
+      ]
+    },
+    {
+      "id": "schloesser",
+      "name": "Schlösser",
+      "stat": "control",
+      "gruppe": "exklusiv",
+      "exklusiv": [
+        "einbrecher"
+      ]
+    },
+    {
+      "id": "beschaffen",
+      "name": "Beschaffen",
+      "stat": "empathy",
+      "gruppe": "exklusiv",
+      "exklusiv": [
+        "fixer"
+      ]
+    },
+    {
+      "id": "taktisches_fahren",
+      "name": "Taktisches Fahren",
+      "stat": "control",
+      "gruppe": "exklusiv",
+      "exklusiv": [
+        "leibwaechter",
+        "personenschuetzer"
+      ]
+    },
+    {
+      "id": "aufbrechen",
+      "name": "Aufbrechen",
+      "stat": "brawn",
+      "gruppe": "exklusiv",
+      "exklusiv": [
+        "zugriffsbeamter"
+      ]
+    },
+    {
+      "id": "verhoeren",
+      "name": "Verhören",
+      "stat": "empathy",
+      "gruppe": "exklusiv",
+      "exklusiv": [
+        "ermittler"
+      ]
+    }
+  ]
+}

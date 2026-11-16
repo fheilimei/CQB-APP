@@ -1,0 +1,67 @@
+{
+  "version": "2026-11-16",
+  "herkunft": {
+    "perk": {
+      "zeichen": "◆",
+      "farbe": "#2f6fd6",
+      "name": "Perk"
+    },
+    "anpassung": {
+      "zeichen": "★",
+      "farbe": "#e07b00",
+      "name": "Anpassung der SL"
+    },
+    "manuell": {
+      "zeichen": "✎",
+      "rahmen": "gestrichelt",
+      "name": "von Hand überschrieben"
+    },
+    "leiter": {
+      "zeichen": "♥",
+      "farbe": "#c0392b",
+      "name": "Adrenalin/Ruhepuls"
+    },
+    "zustand": {
+      "zeichen": "●",
+      "farbe": "#7d3c98",
+      "name": "Zustand"
+    },
+    "lage": {
+      "zeichen": "◇",
+      "farbe": "#7f8c8d",
+      "name": "Lage"
+    },
+    "aufsatz": {
+      "zeichen": "⚙",
+      "farbe": "#2e7d32",
+      "name": "Aufsatz"
+    }
+  },
+  "typen": {
+    "stat": {
+      "zeichen": "■",
+      "farbe": "#0f6e56",
+      "name": "Stat"
+    },
+    "skill": {
+      "zeichen": "⬢",
+      "farbe": "#534ab7",
+      "name": "Skill"
+    },
+    "perk": {
+      "zeichen": "◆",
+      "farbe": "#2f6fd6",
+      "name": "Perk"
+    }
+  },
+  "leiter_farben": {
+    "-3": "#1f4e8c",
+    "-2": "#3a6fb5",
+    "-1": "#7fa7d9",
+    "0": "#9e9e9e",
+    "1": "#f0a030",
+    "2": "#e06a1b",
+    "3": "#c0392b",
+    "4": "#2b0a0a"
+  }
+}

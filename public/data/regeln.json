@@ -1,0 +1,737 @@
+{
+  "version": "2026-11-16",
+  "raenge": {
+    "S": 90,
+    "A": 80,
+    "B": 70,
+    "C": 60,
+    "D": 50,
+    "E": 40,
+    "F": 30
+  },
+  "abweichung": {
+    "min": -9,
+    "max": 9
+  },
+  "steps": {
+    "faktoren": [
+      1,
+      0.85,
+      0.638,
+      0.414,
+      0.228,
+      0.103
+    ],
+    "keine_probe_ab": 6,
+    "skill_null_malsteps": 1
+  },
+  "leiter": {
+    "min": -3,
+    "max": 4,
+    "stufen": {
+      "-3": {
+        "name": "Ruhepuls 3",
+        "gruppe_a": -2,
+        "gruppe_b": 2,
+        "symptome": [
+          "r1",
+          "r2"
+        ]
+      },
+      "-2": {
+        "name": "Ruhepuls 2",
+        "gruppe_a": -1,
+        "gruppe_b": 1,
+        "symptome": [
+          "r1",
+          "r2"
+        ]
+      },
+      "-1": {
+        "name": "Ruhepuls 1",
+        "gruppe_a": 0,
+        "gruppe_b": 0,
+        "symptome": [
+          "r1"
+        ]
+      },
+      "0": {
+        "name": null,
+        "gruppe_a": 0,
+        "gruppe_b": 0,
+        "symptome": []
+      },
+      "1": {
+        "name": "Adrenalin 1",
+        "gruppe_a": 0,
+        "gruppe_b": 0,
+        "symptome": [
+          "a1"
+        ]
+      },
+      "2": {
+        "name": "Adrenalin 2",
+        "gruppe_a": 1,
+        "gruppe_b": -1,
+        "symptome": [
+          "a1",
+          "a2"
+        ]
+      },
+      "3": {
+        "name": "Adrenalin 3",
+        "gruppe_a": 2,
+        "gruppe_b": -2,
+        "symptome": [
+          "a1",
+          "a2"
+        ]
+      },
+      "4": {
+        "name": "Over the Edge",
+        "gruppe_a": -2,
+        "gruppe_b": -2,
+        "symptome": [
+          "a1",
+          "a2"
+        ],
+        "over_the_edge": true
+      }
+    },
+    "start": {
+      "normal": {
+        "krit": -1,
+        "gelungen": 0,
+        "misslungen": 1
+      },
+      "ueberrascht": {
+        "krit": 0,
+        "gelungen": 1,
+        "misslungen": 2
+      }
+    },
+    "ueberrascht_breakaction_malsteps": 1,
+    "ausloeser": [
+      {
+        "id": "beschossen",
+        "name": "beschossen"
+      },
+      {
+        "id": "nahkampf",
+        "name": "im Nahkampf angegriffen"
+      },
+      {
+        "id": "getroffen",
+        "name": "getroffen"
+      },
+      {
+        "id": "verletzt",
+        "name": "verletzt"
+      },
+      {
+        "id": "stagger",
+        "name": "Stagger erlitten"
+      },
+      {
+        "id": "geschossen",
+        "name": "selbst auf jemanden geschossen"
+      },
+      {
+        "id": "verbuendeter",
+        "name": "Verbündeter ausgeschaltet"
+      },
+      {
+        "id": "sonstiges",
+        "name": "sonstiges (SL)"
+      }
+    ]
+  },
+  "symptome": {
+    "a1": {
+      "gewinn": "Schmerz ignorieren: kein Stagger",
+      "verlust": "Keine Ansage einer Trefferzone"
+    },
+    "a2": {
+      "gewinn": "Sprint: zweite Bewegung",
+      "verlust": "Tunnelblick: keine Antizipation, Breakaction nur gegen Gesehene"
+    },
+    "r1": {
+      "gewinn": "Ruhige Hand: Zielen als Mainaction",
+      "verlust": "Empfindlich: Stagger schon bei Schaden = Schmerzresistenz",
+      "vorlaeufig": true
+    },
+    "r2": {
+      "gewinn": "Weitblick: Information gilt eine Runde jünger",
+      "verlust": "Kein Hechten",
+      "vorlaeufig": true
+    }
+  },
+  "zustaende": {
+    "adrenalinschock": {
+      "malsteps": 3,
+      "ende_ruhe_stunden": 4
+    },
+    "kampfunfaehig": {
+      "malsteps_ausserhalb_gefecht": 3,
+      "gilt_nicht_fuer": [
+        "erholungsprobe"
+      ]
+    },
+    "geblendet": {
+      "sichtstufe": "keine",
+      "malsteps_mit_gereizt_addieren": true
+    },
+    "gereizt": {
+      "malsteps": 2,
+      "probe": "grit"
+    }
+  },
+  "initiative": {
+    "stat": "decisiveness",
+    "skill": null,
+    "krit_break_extra": 1,
+    "ueberrascht_malsteps": 1
+  },
+  "breakaction": {
+    "reaktion": {
+      "stat": "twitch",
+      "skill": "reflexe",
+      "malsteps": {
+        "gesehen": 0,
+        "gehoert": 1
+      }
+    },
+    "antizipation": {
+      "stat": "intellect",
+      "skill": "lagegespuer",
+      "malsteps_guete": {
+        "gesehen": 0,
+        "gehoert": 1,
+        "funk": 1
+      },
+      "malsteps_alter": {
+        "diese_runde": 0,
+        "letzte_runde": 1,
+        "aelter": 2
+      },
+      "vorlaeufig": true
+    }
+  },
+  "konzentration": {
+    "leicht": {
+      "bewegung_max": "gehen",
+      "standwechsel": true
+    },
+    "voll": {
+      "bewegung_max": null,
+      "standwechsel": false
+    },
+    "aktionen": {
+      "werfer_nachladen": "voll",
+      "gurt_wechseln": "voll",
+      "einzeln_laden": "leicht",
+      "erste_hilfe": "voll",
+      "operation": "voll",
+      "waffe_ruecken": "leicht",
+      "waffe_rucksack": "leicht",
+      "aufsatz_im_gefecht": "leicht"
+    }
+  },
+  "nachladen": {
+    "einzeln_patronen": 2
+  },
+  "waffe_wechseln": {
+    "schlinge": "ohne",
+    "weste": "ohne",
+    "holster": "main",
+    "guertel": "main",
+    "ruecken": {
+      "aktion": "main",
+      "konzentration": "leicht"
+    },
+    "rucksack": {
+      "aktion": "main",
+      "konzentration": "leicht",
+      "runden": 2
+    }
+  },
+  "bewegung": {
+    "arten": {
+      "kriechen": {
+        "stand": [
+          "liegen"
+        ],
+        "meter": 1,
+        "hoerbar": "bedraengt"
+      },
+      "gehen": {
+        "stand": [
+          "stehen",
+          "hocke"
+        ],
+        "meter": {
+          "stehen": 3,
+          "hocke": 2
+        },
+        "hoerbar": "nah"
+      },
+      "laufen": {
+        "stand": [
+          "stehen"
+        ],
+        "meter": 6,
+        "hoerbar": "mittel"
+      },
+      "rennen": {
+        "stand": [
+          "stehen"
+        ],
+        "meter": 9,
+        "hoerbar": "weit"
+      }
+    },
+    "hechten": {
+      "meter": 2,
+      "hoerbar": "mittel"
+    }
+  },
+  "lage": {
+    "eigene_bewegung": {
+      "kriechen": 1,
+      "gehen": 1,
+      "laufen": 2,
+      "hechten": 2,
+      "rennen": 4
+    },
+    "gruppen": [
+      {
+        "id": "entfernung",
+        "name": "Entfernung zum Ziel",
+        "auswahl": "eins",
+        "zuruecksetzen": "neues_ziel",
+        "quelle": "reichweite"
+      },
+      {
+        "id": "ziel_bewegung",
+        "name": "Bewegung des Ziels",
+        "auswahl": "eins",
+        "zuruecksetzen": "rundenende"
+      },
+      {
+        "id": "ziel_stand",
+        "name": "Stand des Ziels",
+        "auswahl": "eins",
+        "zuruecksetzen": "neues_ziel"
+      },
+      {
+        "id": "ziel_groesse",
+        "name": "Größe des Ziels",
+        "auswahl": "eins",
+        "zuruecksetzen": "neues_ziel"
+      },
+      {
+        "id": "schuetze",
+        "name": "Schütze",
+        "auswahl": "schalter",
+        "zuruecksetzen": "rundenende"
+      }
+    ],
+    "umstaende": [
+      {
+        "id": "ziel_steht",
+        "gruppe": "ziel_bewegung",
+        "name": "ruhend oder gehend",
+        "malsteps": 0,
+        "standard": true
+      },
+      {
+        "id": "ziel_laeuft",
+        "gruppe": "ziel_bewegung",
+        "name": "laufend",
+        "malsteps": 1
+      },
+      {
+        "id": "ziel_rennt",
+        "gruppe": "ziel_bewegung",
+        "name": "rennend oder hechtend",
+        "malsteps": 2
+      },
+      {
+        "id": "ziel_nahkampf",
+        "gruppe": "ziel_bewegung",
+        "name": "im Nahkampf",
+        "malsteps": 1,
+        "hinweis": "Fehlschuss trifft einen anderen Beteiligten",
+        "nicht_fuer": [
+          "werfer",
+          "sprengwaffe"
+        ]
+      },
+      {
+        "id": "ziel_stehend",
+        "gruppe": "ziel_stand",
+        "name": "stehend",
+        "malsteps": 0,
+        "standard": true
+      },
+      {
+        "id": "ziel_hocke",
+        "gruppe": "ziel_stand",
+        "name": "hockend",
+        "malsteps": 1,
+        "nicht_in_baendern": [
+          "bedraengt"
+        ]
+      },
+      {
+        "id": "ziel_liegt",
+        "gruppe": "ziel_stand",
+        "name": "liegend",
+        "malsteps": 2,
+        "nicht_in_baendern": [
+          "bedraengt"
+        ]
+      },
+      {
+        "id": "ziel_liegt_von_oben",
+        "gruppe": "ziel_stand",
+        "name": "liegend, von oben beschossen",
+        "malsteps": 0
+      },
+      {
+        "id": "ziel_normal",
+        "gruppe": "ziel_groesse",
+        "name": "Person",
+        "malsteps": 0,
+        "standard": true
+      },
+      {
+        "id": "ziel_kopfgross",
+        "gruppe": "ziel_groesse",
+        "name": "kopfgroß",
+        "malsteps": 2
+      },
+      {
+        "id": "ziel_handgross",
+        "gruppe": "ziel_groesse",
+        "name": "handgroß",
+        "malsteps": 3
+      },
+      {
+        "id": "ziel_gross",
+        "gruppe": "ziel_groesse",
+        "name": "groß, Gegenstand (Fahrzeug, Tür)",
+        "stepshields": 1
+      },
+      {
+        "id": "aufgelegt",
+        "gruppe": "schuetze",
+        "name": "Waffe aufgelegt",
+        "stepshields": 1,
+        "nur_ohne_eigene_bewegung": true,
+        "nicht_fuer": [
+          "werfen"
+        ]
+      }
+    ],
+    "vorlaeufig": true
+  },
+  "sicht": {
+    "stufen": [
+      {
+        "id": "klar",
+        "erkennen_bis": null,
+        "malsteps": 0
+      },
+      {
+        "id": "eingeschraenkt",
+        "erkennen_bis": "weit",
+        "malsteps": 1
+      },
+      {
+        "id": "schlecht",
+        "erkennen_bis": "nah",
+        "malsteps": 2
+      },
+      {
+        "id": "keine",
+        "erkennen_bis": "keins",
+        "malsteps": 3
+      }
+    ],
+    "gilt_fuer": [
+      "schiessen",
+      "werfen",
+      "nahkampf",
+      "reaktion_gesehen",
+      "ladehemmung_beheben"
+    ],
+    "vorlaeufig": true
+  },
+  "lautstaerke": {
+    "schuss": {
+      "normal": "fern",
+      "schalldaempfer": "weit",
+      "schalldaempfer_unterschall": "mittel"
+    },
+    "explosion": "fern",
+    "stimme": {
+      "fluestern": "bedraengt",
+      "sprechen": "nah",
+      "rufen": "weit"
+    },
+    "umstaende": {
+      "lauter_untergrund": 1,
+      "laute_umgebung": -1,
+      "hindernis": -1
+    },
+    "vorlaeufig": true
+  },
+  "ladehemmung": {
+    "zustand_zuschlag": {
+      "zuverlaessig": {
+        "A": 0,
+        "B": 1,
+        "C": 3,
+        "D": 6
+      },
+      "normal": {
+        "A": 0,
+        "B": 2,
+        "C": 5,
+        "D": 9
+      }
+    },
+    "trommelmagazin_zuschlag": 2,
+    "vorlaeufig": true,
+    "schwer_bei_wurf": 100
+  },
+  "nahkampf": {
+    "stat": "agility",
+    "skill": "nahkampf",
+    "malsteps_je_weitere_verteidigung": 1,
+    "lange_waffe_in_armeslaenge": 1,
+    "ueberlegener_stand_malsteps": 1,
+    "stand_schlaegt": {
+      "liegen": "stehen",
+      "stehen": "hocke",
+      "hocke": "liegen"
+    }
+  },
+  "werfen": {
+    "stat": "agility",
+    "ueber_wurfweite_malsteps": 2,
+    "kochen_malsteps": 1
+  },
+  "krit_folgen": [
+    {
+      "probe": "schiessen",
+      "text": "Spalte „Krit“ der getroffenen Zone; nur der erste Schuss"
+    },
+    {
+      "probe": "initiative",
+      "text": "eine zusätzliche Breakaction in dieser Runde",
+      "vorlaeufig": true
+    },
+    {
+      "probe": "nahkampfangriff",
+      "text": "scharf: Spalte „Krit“ der Zone; stumpf: Stagger"
+    },
+    {
+      "probe": "nahkampfverteidigung",
+      "text": "Abstand bestimmen: sofort in Armeslänge oder aus dem Band bedrängt, ohne Aktion"
+    },
+    {
+      "probe": "wurfaktion",
+      "text": "Wurfwaffe: Krit der Zone; Sprengwaffe: genau am Zielpunkt"
+    },
+    {
+      "probe": "ladehemmung_beheben",
+      "text": "verbraucht keine Mainaction"
+    },
+    {
+      "probe": "nerve_anstieg",
+      "text": "Leiter sinkt um 1"
+    },
+    {
+      "probe": "nerve_senken",
+      "text": "Leiter sinkt um 2"
+    },
+    {
+      "probe": "verbuendete_verschieben",
+      "text": "Verschiebung um 2"
+    }
+  ],
+  "aktionen": {
+    "main": 1,
+    "break": 1,
+    "bewegung": 1,
+    "stand": 1,
+    "over_the_edge_gesamt": 1,
+    "sprint_bewegung": 2
+  },
+  "schiessen": {
+    "ansage_malsteps": {
+      "rumpf": 1,
+      "zone": 2
+    },
+    "rueckstoss_stepshields": {
+      "liegend": 1
+    },
+    "haltezahl_max": 10,
+    "garbenfaktor_aus_feuerrate": [
+      {
+        "bis": 10,
+        "faktor": 1
+      },
+      {
+        "bis": 20,
+        "faktor": 2
+      },
+      {
+        "bis": null,
+        "faktor": 3
+      }
+    ],
+    "reichweitenbaender": [
+      {
+        "id": "bedraengt",
+        "name": "bedrängt",
+        "beschreibung": "bis 2 m (Armeslänge, Nahkampf)"
+      },
+      {
+        "id": "nah",
+        "name": "nah",
+        "beschreibung": "bis 15 m"
+      },
+      {
+        "id": "mittel",
+        "name": "mittel",
+        "beschreibung": "16–30 m"
+      },
+      {
+        "id": "weit",
+        "name": "weit",
+        "beschreibung": "31–100 m"
+      },
+      {
+        "id": "sehr_weit",
+        "name": "sehr weit",
+        "beschreibung": "101–250 m"
+      },
+      {
+        "id": "fern",
+        "name": "fern",
+        "beschreibung": "ab 251 m"
+      }
+    ]
+  },
+  "lebenspunkte": {
+    "kampfunfaehig_bei": 0,
+    "tot_bei": -1
+  },
+  "geld": {
+    "ersparnisse": 300,
+    "schulden": {
+      "klein": 500,
+      "mittel": 1000,
+      "gross": 2000,
+      "rueckzahlung_faktor": 1.5
+    },
+    "coup": {
+      "klein": 400,
+      "mittel": 800,
+      "gross": 1600
+    },
+    "einstiegsgehalt_ab_stufe": 2,
+    "session_punkte": 5
+  },
+  "blutung": {
+    "normal": {
+      "frist_minuten": 10,
+      "schaden_anteil": 0.5,
+      "runden": "auf"
+    },
+    "kritisch_glied": {
+      "frist_minuten": 5
+    },
+    "kritisch_rumpf": {
+      "frist_minuten": 1,
+      "druckverband_faktor": 2
+    }
+  },
+  "heilung": {
+    "erholungsprobe": {
+      "stat": "grit",
+      "krit": 2,
+      "gelungen": 1,
+      "misslungen": 0
+    },
+    "malsteps_je_unversorgte_wunde": 1,
+    "pflege_stepshields": {
+      "krit": 2,
+      "gelungen": 1
+    },
+    "heildauer_tage_je_schaden": {
+      "normal": 1,
+      "kritisch": 7
+    },
+    "nachsorge_faktor": {
+      "krit": 0.5,
+      "gelungen": 1,
+      "misslungen": 2,
+      "keine": 2
+    }
+  },
+  "grundwerte": {
+    "hp": 8,
+    "schmerzresistenz": 1,
+    "nahkampfschaden": 1,
+    "wurfweite_band": "nah"
+  },
+  "aufstieg": {
+    "statrank_up_kosten": 1,
+    "skill_level_kosten": 1,
+    "skill_min": 0,
+    "skill_max": 5,
+    "rang_max": "S"
+  },
+  "wuerfel": {
+    "w100_null_null": 100,
+    "w10_null": 10
+  },
+  "krit": {
+    "schwelle_min": 0,
+    "zielwert_100_zehner": 10
+  },
+  "waffenzustand": {
+    "stufen": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "neu": "A",
+    "namen": {
+      "A": "neuwertig",
+      "B": "gebraucht",
+      "C": "verschlissen",
+      "D": "schrottreif"
+    },
+    "preis_viertel": {
+      "A": 4,
+      "B": 3,
+      "C": 2,
+      "D": 1
+    },
+    "vorlaeufig": true
+  },
+  "reizgas": {
+    "probe": "grit",
+    "wolke_baender": [
+      "bedraengt",
+      "nah"
+    ],
+    "dauer_runden": 20
+  }
+}

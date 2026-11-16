@@ -1,0 +1,161 @@
+{
+  "version": "2026-11-16",
+  "eintraege": [
+    {
+      "id": "kopf",
+      "name": "Kopf",
+      "w8": 8,
+      "multiplikator": 3,
+      "bereich": "kopf",
+      "normal": {
+        "text": "Blutung",
+        "blutung": "normal",
+        "dauerhaft": []
+      },
+      "krit": {
+        "text": "Sofort Tod",
+        "tot": true
+      }
+    },
+    {
+      "id": "brust",
+      "name": "Brust",
+      "w8": 7,
+      "multiplikator": 2,
+      "bereich": "rumpf",
+      "normal": {
+        "text": "Blutung",
+        "blutung": "normal",
+        "dauerhaft": []
+      },
+      "krit": {
+        "text": "Sofort Tod",
+        "tot": true
+      }
+    },
+    {
+      "id": "bauch",
+      "name": "Bauch",
+      "w8": 6,
+      "multiplikator": 2,
+      "bereich": "rumpf",
+      "normal": {
+        "text": "Blutung",
+        "blutung": "normal",
+        "dauerhaft": []
+      },
+      "krit": {
+        "text": "Kampfunfähig; verbluten innerhalb einer Minute",
+        "kampfunfaehig": true,
+        "blutung": "kritisch_rumpf"
+      }
+    },
+    {
+      "id": "unterleib",
+      "name": "Unterleib",
+      "w8": 5,
+      "multiplikator": 2,
+      "bereich": "rumpf",
+      "normal": {
+        "text": "Blutung",
+        "blutung": "normal",
+        "dauerhaft": []
+      },
+      "krit": {
+        "text": "Kampfunfähig; verbluten innerhalb einer Minute",
+        "kampfunfaehig": true,
+        "blutung": "kritisch_rumpf"
+      }
+    },
+    {
+      "id": "rumpf",
+      "name": "Rumpf",
+      "w8": null,
+      "multiplikator": 2,
+      "bereich": "rumpf",
+      "normal": {
+        "text": "Blutung",
+        "blutung": "normal",
+        "dauerhaft": []
+      },
+      "krit": {
+        "text": "Kampfunfähig; verbluten innerhalb einer Minute",
+        "kampfunfaehig": true,
+        "blutung": "kritisch_rumpf"
+      },
+      "nur_ansage": true
+    },
+    {
+      "id": "arm_r",
+      "name": "R. Arm",
+      "w8": 4,
+      "multiplikator": 1,
+      "bereich": "glied",
+      "normal": {
+        "text": "Blutung; Gegenstand fallen lassen",
+        "blutung": "normal",
+        "dauerhaft": []
+      },
+      "krit": {
+        "text": "Kampfunfähig; verbluten innerhalb fünf Minuten",
+        "kampfunfaehig": true,
+        "blutung": "kritisch_glied"
+      }
+    },
+    {
+      "id": "arm_l",
+      "name": "L. Arm",
+      "w8": 3,
+      "multiplikator": 1,
+      "bereich": "glied",
+      "normal": {
+        "text": "Blutung; Gegenstand fallen lassen",
+        "blutung": "normal",
+        "dauerhaft": []
+      },
+      "krit": {
+        "text": "Kampfunfähig; verbluten innerhalb fünf Minuten",
+        "kampfunfaehig": true,
+        "blutung": "kritisch_glied"
+      }
+    },
+    {
+      "id": "bein_r",
+      "name": "R. Bein",
+      "w8": 2,
+      "multiplikator": 1,
+      "bereich": "glied",
+      "normal": {
+        "text": "Blutung; Sturz, falls im Lauf; humpeln",
+        "blutung": "normal",
+        "dauerhaft": [
+          "humpeln"
+        ]
+      },
+      "krit": {
+        "text": "Kampfunfähig; verbluten innerhalb fünf Minuten",
+        "kampfunfaehig": true,
+        "blutung": "kritisch_glied"
+      }
+    },
+    {
+      "id": "bein_l",
+      "name": "L. Bein",
+      "w8": 1,
+      "multiplikator": 1,
+      "bereich": "glied",
+      "normal": {
+        "text": "Blutung; Sturz, falls im Lauf; humpeln",
+        "blutung": "normal",
+        "dauerhaft": [
+          "humpeln"
+        ]
+      },
+      "krit": {
+        "text": "Kampfunfähig; verbluten innerhalb fünf Minuten",
+        "kampfunfaehig": true,
+        "blutung": "kritisch_glied"
+      }
+    }
+  ]
+}

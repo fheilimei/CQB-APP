@@ -1,0 +1,1352 @@
+{
+  "version": "2026-11-16",
+  "stufen": [
+    {
+      "stufe": 1,
+      "name": "Lehrling",
+      "rank_set": [
+        "F",
+        "F",
+        "E",
+        "E",
+        "E",
+        "E",
+        "D",
+        "D",
+        "C"
+      ],
+      "richtgehalt": 250,
+      "vorlaeufig": true
+    },
+    {
+      "stufe": 2,
+      "name": "Geselle",
+      "rank_set": [
+        "E",
+        "E",
+        "D",
+        "D",
+        "D",
+        "D",
+        "C",
+        "C",
+        "B"
+      ],
+      "richtgehalt": 400,
+      "vorlaeufig": true
+    },
+    {
+      "stufe": 3,
+      "name": "Spezialist",
+      "rank_set": [
+        "D",
+        "D",
+        "C",
+        "C",
+        "C",
+        "C",
+        "B",
+        "B",
+        "A"
+      ],
+      "richtgehalt": 650,
+      "vorlaeufig": true
+    },
+    {
+      "stufe": 4,
+      "name": "Profi",
+      "rank_set": [
+        "C",
+        "C",
+        "B",
+        "B",
+        "B",
+        "B",
+        "A",
+        "A",
+        "S"
+      ],
+      "richtgehalt": 1000,
+      "vorlaeufig": true
+    },
+    {
+      "stufe": 5,
+      "name": "Meister",
+      "rank_set": [
+        "C",
+        "B",
+        "B",
+        "A",
+        "A",
+        "A",
+        "A",
+        "S",
+        "S"
+      ],
+      "richtgehalt": 2500,
+      "vorlaeufig": true
+    }
+  ],
+  "laufbahnen": [
+    {
+      "id": "militaer",
+      "name": "Militär",
+      "umfeld": "Streitkräfte, Militärdienstleister",
+      "befoerderung": "Zeit im aktuellen Dienstgrad, Errungenschaften und Kampferfahrung sowie das Verhältnis zu den Vorgesetzten (Empathy)."
+    },
+    {
+      "id": "verbrechen",
+      "name": "Organisiertes Verbrechen",
+      "umfeld": "Banden, Syndikate, Kartelle",
+      "befoerderung": "Loyalität, Einnahmen für die Organisation und das Vertrauen des Bosses (Empathy)."
+    },
+    {
+      "id": "zivil",
+      "name": "Zivil",
+      "umfeld": "Polizei, Sicherheitsfirmen, Privatpersonen",
+      "befoerderung": "Dienstzeit, Lehrgänge oder Zertifikate und die Beurteilung durch Vorgesetzte (Empathy)."
+    }
+  ],
+  "eintraege": [
+    {
+      "id": "rekrut",
+      "name": "Rekrut",
+      "laufbahn": "militaer",
+      "stufe": 1,
+      "art": "grundklasse",
+      "beschreibung": "Der Rekrut hat die militärische Grundausbildung hinter sich. Er kann mit Sturmgewehr und Granate umgehen, hält Strapazen aus und leistet Erste Hilfe.",
+      "voraussetzung_stat": null,
+      "vorratslevel": 3,
+      "gehalt": 250,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "waffe_ar": 1,
+        "rueckstosskontrolle": 1,
+        "granaten": 1,
+        "athletik": 1,
+        "entbehrung": 1,
+        "erste_hilfe": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": null,
+        "skills": [
+          "waffe_pistole",
+          "waffe_smg",
+          "waffe_ar",
+          "waffe_schrot",
+          "waffe_praezision",
+          "waffe_mg",
+          "gruppe:kampf",
+          "gruppe:koerper",
+          "mechanik",
+          "fahren",
+          "krisenmanagement",
+          "erste_hilfe",
+          "fuehrung"
+        ],
+        "perks": [
+          "gruppe:grundwerte",
+          "gruppe:allgemein",
+          "krav_maga",
+          "cqb",
+          "entschlossen",
+          "feuer_in_bewegung",
+          "fingerfertig",
+          "funkdisziplin",
+          "niederhalten",
+          "quickthrow",
+          "schnell_nachladen"
+        ]
+      }
+    },
+    {
+      "id": "soldat",
+      "name": "Soldat",
+      "laufbahn": "militaer",
+      "stufe": 2,
+      "art": "grundklasse",
+      "beschreibung": "Der Soldat hat Dienstjahre und erste Einsätze hinter sich. Er beherrscht die Waffen seiner Einheit, bewegt sich sicher im Gefecht und behält unter Beschuss die Nerven.",
+      "voraussetzung_stat": null,
+      "vorratslevel": 3,
+      "gehalt": 400,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "waffe_ar": 2,
+        "rueckstosskontrolle": 1,
+        "granaten": 1,
+        "athletik": 1,
+        "entbehrung": 1,
+        "erste_hilfe": 1,
+        "wachsamkeit": 1,
+        "selbstbeherrschung": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": null,
+        "skills": [
+          "gruppe:waffen",
+          "gruppe:kampf",
+          "gruppe:koerper",
+          "mechanik",
+          "fahren",
+          "krisenmanagement",
+          "erste_hilfe",
+          "fuehrung"
+        ],
+        "perks": [
+          "gruppe:grundwerte",
+          "gruppe:allgemein",
+          "krav_maga",
+          "judo",
+          "cqb",
+          "entschlossen",
+          "feuer_in_bewegung",
+          "fingerfertig",
+          "funkdisziplin",
+          "niederhalten",
+          "quickthrow",
+          "schnell_nachladen",
+          "gegner_einschaetzen",
+          "improvisieren",
+          "offangle",
+          "overwatch",
+          "rueckhalt"
+        ]
+      }
+    },
+    {
+      "id": "kommandosoldat",
+      "name": "Kommandosoldat",
+      "laufbahn": "militaer",
+      "stufe": 3,
+      "art": "spezialisierung",
+      "beschreibung": "Der Kommandosoldat kämpft in kleinen Trupps hinter den Linien. Er schlägt schnell zu, nutzt Überraschung und verschwindet wieder.",
+      "voraussetzung_stat": {
+        "stat": "twitch",
+        "rang": "A"
+      },
+      "vorratslevel": 4,
+      "gehalt": 650,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "waffe_ar": 3,
+        "reflexe": 2,
+        "tarnen": 1,
+        "rueckstosskontrolle": 1,
+        "granaten": 1,
+        "athletik": 1,
+        "entbehrung": 1,
+        "erste_hilfe": 1,
+        "wachsamkeit": 1,
+        "selbstbeherrschung": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": "soldat",
+        "skills": [],
+        "perks": [
+          "triple_tap"
+        ]
+      }
+    },
+    {
+      "id": "einzelkaempfer",
+      "name": "Einzelkämpfer",
+      "laufbahn": "militaer",
+      "stufe": 4,
+      "art": "erweiterte_form",
+      "beschreibung": "Der Einzelkämpfer operiert tagelang allein im feindlichen Gebiet. Er lebt aus dem Gelände und bleibt unentdeckt.",
+      "erweitert": "kommandosoldat",
+      "voraussetzung_stat": {
+        "stat": "grit",
+        "rang": "A"
+      },
+      "vorratslevel": 5,
+      "gehalt": 1000,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "waffe_ar": 4,
+        "ueberleben": 2,
+        "tarnen": 2,
+        "reflexe": 2,
+        "rueckstosskontrolle": 1,
+        "granaten": 1,
+        "athletik": 1,
+        "entbehrung": 1,
+        "erste_hilfe": 1,
+        "wachsamkeit": 1,
+        "selbstbeherrschung": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": "kommandosoldat",
+        "skills": [],
+        "perks": []
+      }
+    },
+    {
+      "id": "scharfschuetze",
+      "name": "Scharfschütze",
+      "laufbahn": "militaer",
+      "stufe": 3,
+      "art": "spezialisierung",
+      "beschreibung": "Der Scharfschütze bekämpft Ziele auf große Entfernung. Er wartet, beobachtet und schießt einmal.",
+      "voraussetzung_stat": {
+        "stat": "control",
+        "rang": "A"
+      },
+      "vorratslevel": 4,
+      "gehalt": 650,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "waffe_praezision": 3,
+        "wachsamkeit": 2,
+        "ballistik": 1,
+        "waffe_ar": 2,
+        "rueckstosskontrolle": 1,
+        "granaten": 1,
+        "athletik": 1,
+        "entbehrung": 1,
+        "erste_hilfe": 1,
+        "selbstbeherrschung": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": "soldat",
+        "skills": [],
+        "perks": [
+          "kernschuss",
+          "gezielter_schuss"
+        ]
+      }
+    },
+    {
+      "id": "fernspaeher",
+      "name": "Fernspäher",
+      "laufbahn": "militaer",
+      "stufe": 4,
+      "art": "erweiterte_form",
+      "beschreibung": "Der Fernspäher klärt weit vor der Truppe auf. Er liegt tagelang in Stellung und meldet, bevor er schießt.",
+      "erweitert": "scharfschuetze",
+      "voraussetzung_stat": {
+        "stat": "nerve",
+        "rang": "A"
+      },
+      "vorratslevel": 5,
+      "gehalt": 1000,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "waffe_praezision": 4,
+        "schleichen": 2,
+        "ballistik": 2,
+        "wachsamkeit": 2,
+        "waffe_ar": 2,
+        "rueckstosskontrolle": 1,
+        "granaten": 1,
+        "athletik": 1,
+        "entbehrung": 1,
+        "erste_hilfe": 1,
+        "selbstbeherrschung": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": "scharfschuetze",
+        "skills": [],
+        "perks": []
+      }
+    },
+    {
+      "id": "grenadier",
+      "name": "Grenadier",
+      "laufbahn": "militaer",
+      "stufe": 3,
+      "art": "spezialisierung",
+      "beschreibung": "Der Grenadier trägt die schweren Mittel des Trupps: Granaten, Werfer und Sprengladungen.",
+      "voraussetzung_stat": {
+        "stat": "brawn",
+        "rang": "A"
+      },
+      "vorratslevel": 4,
+      "gehalt": 650,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "granaten": 3,
+        "waffe_werfer": 2,
+        "sprengstoff": 1,
+        "waffe_ar": 2,
+        "rueckstosskontrolle": 1,
+        "athletik": 1,
+        "entbehrung": 1,
+        "erste_hilfe": 1,
+        "wachsamkeit": 1,
+        "selbstbeherrschung": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": "soldat",
+        "skills": [],
+        "perks": []
+      }
+    },
+    {
+      "id": "pionier",
+      "name": "Pionier",
+      "laufbahn": "militaer",
+      "stufe": 4,
+      "art": "erweiterte_form",
+      "beschreibung": "Der Pionier sprengt Wege frei, legt Sperren und entschärft, was der Feind hinterlassen hat.",
+      "erweitert": "grenadier",
+      "voraussetzung_stat": {
+        "stat": "intellect",
+        "rang": "A"
+      },
+      "vorratslevel": 5,
+      "gehalt": 1000,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "sprengstoff": 3,
+        "mechanik": 2,
+        "granaten": 3,
+        "waffe_werfer": 2,
+        "waffe_ar": 2,
+        "rueckstosskontrolle": 1,
+        "athletik": 1,
+        "entbehrung": 1,
+        "erste_hilfe": 1,
+        "wachsamkeit": 1,
+        "selbstbeherrschung": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": "grenadier",
+        "skills": [],
+        "perks": []
+      }
+    },
+    {
+      "id": "sanitaeter",
+      "name": "Sanitäter",
+      "laufbahn": "militaer",
+      "stufe": 3,
+      "art": "spezialisierung",
+      "beschreibung": "Der Sanitäter hält Verwundete am Leben, bis sie ausgeflogen werden.",
+      "voraussetzung_stat": {
+        "stat": "intellect",
+        "rang": "A"
+      },
+      "vorratslevel": 4,
+      "gehalt": 650,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "erste_hilfe": 3,
+        "krisenmanagement": 1,
+        "operation": 1,
+        "waffe_ar": 2,
+        "rueckstosskontrolle": 1,
+        "granaten": 1,
+        "athletik": 1,
+        "entbehrung": 1,
+        "wachsamkeit": 1,
+        "selbstbeherrschung": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": "soldat",
+        "skills": [],
+        "perks": [
+          "schutzreflex"
+        ]
+      }
+    },
+    {
+      "id": "gefechtssanitaeter",
+      "name": "Gefechtssanitäter",
+      "laufbahn": "militaer",
+      "stufe": 4,
+      "art": "erweiterte_form",
+      "beschreibung": "Der Gefechtssanitäter versorgt unter Beschuss und entscheidet, wer zuerst behandelt wird.",
+      "erweitert": "sanitaeter",
+      "voraussetzung_stat": {
+        "stat": "decisiveness",
+        "rang": "A"
+      },
+      "vorratslevel": 5,
+      "gehalt": 1000,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "erste_hilfe": 4,
+        "krisenmanagement": 2,
+        "operation": 2,
+        "waffe_ar": 2,
+        "rueckstosskontrolle": 1,
+        "granaten": 1,
+        "athletik": 1,
+        "entbehrung": 1,
+        "wachsamkeit": 1,
+        "selbstbeherrschung": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": "sanitaeter",
+        "skills": [],
+        "perks": []
+      }
+    },
+    {
+      "id": "veteran",
+      "name": "Veteran",
+      "laufbahn": "militaer",
+      "stufe": 5,
+      "art": "meister",
+      "beschreibung": "Der Veteran hat überlebt, wo andere gefallen sind. Er kennt jedes Gerät, jedes Gelände und jede Lage aus eigener Erfahrung. Man fragt ihn, bevor man plant.",
+      "voraussetzung_stat": null,
+      "vorratslevel": 5,
+      "gehalt": 2500,
+      "freie_punkte_start": 5,
+      "mindestskills": {},
+      "mindestskills_wahl": {
+        "anzahl": 2,
+        "wert": 5,
+        "davon_exklusiv": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "laufbahn_gesamt": true
+      }
+    },
+    {
+      "id": "laufbursche",
+      "name": "Laufbursche",
+      "laufbahn": "verbrechen",
+      "stufe": 1,
+      "art": "grundklasse",
+      "beschreibung": "Der Laufbursche erledigt kleine Aufträge für eine Bande: Botengänge, Schmiere stehen, Fahrdienste. Er kennt die Straße.",
+      "voraussetzung_stat": null,
+      "vorratslevel": 1,
+      "gehalt": 200,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "waffe_pistole": 1,
+        "nahkampf": 1,
+        "schleichen": 1,
+        "wachsamkeit": 1,
+        "fahren": 1,
+        "verhandeln": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": null,
+        "skills": [
+          "waffe_pistole",
+          "waffe_smg",
+          "waffe_schrot",
+          "rueckstosskontrolle",
+          "nahkampf",
+          "wurfwaffen",
+          "reflexe",
+          "lagegespuer",
+          "athletik",
+          "schleichen",
+          "wachsamkeit",
+          "selbstbeherrschung",
+          "mechanik",
+          "fahren",
+          "erste_hilfe",
+          "verhandeln"
+        ],
+        "perks": [
+          "gruppe:grundwerte",
+          "gruppe:allgemein",
+          "boxen",
+          "cqb",
+          "entschlossen",
+          "fingerfertig",
+          "gegner_einschaetzen",
+          "schnell_nachladen",
+          "schnellzieher"
+        ]
+      }
+    },
+    {
+      "id": "handlanger",
+      "name": "Handlanger",
+      "laufbahn": "verbrechen",
+      "stufe": 2,
+      "art": "grundklasse",
+      "beschreibung": "Der Handlanger ist ein fester Mann der Bande. Er treibt Schulden ein, sichert Geschäfte ab und hält den Kopf hin, wenn es knallt.",
+      "voraussetzung_stat": null,
+      "vorratslevel": 2,
+      "gehalt": 350,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "waffe_pistole": 2,
+        "waffe_smg": 1,
+        "nahkampf": 1,
+        "schleichen": 1,
+        "wachsamkeit": 1,
+        "fahren": 1,
+        "verhandeln": 1,
+        "selbstbeherrschung": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": null,
+        "skills": [
+          "waffe_pistole",
+          "waffe_smg",
+          "waffe_schrot",
+          "waffe_ar",
+          "gruppe:kampf",
+          "athletik",
+          "schleichen",
+          "wachsamkeit",
+          "selbstbeherrschung",
+          "mechanik",
+          "fahren",
+          "krisenmanagement",
+          "erste_hilfe",
+          "verhandeln",
+          "fuehrung"
+        ],
+        "perks": [
+          "gruppe:grundwerte",
+          "gruppe:allgemein",
+          "boxen",
+          "krav_maga",
+          "cqb",
+          "entschlossen",
+          "fingerfertig",
+          "gegner_einschaetzen",
+          "schnell_nachladen",
+          "schnellzieher",
+          "improvisieren",
+          "niederhalten",
+          "offangle",
+          "quickthrow"
+        ]
+      }
+    },
+    {
+      "id": "vollstrecker",
+      "name": "Vollstrecker",
+      "laufbahn": "verbrechen",
+      "stufe": 3,
+      "art": "spezialisierung",
+      "beschreibung": "Der Vollstrecker setzt den Willen der Organisation mit Gewalt durch. Sein Ruf erledigt die Hälfte der Arbeit.",
+      "voraussetzung_stat": {
+        "stat": "brawn",
+        "rang": "A"
+      },
+      "vorratslevel": 3,
+      "gehalt": 600,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "nahkampf": 3,
+        "rueckstosskontrolle": 1,
+        "einschuechtern": 1,
+        "waffe_pistole": 2,
+        "waffe_smg": 1,
+        "schleichen": 1,
+        "wachsamkeit": 1,
+        "fahren": 1,
+        "verhandeln": 1,
+        "selbstbeherrschung": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": "handlanger",
+        "skills": [],
+        "perks": []
+      }
+    },
+    {
+      "id": "auftragskiller",
+      "name": "Auftragskiller",
+      "laufbahn": "verbrechen",
+      "stufe": 4,
+      "art": "erweiterte_form",
+      "beschreibung": "Der Auftragskiller tötet gegen Bezahlung. Er plant, wartet und verschwindet.",
+      "erweitert": "vollstrecker",
+      "voraussetzung_stat": {
+        "stat": "nerve",
+        "rang": "A"
+      },
+      "vorratslevel": 4,
+      "gehalt": 950,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "waffe_pistole": 4,
+        "schleichen": 2,
+        "einschuechtern": 2,
+        "nahkampf": 3,
+        "rueckstosskontrolle": 1,
+        "waffe_smg": 1,
+        "wachsamkeit": 1,
+        "fahren": 1,
+        "verhandeln": 1,
+        "selbstbeherrschung": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": "vollstrecker",
+        "skills": [
+          "waffe_praezision"
+        ],
+        "perks": [
+          "triple_tap",
+          "gezielter_schuss"
+        ]
+      }
+    },
+    {
+      "id": "einbrecher",
+      "name": "Einbrecher",
+      "laufbahn": "verbrechen",
+      "stufe": 3,
+      "art": "spezialisierung",
+      "beschreibung": "Der Einbrecher kommt hinein, wo niemand hineinkommen soll, und wieder hinaus, bevor es jemand merkt.",
+      "voraussetzung_stat": {
+        "stat": "agility",
+        "rang": "A"
+      },
+      "vorratslevel": 3,
+      "gehalt": 600,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "schleichen": 3,
+        "athletik": 2,
+        "schloesser": 1,
+        "waffe_pistole": 2,
+        "waffe_smg": 1,
+        "nahkampf": 1,
+        "wachsamkeit": 1,
+        "fahren": 1,
+        "verhandeln": 1,
+        "selbstbeherrschung": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": "handlanger",
+        "skills": [],
+        "perks": []
+      }
+    },
+    {
+      "id": "safeknacker",
+      "name": "Safeknacker",
+      "laufbahn": "verbrechen",
+      "stufe": 4,
+      "art": "erweiterte_form",
+      "beschreibung": "Der Safeknacker öffnet Tresore und Sicherungssysteme. Er ist der Grund, warum sich ein Bruch lohnt.",
+      "erweitert": "einbrecher",
+      "voraussetzung_stat": {
+        "stat": "intellect",
+        "rang": "A"
+      },
+      "vorratslevel": 4,
+      "gehalt": 950,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "schloesser": 3,
+        "mechanik": 2,
+        "schleichen": 3,
+        "athletik": 2,
+        "waffe_pistole": 2,
+        "waffe_smg": 1,
+        "nahkampf": 1,
+        "wachsamkeit": 1,
+        "fahren": 1,
+        "verhandeln": 1,
+        "selbstbeherrschung": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": "einbrecher",
+        "skills": [],
+        "perks": []
+      }
+    },
+    {
+      "id": "fixer",
+      "name": "Fixer",
+      "laufbahn": "verbrechen",
+      "stufe": 3,
+      "art": "spezialisierung",
+      "beschreibung": "Der Fixer vermittelt Geschäfte, Kontakte und Ware. Er kennt jeden und schuldet niemandem etwas.",
+      "voraussetzung_stat": {
+        "stat": "empathy",
+        "rang": "A"
+      },
+      "vorratslevel": 3,
+      "gehalt": 600,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "verhandeln": 3,
+        "bildung": 1,
+        "beschaffen": 1,
+        "waffe_pistole": 2,
+        "waffe_smg": 1,
+        "nahkampf": 1,
+        "schleichen": 1,
+        "wachsamkeit": 1,
+        "fahren": 1,
+        "selbstbeherrschung": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": "handlanger",
+        "skills": [
+          "bildung"
+        ],
+        "perks": []
+      }
+    },
+    {
+      "id": "drahtzieher",
+      "name": "Drahtzieher",
+      "laufbahn": "verbrechen",
+      "stufe": 4,
+      "art": "erweiterte_form",
+      "beschreibung": "Der Drahtzieher plant Coups und hält die Fäden in der Hand. Andere führen aus, was er entscheidet.",
+      "erweitert": "fixer",
+      "voraussetzung_stat": {
+        "stat": "decisiveness",
+        "rang": "A"
+      },
+      "vorratslevel": 4,
+      "gehalt": 950,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "verhandeln": 4,
+        "fuehrung": 2,
+        "krisenmanagement": 2,
+        "beschaffen": 2,
+        "bildung": 1,
+        "waffe_pistole": 2,
+        "waffe_smg": 1,
+        "nahkampf": 1,
+        "schleichen": 1,
+        "wachsamkeit": 1,
+        "fahren": 1,
+        "selbstbeherrschung": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": "fixer",
+        "skills": [],
+        "perks": []
+      }
+    },
+    {
+      "id": "leibwaechter",
+      "name": "Leibwächter",
+      "laufbahn": "verbrechen",
+      "stufe": 3,
+      "art": "spezialisierung",
+      "beschreibung": "Der Leibwächter schützt Bosse und Geschäftspartner. Er sieht die Gefahr, bevor sie da ist.",
+      "voraussetzung_stat": {
+        "stat": "nerve",
+        "rang": "A"
+      },
+      "vorratslevel": 3,
+      "gehalt": 600,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "wachsamkeit": 3,
+        "reflexe": 2,
+        "taktisches_fahren": 1,
+        "waffe_pistole": 2,
+        "waffe_smg": 1,
+        "nahkampf": 1,
+        "schleichen": 1,
+        "fahren": 1,
+        "verhandeln": 1,
+        "selbstbeherrschung": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": "handlanger",
+        "skills": [],
+        "perks": [
+          "schutzreflex"
+        ]
+      }
+    },
+    {
+      "id": "rechte_hand",
+      "name": "Rechte Hand",
+      "laufbahn": "verbrechen",
+      "stufe": 4,
+      "art": "erweiterte_form",
+      "beschreibung": "Die Rechte Hand ist der Vertraute des Bosses. Sie spricht für ihn und führt seine Leute.",
+      "erweitert": "leibwaechter",
+      "voraussetzung_stat": {
+        "stat": "empathy",
+        "rang": "A"
+      },
+      "vorratslevel": 4,
+      "gehalt": 950,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "fuehrung": 2,
+        "verhandeln": 2,
+        "taktisches_fahren": 2,
+        "wachsamkeit": 3,
+        "reflexe": 2,
+        "waffe_pistole": 2,
+        "waffe_smg": 1,
+        "nahkampf": 1,
+        "schleichen": 1,
+        "fahren": 1,
+        "selbstbeherrschung": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": "leibwaechter",
+        "skills": [],
+        "perks": []
+      }
+    },
+    {
+      "id": "unantastbarer",
+      "name": "Unantastbarer",
+      "laufbahn": "verbrechen",
+      "stufe": 5,
+      "art": "meister",
+      "beschreibung": "Der Unantastbare hat sich einen Namen gemacht, den niemand gegen ihn ausspricht. Kein Rivale wagt den ersten Schritt, keine Behörde findet etwas, das hält.",
+      "voraussetzung_stat": null,
+      "vorratslevel": 5,
+      "gehalt": 2450,
+      "freie_punkte_start": 5,
+      "mindestskills": {},
+      "mindestskills_wahl": {
+        "anzahl": 2,
+        "wert": 5,
+        "davon_exklusiv": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "laufbahn_gesamt": true
+      }
+    },
+    {
+      "id": "anwaerter",
+      "name": "Anwärter",
+      "laufbahn": "zivil",
+      "stufe": 1,
+      "art": "grundklasse",
+      "beschreibung": "Der Anwärter steht am Anfang einer Polizei- oder Sicherheitslaufbahn. Er hat Schießtraining, Eingriffstechniken und Erste Hilfe gelernt und kennt die Vorschriften.",
+      "voraussetzung_stat": null,
+      "vorratslevel": 2,
+      "gehalt": 250,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "waffe_pistole": 1,
+        "nahkampf": 1,
+        "fahren": 1,
+        "wachsamkeit": 1,
+        "erste_hilfe": 1,
+        "bildung": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": null,
+        "skills": [
+          "waffe_pistole",
+          "waffe_smg",
+          "waffe_schrot",
+          "waffe_ar",
+          "rueckstosskontrolle",
+          "nahkampf",
+          "reflexe",
+          "lagegespuer",
+          "athletik",
+          "wachsamkeit",
+          "selbstbeherrschung",
+          "fahren",
+          "bildung",
+          "krisenmanagement",
+          "erste_hilfe",
+          "verhandeln",
+          "fuehrung"
+        ],
+        "perks": [
+          "gruppe:grundwerte",
+          "gruppe:allgemein",
+          "judo",
+          "entschlossen",
+          "fingerfertig",
+          "funkdisziplin",
+          "gegner_einschaetzen",
+          "schnell_nachladen",
+          "schnellzieher"
+        ]
+      }
+    },
+    {
+      "id": "streifenpolizist",
+      "name": "Streifenpolizist oder Wachmann",
+      "laufbahn": "zivil",
+      "stufe": 2,
+      "art": "grundklasse",
+      "beschreibung": "Eine Klasse mit zwei Ausprägungen: Der Streifenpolizist arbeitet im Streifendienst, der Wachmann für eine Sicherheitsfirma. Beide kennen Einsätze, Kontrollen und Schichtdienst. Den Namen wählt der Spieler; die Werte sind gleich.",
+      "voraussetzung_stat": null,
+      "vorratslevel": 2,
+      "gehalt": 400,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "waffe_pistole": 2,
+        "waffe_schrot": 1,
+        "nahkampf": 1,
+        "fahren": 1,
+        "wachsamkeit": 1,
+        "erste_hilfe": 1,
+        "bildung": 1,
+        "selbstbeherrschung": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": null,
+        "skills": [
+          "waffe_pistole",
+          "waffe_smg",
+          "waffe_schrot",
+          "waffe_ar",
+          "rueckstosskontrolle",
+          "nahkampf",
+          "reflexe",
+          "lagegespuer",
+          "athletik",
+          "wachsamkeit",
+          "selbstbeherrschung",
+          "fahren",
+          "bildung",
+          "krisenmanagement",
+          "erste_hilfe",
+          "verhandeln",
+          "fuehrung",
+          "waffe_praezision"
+        ],
+        "perks": [
+          "gruppe:grundwerte",
+          "gruppe:allgemein",
+          "judo",
+          "krav_maga",
+          "entschlossen",
+          "fingerfertig",
+          "funkdisziplin",
+          "gegner_einschaetzen",
+          "schnell_nachladen",
+          "schnellzieher",
+          "overwatch",
+          "rueckhalt",
+          "improvisieren"
+        ]
+      }
+    },
+    {
+      "id": "zugriffsbeamter",
+      "name": "Zugriffsbeamter",
+      "laufbahn": "zivil",
+      "stufe": 3,
+      "art": "spezialisierung",
+      "beschreibung": "Der Zugriffsbeamte stürmt Gebäude und nimmt bewaffnete Täter fest. Er arbeitet auf engstem Raum.",
+      "voraussetzung_stat": {
+        "stat": "twitch",
+        "rang": "A"
+      },
+      "vorratslevel": 3,
+      "gehalt": 650,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "waffe_smg": 3,
+        "reflexe": 2,
+        "aufbrechen": 1,
+        "waffe_pistole": 2,
+        "waffe_schrot": 1,
+        "nahkampf": 1,
+        "fahren": 1,
+        "wachsamkeit": 1,
+        "erste_hilfe": 1,
+        "bildung": 1,
+        "selbstbeherrschung": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": "streifenpolizist",
+        "skills": [],
+        "perks": [
+          "cqb",
+          "offangle",
+          "triple_tap"
+        ]
+      }
+    },
+    {
+      "id": "sek_beamter",
+      "name": "SEK-Beamter",
+      "laufbahn": "zivil",
+      "stufe": 4,
+      "art": "erweiterte_form",
+      "beschreibung": "Der SEK-Beamte gehört zu einer Spezialeinheit für Terrorlagen, Geiselnahmen und schwer bewaffnete Täter.",
+      "erweitert": "zugriffsbeamter",
+      "voraussetzung_stat": {
+        "stat": "grit",
+        "rang": "A"
+      },
+      "vorratslevel": 4,
+      "gehalt": 1000,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "waffe_ar": 3,
+        "rueckstosskontrolle": 2,
+        "aufbrechen": 2,
+        "waffe_smg": 3,
+        "reflexe": 2,
+        "waffe_pistole": 2,
+        "waffe_schrot": 1,
+        "nahkampf": 1,
+        "fahren": 1,
+        "wachsamkeit": 1,
+        "erste_hilfe": 1,
+        "bildung": 1,
+        "selbstbeherrschung": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": "zugriffsbeamter",
+        "skills": [],
+        "perks": []
+      }
+    },
+    {
+      "id": "personenschuetzer",
+      "name": "Personenschützer",
+      "laufbahn": "zivil",
+      "stufe": 3,
+      "art": "spezialisierung",
+      "beschreibung": "Der Personenschützer schützt gefährdete Personen im Auftrag von Staat oder Firma.",
+      "voraussetzung_stat": {
+        "stat": "nerve",
+        "rang": "A"
+      },
+      "vorratslevel": 3,
+      "gehalt": 650,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "wachsamkeit": 3,
+        "reflexe": 2,
+        "taktisches_fahren": 1,
+        "waffe_pistole": 2,
+        "waffe_schrot": 1,
+        "nahkampf": 1,
+        "fahren": 1,
+        "erste_hilfe": 1,
+        "bildung": 1,
+        "selbstbeherrschung": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": "streifenpolizist",
+        "skills": [],
+        "perks": [
+          "schutzreflex"
+        ]
+      }
+    },
+    {
+      "id": "schutzkommandofuehrer",
+      "name": "Schutzkommandoführer",
+      "laufbahn": "zivil",
+      "stufe": 4,
+      "art": "erweiterte_form",
+      "beschreibung": "Der Schutzkommandoführer plant Routen und Einsätze und führt das Team um die Schutzperson.",
+      "erweitert": "personenschuetzer",
+      "voraussetzung_stat": {
+        "stat": "decisiveness",
+        "rang": "A"
+      },
+      "vorratslevel": 4,
+      "gehalt": 1000,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "fuehrung": 2,
+        "krisenmanagement": 2,
+        "taktisches_fahren": 2,
+        "wachsamkeit": 3,
+        "reflexe": 2,
+        "waffe_pistole": 2,
+        "waffe_schrot": 1,
+        "nahkampf": 1,
+        "fahren": 1,
+        "erste_hilfe": 1,
+        "bildung": 1,
+        "selbstbeherrschung": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": "personenschuetzer",
+        "skills": [],
+        "perks": []
+      }
+    },
+    {
+      "id": "ermittler",
+      "name": "Ermittler",
+      "laufbahn": "zivil",
+      "stufe": 3,
+      "art": "spezialisierung",
+      "beschreibung": "Der Ermittler klärt Verbrechen auf. Er sichert Spuren, befragt Zeugen und verhört Verdächtige.",
+      "voraussetzung_stat": {
+        "stat": "intellect",
+        "rang": "A"
+      },
+      "vorratslevel": 3,
+      "gehalt": 650,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "bildung": 3,
+        "wachsamkeit": 2,
+        "verhoeren": 1,
+        "waffe_pistole": 2,
+        "waffe_schrot": 1,
+        "nahkampf": 1,
+        "fahren": 1,
+        "erste_hilfe": 1,
+        "selbstbeherrschung": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": "streifenpolizist",
+        "skills": [],
+        "perks": []
+      }
+    },
+    {
+      "id": "verdeckter_ermittler",
+      "name": "Verdeckter Ermittler",
+      "laufbahn": "zivil",
+      "stufe": 4,
+      "art": "erweiterte_form",
+      "beschreibung": "Der Verdeckte Ermittler lebt unter falscher Identität im Milieu, das er überführen soll.",
+      "erweitert": "ermittler",
+      "voraussetzung_stat": {
+        "stat": "empathy",
+        "rang": "A"
+      },
+      "vorratslevel": 4,
+      "gehalt": 1000,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "verhandeln": 2,
+        "schleichen": 2,
+        "verhoeren": 2,
+        "bildung": 3,
+        "wachsamkeit": 2,
+        "waffe_pistole": 2,
+        "waffe_schrot": 1,
+        "nahkampf": 1,
+        "fahren": 1,
+        "erste_hilfe": 1,
+        "selbstbeherrschung": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": "ermittler",
+        "skills": [
+          "schleichen"
+        ],
+        "perks": []
+      }
+    },
+    {
+      "id": "rettungssanitaeter",
+      "name": "Rettungssanitäter",
+      "laufbahn": "zivil",
+      "stufe": 3,
+      "art": "spezialisierung",
+      "beschreibung": "Der Rettungssanitäter versorgt Verletzte am Einsatzort und bringt sie ins Krankenhaus.",
+      "voraussetzung_stat": {
+        "stat": "control",
+        "rang": "A"
+      },
+      "vorratslevel": 3,
+      "gehalt": 650,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "erste_hilfe": 3,
+        "fahren": 2,
+        "operation": 1,
+        "waffe_pistole": 2,
+        "waffe_schrot": 1,
+        "nahkampf": 1,
+        "wachsamkeit": 1,
+        "bildung": 1,
+        "selbstbeherrschung": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": "streifenpolizist",
+        "skills": [],
+        "perks": []
+      }
+    },
+    {
+      "id": "notarzt",
+      "name": "Notarzt",
+      "laufbahn": "zivil",
+      "stufe": 4,
+      "art": "erweiterte_form",
+      "beschreibung": "Der Notarzt führt die Versorgung am Einsatzort und operiert, wenn keine Zeit bleibt.",
+      "erweitert": "rettungssanitaeter",
+      "voraussetzung_stat": {
+        "stat": "intellect",
+        "rang": "A"
+      },
+      "vorratslevel": 4,
+      "gehalt": 1000,
+      "freie_punkte_start": 5,
+      "mindestskills": {
+        "erste_hilfe": 4,
+        "operation": 2,
+        "krisenmanagement": 2,
+        "fahren": 2,
+        "waffe_pistole": 2,
+        "waffe_schrot": 1,
+        "nahkampf": 1,
+        "wachsamkeit": 1,
+        "bildung": 1,
+        "selbstbeherrschung": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "wie": "rettungssanitaeter",
+        "skills": [],
+        "perks": []
+      }
+    },
+    {
+      "id": "koryphaee",
+      "name": "Koryphäe",
+      "laufbahn": "zivil",
+      "stufe": 5,
+      "art": "meister",
+      "beschreibung": "Die Koryphäe ist der Maßstab ihres Fachs. Sie wird gerufen, wenn alle anderen gescheitert sind, und bildet die aus, die nach ihr kommen.",
+      "voraussetzung_stat": null,
+      "vorratslevel": 5,
+      "gehalt": 2500,
+      "freie_punkte_start": 5,
+      "mindestskills": {},
+      "mindestskills_wahl": {
+        "anzahl": 2,
+        "wert": 5,
+        "davon_exklusiv": 1
+      },
+      "perks_vorgegeben": [],
+      "zugang": {
+        "laufbahn_gesamt": true
+      }
+    }
+  ]
+}

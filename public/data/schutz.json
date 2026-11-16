@@ -1,0 +1,202 @@
+{
+  "version": "2026-11-16",
+  "deckung": [
+    {
+      "id": "holztuer_duenn",
+      "name": "dünne Holztür (5 cm)",
+      "wert": 0
+    },
+    {
+      "id": "holztuer_dick",
+      "name": "dicke Holztür (10 cm)",
+      "wert": 2
+    },
+    {
+      "id": "autotuer",
+      "name": "Autotür",
+      "wert": 2
+    },
+    {
+      "id": "panzerglas",
+      "name": "Panzerglas",
+      "wert": 3
+    },
+    {
+      "id": "motorblock",
+      "name": "Motorblock",
+      "wert": 4
+    }
+  ],
+  "fahrzeugpanzerung": [
+    {
+      "id": "panzerung_einfach",
+      "name": "einfache Panzerung (z. B. gepanzerte Limousine, Geldtransporter)",
+      "wert": 5,
+      "vorlaeufig": true
+    },
+    {
+      "id": "panzerung_schwer",
+      "name": "schwere Panzerung (z. B. gepanzerte Militärfahrzeuge)",
+      "wert": 7,
+      "vorlaeufig": true
+    }
+  ],
+  "ruestung": [
+    {
+      "id": "weste_einfach",
+      "name": "einfache Schutzweste",
+      "art": "weste",
+      "zonen": {
+        "brust": 1,
+        "bauch": 1,
+        "unterleib": 1
+      },
+      "vorratslevel": 1,
+      "preis": {
+        "min": 50,
+        "max": 150
+      },
+      "vorlaeufig": true
+    },
+    {
+      "id": "weste_verstaerkt",
+      "name": "verstärkte Weste",
+      "art": "weste",
+      "zonen": {
+        "brust": 2,
+        "bauch": 2,
+        "unterleib": 2
+      },
+      "vorratslevel": 2,
+      "preis": {
+        "min": 200,
+        "max": 500
+      },
+      "vorlaeufig": true
+    },
+    {
+      "id": "weste_schwer",
+      "name": "schwere Weste",
+      "art": "weste",
+      "zonen": {
+        "brust": 3,
+        "bauch": 3,
+        "unterleib": 3
+      },
+      "vorratslevel": 3,
+      "preis": {
+        "min": 600,
+        "max": 1200
+      },
+      "vorlaeufig": true
+    },
+    {
+      "id": "helm_leicht",
+      "name": "leichter Helm (Stahl- oder Splitterschutzhelm)",
+      "art": "helm",
+      "zonen": {
+        "kopf": 1
+      },
+      "vorratslevel": 1,
+      "preis": {
+        "min": 30,
+        "max": 100
+      },
+      "einschraenkung": {
+        "hoeren_baender": 1
+      },
+      "vorlaeufig": true
+    },
+    {
+      "id": "gefechtshelm",
+      "name": "Gefechtshelm",
+      "art": "helm",
+      "zonen": {
+        "kopf": 2
+      },
+      "vorratslevel": 2,
+      "preis": {
+        "min": 250,
+        "max": 600
+      },
+      "einschraenkung": {
+        "hoeren_baender": 1
+      },
+      "vorlaeufig": true
+    },
+    {
+      "id": "helm_schwer",
+      "name": "schwerer Helm (mit Visier)",
+      "art": "helm",
+      "zonen": {
+        "kopf": 3
+      },
+      "vorratslevel": 4,
+      "preis": {
+        "min": 1000,
+        "max": 2500
+      },
+      "einschraenkung": {
+        "hoeren_baender": 1
+      },
+      "vorlaeufig": true
+    },
+    {
+      "id": "schutzanzug",
+      "name": "Schutzanzug",
+      "art": "anzug",
+      "zonen": {
+        "kopf": 2,
+        "brust": 3,
+        "bauch": 3,
+        "unterleib": 3,
+        "arm_r": 2,
+        "arm_l": 2,
+        "bein_r": 2,
+        "bein_l": 2
+      },
+      "vorratslevel": 4,
+      "preis": {
+        "min": 3000,
+        "max": 8000
+      },
+      "einschraenkung": {
+        "bewegung_max": "gehen",
+        "malsteps_stat": {
+          "agility": 2
+        },
+        "hoeren_baender": 2,
+        "nicht_im_gefecht_anlegen": true
+      },
+      "vorlaeufig": true
+    }
+  ],
+  "schilde": [
+    {
+      "id": "ballistischer_schild",
+      "name": "ballistischer Schild",
+      "deckung": 3,
+      "zonen": [
+        "kopf",
+        "brust",
+        "bauch",
+        "unterleib",
+        "arm_r",
+        "arm_l"
+      ],
+      "nur_von_vorn": true,
+      "vorratslevel": 3,
+      "preis": {
+        "min": 1500,
+        "max": 3000
+      },
+      "einschraenkung": {
+        "bewegung_max": "gehen",
+        "waffen": [
+          "Pistole"
+        ],
+        "schiessen_malsteps": 1
+      }
+    }
+  ]
+}

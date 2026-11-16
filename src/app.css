@@ -1,0 +1,48 @@
+:root {
+  --hg: #f4f4f1;
+  --flaeche: #ffffff;
+  --flaeche-2: #ebebe6;
+  --text: #1b1d22;
+  --text-2: #5b6068;
+  --linie: #d5d5ce;
+  --akzent: #c4520f;
+  --akzent-text: #ffffff;
+  --gefahr: #b3261e;
+  --ok: #2e7d32;
+  --radius: 12px;
+  --tipp: 48px;
+  color-scheme: light;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='hell']) {
+    --hg: #121418; --flaeche: #1c1f25; --flaeche-2: #262a31; --text: #ececec; --text-2: #a4a9b2;
+    --linie: #343944; --akzent: #f07a2e; --akzent-text: #16181d; --gefahr: #f2786f; --ok: #6cc070;
+    color-scheme: dark;
+  }
+}
+:root[data-theme='dunkel'] {
+  --hg: #121418; --flaeche: #1c1f25; --flaeche-2: #262a31; --text: #ececec; --text-2: #a4a9b2;
+  --linie: #343944; --akzent: #f07a2e; --akzent-text: #16181d; --gefahr: #f2786f; --ok: #6cc070;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--hg); color: var(--text); -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
+#app { min-height: 100%; display: flex; flex-direction: column; }
+button { font: inherit; color: inherit; min-height: var(--tipp); min-width: var(--tipp); border-radius: var(--radius);
+  border: 1px solid var(--linie); background: var(--flaeche); padding: 0 16px; cursor: pointer; }
+button.haupt { background: var(--akzent); color: var(--akzent-text); border-color: transparent; font-weight: 600; }
+button.gefahr { color: var(--gefahr); border-color: var(--gefahr); }
+button.flach { border-color: transparent; background: transparent; }
+button:disabled { opacity: 0.45; cursor: default; }
+button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--akzent); outline-offset: 2px; }
+input, textarea, select { font: inherit; color: inherit; background: var(--flaeche); border: 1px solid var(--linie);
+  border-radius: var(--radius); padding: 12px; width: 100%; min-height: var(--tipp); }
+label { display: block; font-weight: 600; margin: 16px 0 6px; }
+.hinweis { color: var(--text-2); font-size: 0.9rem; }
+.fehler { color: var(--gefahr); }
+.karte { background: var(--flaeche); border: 1px solid var(--linie); border-radius: var(--radius); padding: 16px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }

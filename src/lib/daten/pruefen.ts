@@ -1,0 +1,328 @@
+// Datenprüfung (konzept.md § 2, Leitlinie 9): Pflichtfelder, gültige IDs, Verweise zwischen Dateien.
+// Liefert eine Liste lesbarer Fehler; leer heißt: Daten in Ordnung.
+
+import type { Modifikator, Spieldaten } from './typen';
+
+const ID_MUSTER = /^[a-z0-9_]+$/;
+const RAENGE = ['S', 'A', 'B', 'C', 'D', 'E', 'F'];
+const ANSCHLUESSE = ['schiene_oben', 'schiene_unten', 'schiene_seitlich', 'muendung_pistole', 'muendung_gewehr', 'magazin'];
+const SKILLGRUPPEN = ['waffen', 'kampf', 'koerper', 'technik', 'entscheidung', 'medizin', 'sozial', 'exklusiv'];
+const PERKGRUPPEN = ['grundwerte', 'kampfkunst', 'kampf', 'allgemein', 'exklusiv'];
+const HINWEIS_STELLEN = ['schiessen', 'probe', 'leiter', 'schaden', 'heilung', 'nahkampf', 'breakaction'];
+const LADEARTEN = ['wechselmagazin', 'trommel', 'roehrenmagazin', 'fest', 'einzelschuss'];
+const FEUERMODI = ['EF', 'Burst', 'VA'];
+const KLASSENARTEN = ['grundklasse', 'spezialisierung', 'erweiterte_form', 'meister'];
+const GRUNDWERTE = ['hp', 'schmerzresistenz', 'nahkampfschaden', 'wurfweite_band'];
+const MOD_ARTEN = ['grundwert', 'stat', 'skill', 'probe', 'alle'];
+const WIRKUNGEN = ['wert', 'stepshields', 'malsteps', 'krit_schwelle'];
+const NUR_STEPS = ['▲', '▼'];
+
+export function pruefeDaten(d: Spieldaten): string[] {
+  const fehler: string[] = [];
+  const f = (ort: string, text: string) => fehler.push(`${ort}: ${text}`);
+
+  // ---------- Hilfen
+  function ids(datei: string, liste: { id: string }[]): Set<string> {
+    const menge = new Set<string>();
+    for (const e of liste) {
+      if (typeof e.id !== 'string' || !ID_MUSTER.test(e.id)) f(datei, `ungültige ID „${e.id}“`);
+      if (menge.has(e.id)) f(datei, `doppelte ID „${e.id}“`);
+      menge.add(e.id);
+    }
+    return menge;
+  }
+  function pflicht(ort: string, obj: object, felder: string[]) {
+    for (const feld of felder) {
+      const wert = (obj as Record<string, unknown>)[feld];
+      if (wert === undefined || wert === '') f(ort, `Pflichtfeld „${feld}“ fehlt`);
+    }
+  }
+  function version(datei: string, obj: { version?: unknown }) {
+    if (typeof obj?.version !== 'string' || obj.version === '') f(datei, 'Feld „version“ fehlt');
+  }
+
+  for (const [name, inhalt] of Object.entries(d)) version(`${name}.json`, inhalt as { version?: unknown });
+
+  const r = d.regeln;
+  const baender = new Set(r.schiessen.reichweitenbaender.map((b) => b.id));
+  const statIds = ids('stats.json', d.stats.eintraege);
+  const skillIds = ids('skills.json', d.skills.eintraege);
+  const perkIds = ids('perks.json', d.perks.eintraege);
+  const zonenIds = ids('koerperzonen.json', d.koerperzonen.eintraege);
+  const munIds = ids('munition.json', d.munition.eintraege);
+  const waffenIds = ids('waffen.json', d.waffen.eintraege);
+  const aufsatzIds = ids('aufsaetze.json', d.aufsaetze.eintraege);
+  const zubehoerIds = ids('aufsaetze.json (zubehoer)', d.aufsaetze.zubehoer);
+  const nahkampfIds = ids('nahkampfwaffen.json', d.nahkampfwaffen.eintraege);
+  const sprengIds = ids('wurf_und_sprengwaffen.json', d.wurf_und_sprengwaffen.eintraege);
+  ids('schutz.json (deckung)', d.schutz.deckung);
+  ids('schutz.json (fahrzeugpanzerung)', d.schutz.fahrzeugpanzerung);
+  ids('schutz.json (ruestung)', d.schutz.ruestung);
+  ids('schutz.json (schilde)', d.schutz.schilde);
+  const klassenIds = ids('klassen.json', d.klassen.eintraege);
+  const laufbahnIds = ids('klassen.json (laufbahnen)', d.klassen.laufbahnen);
+  const ausloeserIds = new Set(r.leiter.ausloeser.map((a) => a.id));
+  const klasse = new Map(d.klassen.eintraege.map((k) => [k.id, k]));
+  const waffenkategorien = new Set(d.skills.eintraege.flatMap((s) => s.waffenkategorien ?? []));
+  const skillGruppen = new Set(d.skills.eintraege.map((s) => s.gruppe));
+  const perkGruppen = new Set(d.perks.eintraege.map((p) => p.gruppe));
+
+  function modifikatoren(ort: string, liste: Modifikator[] | undefined) {
+    for (const m of liste ?? []) {
+      if (!MOD_ARTEN.includes(m.ziel?.art)) f(ort, `Modifikator mit unbekanntem Ziel „${m.ziel?.art}“`);
+      if (m.ziel.art === 'grundwert' && !GRUNDWERTE.includes(m.ziel.id ?? '')) f(ort, `unbekannter Grundwert „${m.ziel.id}“`);
+      if (m.ziel.art === 'stat' && !statIds.has(m.ziel.id ?? '')) f(ort, `unbekannter Stat „${m.ziel.id}“`);
+      if (m.ziel.art === 'skill' && !skillIds.has(m.ziel.id ?? '')) f(ort, `unbekannter Skill „${m.ziel.id}“`);
+      if (m.ziel.art !== 'alle' && !m.ziel.id) f(ort, 'Modifikator ohne Ziel-ID');
+      const wirkung = Object.keys(m.wirkung ?? {}).filter((k) => WIRKUNGEN.includes(k));
+      if (wirkung.length !== 1) f(ort, 'Modifikator braucht genau eine Wirkung');
+      if (m.wirkung.wert !== undefined && m.ziel.art !== 'grundwert') f(ort, '„wert“ ist nur für Grundwerte erlaubt');
+      for (const b of m.bedingung?.baender ?? []) if (!baender.has(b as never)) f(ort, `unbekanntes Band „${b}“`);
+      if (m.bedingung?.skill && !skillIds.has(m.bedingung.skill)) f(ort, `unbekannter Skill „${m.bedingung.skill}“`);
+    }
+  }
+
+  // ---------- regeln.json
+  for (const rang of RAENGE) if (typeof r.raenge[rang as keyof typeof r.raenge] !== 'number') f('regeln.json', `Rang ${rang} ohne Wert`);
+  if (r.steps.faktoren.length !== r.steps.keine_probe_ab) f('regeln.json', 'steps.faktoren muss genau keine_probe_ab Einträge haben');
+  if (r.steps.faktoren[0] !== 1) f('regeln.json', 'steps.faktoren beginnt nicht mit 1');
+  for (let s = r.leiter.min; s <= r.leiter.max; s++) {
+    const stufe = r.leiter.stufen[String(s)];
+    if (!stufe) f('regeln.json', `Leiterstufe ${s} fehlt`);
+    else for (const sy of stufe.symptome) if (!r.symptome[sy]) f('regeln.json', `Leiterstufe ${s}: unbekanntes Symptom „${sy}“`);
+    if (!d.darstellung.leiter_farben[String(s)]) f('darstellung.json', `Farbe für Leiterstufe ${s} fehlt`);
+  }
+  if (!baender.has(r.grundwerte.wurfweite_band)) f('regeln.json', 'grundwerte.wurfweite_band ist kein Band');
+  const lageGruppen = new Set(r.lage.gruppen.map((g) => g.id));
+  for (const u of r.lage.umstaende) {
+    if (!lageGruppen.has(u.gruppe)) f('regeln.json', `Lage-Umstand ${u.id}: unbekannte Gruppe „${u.gruppe}“`);
+    for (const b of u.nicht_in_baendern ?? []) if (!baender.has(b as never)) f('regeln.json', `Lage-Umstand ${u.id}: unbekanntes Band „${b}“`);
+  }
+  for (const g of r.lage.gruppen) {
+    const umst = r.lage.umstaende.filter((u) => u.gruppe === g.id);
+    if (g.quelle !== 'reichweite' && umst.length === 0) f('regeln.json', `Lage-Gruppe ${g.id} ohne Umstände`);
+    if (g.auswahl === 'eins' && g.quelle !== 'reichweite' && umst.filter((u) => u.standard).length !== 1)
+      f('regeln.json', `Lage-Gruppe ${g.id} braucht genau einen Standard`);
+  }
+  for (const s of r.sicht.stufen) if (s.erkennen_bis && s.erkennen_bis !== 'keins' && !baender.has(s.erkennen_bis as never))
+    f('regeln.json', `Sichtstufe ${s.id}: unbekanntes Band`);
+  if (r.initiative && !statIds.has((r.initiative as { stat: string }).stat)) f('regeln.json', 'initiative.stat unbekannt');
+
+  // ---------- stats.json
+  for (const s of d.stats.eintraege) {
+    pflicht(`stats.json ${s.id}`, s, ['id', 'name', 'gruppe']);
+    if (!['A', 'B', 'C'].includes(s.gruppe)) f(`stats.json ${s.id}`, `ungültige Gruppe „${s.gruppe}“`);
+  }
+  if (d.stats.eintraege.length !== d.klassen.stufen[0]?.rank_set.length)
+    f('stats.json', 'Zahl der Stats passt nicht zur Größe des Rank-Sets');
+
+  // ---------- skills.json
+  for (const s of d.skills.eintraege) {
+    const ort = `skills.json ${s.id}`;
+    pflicht(ort, s, ['id', 'name', 'stat', 'gruppe']);
+    if (!statIds.has(s.stat)) f(ort, `unbekannter Stat „${s.stat}“`);
+    if (!SKILLGRUPPEN.includes(s.gruppe)) f(ort, `unbekannte Gruppe „${s.gruppe}“`);
+    if (s.gruppe === 'exklusiv' && !s.exklusiv?.length) f(ort, 'Gruppe exklusiv ohne Liste „exklusiv“');
+    for (const k of s.exklusiv ?? []) {
+      if (!klassenIds.has(k)) f(ort, `exklusiv: unbekannte Klasse „${k}“`);
+      else if (klasse.get(k)?.art !== 'spezialisierung') f(ort, `exklusiv: „${k}“ ist keine Spezialisierung`);
+    }
+  }
+
+  // ---------- perks.json
+  for (const p of d.perks.eintraege) {
+    const ort = `perks.json ${p.id}`;
+    pflicht(ort, p, ['id', 'name', 'gruppe', 'rang', 'kurz', 'wirkung']);
+    if (!PERKGRUPPEN.includes(p.gruppe)) f(ort, `unbekannte Gruppe „${p.gruppe}“`);
+    if (!Number.isInteger(p.rang) || p.rang < 1) f(ort, 'Rang muss eine ganze Zahl ab 1 sein');
+    for (const v of p.voraussetzung?.stats ?? []) if (!statIds.has(v.stat)) f(ort, `Voraussetzung: unbekannter Stat „${v.stat}“`);
+    for (const v of p.voraussetzung?.perks ?? []) if (!perkIds.has(v)) f(ort, `Voraussetzung: unbekannter Perk „${v}“`);
+    if (p.voraussetzung?.perks.includes(p.id)) f(ort, 'setzt sich selbst voraus');
+    if ((p.gruppe === 'exklusiv') !== Boolean(p.exklusiv?.length)) f(ort, '„exklusiv“ nur und immer bei Gruppe exklusiv');
+    for (const k of p.exklusiv ?? []) if (!klassenIds.has(k)) f(ort, `exklusiv: unbekannte Klasse „${k}“`);
+    for (const h of p.hinweis_bei ?? []) if (!HINWEIS_STELLEN.includes(h)) f(ort, `unbekannte Hinweisstelle „${h}“`);
+    if (!p.modifikatoren?.length && !p.hinweis_bei?.length) f(ort, 'weder Modifikatoren noch Hinweisstellen');
+    modifikatoren(ort, p.modifikatoren);
+  }
+
+  // ---------- koerperzonen.json
+  const w8 = d.koerperzonen.eintraege.map((z) => z.w8).filter((x): x is number => x !== null);
+  for (let i = 1; i <= 8; i++) if (w8.filter((x) => x === i).length !== 1) f('koerperzonen.json', `W8-Ergebnis ${i} muss genau einer Zone gehören`);
+  for (const z of d.koerperzonen.eintraege) {
+    const ort = `koerperzonen.json ${z.id}`;
+    pflicht(ort, z, ['id', 'name', 'multiplikator', 'bereich', 'normal', 'krit']);
+    if (z.w8 === null && !z.nur_ansage) f(ort, 'ohne W8-Nummer muss „nur_ansage“ gesetzt sein');
+    for (const b of [z.normal.blutung, z.krit.blutung]) if (b && !(r.blutung as Record<string, unknown>)?.[b]) f(ort, `unbekannte Blutung „${b}“`);
+  }
+
+  // ---------- munition.json
+  for (const m of d.munition.eintraege) {
+    const ort = `munition.json ${m.id}`;
+    pflicht(ort, m, ['id', 'name', 'art', 'typen']);
+    if (Object.keys(m.typen ?? {}).length === 0) f(ort, 'keine Munitionstypen');
+    for (const [typ, t] of Object.entries(m.typen ?? {})) {
+      if (typeof t.mw !== 'number') f(ort, `${typ}: MW fehlt`);
+      if (t.dk === null && !t.stumpf) f(ort, `${typ}: DK fehlt (nur stumpfe Munition hat keine DK)`);
+      for (const b of Object.keys(t.schrotzahl ?? {})) if (!baender.has(b as never)) f(ort, `${typ}: unbekanntes Band „${b}“`);
+    }
+  }
+
+  // ---------- waffen.json
+  const munMap = new Map(d.munition.eintraege.map((m) => [m.id, m]));
+  const sprengMap = new Map(d.wurf_und_sprengwaffen.eintraege.map((s) => [s.id, s]));
+  for (const w of d.waffen.eintraege) {
+    const ort = `waffen.json ${w.id}`;
+    pflicht(ort, w, ['id', 'name', 'kategorie', 'munition', 'magazin', 'ladeart', 'feuermodi', 'reichweite', 'zuverlaessigkeit']);
+    if (!waffenkategorien.has(w.kategorie)) f(ort, `kein Waffenskill für Kategorie „${w.kategorie}“`);
+    if (Array.isArray(w.munition)) {
+      for (const g of w.munition) {
+        const s = sprengMap.get(g);
+        if (!s) f(ort, `unbekanntes Geschoss „${g}“`);
+        else if (!s.verwendet_in?.includes(w.id)) f(ort, `Geschoss „${g}“ nennt die Waffe nicht in verwendet_in`);
+      }
+    } else {
+      const m = munMap.get(w.munition);
+      if (!m) f(ort, `unbekanntes Kaliber „${w.munition}“`);
+      for (const t of w.munitionstypen ?? []) if (m && !m.typen[t]) f(ort, `Kaliber hat keinen Typ „${t}“`);
+    }
+    if (!LADEARTEN.includes(w.ladeart)) f(ort, `unbekannte Ladeart „${w.ladeart}“`);
+    if (!['zuverlaessig', 'normal'].includes(w.zuverlaessigkeit)) f(ort, 'ungültige Zuverlässigkeit');
+    for (const b of baender) if (!(b in (w.reichweite ?? {}))) f(ort, `Reichweite für Band „${b}“ fehlt`);
+    const modi = Object.keys(w.feuermodi ?? {});
+    if (modi.length === 0) f(ort, 'kein Feuermodus');
+    for (const [modus, fm] of Object.entries(w.feuermodi ?? {})) {
+      if (!FEUERMODI.includes(modus)) f(ort, `unbekannter Feuermodus „${modus}“`);
+      if (!fm) continue;
+      if (modus === 'VA') {
+        const soll = r.schiessen.garbenfaktor_aus_feuerrate.find((g) => g.bis === null || fm.feuerrate <= g.bis)?.faktor;
+        if (fm.garbenfaktor !== soll) f(ort, `Garbenfaktor ${fm.garbenfaktor} passt nicht zur Feuerrate ${fm.feuerrate} (erwartet ${soll})`);
+      } else if (fm.garbenfaktor !== undefined) f(ort, 'Garbenfaktor nur bei VA');
+      if (modus === 'Burst') {
+        if (!fm.burst_laenge) f(ort, 'Burst ohne burst_laenge');
+        else if (fm.feuerrate % fm.burst_laenge !== 0) f(ort, 'Burst-Feuerrate ist kein Vielfaches der Burst-Länge');
+      }
+    }
+    for (const a of w.anschluesse ?? []) if (!ANSCHLUESSE.includes(a)) f(ort, `unbekannter Anschluss „${a}“`);
+    if (w.magazine?.length && !w.anschluesse.includes('magazin')) f(ort, 'magazine ohne Anschluss „magazin“');
+    for (const n of w.magazine ?? []) {
+      const passt = d.aufsaetze.eintraege.some((a) => a.passt_an.waffen.includes(w.id) && a.werte?.magazin === n);
+      if (!passt) f(ort, `kein Aufsatz für Magazingröße ${n}`);
+    }
+    for (const z of w.zubehoer ?? []) if (!zubehoerIds.has(z)) f(ort, `unbekanntes Zubehör „${z}“`);
+  }
+
+  // ---------- aufsaetze.json
+  for (const a of d.aufsaetze.eintraege) {
+    const ort = `aufsaetze.json ${a.id}`;
+    pflicht(ort, a, ['id', 'name', 'passt_an', 'einsatz']);
+    if (!a.passt_an.anschluss.length) f(ort, 'kein Anschluss');
+    for (const x of a.passt_an.anschluss) if (!ANSCHLUESSE.includes(x)) f(ort, `unbekannter Anschluss „${x}“`);
+    for (const x of a.passt_an.waffen) if (!waffenIds.has(x)) f(ort, `unbekannte Waffe „${x}“`);
+    if (!['immer', 'schalter'].includes(a.einsatz)) f(ort, 'einsatz muss „immer“ oder „schalter“ sein');
+    if (a.einsatz === 'schalter' && !a.schalter_text) f(ort, 'Schalter ohne schalter_text');
+    if (a.waffe && !waffenIds.has(a.waffe)) f(ort, `unbekannte Waffe „${a.waffe}“`);
+    if (a.nahkampfwaffe && !nahkampfIds.has(a.nahkampfwaffe)) f(ort, `unbekannte Nahkampfwaffe „${a.nahkampfwaffe}“`);
+    modifikatoren(ort, a.modifikatoren);
+  }
+  void aufsatzIds;
+
+  // ---------- nahkampfwaffen.json
+  for (const n of d.nahkampfwaffen.eintraege) {
+    const ort = `nahkampfwaffen.json ${n.id}`;
+    pflicht(ort, n, ['id', 'name', 'art']);
+    if (!['stumpf', 'scharf'].includes(n.art)) f(ort, 'art muss „stumpf“ oder „scharf“ sein');
+    const varianten = n.varianten ? Object.values(n.varianten) : [n];
+    for (const v of varianten) {
+      if (!['kurz', 'mittel', 'lang'].includes(v.laenge ?? '')) f(ort, 'Länge fehlt oder ist ungültig');
+      if (typeof v.mw !== 'number') f(ort, 'MW fehlt');
+      const art = ('art' in v && v.art) || n.art;
+      if (art === 'scharf' && typeof v.dk !== 'number') f(ort, 'scharfe Waffe ohne DK');
+      if (art === 'stumpf' && v.dk !== null) f(ort, 'stumpfe Waffe mit DK');
+    }
+    for (const k of n.mit_waffe ?? []) if (!waffenkategorien.has(k)) f(ort, `unbekannte Waffenkategorie „${k}“`);
+  }
+
+  // ---------- wurf_und_sprengwaffen.json
+  for (const s of d.wurf_und_sprengwaffen.eintraege) {
+    const ort = `wurf_und_sprengwaffen.json ${s.id}`;
+    pflicht(ort, s, ['id', 'name', 'art', 'einsatz']);
+    if (!['wurf', 'geschoss'].includes(s.einsatz)) f(ort, 'einsatz muss „wurf“ oder „geschoss“ sein');
+    if (s.einsatz === 'geschoss' && !s.verwendet_in?.length) f(ort, 'Geschoss ohne verwendet_in');
+    for (const w of s.verwendet_in ?? []) {
+      if (!waffenIds.has(w)) f(ort, `unbekannte Waffe „${w}“`);
+      const waffe = d.waffen.eintraege.find((x) => x.id === w);
+      if (waffe && !(Array.isArray(waffe.munition) && waffe.munition.includes(s.id))) f(ort, `Waffe „${w}“ führt das Geschoss nicht`);
+    }
+    for (const b of [...Object.keys(s.bereiche ?? {}), ...(s.kern ?? [])]) if (!baender.has(b as never)) f(ort, `unbekanntes Band „${b}“`);
+    for (const a of s.ausloeser ?? []) if (!ausloeserIds.has(a)) f(ort, `unbekannter Auslöser „${a}“`);
+  }
+  void sprengIds;
+
+  // ---------- schutz.json
+  for (const ru of d.schutz.ruestung)
+    for (const z of Object.keys(ru.zonen)) if (!zonenIds.has(z)) f(`schutz.json ${ru.id}`, `unbekannte Zone „${z}“`);
+  for (const sc of d.schutz.schilde) {
+    for (const z of sc.zonen) if (!zonenIds.has(z)) f(`schutz.json ${sc.id}`, `unbekannte Zone „${z}“`);
+  }
+
+  // ---------- klassen.json
+  const stufen = new Map(d.klassen.stufen.map((s) => [s.stufe, s]));
+  for (const s of d.klassen.stufen) {
+    if (s.rank_set.length !== d.stats.eintraege.length) f('klassen.json', `Rank-Set der Stufe ${s.stufe} hat nicht ${d.stats.eintraege.length} Einträge`);
+    for (const rg of s.rank_set) if (!RAENGE.includes(rg)) f('klassen.json', `Stufe ${s.stufe}: ungültiger Rang „${rg}“`);
+  }
+  for (const k of d.klassen.eintraege) {
+    const ort = `klassen.json ${k.id}`;
+    pflicht(ort, k, ['id', 'name', 'laufbahn', 'stufe', 'art', 'vorratslevel', 'gehalt', 'mindestskills', 'zugang']);
+    if (!laufbahnIds.has(k.laufbahn)) f(ort, `unbekannte Laufbahn „${k.laufbahn}“`);
+    const stufe = stufen.get(k.stufe);
+    if (!stufe) f(ort, `unbekannte Stufe ${k.stufe}`);
+    if (!KLASSENARTEN.includes(k.art)) f(ort, `unbekannte Art „${k.art}“`);
+    if (k.erweitert) {
+      const basis = klasse.get(k.erweitert);
+      if (!basis) f(ort, `erweitert unbekannte Klasse „${k.erweitert}“`);
+      else if (basis.art !== 'spezialisierung' || basis.laufbahn !== k.laufbahn) f(ort, 'erweitert keine Spezialisierung derselben Laufbahn');
+    }
+    if (k.art === 'erweiterte_form' && !k.erweitert) f(ort, 'erweiterte Form ohne „erweitert“');
+    if (k.voraussetzung_stat) {
+      if (!statIds.has(k.voraussetzung_stat.stat)) f(ort, `Voraussetzung: unbekannter Stat „${k.voraussetzung_stat.stat}“`);
+      if (!RAENGE.includes(k.voraussetzung_stat.rang)) f(ort, 'Voraussetzung: ungültiger Rang');
+    }
+    if (k.rank_vorschlag && stufe) {
+      const vorschlag = Object.values(k.rank_vorschlag).sort().join();
+      if (vorschlag !== [...stufe.rank_set].sort().join()) f(ort, 'Rank-Vorschlag passt nicht zum Rank-Set der Stufe');
+      for (const s of Object.keys(k.rank_vorschlag)) if (!statIds.has(s)) f(ort, `Rank-Vorschlag: unbekannter Stat „${s}“`);
+      if (Object.keys(k.rank_vorschlag).length !== statIds.size) f(ort, 'Rank-Vorschlag nennt nicht jeden Stat');
+    }
+    for (const [s, wert] of Object.entries(k.mindestskills ?? {})) {
+      if (!skillIds.has(s)) f(ort, `Mindestskill: unbekannter Skill „${s}“`);
+      if (!Number.isInteger(wert) || wert < 1 || wert > r.aufstieg.skill_max) f(ort, `Mindestskill ${s}: Wert ${wert} außerhalb 1–${r.aufstieg.skill_max}`);
+    }
+    for (const p of k.perks_vorgegeben ?? []) if (!perkIds.has(p)) f(ort, `vorgegebener Perk unbekannt: „${p}“`);
+    const z = k.zugang;
+    if (z.wie && !klassenIds.has(z.wie)) f(ort, `Zugang „wie“: unbekannte Klasse „${z.wie}“`);
+    for (const s of z.skills ?? []) {
+      if (s.startsWith('gruppe:')) { if (!skillGruppen.has(s.slice(7))) f(ort, `Zugang: unbekannte Skillgruppe „${s}“`); }
+      else if (!skillIds.has(s)) f(ort, `Zugang: unbekannter Skill „${s}“`);
+    }
+    for (const p of z.perks ?? []) {
+      if (p.startsWith('gruppe:')) { if (!perkGruppen.has(p.slice(7) as never)) f(ort, `Zugang: unbekannte Perkgruppe „${p}“`); }
+      else if (!perkIds.has(p)) f(ort, `Zugang: unbekannter Perk „${p}“`);
+    }
+    // Ketten über „wie“ dürfen nicht im Kreis laufen.
+    const gesehen = new Set<string>([k.id]);
+    let naechste = z.wie;
+    while (naechste) {
+      if (gesehen.has(naechste)) { f(ort, 'Zugang „wie“ läuft im Kreis'); break; }
+      gesehen.add(naechste);
+      naechste = klasse.get(naechste)?.zugang.wie ?? null;
+    }
+  }
+
+  // ---------- darstellung.json
+  for (const t of ['stat', 'skill', 'perk'] as const) if (!d.darstellung.typen[t]) f('darstellung.json', `Typ „${t}“ fehlt`);
+  for (const [name, h] of [...Object.entries(d.darstellung.herkunft), ...Object.entries(d.darstellung.typen)])
+    if (NUR_STEPS.includes(h.zeichen)) f('darstellung.json', `„${name}“ nutzt ${h.zeichen}; ▲ und ▼ sind für Steps reserviert`);
+
+  return fehler;
+}

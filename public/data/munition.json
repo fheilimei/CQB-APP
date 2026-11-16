@@ -1,0 +1,415 @@
+{
+  "version": "2026-11-16",
+  "eintraege": [
+    {
+      "id": "9x18",
+      "name": "9x18mm",
+      "art": "patrone",
+      "unterschall": true,
+      "typen": {
+        "FMJ": {
+          "dk": 0,
+          "mw": 1
+        },
+        "HP": {
+          "dk": 0,
+          "mw": 2
+        },
+        "AP": {
+          "dk": 1,
+          "mw": 1
+        },
+        "Gummi": {
+          "dk": null,
+          "mw": 1,
+          "stumpf": true,
+          "vorratslevel": 2,
+          "preis_10": {
+            "min": 10,
+            "max": 30
+          },
+          "vorlaeufig": true
+        }
+      }
+    },
+    {
+      "id": "57x28",
+      "name": "5,7x28mm",
+      "art": "patrone",
+      "typen": {
+        "FMJ": {
+          "dk": 1,
+          "mw": 1
+        },
+        "HP": {
+          "dk": 0,
+          "mw": 2
+        },
+        "AP": {
+          "dk": 2,
+          "mw": 1
+        },
+        "Unterschall": {
+          "dk": 0,
+          "mw": 1,
+          "unterschall": true,
+          "vorratslevel": 3
+        }
+      }
+    },
+    {
+      "id": "9x19",
+      "name": "9x19 Parabellum",
+      "art": "patrone",
+      "typen": {
+        "FMJ": {
+          "dk": 1,
+          "mw": 1
+        },
+        "HP": {
+          "dk": 1,
+          "mw": 2
+        },
+        "AP": {
+          "dk": 2,
+          "mw": 1
+        },
+        "Unterschall": {
+          "dk": 0,
+          "mw": 1,
+          "unterschall": true,
+          "vorratslevel": 3
+        },
+        "Gummi": {
+          "dk": null,
+          "mw": 1,
+          "stumpf": true,
+          "vorratslevel": 2,
+          "preis_10": {
+            "min": 10,
+            "max": 30
+          },
+          "vorlaeufig": true
+        }
+      }
+    },
+    {
+      "id": "45acp",
+      "name": "45 ACP",
+      "art": "patrone",
+      "unterschall": true,
+      "typen": {
+        "FMJ": {
+          "dk": 1,
+          "mw": 2
+        },
+        "HP": {
+          "dk": 0,
+          "mw": 3
+        },
+        "AP": {
+          "dk": 2,
+          "mw": 2
+        },
+        "Gummi": {
+          "dk": null,
+          "mw": 1,
+          "stumpf": true,
+          "vorratslevel": 2,
+          "preis_10": {
+            "min": 10,
+            "max": 30
+          },
+          "vorlaeufig": true
+        }
+      }
+    },
+    {
+      "id": "38spc",
+      "name": ".38 Special",
+      "art": "patrone",
+      "unterschall": true,
+      "typen": {
+        "FMJ": {
+          "dk": 0,
+          "mw": 1
+        },
+        "HP": {
+          "dk": 0,
+          "mw": 2
+        },
+        "Gummi": {
+          "dk": null,
+          "mw": 1,
+          "stumpf": true,
+          "vorratslevel": 2,
+          "preis_10": {
+            "min": 10,
+            "max": 30
+          },
+          "vorlaeufig": true
+        }
+      }
+    },
+    {
+      "id": "357mag",
+      "name": ".357 Magnum",
+      "art": "patrone",
+      "typen": {
+        "FMJ": {
+          "dk": 2,
+          "mw": 2
+        },
+        "HP": {
+          "dk": 1,
+          "mw": 3
+        },
+        "AP": {
+          "dk": 3,
+          "mw": 1
+        },
+        "Unterschall": {
+          "dk": 1,
+          "mw": 1,
+          "unterschall": true,
+          "vorratslevel": 3
+        }
+      }
+    },
+    {
+      "id": "50ae",
+      "name": ".50 Action Express",
+      "art": "patrone",
+      "typen": {
+        "HP": {
+          "dk": 2,
+          "mw": 4
+        }
+      }
+    },
+    {
+      "id": "762x39",
+      "name": "7.62x39mm",
+      "art": "patrone",
+      "typen": {
+        "FMJ": {
+          "dk": 2,
+          "mw": 3
+        },
+        "HP": {
+          "dk": 1,
+          "mw": 4
+        },
+        "AP": {
+          "dk": 3,
+          "mw": 3
+        },
+        "Unterschall": {
+          "dk": 1,
+          "mw": 2,
+          "unterschall": true,
+          "vorratslevel": 4
+        },
+        "Gummi": {
+          "dk": null,
+          "mw": 2,
+          "stumpf": true,
+          "vorratslevel": 3,
+          "preis_10": {
+            "min": 25,
+            "max": 60
+          },
+          "vorlaeufig": true
+        }
+      }
+    },
+    {
+      "id": "556x45",
+      "name": "5.56x45mm",
+      "art": "patrone",
+      "typen": {
+        "FMJ": {
+          "dk": 2,
+          "mw": 2
+        },
+        "HP": {
+          "dk": 1,
+          "mw": 3
+        },
+        "AP": {
+          "dk": 3,
+          "mw": 2
+        },
+        "Unterschall": {
+          "dk": 1,
+          "mw": 1,
+          "unterschall": true,
+          "vorratslevel": 4
+        },
+        "Gummi": {
+          "dk": null,
+          "mw": 2,
+          "stumpf": true,
+          "vorratslevel": 3,
+          "preis_10": {
+            "min": 25,
+            "max": 60
+          },
+          "vorlaeufig": true
+        }
+      }
+    },
+    {
+      "id": "762x51",
+      "name": "7.62x51mm/.308 WIN",
+      "art": "patrone",
+      "typen": {
+        "FMJ": {
+          "dk": 2,
+          "mw": 3
+        },
+        "AP": {
+          "dk": 3,
+          "mw": 3
+        },
+        "Unterschall": {
+          "dk": 1,
+          "mw": 2,
+          "unterschall": true,
+          "vorratslevel": 4
+        }
+      }
+    },
+    {
+      "id": "762x54r",
+      "name": "7.62x54mmR",
+      "art": "patrone",
+      "typen": {
+        "FMJ": {
+          "dk": 3,
+          "mw": 2
+        },
+        "AP": {
+          "dk": 4,
+          "mw": 2
+        },
+        "Unterschall": {
+          "dk": 2,
+          "mw": 1,
+          "unterschall": true,
+          "vorratslevel": 4
+        }
+      }
+    },
+    {
+      "id": "50bmg",
+      "name": ".50 BMG",
+      "art": "patrone",
+      "typen": {
+        "FMJ": {
+          "dk": 4,
+          "mw": 5
+        },
+        "HP": {
+          "dk": 3,
+          "mw": 6
+        },
+        "AP": {
+          "dk": 5,
+          "mw": 4
+        },
+        "Unterschall": {
+          "dk": 3,
+          "mw": 4,
+          "unterschall": true,
+          "vorratslevel": 5
+        }
+      }
+    },
+    {
+      "id": "28g",
+      "name": "28 Gauge",
+      "art": "schrot",
+      "vorlaeufig": true,
+      "typen": {
+        "Buckshot": {
+          "dk": 0,
+          "mw": 1,
+          "schrotzahl": {
+            "bedraengt": 2,
+            "nah": 1
+          }
+        },
+        "Slug": {
+          "dk": 1,
+          "mw": 2
+        }
+      }
+    },
+    {
+      "id": "20g",
+      "name": "20 Gauge",
+      "art": "schrot",
+      "vorlaeufig": true,
+      "typen": {
+        "Buckshot": {
+          "dk": 0,
+          "mw": 1,
+          "schrotzahl": {
+            "bedraengt": 3,
+            "nah": 2,
+            "mittel": 1
+          }
+        },
+        "Slug": {
+          "dk": 1,
+          "mw": 3
+        },
+        "Gummi": {
+          "dk": null,
+          "mw": 3,
+          "stumpf": true,
+          "vorratslevel": 2,
+          "preis_10": {
+            "min": 15,
+            "max": 40
+          },
+          "vorlaeufig": true
+        }
+      }
+    },
+    {
+      "id": "12g",
+      "name": "12 Gauge",
+      "art": "schrot",
+      "vorlaeufig": true,
+      "typen": {
+        "Buckshot": {
+          "dk": 0,
+          "mw": 1,
+          "schrotzahl": {
+            "bedraengt": 4,
+            "nah": 3,
+            "mittel": 2,
+            "weit": 1
+          }
+        },
+        "Slug": {
+          "dk": 2,
+          "mw": 4
+        },
+        "Gummi": {
+          "dk": null,
+          "mw": 3,
+          "stumpf": true,
+          "vorratslevel": 2,
+          "preis_10": {
+            "min": 15,
+            "max": 40
+          },
+          "vorlaeufig": true
+        }
+      }
+    }
+  ]
+}

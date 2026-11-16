@@ -1,0 +1,247 @@
+{
+  "version": "2026-11-16",
+  "eintraege": [
+    {
+      "id": "koerper",
+      "name": "Faust, Tritt, Ellenbogen, Knie",
+      "art": "stumpf",
+      "haende": null,
+      "laenge": "kurz",
+      "mw": 0,
+      "dk": null,
+      "besonderheiten": "immer verfügbar.",
+      "immer_verfuegbar": true,
+      "vorlaeufig": true
+    },
+    {
+      "id": "schlagring",
+      "name": "Schlagring",
+      "art": "stumpf",
+      "haende": 1,
+      "laenge": "kurz",
+      "mw": 1,
+      "dk": null,
+      "vorratslevel": 2,
+      "preis": {
+        "min": 10,
+        "max": 40
+      },
+      "besonderheiten": "Die Hand bleibt frei für andere Gegenstände, solange sie nicht greifen muss. Leicht zu verbergen.",
+      "vorlaeufig": true
+    },
+    {
+      "id": "teleskopschlagstock",
+      "name": "Teleskopschlagstock",
+      "art": "stumpf",
+      "haende": 1,
+      "laenge": "mittel",
+      "mw": 1,
+      "dk": null,
+      "vorratslevel": 2,
+      "preis": {
+        "min": 20,
+        "max": 80
+      },
+      "besonderheiten": "eingefahren leicht zu verbergen.",
+      "vorlaeufig": true
+    },
+    {
+      "id": "baseballschlaeger",
+      "name": "Baseballschläger",
+      "art": "stumpf",
+      "haende": 2,
+      "laenge": "lang",
+      "mw": 2,
+      "dk": null,
+      "vorratslevel": 1,
+      "preis": {
+        "min": 20,
+        "max": 60
+      },
+      "besonderheiten": "",
+      "vorlaeufig": true
+    },
+    {
+      "id": "brecheisen",
+      "name": "Brecheisen",
+      "art": "stumpf",
+      "haende": [
+        1,
+        2
+      ],
+      "laenge": "mittel",
+      "mw": 2,
+      "dk": null,
+      "vorratslevel": 1,
+      "preis": {
+        "min": 10,
+        "max": 40
+      },
+      "besonderheiten": "auch Werkzeug (Türen, Kisten).",
+      "vorlaeufig": true
+    },
+    {
+      "id": "gewehrkolben",
+      "name": "Gewehrkolben",
+      "art": "stumpf",
+      "haende": 2,
+      "laenge": "mittel",
+      "mw": 1,
+      "dk": null,
+      "besonderheiten": "mit jeder Langwaffe möglich; keine eigene Waffe.",
+      "mit_waffe": [
+        "AR",
+        "SG",
+        "DMR",
+        "SR",
+        "LMG"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "gewehrlauf",
+      "name": "Gewehrlauf (Stoß mit der Mündung)",
+      "art": "stumpf",
+      "haende": 2,
+      "laenge": "mittel",
+      "mw": 1,
+      "dk": null,
+      "besonderheiten": "mit jeder Langwaffe möglich; keine eigene Waffe.",
+      "mit_waffe": [
+        "AR",
+        "SG",
+        "DMR",
+        "SR",
+        "LMG"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "pistolengriff",
+      "name": "Pistolengriff",
+      "art": "stumpf",
+      "haende": 1,
+      "laenge": "kurz",
+      "mw": 1,
+      "dk": null,
+      "besonderheiten": "mit jeder Pistole möglich; keine eigene Waffe.",
+      "mit_waffe": [
+        "Pistole"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "taschenmesser",
+      "name": "Taschenmesser",
+      "art": "scharf",
+      "haende": 1,
+      "laenge": "kurz",
+      "mw": 0,
+      "dk": 1,
+      "vorratslevel": 1,
+      "preis": {
+        "min": 5,
+        "max": 40
+      },
+      "besonderheiten": "leicht zu verbergen; auch Werkzeug.",
+      "vorlaeufig": true
+    },
+    {
+      "id": "kampfmesser",
+      "name": "Kampfmesser",
+      "art": "scharf",
+      "haende": 1,
+      "laenge": "kurz",
+      "mw": 1,
+      "dk": 1,
+      "vorratslevel": 2,
+      "preis": {
+        "min": 40,
+        "max": 200
+      },
+      "besonderheiten": "werfbar.",
+      "werfbar": true,
+      "vorlaeufig": true
+    },
+    {
+      "id": "bajonett",
+      "name": "Bajonett",
+      "art": "scharf",
+      "vorratslevel": 3,
+      "preis": {
+        "min": 30,
+        "max": 150
+      },
+      "besonderheiten": "Aufpflanzen an einer Mündung (Gewehr).",
+      "varianten": {
+        "aufgepflanzt": {
+          "name": "aufgepflanzt",
+          "haende": 2,
+          "laenge": "lang",
+          "mw": 1,
+          "dk": 2
+        },
+        "in_der_hand": {
+          "name": "in der Hand",
+          "haende": 1,
+          "laenge": "kurz",
+          "mw": 1,
+          "dk": 1
+        }
+      },
+      "vorlaeufig": true
+    },
+    {
+      "id": "machete",
+      "name": "Machete",
+      "art": "scharf",
+      "haende": 1,
+      "laenge": "mittel",
+      "mw": 2,
+      "dk": 1,
+      "vorratslevel": 1,
+      "preis": {
+        "min": 15,
+        "max": 60
+      },
+      "besonderheiten": "auch Werkzeug (Gestrüpp).",
+      "vorlaeufig": true
+    },
+    {
+      "id": "klappspaten",
+      "name": "Klappspaten",
+      "art": "scharf",
+      "vorratslevel": 2,
+      "preis": {
+        "min": 20,
+        "max": 70
+      },
+      "besonderheiten": "auch Werkzeug (Graben). Mit der Fläche geschlagen: stumpf.",
+      "varianten": {
+        "kante": {
+          "name": "mit der Kante",
+          "art": "scharf",
+          "haende": [
+            1,
+            2
+          ],
+          "laenge": "mittel",
+          "mw": 2,
+          "dk": 1
+        },
+        "flaeche": {
+          "name": "mit der Fläche",
+          "art": "stumpf",
+          "haende": [
+            1,
+            2
+          ],
+          "laenge": "mittel",
+          "mw": 2,
+          "dk": null
+        }
+      },
+      "vorlaeufig": true
+    }
+  ]
+}

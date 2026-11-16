@@ -1,0 +1,703 @@
+{
+  "version": "2026-11-16",
+  "eintraege": [
+    {
+      "id": "makarov",
+      "name": "Makarov PM",
+      "kategorie": "Pistole",
+      "vorratslevel": 2,
+      "preis": {
+        "min": 50,
+        "max": 200
+      },
+      "munition": "9x18",
+      "magazin": 8,
+      "patrone_im_lauf": true,
+      "ladeart": "wechselmagazin",
+      "feuermodi": {
+        "EF": {
+          "feuerrate": 3,
+          "rueckstoss": 1,
+          "lh_prozent": 0
+        }
+      },
+      "reichweite": {
+        "bedraengt": 2,
+        "nah": 1,
+        "mittel": 2,
+        "weit": 4,
+        "sehr_weit": null,
+        "fern": null
+      },
+      "lh_beheben_mod": 0,
+      "zuverlaessigkeit": "zuverlaessig",
+      "anschluesse": [],
+      "besonderheiten": "ungenau, zuverlässig. Makarov PB: Schalldämpfer eingebaut."
+    },
+    {
+      "id": "five_seven",
+      "name": "FN Five-seveN",
+      "kategorie": "Pistole",
+      "vorratslevel": 4,
+      "preis": {
+        "min": 500,
+        "max": 950
+      },
+      "munition": "57x28",
+      "magazin": 10,
+      "patrone_im_lauf": true,
+      "ladeart": "wechselmagazin",
+      "feuermodi": {
+        "EF": {
+          "feuerrate": 4,
+          "rueckstoss": 0,
+          "lh_prozent": 0
+        }
+      },
+      "reichweite": {
+        "bedraengt": 1,
+        "nah": 0,
+        "mittel": 1,
+        "weit": 3,
+        "sehr_weit": 4,
+        "fern": null
+      },
+      "lh_beheben_mod": 2,
+      "zuverlaessigkeit": "zuverlaessig",
+      "anschluesse": [
+        "schiene_unten",
+        "muendung_pistole",
+        "magazin"
+      ],
+      "magazine": [
+        20,
+        30
+      ],
+      "besonderheiten": "genau, zuverlässig."
+    },
+    {
+      "id": "m1911",
+      "name": "M1911 Colt",
+      "kategorie": "Pistole",
+      "vorratslevel": 2,
+      "preis": {
+        "min": 90,
+        "max": 250
+      },
+      "munition": "45acp",
+      "magazin": 7,
+      "patrone_im_lauf": true,
+      "ladeart": "wechselmagazin",
+      "feuermodi": {
+        "EF": {
+          "feuerrate": 3,
+          "rueckstoss": 2,
+          "lh_prozent": 5
+        }
+      },
+      "reichweite": {
+        "bedraengt": 1,
+        "nah": 0,
+        "mittel": 2,
+        "weit": 4,
+        "sehr_weit": 5,
+        "fern": null
+      },
+      "lh_beheben_mod": 1,
+      "zuverlaessigkeit": "normal",
+      "anschluesse": [],
+      "besonderheiten": ""
+    },
+    {
+      "id": "beretta_92",
+      "name": "Beretta 92",
+      "kategorie": "Pistole",
+      "vorratslevel": 2,
+      "preis": {
+        "min": 75,
+        "max": 225
+      },
+      "munition": "9x19",
+      "magazin": 15,
+      "patrone_im_lauf": true,
+      "ladeart": "wechselmagazin",
+      "feuermodi": {
+        "EF": {
+          "feuerrate": 4,
+          "rueckstoss": 1,
+          "lh_prozent": 2
+        }
+      },
+      "reichweite": {
+        "bedraengt": 1,
+        "nah": 0,
+        "mittel": 2,
+        "weit": 3,
+        "sehr_weit": 4,
+        "fern": null
+      },
+      "lh_beheben_mod": 1,
+      "zuverlaessigkeit": "normal",
+      "anschluesse": [
+        "schiene_unten",
+        "muendung_pistole"
+      ],
+      "besonderheiten": ""
+    },
+    {
+      "id": "sw_model_10",
+      "name": "Smith & Wesson Model 10",
+      "kategorie": "Pistole",
+      "vorratslevel": 1,
+      "preis": {
+        "min": 30,
+        "max": 120
+      },
+      "munition": "38spc",
+      "magazin": 6,
+      "patrone_im_lauf": false,
+      "ladeart": "trommel",
+      "feuermodi": {
+        "EF": {
+          "feuerrate": 3,
+          "rueckstoss": 1,
+          "lh_prozent": 0
+        }
+      },
+      "reichweite": {
+        "bedraengt": 1,
+        "nah": 0,
+        "mittel": 2,
+        "weit": 4,
+        "sehr_weit": null,
+        "fern": null
+      },
+      "lh_beheben_mod": 0,
+      "zuverlaessigkeit": "zuverlaessig",
+      "anschluesse": [],
+      "besonderheiten": "alter Revolver, billig und überall zu haben. Trommel statt Magazin: einzeln laden oder mit Schnelllader.",
+      "zubehoer": [
+        "schnelllader"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "hi_point_c9",
+      "name": "Hi-Point C9",
+      "kategorie": "Pistole",
+      "vorratslevel": 1,
+      "preis": {
+        "min": 40,
+        "max": 150
+      },
+      "munition": "9x19",
+      "magazin": 8,
+      "patrone_im_lauf": true,
+      "ladeart": "wechselmagazin",
+      "feuermodi": {
+        "EF": {
+          "feuerrate": 3,
+          "rueckstoss": 1,
+          "lh_prozent": 5
+        }
+      },
+      "reichweite": {
+        "bedraengt": 1,
+        "nah": 0,
+        "mittel": 2,
+        "weit": 4,
+        "sehr_weit": 5,
+        "fern": null
+      },
+      "lh_beheben_mod": 2,
+      "zuverlaessigkeit": "normal",
+      "anschluesse": [],
+      "besonderheiten": "billige Straßenpistole, schwer und klobig, neigt zu Ladehemmungen.",
+      "vorlaeufig": true
+    },
+    {
+      "id": "beretta_93r",
+      "name": "Beretta 93R",
+      "kategorie": "SMG",
+      "vorratslevel": 4,
+      "preis": {
+        "min": 600,
+        "max": 1200
+      },
+      "munition": "9x19",
+      "magazin": 20,
+      "patrone_im_lauf": true,
+      "ladeart": "wechselmagazin",
+      "feuermodi": {
+        "EF": {
+          "feuerrate": 4,
+          "rueckstoss": 1,
+          "lh_prozent": 2
+        },
+        "Burst": {
+          "feuerrate": 6,
+          "burst_laenge": 3,
+          "rueckstoss": 1,
+          "lh_prozent": 4
+        }
+      },
+      "reichweite": {
+        "bedraengt": 1,
+        "nah": 0,
+        "mittel": 2,
+        "weit": 3,
+        "sehr_weit": 4,
+        "fern": null
+      },
+      "lh_beheben_mod": 1,
+      "zuverlaessigkeit": "normal",
+      "anschluesse": [
+        "muendung_pistole"
+      ],
+      "besonderheiten": "Maschinenpistole auf Basis der Beretta 92; klappbarer Vordergriff, sehr hohe Kadenz im Burst."
+    },
+    {
+      "id": "ak47",
+      "name": "Kalashnikov AK-47",
+      "kategorie": "AR",
+      "vorratslevel": 2,
+      "preis": {
+        "min": 250,
+        "max": 400
+      },
+      "munition": "762x39",
+      "magazin": 30,
+      "patrone_im_lauf": true,
+      "ladeart": "wechselmagazin",
+      "feuermodi": {
+        "EF": {
+          "feuerrate": 4,
+          "rueckstoss": 2,
+          "lh_prozent": 1
+        },
+        "VA": {
+          "feuerrate": 15,
+          "rueckstoss": 3,
+          "lh_prozent": 3,
+          "garbenfaktor": 2
+        }
+      },
+      "reichweite": {
+        "bedraengt": 2,
+        "nah": 1,
+        "mittel": 2,
+        "weit": 3,
+        "sehr_weit": 4,
+        "fern": 5
+      },
+      "lh_beheben_mod": 0,
+      "zuverlaessigkeit": "zuverlaessig",
+      "anschluesse": [
+        "muendung_gewehr",
+        "magazin"
+      ],
+      "magazine": [
+        75
+      ],
+      "besonderheiten": "ungenau, zuverlässig"
+    },
+    {
+      "id": "m4",
+      "name": "Colt M4 Carbine",
+      "kategorie": "AR",
+      "vorratslevel": 3,
+      "preis": {
+        "min": 300,
+        "max": 500
+      },
+      "munition": "556x45",
+      "magazin": 20,
+      "patrone_im_lauf": true,
+      "ladeart": "wechselmagazin",
+      "feuermodi": {
+        "EF": {
+          "feuerrate": 4,
+          "rueckstoss": 1,
+          "lh_prozent": 4
+        },
+        "VA": {
+          "feuerrate": 15,
+          "rueckstoss": 2,
+          "lh_prozent": 6,
+          "garbenfaktor": 2
+        }
+      },
+      "reichweite": {
+        "bedraengt": 2,
+        "nah": 0,
+        "mittel": 1,
+        "weit": 2,
+        "sehr_weit": 3,
+        "fern": 5
+      },
+      "lh_beheben_mod": 1,
+      "zuverlaessigkeit": "normal",
+      "anschluesse": [
+        "schiene_oben",
+        "schiene_unten",
+        "schiene_seitlich",
+        "muendung_gewehr",
+        "magazin"
+      ],
+      "magazine": [
+        30,
+        100
+      ],
+      "besonderheiten": "genau, etwas störanfälliger als die AK-47"
+    },
+    {
+      "id": "m16a4",
+      "name": "Colt M16A4",
+      "kategorie": "AR",
+      "vorratslevel": 3,
+      "preis": {
+        "min": 350,
+        "max": 600
+      },
+      "munition": "556x45",
+      "magazin": 30,
+      "patrone_im_lauf": true,
+      "ladeart": "wechselmagazin",
+      "feuermodi": {
+        "EF": {
+          "feuerrate": 4,
+          "rueckstoss": 1,
+          "lh_prozent": 3
+        },
+        "Burst": {
+          "feuerrate": 6,
+          "burst_laenge": 3,
+          "rueckstoss": 1,
+          "lh_prozent": 4
+        }
+      },
+      "reichweite": {
+        "bedraengt": 3,
+        "nah": 0,
+        "mittel": 0,
+        "weit": 1,
+        "sehr_weit": 3,
+        "fern": 4
+      },
+      "lh_beheben_mod": 1,
+      "zuverlaessigkeit": "normal",
+      "anschluesse": [
+        "schiene_oben",
+        "schiene_unten",
+        "schiene_seitlich",
+        "muendung_gewehr",
+        "magazin"
+      ],
+      "magazine": [
+        100
+      ],
+      "besonderheiten": "genau, langer Lauf; in engen Räumen unhandlicher als die M4."
+    },
+    {
+      "id": "scar_mk17",
+      "name": "SCAR Mk 17 Mod 0",
+      "kategorie": "AR",
+      "vorratslevel": 4,
+      "preis": {
+        "min": 600,
+        "max": 1200
+      },
+      "munition": "762x51",
+      "magazin": 10,
+      "patrone_im_lauf": true,
+      "ladeart": "wechselmagazin",
+      "feuermodi": {
+        "EF": {
+          "feuerrate": 2,
+          "rueckstoss": 3,
+          "lh_prozent": 4
+        }
+      },
+      "reichweite": {
+        "bedraengt": 2,
+        "nah": 1,
+        "mittel": 0,
+        "weit": 1,
+        "sehr_weit": 2,
+        "fern": 4
+      },
+      "lh_beheben_mod": 2,
+      "zuverlaessigkeit": "normal",
+      "anschluesse": [
+        "schiene_oben",
+        "schiene_unten",
+        "schiene_seitlich",
+        "muendung_gewehr",
+        "magazin"
+      ],
+      "magazine": [
+        20
+      ],
+      "besonderheiten": ""
+    },
+    {
+      "id": "mosin_nagant",
+      "name": "Mosin Nagant",
+      "kategorie": "DMR",
+      "vorratslevel": 2,
+      "preis": {
+        "min": 200,
+        "max": 350
+      },
+      "munition": "762x54r",
+      "magazin": 5,
+      "patrone_im_lauf": false,
+      "ladeart": "fest",
+      "feuermodi": {
+        "EF": {
+          "feuerrate": 1,
+          "rueckstoss": 4,
+          "lh_prozent": 2
+        }
+      },
+      "reichweite": {
+        "bedraengt": 3,
+        "nah": 1,
+        "mittel": 0,
+        "weit": 1,
+        "sehr_weit": 2,
+        "fern": 3
+      },
+      "lh_beheben_mod": 1,
+      "zuverlaessigkeit": "normal",
+      "anschluesse": [
+        "schiene_oben",
+        "muendung_gewehr"
+      ],
+      "besonderheiten": "festes Magazin: einzeln laden oder mit Ladestreifen.",
+      "zubehoer": [
+        "ladestreifen"
+      ]
+    },
+    {
+      "id": "ithaca_m37",
+      "name": "Ithaca M37",
+      "kategorie": "SG",
+      "vorratslevel": 2,
+      "preis": {
+        "min": 150,
+        "max": 350
+      },
+      "munition": "12g",
+      "magazin": 4,
+      "patrone_im_lauf": true,
+      "ladeart": "roehrenmagazin",
+      "feuermodi": {
+        "EF": {
+          "feuerrate": 2,
+          "rueckstoss": 3,
+          "lh_prozent": 1
+        }
+      },
+      "reichweite": {
+        "bedraengt": 1,
+        "nah": 0,
+        "mittel": 2,
+        "weit": 3,
+        "sehr_weit": 5,
+        "fern": null
+      },
+      "lh_beheben_mod": 1,
+      "zuverlaessigkeit": "zuverlaessig",
+      "anschluesse": [],
+      "besonderheiten": "Pump-Action; einfach, robust. Auswurf nach unten. Sehr weit nur mit Slug."
+    },
+    {
+      "id": "spas12",
+      "name": "Franchi SPAS-12",
+      "kategorie": "SG",
+      "vorratslevel": 3,
+      "preis": {
+        "min": 500,
+        "max": 900
+      },
+      "munition": "12g",
+      "magazin": 8,
+      "patrone_im_lauf": true,
+      "ladeart": "roehrenmagazin",
+      "feuermodi": {
+        "EF": {
+          "feuerrate": 3,
+          "rueckstoss": 2,
+          "lh_prozent": 4
+        }
+      },
+      "reichweite": {
+        "bedraengt": 2,
+        "nah": 0,
+        "mittel": 2,
+        "weit": 3,
+        "sehr_weit": 5,
+        "fern": null
+      },
+      "lh_beheben_mod": 1,
+      "zuverlaessigkeit": "normal",
+      "anschluesse": [],
+      "besonderheiten": "schwer. Halbautomatisch; umschaltbar auf Pump-Action (ohne Aktion). Sehr weit nur mit Slug.",
+      "betriebsarten": {
+        "pump_action": {
+          "name": "Pump-Action",
+          "feuerrate": 2,
+          "lh_prozent": 1
+        }
+      }
+    },
+    {
+      "id": "saiga12",
+      "name": "Saiga 12",
+      "kategorie": "SG",
+      "vorratslevel": 3,
+      "preis": {
+        "min": 400,
+        "max": 800
+      },
+      "munition": "12g",
+      "magazin": 8,
+      "patrone_im_lauf": true,
+      "ladeart": "wechselmagazin",
+      "feuermodi": {
+        "EF": {
+          "feuerrate": 3,
+          "rueckstoss": 2,
+          "lh_prozent": 5
+        }
+      },
+      "reichweite": {
+        "bedraengt": 2,
+        "nah": 0,
+        "mittel": 2,
+        "weit": 3,
+        "sehr_weit": 5,
+        "fern": null
+      },
+      "lh_beheben_mod": 0,
+      "zuverlaessigkeit": "normal",
+      "anschluesse": [
+        "magazin"
+      ],
+      "magazine": [
+        12,
+        20
+      ],
+      "besonderheiten": "halbautomatisch, Bauweise der AK-47, schnelles Nachladen über Kastenmagazin. Wählerisch bei schwacher Munition. Sehr weit nur mit Slug."
+    },
+    {
+      "id": "rpg7",
+      "name": "RPG-7",
+      "kategorie": "Werfer",
+      "vorratslevel": 4,
+      "preis": {
+        "min": 400,
+        "max": 1000
+      },
+      "munition": [
+        "og7v",
+        "pg7v"
+      ],
+      "magazin": 1,
+      "patrone_im_lauf": false,
+      "ladeart": "einzelschuss",
+      "feuermodi": {
+        "EF": {
+          "feuerrate": 1,
+          "rueckstoss": 1,
+          "lh_prozent": 2
+        }
+      },
+      "reichweite": {
+        "bedraengt": 3,
+        "nah": 0,
+        "mittel": 0,
+        "weit": 1,
+        "sehr_weit": 3,
+        "fern": null
+      },
+      "lh_beheben_mod": 1,
+      "zuverlaessigkeit": "zuverlaessig",
+      "anschluesse": [],
+      "besonderheiten": "zuverlässig, unhandlich. Nachladen benötigt volle Konzentration."
+    },
+    {
+      "id": "m79",
+      "name": "M79 Granatwerfer",
+      "kategorie": "Werfer",
+      "vorratslevel": 4,
+      "preis": {
+        "min": 500,
+        "max": 1200
+      },
+      "munition": [
+        "m406_he",
+        "m433_hedp"
+      ],
+      "magazin": 1,
+      "patrone_im_lauf": false,
+      "ladeart": "einzelschuss",
+      "feuermodi": {
+        "EF": {
+          "feuerrate": 1,
+          "rueckstoss": 2,
+          "lh_prozent": 1
+        }
+      },
+      "reichweite": {
+        "bedraengt": 2,
+        "nah": 0,
+        "mittel": 0,
+        "weit": 1,
+        "sehr_weit": 3,
+        "fern": null
+      },
+      "lh_beheben_mod": 0,
+      "zuverlaessigkeit": "zuverlaessig",
+      "anschluesse": [],
+      "besonderheiten": "Kipplauf, einfach und zuverlässig."
+    },
+    {
+      "id": "m203",
+      "name": "M203 Unterlauf-Granatwerfer",
+      "kategorie": "Werfer",
+      "vorratslevel": 5,
+      "preis": {
+        "min": 600,
+        "max": 1500
+      },
+      "munition": [
+        "m406_he",
+        "m433_hedp"
+      ],
+      "magazin": 1,
+      "patrone_im_lauf": false,
+      "ladeart": "einzelschuss",
+      "feuermodi": {
+        "EF": {
+          "feuerrate": 1,
+          "rueckstoss": 2,
+          "lh_prozent": 1
+        }
+      },
+      "reichweite": {
+        "bedraengt": 2,
+        "nah": 0,
+        "mittel": 1,
+        "weit": 2,
+        "sehr_weit": 4,
+        "fern": null
+      },
+      "lh_beheben_mod": 0,
+      "zuverlaessigkeit": "zuverlaessig",
+      "anschluesse": [],
+      "besonderheiten": "Aufsatz unter dem Lauf eines Sturmgewehrs (z. B. M4). Gewehr und Werfer bleiben gleichzeitig einsatzbereit."
+    }
+  ]
+}
