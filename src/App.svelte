@@ -7,9 +7,14 @@
   import { dateiname, exportiereText, importiereText } from './lib/speicher/austausch';
   import { neuerCharakter, type Charakter } from './lib/speicher/charakter';
   import { dateiOeffnen, dateiSpeichern } from './lib/ui/datei';
+  import { sessionAbschliessen } from './lib/regeln/aufstieg';
+  import Bericht from './lib/ui/Bericht.svelte';
+  import Erstellung from './lib/ui/erstellung/Erstellung.svelte';
   import Menue from './lib/ui/Menue.svelte';
-  import NameSchritt from './lib/ui/NameSchritt.svelte';
   import Start from './lib/ui/Start.svelte';
+  import { MODUS_NAME, punkte, type Modus, type Zeile } from './lib/ui/texte';
+  import Werte from './lib/ui/Werte.svelte';
+  import { modusFuer } from './lib/wuerfel/wuerfel';
 
   const APP_VERSION = __APP_VERSION__;
 
@@ -25,7 +30,15 @@
   let meldung = $state('');
   let reiter = $state<'figur' | 'werte' | 'ausruestung' | 'verlauf'>('figur');
 
+  let modus = $state<Modus>('lesen');
+  let bericht = $state<{ titel: string; zeilen: Zeile[]; weiter: () => void } | null>(null);
+
   const aktiv = $derived(charaktere.find((c) => c.id === aktiveId) ?? null);
+  /** Charakter in Erstellung: neuer, noch ungespeicherter Entwurf oder ein gespeicherter Entwurf. */
+  const inErstellung = $derived(entwurf ?? (aktiv?.status === 'erstellung' ? aktiv : null));
+  const entwuerfe = $derived(charaktere.filter((c) => c.status === 'erstellung'));
+  const abweichungModus = $derived(modusFuer('abweichung', einstellungen.wuerfeln));
+  const imGefecht = $derived(!!aktiv?.spielstand.gefecht.aktiv);
 
   const { needRefresh, updateServiceWorker } = useRegisterSW();
 
@@ -58,28 +71,72 @@
   }
 
   async function speichern(c: Charakter) {
-    await ablage!.speichern(c);
+    // Kopie ohne Svelte-Proxys: IndexedDB kann nur einfache Objekte ablegen.
     const kopie = $state.snapshot(c) as Charakter;
+    await ablage!.speichern(kopie);
     charaktere = charaktere.some((x) => x.id === c.id) ? charaktere.map((x) => (x.id === c.id ? kopie : x)) : [...charaktere, kopie];
   }
 
   async function oeffne(id: string) {
     aktiveId = id;
+    entwurf = null;
     menueOffen = false;
     reiter = 'figur';
+    modus = 'lesen';
     await ablage!.setzeZuletztGeoeffnet(id);
   }
 
   function erstellen() {
     entwurf = neuerCharakter(daten!.stats.eintraege.map((s) => s.id));
     menueOffen = false;
+    modus = 'lesen';
   }
 
-  async function nameFertig(name: string, aussehen: string) {
-    const c = { ...$state.snapshot(entwurf!), name, aussehen } as Charakter;
-    await speichern(c);
+  /** Entwurf speichern, sobald er einen Namen hat (oder schon gespeichert ist). */
+  async function entwurfSpeichern(c: Charakter) {
+    const bekannt = charaktere.some((x) => x.id === c.id);
+    if (!bekannt && !c.name.trim()) return;
+    await speichern({ ...c, geaendert: new Date().toISOString() });
+    if (!bekannt) {
+      aktiveId = c.id;
+      entwurf = null;
+      await ablage!.setzeZuletztGeoeffnet(c.id);
+    }
+  }
+
+  /** Erstellung unterbrechen: Der Entwurf bleibt gespeichert und lässt sich über das Menü fortsetzen. */
+  async function erstellungVerlassen() {
+    const id = inErstellung?.id;
     entwurf = null;
+    const anderer = charaktere.find((c) => c.id !== id && c.status === 'fertig');
+    if (anderer) await oeffne(anderer.id);
+    else aktiveId = null;
+  }
+
+  async function erstellungFertig(c: Charakter) {
+    await speichern(c);
     await oeffne(c.id);
+    reiter = 'werte';
+    zeige(`„${c.name}“ ist fertig.`);
+  }
+
+  async function aendern(c: Charakter) {
+    await speichern(c);
+  }
+
+  function sessionFrage() {
+    if (!aktiv) return;
+    const c = aktiv;
+    const nach = sessionAbschliessen(c, daten!);
+    menueOffen = false;
+    bericht = {
+      titel: 'Session abschließen',
+      zeilen: [
+        { text: 'Du schließt die Session ab.', fett: true },
+        { text: `Du erhältst ${punkte(nach.freie_punkte - c.freie_punkte)}. Deine freien Punkte steigen von ${c.freie_punkte} auf ${nach.freie_punkte}.` }
+      ],
+      weiter: () => { void speichern(nach); bericht = null; }
+    };
   }
 
   async function importieren() {
@@ -111,7 +168,7 @@
   async function loeschen(c: Charakter) {
     await ablage!.loeschen(c.id);
     charaktere = charaktere.filter((x) => x.id !== c.id);
-    if (aktiveId === c.id) aktiveId = charaktere[0]?.id ?? null;
+    if (aktiveId === c.id) aktiveId = charaktere.find((x) => x.status === 'fertig')?.id ?? null;
     zeige(`„${c.name}“ gelöscht.`);
   }
 
@@ -134,17 +191,25 @@
     </details>
   {/if}
 
-  {#if entwurf}
-    <NameSchritt name={entwurf.name} aussehen={entwurf.aussehen} onweiter={nameFertig} onzurueck={() => (entwurf = null)} />
+  {#if inErstellung}
+    {#key inErstellung.id}
+      <Erstellung start={inErstellung} d={daten} {abweichungModus} onspeichern={entwurfSpeichern}
+        onverlassen={erstellungVerlassen} onfertig={erstellungFertig} />
+    {/key}
   {:else if !aktiv}
-    <Start onerstellen={erstellen} onimportieren={importieren} meldung={meldung} />
+    <Start onerstellen={erstellen} onimportieren={importieren} meldung={meldung} {entwuerfe} onfortsetzen={oeffne} />
   {:else}
     <header class="kopfzeile">
       <button class="flach" aria-label="Menü öffnen" onclick={() => (menueOffen = true)}>☰</button>
       <div class="titel">
         <strong>{aktiv.name || 'ohne Namen'}</strong>
-        {#if aktiv.status === 'erstellung'}<span class="status">Entwurf</span>{/if}
       </div>
+      {#if modus !== 'lesen'}
+        <div class="modus">
+          <span class="status an">{MODUS_NAME[modus]}</span>
+          <button class="haupt klein" onclick={() => (modus = 'lesen')}>Fertig</button>
+        </div>
+      {/if}
     </header>
 
     <main class="bogen">
@@ -152,8 +217,10 @@
         <section class="karte">
           <h2>{aktiv.name}</h2>
           {#if aktiv.aussehen}<p>{aktiv.aussehen}</p>{/if}
-          <p class="hinweis">Hier entsteht der Bogen. In dieser Version funktionieren: Charaktere anlegen (Name und Aussehen), wechseln, exportieren, importieren, duplizieren und löschen; Darstellung hell/dunkel; Offline-Betrieb.</p>
+          <p class="hinweis">Hier entsteht die Figur mit Silhouette. Deine Werte findest du im Reiter Werte.</p>
         </section>
+      {:else if reiter === 'werte'}
+        <Werte c={aktiv} d={daten} {modus} {abweichungModus} onaendern={aendern} />
       {:else}
         <section class="karte"><p class="hinweis">Dieser Reiter folgt in einer der nächsten Versionen.</p></section>
       {/if}
@@ -172,7 +239,13 @@
   <Menue offen={menueOffen} {charaktere} {aktiveId} klassen={daten.klassen.eintraege} {einstellungen}
     appVersion={APP_VERSION} datenstand={datenstand(daten)}
     onschliessen={() => (menueOffen = false)} onwechseln={oeffne} onneu={erstellen} onimportieren={importieren}
-    onexportieren={exportieren} onduplizieren={duplizieren} onloeschen={loeschen} oneinstellungen={einstellungenSetzen} />
+    onexportieren={exportieren} onduplizieren={duplizieren} onloeschen={loeschen} oneinstellungen={einstellungenSetzen}
+    modus={aktiv && !inErstellung ? modus : null} {imGefecht}
+    onmodus={(m) => { modus = m; menueOffen = false; if (m !== 'lesen') reiter = 'werte'; }} onsession={sessionFrage} />
+
+  {#if bericht}
+    <Bericht titel={bericht.titel} zeilen={bericht.zeilen} onweiter={bericht.weiter} onzurueck={() => (bericht = null)} />
+  {/if}
 {/if}
 
 {#if $needRefresh}
@@ -188,6 +261,9 @@
     background: var(--flaeche); border-bottom: 1px solid var(--linie); position: sticky; top: 0; z-index: 5; }
   .titel { display: flex; align-items: center; gap: 8px; min-width: 0; }
   .titel strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .modus { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+  .status.an { background: var(--akzent); color: var(--akzent-text); font-weight: 600; }
+  .klein { min-height: 40px; padding: 0 12px; }
   .status { font-size: 0.8rem; padding: 2px 8px; border-radius: 999px; background: var(--flaeche-2); color: var(--text-2); }
   .bogen { flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
   .bogen h2 { margin-top: 0; }

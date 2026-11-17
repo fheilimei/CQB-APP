@@ -4,7 +4,7 @@
 import type { Modifikator, Rang } from '../daten/typen';
 
 /** Aktuelle Schemaversion. Bei jeder inkompatiblen Änderung erhöhen und eine Migration ergänzen (migration.ts). */
-export const SCHEMA = 1;
+export const SCHEMA = 2;
 
 export type Quelle = 'app' | 'hand';
 
@@ -32,6 +32,31 @@ export interface Buchung {
   grund: string;
 }
 
+/** Kauf mit freien Punkten während der Erstellung (Schritt 5). Wird erst beim Abschluss fest eingetragen. */
+export type Erstellungskauf =
+  | { art: 'skill'; id: string }
+  | { art: 'perk'; id: string }
+  | { art: 'statrank_up'; id: string; wurf: Abweichungswurf };
+
+/**
+ * Stand einer laufenden Erstellung (konzept.md § 3.0). Solange er besteht, sind die Felder
+ * klassenweg, skills, perks und freie_punkte leer; sie entstehen beim Abschluss aus diesen Angaben.
+ * stats enthält die Ränge aus dem Rank-Set und die ersten Würfe; Statrank-Ups stehen in kaeufe.
+ */
+export interface Erstellungsstand {
+  /** Zuletzt geöffneter Schritt (1–7). */
+  schritt: number;
+  ohne_klasse: boolean;
+  klasse: string | null;
+  /** Nur Meister: die Stufe-4-Klasse, aus der er kommt. */
+  stufe4: string | null;
+  /** Nur Meister: die gewählten Skills auf dem verlangten Wert. */
+  meister_skills: string[];
+  /** Nur ohne Klasse: freie Punkte zu Beginn. */
+  freie_punkte_start: number;
+  kaeufe: Erstellungskauf[];
+}
+
 export interface Anpassung extends Modifikator {
   id: string;
   grund: string;
@@ -55,6 +80,10 @@ export interface Charakter {
   };
   notizen: string;
   status: 'erstellung' | 'fertig';
+  /** Nur während der Erstellung gesetzt, sonst null. */
+  erstellung: Erstellungsstand | null;
+  /** Vorratslevel von Hand (ohne Klasse oder im Schreibmodus); null = aus der Klasse. */
+  vorratslevel_manuell: number | null;
   freie_punkte: number;
   kassenbuch: Buchung[];
   schulden: { rest: number; frist_auftraege: number } | null;
@@ -89,6 +118,10 @@ function neueId(): string {
   return globalThis.crypto?.randomUUID?.() ?? `c${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`;
 }
 
+export function neueErstellung(): Erstellungsstand {
+  return { schritt: 1, ohne_klasse: false, klasse: null, stufe4: null, meister_skills: [], freie_punkte_start: 0, kaeufe: [] };
+}
+
 /** Leerer Charakter im Status „erstellung“. statIds kommen aus stats.json, nie aus dem Code. */
 export function neuerCharakter(statIds: string[], jetzt: Date = new Date()): Charakter {
   return {
@@ -101,6 +134,8 @@ export function neuerCharakter(statIds: string[], jetzt: Date = new Date()): Cha
     hintergrund: { schulden: null, coup: null, vertrag: null, geburtsort: '', personen: '', lebensmittelpunkt: '' },
     notizen: '',
     status: 'erstellung',
+    erstellung: neueErstellung(),
+    vorratslevel_manuell: null,
     freie_punkte: 0,
     kassenbuch: [],
     schulden: null,

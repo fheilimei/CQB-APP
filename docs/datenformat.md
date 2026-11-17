@@ -875,7 +875,7 @@ Speicherformat eines Charakters, lokal und als Exportdatei (`<name>.cqb.json`). 
 
 ```json
 {
-  "schema": 1,
+  "schema": 2,
   "id": "c7f1e2a0-3b5d-4a8e-9f10-2c4d6e8a1b3c",
   "geaendert": "2026-11-13T17:20:00+01:00",
 
@@ -893,6 +893,8 @@ Speicherformat eines Charakters, lokal und als Exportdatei (`<name>.cqb.json`). 
   },
   "notizen": "",
   "status": "fertig",
+  "erstellung": null,
+  "vorratslevel_manuell": null,
   "freie_punkte": 2,
   "kassenbuch": [
     { "zeit": "2026-11-13T17:05:00+01:00", "betrag": 1300, "art": "startgeld", "grund": "Ersparnisse 300 + Schulden mittel 1000" },
@@ -1000,6 +1002,8 @@ IndexedDB-Datenbank `cqb` mit zwei Speichern: `charaktere` (ein Datensatz je Cha
 ### Felder außerhalb des Spielstands
 
 - **`status`:** `erstellung` (Erstellung läuft, alle Schritte änderbar) oder `fertig`.
+- **`erstellung`:** nur während der Erstellung gesetzt, sonst `null`. Felder: `schritt` (zuletzt geöffneter Schritt 1–7), `ohne_klasse`, `klasse` (ID), `stufe4` (nur Meister: Stufe-4-Klasse), `meister_skills` (nur Meister: gewählte Skills auf 5), `freie_punkte_start` (nur ohne Klasse), `kaeufe` (Käufe mit freien Punkten der Reihe nach: `{ "art": "skill" | "perk", "id" }` oder `{ "art": "statrank_up", "id", "wurf" }`). Solange die Erstellung läuft, bleiben `klassenweg`, `skills`, `perks` und `freie_punkte` leer; `stats` enthält die verteilten Ränge und die ersten Würfe. Beim Abschluss rechnet die App daraus die fertigen Werte und setzt `erstellung` auf `null`.
+- **`vorratslevel_manuell`:** von Hand gesetztes Vorratslevel (ohne Klasse oder im Schreibmodus); `null` = aus der aktuellen Klasse.
 - **Stats:** gespeichert werden Rang und **Wurf** (Positiv- und Negativwürfel, je 1–10; Quelle `app` oder `hand`). Abweichung = positiv − negativ und Statwert = Rang + Abweichung werden berechnet, nicht gespeichert.
 - **Während der Erstellung** kann der Charakter unvollständig sein: Stats ohne Rang (`"rang": null`, `"wurf": null`). Die Zuordnung des Rank-Sets ergibt sich aus den Rängen der Stats. Beim Tauschen von Rängen bleibt `wurf` beim Stat.
 - **`klassenweg`:** <a id="klassenweg"></a>alle Klassen des Charakters in zeitlicher Folge. Die **aktuelle Klasse** ist der letzte Eintrag. Leer bei freier Erstellung ohne Klasse.
@@ -1043,6 +1047,8 @@ IndexedDB-Datenbank `cqb` mit zwei Speichern: `charaktere` (ein Datensatz je Cha
 - **Nachschaden normaler Blutung** wird auf `schaden` der Wunde aufgeschlagen und auf `hp_verlust_wunden`.
 
 ### Migration
+
+- **1 → 2:** neue Felder `erstellung` (Entwurf: leerer Stand, fertig: `null`) und `vorratslevel_manuell` (`null`).
 
 `schema` wird bei jeder inkompatiblen Änderung erhöht. Beim Laden prüft die App die Version und migriert schrittweise (1 → 2 → 3 …). Import einer Datei mit höherer Version als bekannt: Fehlermeldung, nichts überschreiben.
 

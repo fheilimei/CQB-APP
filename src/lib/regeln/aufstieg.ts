@@ -1,7 +1,7 @@
 // Zugang der Klassen, Aufstieg und Klassenwechsel (konzept.md § 4.11; Regelwerk: Charakteraufstieg, Klassen).
 
 import type { Klasse, Rang, Spieldaten } from '../daten/typen';
-import type { Charakter } from '../speicher/charakter';
+import type { Abweichungswurf, Charakter } from '../speicher/charakter';
 import { naechsterRang, rangfolge, statwert } from './probe';
 
 // ---------- Zugang
@@ -261,4 +261,90 @@ export function wechselVorschau(c: Charakter, zielId: string, d: Spieldaten, zwe
     neue_skills: [...nachher.skills].filter((id) => !vorher?.skills.has(id) && vorher !== null),
     neue_perks: [...nachher.perks].filter((id) => !vorher?.perks.has(id) && vorher !== null)
   };
+}
+
+// ---------- Aufstiegsschritte (konzept.md § 3.0a). Jeder Schritt wird protokolliert und ist nicht rücknehmbar.
+
+export interface Moeglichkeit {
+  art: 'skill' | 'statrank_up' | 'perk';
+  id: string;
+  kosten: number;
+  sperre: Sperre;
+}
+
+/**
+ * Alles, was sich mit freien Punkten kaufen ließe: nächstes Level jedes Skills im Zugang, Statrank-Ups,
+ * Perks im Zugang, die der Charakter noch nicht hat. Mit Sperre; „Jetzt möglich“ sind die ohne Sperre.
+ */
+export function moeglichkeiten(c: Charakter, d: Spieldaten): Moeglichkeit[] {
+  const a = d.regeln.aufstieg;
+  const z = zugangDes(c, d);
+  const liste: Moeglichkeit[] = [];
+  for (const s of d.skills.eintraege) {
+    if (z && !z.skills.has(s.id)) continue;
+    const sperre = skillSteigernSperre(c, s.id, d);
+    if (sperre !== 'maximum') liste.push({ art: 'skill', id: s.id, kosten: a.skill_level_kosten, sperre });
+  }
+  for (const id of Object.keys(c.stats)) {
+    const sperre = statrankUpSperre(c, id, d);
+    if (sperre !== 'maximum' && sperre !== 'unbekannt') liste.push({ art: 'statrank_up', id, kosten: a.statrank_up_kosten, sperre });
+  }
+  for (const p of d.perks.eintraege) {
+    if ((z && !z.perks.has(p.id)) || c.perks.includes(p.id)) continue;
+    liste.push({ art: 'perk', id: p.id, kosten: p.rang, sperre: perkKaufenSperre(c, p.id, d) });
+  }
+  return liste;
+}
+
+function eintrag(c: Charakter, zeit: string, e: Record<string, unknown> & { art: string }): Charakter {
+  return { ...c, geaendert: zeit, protokoll: [...c.protokoll, { zeit, ...e }] };
+}
+
+export function skillSteigern(c: Charakter, id: string, d: Spieldaten, jetzt: Date = new Date()): Charakter {
+  const sperre = skillSteigernSperre(c, id, d);
+  if (sperre) throw new Error(`Skill nicht steigerbar: ${sperre}`);
+  const kosten = d.regeln.aufstieg.skill_level_kosten;
+  const von = c.skills[id] ?? 0;
+  const x = { ...c, skills: { ...c.skills, [id]: von + 1 }, freie_punkte: c.freie_punkte - kosten };
+  return eintrag(x, jetzt.toISOString(), { art: 'skill', id, von, nach: von + 1, kosten });
+}
+
+export function perkKaufen(c: Charakter, id: string, d: Spieldaten, jetzt: Date = new Date()): Charakter {
+  const sperre = perkKaufenSperre(c, id, d);
+  if (sperre) throw new Error(`Perk nicht kaufbar: ${sperre}`);
+  const kosten = d.perks.eintraege.find((p) => p.id === id)!.rang;
+  const x = { ...c, perks: [...c.perks, id], freie_punkte: c.freie_punkte - kosten };
+  return eintrag(x, jetzt.toISOString(), { art: 'perk', id, kosten });
+}
+
+/** Statrank-Up: Rang +1, Abweichung neu (der Wurf kommt von der Würfelkomponente). Der Statwert kann sinken. */
+export function statrankUp(c: Charakter, id: string, wurf: Abweichungswurf, d: Spieldaten, jetzt: Date = new Date()): Charakter {
+  const sperre = statrankUpSperre(c, id, d);
+  if (sperre) throw new Error(`Statrank-Up nicht möglich: ${sperre}`);
+  const kosten = d.regeln.aufstieg.statrank_up_kosten;
+  const alt = c.stats[id]!;
+  const neu = { rang: naechsterRang(alt.rang!, d.regeln), wurf };
+  const x = { ...c, stats: { ...c.stats, [id]: neu }, freie_punkte: c.freie_punkte - kosten };
+  return eintrag(x, jetzt.toISOString(), {
+    art: 'statrank_up', id, rang_von: alt.rang, rang_nach: neu.rang, wurf_von: alt.wurf, wurf_nach: wurf, kosten
+  });
+}
+
+/** Session abschließen: freie Punkte laut regeln.json (derzeit +5). */
+export function sessionAbschliessen(c: Charakter, d: Spieldaten, jetzt: Date = new Date()): Charakter {
+  const punkte = d.regeln.geld.session_punkte;
+  return eintrag({ ...c, freie_punkte: c.freie_punkte + punkte }, jetzt.toISOString(), { art: 'session', punkte });
+}
+
+/**
+ * Vorratslevel: von Hand gesetzt (ohne Klasse, Schreibmodus) oder aus der aktuellen Klasse. Zweite Spezialisierung:
+ * das der erweiterten Formen der Laufbahn (Regelwerk: Klassen, Zweite Spezialisierung; höchster Wert).
+ */
+export function vorratslevel(c: Charakter, d: Spieldaten): number | null {
+  if (c.vorratslevel_manuell !== null) return c.vorratslevel_manuell;
+  const letzter = c.klassenweg.at(-1);
+  if (!letzter) return null;
+  const k = klasseVon(letzter.klasse, d);
+  if (letzter.art !== 'zweite_spezialisierung') return k.vorratslevel;
+  return Math.max(...d.klassen.eintraege.filter((x) => x.art === 'erweiterte_form' && x.laufbahn === k.laufbahn).map((x) => x.vorratslevel));
 }

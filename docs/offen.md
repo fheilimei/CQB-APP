@@ -41,3 +41,12 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 4. **Wuchttreffer mit 0 Schaden.** *Vorläufig:* keine Prellung, weil nichts zu heilen ist.
 5. **Perks, deren Wirkung nur als Text vorliegt** (z. B. Feuer in Bewegung, Atemkontrolle, Triple Tap). Der Regelkern wendet automatisch nur Perks mit Modifikatoren an (Grundwerte, Kernschuss) und dazu Eiserne Nerven und Durchbeißen über `mit_perk` in `regeln.json`. Für die übrigen Perks fehlt eine maschinenlesbare Form; sie wird mit dem Schussrechner (Schritt 6) festgelegt. Bis dahin erscheinen sie als Hinweis (`hinweis_bei`).
 6. **Arme hinter Deckung.** Regelwerk: „Verdeckt eine Deckung **von unten** die Brust, gelten auch beide Arme als verdeckt.“ *Vorläufig:* Ist die Brust verdeckt, sind die Arme verdeckt; die Richtung prüft die App nicht.
+
+## Offen aus Schritt 3 (Erstellung und Modi, 17.11.2026)
+
+1. **Stat-Voraussetzung bei der Erstellung auf höherer Stufe.** Die Klassen nennen „Voraussetzung: Twitch A“ usw. *Vorläufig:* gilt auch bei der Erstellung; die erweiterte Form verlangt zusätzlich den Stat ihrer Spezialisierung. Der Meister hat laut Regelwerk keine Stat-Voraussetzung; ob die Stats seines Wegs (Spezialisierung, Stufe-4-Klasse) trotzdem auf A stehen müssen, ist offen. *Vorläufig:* nein.
+2. **Meister mit zweiter Spezialisierung bei der Erstellung.** Als Stufe-4-Klasse bietet die Erstellung nur die erweiterten Formen an, keine zweite Spezialisierung. Reicht das?
+3. **Mindestskills der Spezialisierung beim Einstieg als erweiterte Form.** Es gelten nur die Mindestskills der gewählten Klasse (sie enthalten laut Regelwerk die der Klasse darunter).
+4. **Klasse wechseln nach einem Statrank-Up in Schritt 5.** Der Statrank-Up bleibt am Stat (sein Wurf ist fest). Liegt der Stat danach ohne Rang oder schon auf S, zählt er nicht und kostet nichts; der Wurf ist dann verloren.
+5. **Laden in Schritt 7** fehlt noch (§ 3.14). Bis dahin wird nur das Startgeld gebucht.
+6. **Noch nicht im Schreibmodus:** Grundwerte, Anpassungen der SL, Klasse/Klassenweg, Geld, Hintergrund, Ausrüstung. Kommen mit den Schritten 4, 7 und 8. Klassenwechsel-Dialog kommt mit Schritt 8.

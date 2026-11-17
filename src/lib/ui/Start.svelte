@@ -1,11 +1,15 @@
 <script lang="ts">
+  import type { Charakter } from '../speicher/charakter';
   // Erster Start ohne Charakter (konzept.md § 3.0g): zwei große Knöpfe.
   interface Props {
     onerstellen: () => void;
     onimportieren: () => void;
     meldung?: string;
+    /** Angefangene Erstellungen, die sich fortsetzen lassen. */
+    entwuerfe?: Charakter[];
+    onfortsetzen?: (id: string) => void;
   }
-  let { onerstellen, onimportieren, meldung = '' }: Props = $props();
+  let { onerstellen, onimportieren, meldung = '', entwuerfe = [], onfortsetzen }: Props = $props();
 </script>
 
 <main class="start">
@@ -15,6 +19,9 @@
   </div>
   {#if meldung}<p class="fehler" role="alert">{meldung}</p>{/if}
   <div class="knoepfe">
+    {#each entwuerfe as e (e.id)}
+      <button class="gross" onclick={() => onfortsetzen?.(e.id)}>Erstellung fortsetzen: {e.name}</button>
+    {/each}
     <button class="haupt gross" onclick={onerstellen}>Charakter erstellen</button>
     <button class="gross" onclick={onimportieren}>Charakter importieren</button>
   </div>

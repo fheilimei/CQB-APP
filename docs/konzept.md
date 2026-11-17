@@ -74,10 +74,14 @@ Ein geführter Ablauf in Schritten. Er folgt der Reihenfolge des Regelwerks ([§
 	- Eine aktive Karte klappt ihre Felder auf: Schulden – Gläubiger, Frist (in Aufträgen), Sicherheit; Coup – Beute, Feind; Vertrag – Auftraggeber, Verpflichtung. Der Haken steht als Satz dabei („Rückzahlung 1500 $ bis zur Frist“; „Feind: eine Bande oder Firma“).
 	- Oben läuft das **Startgeld** live mit: Ersparnisse + gewählte Optionen + Einstiegsgehalt (Klasse ab Stufe 2 und Vertrag). Beträge aus `regeln.json` (`geld`).
 	- Darunter Freitext: Geburtsort, wichtige Personen, Lebensmittelpunkt.
-	- Mit Abschluss des Schritts bucht die App das Startgeld ins Kassenbuch ([§ 3.13](#313-geld-und-aufträge-m-r)).
-7. **Ausrüstung:** Einkauf im **Laden** ([§ 3.14](#314-laden-kaufen-und-verkaufen-m-r)) mit dem Startgeld; danach Trageorte zuweisen (Reiter Ausrüstung, [§ 3.0f](#30f-körperbild-silhouette-a-r)).
+	- Mit Abschluss der Erstellung bucht die App das Startgeld ins Kassenbuch und legt die Schulden an ([§ 3.13](#313-geld-und-aufträge-m-r)).
+7. **Ausrüstung:** Einkauf im **Laden** ([§ 3.14](#314-laden-kaufen-und-verkaufen-m-r)) mit dem Startgeld; danach Trageorte zuweisen (Reiter Ausrüstung, [§ 3.0f](#30f-körperbild-silhouette-a-r)). *Bis der Laden gebaut ist, zeigt der Schritt nur Startgeld und Vorratslevel.*
 
-Bis zum Abschluss lässt sich jeder Schritt zurücknehmen, außer den Würfen der Abweichung. Danach ist der Charakter **fertig**.
+**Stat-Voraussetzung bei der Erstellung:** Spezialisierung und erweiterte Form verlangen ihren Stat auf Rang A, die erweiterte Form auch den Stat ihrer Spezialisierung (Regelwerk: Klassen). „Weiter“ in Schritt 2 nennt den fehlenden Rang. Der Meister hat keine Stat-Voraussetzung.
+
+**Zurücknehmen:** Skill- und Perk-Käufe aus Schritt 5 lassen sich bis zum Abschluss zurückgeben. Ein Statrank-Up nicht, weil sein Wurf fest ist. Wechselt der Spieler danach die Klasse, gelten Käufe ohne Zugang oder Voraussetzung nicht mehr; Schritt 5 markiert sie, „Weiter“ nennt sie. Wechselt die Klasse auf eine Stufe mit anderem Rank-Set, werden die Ränge (nach Rückfrage) geleert; die Würfe bleiben beim Stat. **Erstellung unterbrechen:** „Später“ in Schritt 1; der Entwurf bleibt gespeichert und lässt sich über Menü oder Startbildschirm fortsetzen.
+
+Bis zum Abschluss lässt sich jeder Schritt zurücknehmen, außer den Würfen der Abweichung. Der Abschluss zeigt einen Bericht (Klasse, Stats, Skills, Perks, freie Punkte, Startgeld, Schulden). Danach ist der Charakter **fertig**.
 
 **Klassen** kommen aus `klassen.json`. Eine neue Klasse ist ein neuer Eintrag dort, ohne Codeänderung ([datenformat.md § klassen.json](datenformat.md#klassenjson)). Alle Klassen der Stufen 1–5 stehen im Regelwerk.
 

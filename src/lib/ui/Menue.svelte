@@ -4,6 +4,7 @@
   import type { Einstellungen } from '../speicher/ablage';
   import { WUERFELSTELLEN, modusFuer, type Wuerfelstelle } from '../wuerfel/wuerfel';
   import type { Klasse } from '../daten/typen';
+  import type { Modus } from './texte';
 
   interface Props {
     offen: boolean;
@@ -21,6 +22,11 @@
     onduplizieren: (c: Charakter) => void;
     onloeschen: (c: Charakter) => void;
     oneinstellungen: (e: Einstellungen) => void;
+    /** Modus des aktiven Charakters; null, wenn kein fertiger Charakter offen ist. */
+    modus: Modus | null;
+    imGefecht: boolean;
+    onmodus: (m: Modus) => void;
+    onsession: () => void;
   }
   let p: Props = $props();
 
@@ -88,6 +94,20 @@
         <button onclick={p.onimportieren}>Importieren</button>
       </div>
 
+      {#if p.modus}
+        <h3>Modus</h3>
+        <div class="zwei">
+          <button class:an={p.modus === 'aufstieg'} aria-pressed={p.modus === 'aufstieg'} disabled={p.imGefecht}
+            onclick={() => p.onmodus(p.modus === 'aufstieg' ? 'lesen' : 'aufstieg')}>Aufstieg</button>
+          <button class:an={p.modus === 'schreiben'} aria-pressed={p.modus === 'schreiben'}
+            onclick={() => p.onmodus(p.modus === 'schreiben' ? 'lesen' : 'schreiben')}>Schreibmodus</button>
+        </div>
+        {#if p.imGefecht}<p class="hinweis">Im Gefecht ist der Aufstieg gesperrt.</p>{/if}
+
+        <h3>Abschließen</h3>
+        <button class="flach eintrag" onclick={p.onsession}>Session abschließen</button>
+      {/if}
+
       <h3>Weiteres</h3>
       <button class="flach eintrag" onclick={() => (ansicht = 'einstellungen')}>Einstellungen</button>
       <button class="flach eintrag" onclick={() => (ansicht = 'ueber')}>Über die App</button>
@@ -148,6 +168,7 @@
   .zeile { flex: 1; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; text-align: left; padding: 6px 12px; }
   .name { font-weight: 600; }
   .aktionen { gap: 8px; padding: 4px 0 8px; flex-wrap: wrap; }
+  .zwei button.an { background: var(--akzent); color: var(--akzent-text); border-color: transparent; }
   .zwei { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
   .eintrag { width: 100%; text-align: left; }
   .wahl { display: flex; gap: 8px; flex-wrap: wrap; }

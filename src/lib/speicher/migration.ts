@@ -1,13 +1,18 @@
 // Migration älterer Schemaversionen (docs/datenformat.md § Migration).
 // Für jeden Schritt n → n+1 steht hier eine Funktion; die Liste wird der Reihe nach angewandt.
 
-import { SCHEMA, type Charakter } from './charakter';
+import { neueErstellung, SCHEMA, type Charakter } from './charakter';
 
 type Roh = Record<string, unknown> & { schema?: unknown };
 
 /** MIGRATIONEN[n] hebt einen Charakter von Schema n auf n+1. */
 export const MIGRATIONEN: Record<number, (c: Roh) => Roh> = {
-  // Beispiel für später: 1: (c) => ({ ...c, schema: 2, neuesFeld: … }),
+  // 1 → 2: Stand der Erstellung und Vorratslevel von Hand. Ein Entwurf aus Schema 1 hatte nur Name und Aussehen.
+  1: (c) => ({
+    ...c,
+    erstellung: c.status === 'erstellung' ? neueErstellung() : null,
+    vorratslevel_manuell: null
+  }),
 };
 
 export class ImportFehler extends Error {}

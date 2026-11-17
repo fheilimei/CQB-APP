@@ -14,6 +14,7 @@ function beispiel(): Charakter {
   c.aussehen = '1,70 m, drahtig, Narbe über der linken Augenbraue';
   c.klassenweg = [{ klasse: 'anwaerter', art: 'erstellung' }];
   c.status = 'fertig';
+  c.erstellung = null;
   c.stats.twitch = { rang: 'D', wurf: { positiv: 7, negativ: 4, quelle: 'app' } };
   c.skills = { waffe_pistole: 2, erste_hilfe: 1 };
   c.perks = ['zaeh_1'];
@@ -79,6 +80,18 @@ describe('Migration', () => {
 
   it('meldet fehlende Migrationsschritte', () => {
     expect(() => migriere({ ...beispiel(), schema: 1 }, 2, {})).toThrow('Keine Migration von Schema 1 auf 2');
+  });
+
+  it('Schema 1 → 2: fertiger Charakter bekommt keinen Erstellungsstand, Entwurf einen leeren', () => {
+    const { erstellung: _e, vorratslevel_manuell: _v, ...rest } = beispiel();
+    const fertig = migriere({ ...rest, schema: 1 });
+    expect(fertig.schema).toBe(2);
+    expect(fertig.erstellung).toBeNull();
+    expect(fertig.vorratslevel_manuell).toBeNull();
+    expect(fertig.skills).toEqual(beispiel().skills);
+
+    const entwurf = migriere({ ...rest, status: 'erstellung', schema: 1 });
+    expect(entwurf.erstellung).toEqual({ schritt: 1, ohne_klasse: false, klasse: null, stufe4: null, meister_skills: [], freie_punkte_start: 0, kaeufe: [] });
   });
 
   it('für jede ältere Schemaversion gibt es einen Schritt', async () => {
