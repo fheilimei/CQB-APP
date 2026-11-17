@@ -16,6 +16,8 @@ Rückmeldung des Nutzers vom 17.11.2026:
 - **Abstände sind ungleich.** Mal 6, mal 8, mal 12, mal 16 Pixel, ohne erkennbaren Sinn.
 - **Der Würfelteil sieht aus wie eine weitere Auswahl.** Er muss sich klar von den Auswahlknöpfen abheben.
 - **Tippen ohne sichtbare Rückmeldung.** Beispiel Würfel: Tippt man auf eine Schaltfläche (z. B. Krit · gelungen · misslungen), bleibt sie unverändert; nur unten erscheint das Ergebnis. Die getippte Schaltfläche muss danach hervorgehoben sein.
+- **Würfeln je Wurf umschalten ist lästig** (17.11.2026): Braucht ein Ablauf mehrere Würfe, gibt es **einen** Umschalter „App würfelt · von Hand“ für alle. „App würfelt“ würfelt alle Werte auf einmal (Hülle `Wuerfelbereich.svelte`).
+- **Konsistenz** (17.11.2026): Eine Verbesserung an einem Bildschirm wird auf alle gleichartigen Bildschirme übertragen, nicht nur auf den genannten.
 - Besonders aufgefallen: **Waffe wechseln** (`gefecht/WaffeWechseln.svelte`) und **Schießen** (`gefecht/Schiessen.svelte`).
 
 Jede Arbeit an der Oberfläche muss diese Punkte verbessern oder darf sie zumindest nicht verschlimmern.

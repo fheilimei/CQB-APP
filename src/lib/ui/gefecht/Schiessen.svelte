@@ -17,8 +17,8 @@
   import Bericht from '../Bericht.svelte';
   import Dialog from '../Dialog.svelte';
   import ProbeKern from '../probe/ProbeKern.svelte';
-  import Wuerfel from '../Wuerfel.svelte';
-  import Wuerfelbereich from '../Wuerfelbereich.svelte';
+  import Wuerfelbereich, { type Wurfstelle } from '../Wuerfelbereich.svelte';
+  import type { Wurf } from '../../wuerfel/wuerfel';
   import { ERGEBNIS_NAME, bandName, dkMw, kugelnText, stepsText, wurfZahl, zoneName, type Zeile } from '../texte';
 
   interface Props {
@@ -64,6 +64,14 @@
   const brauchtW8 = $derived(!lhJetzt && (v.werfer ? stufe === 'misserfolg' : ansage === 'keine' || (v.nahkampf && stufe === 'misserfolg')));
   const brauchtRueckstoss = $derived(!lhJetzt && !v.werfer && v.schuesse > 1);
   const fertig = $derived(wurf !== null && (!brauchtW8 || w8 !== null) && (!brauchtRueckstoss || rueckstoss !== null));
+  /** Alle Würfe, die gebraucht werden könnten; sichtbar nur die, die nach dem Stand nötig sind. „App würfelt“ würfelt alle. */
+  const w8Moeglich = $derived(v.werfer || ansage === 'keine' || v.nahkampf);
+  const wuerfe = $derived<Wurfstelle[]>([
+    { id: 'treffer', art: 'W100', titel: 'Trefferwurf (W100)' },
+    ...(w8Moeglich ? [{ id: 'w8', art: 'W8' as const, sichtbar: brauchtW8,
+      titel: v.werfer ? 'Richtung (W8)' : stufe === 'misserfolg' ? 'Zone beim Beteiligten (W8)' : 'Trefferzone (W8)' }] : []),
+    ...(!v.werfer ? [{ id: 'rueckstoss', art: 'W10' as const, titel: 'Rückstoßwürfel (W10)', sichtbar: brauchtRueckstoss }] : [])
+  ]);
   const gruppen = $derived(d.regeln.lage.gruppen);
   const ablauf = $derived(v.werfer ? 'werfer' : 'schiessen');
 
@@ -77,6 +85,11 @@
   function schalterUm(id: string) {
     schalter = schalter.includes(id) ? schalter.filter((x) => x !== id) : [...schalter, id];
   }
+  function gewuerfelt(id: string, x: Wurf) {
+    if (id === 'treffer') wurf = x.ergebnis;
+    else if (id === 'w8') w8 = x.ergebnis;
+    else rueckstoss = x.ergebnis;
+  }
   function modusWahl(m: Modus) {
     modus = m;
     anzahl = 1;
@@ -84,7 +97,7 @@
 
   function weiter() {
     if (wurf === null) return;
-    const b = schussAuswerten(c, d, v, s, { wurf, w8, rueckstoss });
+    const b = schussAuswerten(c, d, v, s, { wurf, w8: brauchtW8 ? w8 : null, rueckstoss: brauchtRueckstoss ? rueckstoss : null });
     const zeilen: Zeile[] = [];
     const name = v.waffe.name;
     const sl2: string[] = [];
@@ -259,23 +272,14 @@
         <p class="hinweis">{lhAb === null ? 'Keine Ladehemmung möglich (Rate 0 %).' : `Ladehemmung bei Wurf ${lhAb === 100 ? '100' : `${lhAb}–100`} (Rate ${v.lh_rate} %); 100 = schwer.`}</p>
       </section>
 
-      <Wuerfelbereich>
-        {#if v.sperre === 'entfernung' || v.sperre === 'band' || (ansage === 'zone' && !ansageZone)}
-          <p class="hinweis">Erst oben {v.sperre === 'entfernung' ? 'die Entfernung' : v.sperre === 'band' ? 'eine erreichbare Entfernung' : 'die angesagte Zone'} wählen, dann würfeln.</p>
-        {:else}
-          <Wuerfel eingebettet art="W100" modus={modusFuer('probe', einstellungen)} titel="Trefferwurf (W100)" onwurf={(x) => (wurf = x.ergebnis)} />
-          {#if brauchtW8}
-            <Wuerfel eingebettet art="W8" modus={modusFuer('trefferzone', einstellungen)}
-              titel={v.werfer ? 'Richtung (W8)' : stufe === 'misserfolg' ? 'Zone beim Beteiligten (W8)' : 'Trefferzone (W8)'} onwurf={(x) => (w8 = x.ergebnis)} />
-          {/if}
-          {#if brauchtRueckstoss}
-            <Wuerfel eingebettet art="W10" modus={modusFuer('rueckstoss', einstellungen)} titel="Rückstoßwürfel (W10)" onwurf={(x) => (rueckstoss = x.ergebnis)} />
-          {/if}
-          {#if lhJetzt || stufe}
-            <div class="wuerfel-ergebnis" aria-live="polite">
-              {#if lhJetzt}<p class="ansage fehler">Ladehemmung!</p>{:else if stufe}<p class="ansage {stufe}">{ERGEBNIS_NAME[stufe]} · {wurfZahl(wurf!)}</p>{/if}
-            </div>
-          {/if}
+      <Wuerfelbereich modus={modusFuer('probe', einstellungen)} wuerfe={wuerfe} onwurf={gewuerfelt}
+        gesperrt={v.sperre === 'entfernung' ? 'Erst oben die Entfernung wählen, dann würfeln.'
+          : v.sperre === 'band' ? 'Erst oben eine erreichbare Entfernung wählen, dann würfeln.'
+          : ansage === 'zone' && !ansageZone ? 'Erst oben die angesagte Zone wählen, dann würfeln.' : null}>
+        {#if lhJetzt || stufe}
+          <div class="wuerfel-ergebnis" aria-live="polite">
+            {#if lhJetzt}<p class="ansage fehler">Ladehemmung!</p>{:else if stufe}<p class="ansage {stufe}">{ERGEBNIS_NAME[stufe]} · {wurfZahl(wurf!)}</p>{/if}
+          </div>
         {/if}
       </Wuerfelbereich>
     {/if}

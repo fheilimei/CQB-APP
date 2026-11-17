@@ -121,9 +121,6 @@
   /* Kasten und Ergebnisbereich: .wuerfelbereich, .wuerfel-teil, .wuerfel-ergebnis in app.css. */
   .kopf { display: flex; justify-content: space-between; align-items: center; gap: var(--abstand-2); flex-wrap: wrap; }
   .titel { margin: 0; font-size: 1.05rem; }
-  .umschalter { display: flex; border: 1px solid var(--wuerfel-rand); border-radius: var(--radius); overflow: hidden; background: var(--flaeche); }
-  .umschalter button { border: none; border-radius: 0; background: transparent; padding: 0 var(--abstand-3); font-weight: 400; }
-  .umschalter button.an { background: var(--gewaehlt); font-weight: 700; box-shadow: inset 0 -3px 0 var(--akzent); }
   .eingabe { display: flex; gap: var(--abstand-3); }
   .eingabe label { flex: 1; margin: 0; font-weight: 400; display: flex; flex-direction: column; gap: var(--abstand-1); }
   .breit { width: 100%; }
