@@ -1,7 +1,8 @@
 // Datenprüfung (konzept.md § 2, Leitlinie 9): Pflichtfelder, gültige IDs, Verweise zwischen Dateien.
 // Liefert eine Liste lesbarer Fehler; leer heißt: Daten in Ordnung.
 
-import type { Modifikator, Spieldaten } from './typen';
+import { zugangDerKlasse } from '../regeln/aufstieg';
+import type { Modifikator, Spieldaten, SymptomWirkung } from './typen';
 
 const ID_MUSTER = /^[a-z0-9_]+$/;
 const RAENGE = ['S', 'A', 'B', 'C', 'D', 'E', 'F'];
@@ -16,6 +17,9 @@ const GRUNDWERTE = ['hp', 'schmerzresistenz', 'nahkampfschaden', 'wurfweite_band
 const MOD_ARTEN = ['grundwert', 'stat', 'skill', 'probe', 'alle'];
 const WIRKUNGEN = ['wert', 'stepshields', 'malsteps', 'krit_schwelle'];
 const NUR_STEPS = ['▲', '▼'];
+const SYMPTOM_WIRKUNGEN: SymptomWirkung[] = [
+  'kein_stagger', 'keine_ansage', 'zweite_bewegung', 'keine_antizipation', 'zielen_als_main', 'stagger_ab_gleich', 'weitblick', 'kein_hechten'
+];
 
 export function pruefeDaten(d: Spieldaten): string[] {
   const fehler: string[] = [];
@@ -106,6 +110,14 @@ export function pruefeDaten(d: Spieldaten): string[] {
   }
   for (const s of r.sicht.stufen) if (s.erkennen_bis && s.erkennen_bis !== 'keins' && !baender.has(s.erkennen_bis as never))
     f('regeln.json', `Sichtstufe ${s.id}: unbekanntes Band`);
+  for (const [id, sy] of Object.entries(r.symptome))
+    for (const w of [sy.wirkung?.gewinn, sy.wirkung?.verlust])
+      if (!SYMPTOM_WIRKUNGEN.includes(w as SymptomWirkung)) f('regeln.json', `Symptom ${id}: unbekannte Wirkung „${w}“`);
+  for (const [z, eintrag] of Object.entries(r.zustaende))
+    for (const p of Object.keys((eintrag as { mit_perk?: object }).mit_perk ?? {}))
+      if (!perkIds.has(p)) f('regeln.json', `Zustand ${z}: unbekannter Perk „${p}“ in mit_perk`);
+  for (const z of [r.schiessen.schrot_rumpf_start, r.deckung.arme_mit, ...r.deckung.arme])
+    if (!zonenIds.has(z)) f('regeln.json', `unbekannte Körperzone „${z}“`);
   if (r.initiative && !statIds.has((r.initiative as { stat: string }).stat)) f('regeln.json', 'initiative.stat unbekannt');
 
   // ---------- stats.json
@@ -326,6 +338,15 @@ export function pruefeDaten(d: Spieldaten): string[] {
       if (gesehen.has(naechste)) { f(ort, 'Zugang „wie“ läuft im Kreis'); break; }
       gesehen.add(naechste);
       naechste = klasse.get(naechste)?.zugang.wie ?? null;
+    }
+  }
+
+  // Mindestskills müssen im Zugang der Klasse liegen, sonst könnte der Charakter sie nie steigern.
+  if (fehler.length === 0) {
+    for (const k of d.klassen.eintraege) {
+      const zugang = zugangDerKlasse(k.id, d);
+      for (const s of Object.keys(k.mindestskills ?? {}))
+        if (!zugang.skills.has(s)) f(`klassen.json ${k.id}`, `Mindestskill „${s}“ liegt nicht im Zugang der Klasse`);
     }
   }
 

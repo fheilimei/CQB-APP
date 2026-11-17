@@ -17,10 +17,10 @@
     "faktoren": [
       1,
       0.85,
-      0.638,
-      0.414,
-      0.228,
-      0.103
+      0.6375,
+      0.414375,
+      0.22790625,
+      0.1025578125
     ],
     "keine_probe_ab": 6,
     "skill_null_malsteps": 1
@@ -95,7 +95,8 @@
           "a1",
           "a2"
         ],
-        "over_the_edge": true
+        "over_the_edge": true,
+        "symptome_nur_verluste": true
       }
     },
     "start": {
@@ -144,38 +145,79 @@
         "id": "sonstiges",
         "name": "sonstiges (SL)"
       }
-    ]
+    ],
+    "rundenende": {
+      "malsteps_je_ausloeser": 1,
+      "anstieg": 1,
+      "probe": {
+        "krit": -1,
+        "gelungen": 0,
+        "misslungen": 1
+      }
+    },
+    "senken": {
+      "krit": -2,
+      "gelungen": -1,
+      "misslungen": 0
+    },
+    "verschieben": {
+      "krit": 2,
+      "gelungen": 1,
+      "misslungen": 0
+    }
   },
   "symptome": {
     "a1": {
       "gewinn": "Schmerz ignorieren: kein Stagger",
-      "verlust": "Keine Ansage einer Trefferzone"
+      "verlust": "Keine Ansage einer Trefferzone",
+      "wirkung": {
+        "gewinn": "kein_stagger",
+        "verlust": "keine_ansage"
+      }
     },
     "a2": {
       "gewinn": "Sprint: zweite Bewegung",
-      "verlust": "Tunnelblick: keine Antizipation, Breakaction nur gegen Gesehene"
+      "verlust": "Tunnelblick: keine Antizipation, Breakaction nur gegen Gesehene",
+      "wirkung": {
+        "gewinn": "zweite_bewegung",
+        "verlust": "keine_antizipation"
+      }
     },
     "r1": {
       "gewinn": "Ruhige Hand: Zielen als Mainaction",
       "verlust": "Empfindlich: Stagger schon bei Schaden = Schmerzresistenz",
+      "wirkung": {
+        "gewinn": "zielen_als_main",
+        "verlust": "stagger_ab_gleich"
+      },
       "vorlaeufig": true
     },
     "r2": {
       "gewinn": "Weitblick: Information gilt eine Runde jünger",
       "verlust": "Kein Hechten",
+      "wirkung": {
+        "gewinn": "weitblick",
+        "verlust": "kein_hechten"
+      },
       "vorlaeufig": true
     }
   },
   "zustaende": {
     "adrenalinschock": {
       "malsteps": 3,
-      "ende_ruhe_stunden": 4
+      "ende_ruhe_stunden": 4,
+      "mit_perk": {
+        "eiserne_nerven": 2
+      }
     },
     "kampfunfaehig": {
       "malsteps_ausserhalb_gefecht": 3,
       "gilt_nicht_fuer": [
         "erholungsprobe"
-      ]
+      ],
+      "mit_perk": {
+        "durchbeissen": 2
+      }
     },
     "geblendet": {
       "sichtstufe": "keine",
@@ -440,21 +482,25 @@
     "stufen": [
       {
         "id": "klar",
+        "name": "klar",
         "erkennen_bis": null,
         "malsteps": 0
       },
       {
         "id": "eingeschraenkt",
+        "name": "eingeschränkt",
         "erkennen_bis": "weit",
         "malsteps": 1
       },
       {
         "id": "schlecht",
+        "name": "schlecht",
         "erkennen_bis": "nah",
         "malsteps": 2
       },
       {
         "id": "keine",
+        "name": "keine",
         "erkennen_bis": "keins",
         "malsteps": 3
       }
@@ -624,7 +670,8 @@
         "name": "fern",
         "beschreibung": "ab 251 m"
       }
-    ]
+    ],
+    "schrot_rumpf_start": "brust"
   },
   "lebenspunkte": {
     "kampfunfaehig_bei": 0,
@@ -733,5 +780,15 @@
       "nah"
     ],
     "dauer_runden": 20
+  },
+  "deckung": {
+    "arme_mit": "brust",
+    "arme": [
+      "arm_r",
+      "arm_l"
+    ]
+  },
+  "sprengwirkung": {
+    "splitter_liegend_anteil": 0.5
   }
 }

@@ -23,7 +23,23 @@ export interface Leiterstufe {
   gruppe_b: number;
   symptome: string[];
   over_the_edge?: boolean;
+  /** Over the Edge: Gewinne der Symptome entfallen, Verluste bleiben. */
+  symptome_nur_verluste?: boolean;
 }
+
+/** Änderung der Leiterstufe je Ergebnis einer Probe (positiv = steigen). */
+export type StufenAenderung = Record<'krit' | 'gelungen' | 'misslungen', number>;
+
+/** Wirkungen der Symptome, die der Regelkern kennt. Die Zuordnung zu Symptomen steht in regeln.json. */
+export type SymptomWirkung =
+  | 'kein_stagger'
+  | 'keine_ansage'
+  | 'zweite_bewegung'
+  | 'keine_antizipation'
+  | 'zielen_als_main'
+  | 'stagger_ab_gleich'
+  | 'weitblick'
+  | 'kein_hechten';
 
 export interface LageUmstand {
   id: string;
@@ -50,20 +66,33 @@ export interface Regeln {
     start: Record<string, { krit: number; gelungen: number; misslungen: number }>;
     ueberrascht_breakaction_malsteps: number;
     ausloeser: { id: string; name: string }[];
+    rundenende: { malsteps_je_ausloeser: number; anstieg: number; probe: StufenAenderung };
+    senken: StufenAenderung;
+    verschieben: StufenAenderung;
   };
-  symptome: Record<string, { gewinn: string; verlust: string; vorlaeufig?: boolean }>;
-  zustaende: Record<string, Record<string, unknown>>;
+  symptome: Record<
+    string,
+    { gewinn: string; verlust: string; wirkung: { gewinn: SymptomWirkung; verlust: SymptomWirkung }; vorlaeufig?: boolean }
+  >;
+  zustaende: {
+    adrenalinschock: { malsteps: number; ende_ruhe_stunden: number; mit_perk?: Record<string, number> };
+    kampfunfaehig: { malsteps_ausserhalb_gefecht: number; gilt_nicht_fuer: string[]; mit_perk?: Record<string, number> };
+    geblendet: { sichtstufe: string; malsteps_mit_gereizt_addieren: boolean };
+    gereizt: { malsteps: number; probe: string };
+  };
   lage: {
     eigene_bewegung: Record<string, number>;
     gruppen: { id: string; name: string; auswahl: 'eins' | 'schalter'; zuruecksetzen: string; quelle?: string }[];
     umstaende: LageUmstand[];
     vorlaeufig?: boolean;
   };
-  sicht: { stufen: { id: string; erkennen_bis: string | null; malsteps: number }[]; gilt_fuer: string[] };
+  sicht: { stufen: { id: string; name: string; erkennen_bis: string | null; malsteps: number }[]; gilt_fuer: string[] };
   schiessen: {
     ansage_malsteps: Record<string, number>;
     rueckstoss_stepshields: Record<string, number>;
     haltezahl_max: number;
+    /** Zone, mit der die Zählung der Schrotkugeln nach der Ansage „Rumpf“ beginnt. */
+    schrot_rumpf_start: string;
     garbenfaktor_aus_feuerrate: { bis: number | null; faktor: number }[];
     reichweitenbaender: { id: BandId; name: string; beschreibung: string }[];
   };
@@ -79,6 +108,9 @@ export interface Regeln {
   grundwerte: { hp: number; schmerzresistenz: number; nahkampfschaden: number; wurfweite_band: BandId };
   aufstieg: { statrank_up_kosten: number; skill_level_kosten: number; skill_min: number; skill_max: number; rang_max: Rang };
   krit: { schwelle_min: number; zielwert_100_zehner: number };
+  /** Ist die Zone `arme_mit` verdeckt, gelten auch die Zonen `arme` als verdeckt. */
+  deckung: { arme_mit: string; arme: string[] };
+  sprengwirkung: { splitter_liegend_anteil: number };
   waffenzustand: { stufen: string[]; neu: string; namen: Record<string, string>; preis_viertel: Record<string, number> };
   ladehemmung: { zustand_zuschlag: Record<string, Record<string, number>>; trommelmagazin_zuschlag: number; schwer_bei_wurf: number };
   [weitere: string]: unknown;

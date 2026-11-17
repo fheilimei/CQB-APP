@@ -93,4 +93,21 @@ describe('Datenprüfung erkennt Fehler', () => {
     d.klassen.eintraege.find((k) => k.id === 'soldat')!.zugang.wie = 'kommandosoldat';
     expect(pruefeDaten(d).join('\n')).toContain('im Kreis');
   });
+
+  it('Mindestskill außerhalb des Zugangs der Klasse', () => {
+    const d = kopie();
+    d.klassen.eintraege.find((k) => k.id === 'rekrut')!.mindestskills.tarnen = 1;
+    expect(pruefeDaten(d).join('\n')).toContain('Mindestskill „tarnen“ liegt nicht im Zugang der Klasse');
+  });
+
+  it('unbekannte Perks, Zonen und Symptom-Wirkungen in regeln.json', () => {
+    const d = kopie();
+    d.regeln.zustaende.adrenalinschock.mit_perk = { gibt_es_nicht: 2 };
+    d.regeln.deckung.arme_mit = 'hals';
+    d.regeln.symptome.a1!.wirkung.gewinn = 'fliegen' as never;
+    const fehler = pruefeDaten(d).join('\n');
+    expect(fehler).toContain('unbekannter Perk „gibt_es_nicht“ in mit_perk');
+    expect(fehler).toContain('unbekannte Körperzone „hals“');
+    expect(fehler).toContain('unbekannte Wirkung „fliegen“');
+  });
 });

@@ -602,7 +602,10 @@ Probe: W100 (01–100). Gelungen, wenn Ergebnis ≤ Zielwert.
 
 | Netto-Malsteps | 0 | 1 | 2 | 3 | 4 | 5 |
 | --- | --- | --- | --- | --- | --- | --- |
-| Faktor *(v)* | 1 | 0,85 | 0,638 | 0,414 | 0,228 | 0,103 |
+| Abschlag auf die vorherige Stufe *(v)* | – | 15 % | 25 % | 35 % | 45 % | 55 % |
+| Faktor (gerundet angezeigt) | 1 | 0,85 | 0,638 | 0,414 | 0,228 | 0,103 |
+
+Gerechnet wird mit dem **ungerundeten** Faktor aus den Abschlägen (0,85 · 0,6375 · 0,414375 · 0,22790625 · 0,1025578125, `regeln.json`). Nur damit stimmen alle Prüfwerte des Regelwerks (35 → 15 bei 3 Malsteps; mit 0,414 käme 14 heraus). Siehe `docs/offen.md`, Schritt 2, Punkt 1.
 
 Prüfwerte: 79 → 67, 50, 33, 18, 8 · 54 → 46, 34, 22, 12, 6 · 35 → 30, 22, 15, 8, 4.
 

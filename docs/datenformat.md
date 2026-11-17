@@ -45,7 +45,7 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
   "raenge": { "S": 90, "A": 80, "B": 70, "C": 60, "D": 50, "E": 40, "F": 30 },
   "abweichung": { "min": -9, "max": 9 },
   "steps": {
-    "faktoren": [1, 0.85, 0.638, 0.414, 0.228, 0.103],
+    "faktoren": [1, 0.85, 0.6375, 0.414375, 0.22790625, 0.1025578125],
     "keine_probe_ab": 6,
     "skill_null_malsteps": 1
   },
@@ -60,7 +60,7 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
       "1":  { "name": "Adrenalin 1", "gruppe_a": 0, "gruppe_b": 0, "symptome": ["a1"] },
       "2":  { "name": "Adrenalin 2", "gruppe_a": 1, "gruppe_b": -1, "symptome": ["a1", "a2"] },
       "3":  { "name": "Adrenalin 3", "gruppe_a": 2, "gruppe_b": -2, "symptome": ["a1", "a2"] },
-      "4":  { "name": "Over the Edge", "gruppe_a": -2, "gruppe_b": -2, "symptome": ["a1", "a2"], "over_the_edge": true }
+      "4":  { "name": "Over the Edge", "gruppe_a": -2, "gruppe_b": -2, "symptome": ["a1", "a2"], "over_the_edge": true, "symptome_nur_verluste": true }
     },
     "start": {
       "normal":     { "krit": -1, "gelungen": 0, "misslungen": 1 },
@@ -76,17 +76,24 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
       { "id": "geschossen", "name": "selbst auf jemanden geschossen" },
       { "id": "verbuendeter", "name": "Verbündeter ausgeschaltet" },
       { "id": "sonstiges", "name": "sonstiges (SL)" }
-    ]
+    ],
+    "rundenende": { "malsteps_je_ausloeser": 1, "anstieg": 1, "probe": { "krit": -1, "gelungen": 0, "misslungen": 1 } },
+    "senken": { "krit": -2, "gelungen": -1, "misslungen": 0 },
+    "verschieben": { "krit": 2, "gelungen": 1, "misslungen": 0 }
   },
   "symptome": {
-    "a1": { "gewinn": "Schmerz ignorieren: kein Stagger", "verlust": "Keine Ansage einer Trefferzone" },
-    "a2": { "gewinn": "Sprint: zweite Bewegung", "verlust": "Tunnelblick: keine Antizipation, Breakaction nur gegen Gesehene" },
-    "r1": { "gewinn": "Ruhige Hand: Zielen als Mainaction", "verlust": "Empfindlich: Stagger schon bei Schaden = Schmerzresistenz", "vorlaeufig": true },
-    "r2": { "gewinn": "Weitblick: Information gilt eine Runde jünger", "verlust": "Kein Hechten", "vorlaeufig": true }
+    "a1": { "gewinn": "Schmerz ignorieren: kein Stagger", "verlust": "Keine Ansage einer Trefferzone",
+            "wirkung": { "gewinn": "kein_stagger", "verlust": "keine_ansage" } },
+    "a2": { "gewinn": "Sprint: zweite Bewegung", "verlust": "Tunnelblick: keine Antizipation, Breakaction nur gegen Gesehene",
+            "wirkung": { "gewinn": "zweite_bewegung", "verlust": "keine_antizipation" } },
+    "r1": { "gewinn": "Ruhige Hand: Zielen als Mainaction", "verlust": "Empfindlich: Stagger schon bei Schaden = Schmerzresistenz",
+            "wirkung": { "gewinn": "zielen_als_main", "verlust": "stagger_ab_gleich" }, "vorlaeufig": true },
+    "r2": { "gewinn": "Weitblick: Information gilt eine Runde jünger", "verlust": "Kein Hechten",
+            "wirkung": { "gewinn": "weitblick", "verlust": "kein_hechten" }, "vorlaeufig": true }
   },
   "zustaende": {
-    "adrenalinschock": { "malsteps": 3, "ende_ruhe_stunden": 4 },
-    "kampfunfaehig": { "malsteps_ausserhalb_gefecht": 3, "gilt_nicht_fuer": ["erholungsprobe"] },
+    "adrenalinschock": { "malsteps": 3, "ende_ruhe_stunden": 4, "mit_perk": { "eiserne_nerven": 2 } },
+    "kampfunfaehig": { "malsteps_ausserhalb_gefecht": 3, "gilt_nicht_fuer": ["erholungsprobe"], "mit_perk": { "durchbeissen": 2 } },
     "geblendet": { "sichtstufe": "keine", "malsteps_mit_gereizt_addieren": true },
     "gereizt": { "malsteps": 2, "probe": "grit" }
   },
@@ -146,10 +153,10 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
   },
   "sicht": {
     "stufen": [
-      { "id": "klar", "erkennen_bis": null, "malsteps": 0 },
-      { "id": "eingeschraenkt", "erkennen_bis": "weit", "malsteps": 1 },
-      { "id": "schlecht", "erkennen_bis": "nah", "malsteps": 2 },
-      { "id": "keine", "erkennen_bis": "keins", "malsteps": 3 }
+      { "id": "klar", "name": "klar", "erkennen_bis": null, "malsteps": 0 },
+      { "id": "eingeschraenkt", "name": "eingeschränkt", "erkennen_bis": "weit", "malsteps": 1 },
+      { "id": "schlecht", "name": "schlecht", "erkennen_bis": "nah", "malsteps": 2 },
+      { "id": "keine", "name": "keine", "erkennen_bis": "keins", "malsteps": 3 }
     ],
     "gilt_fuer": ["schiessen", "werfen", "nahkampf", "reaktion_gesehen", "ladehemmung_beheben"],
     "vorlaeufig": true
@@ -191,6 +198,7 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
     "ansage_malsteps": { "rumpf": 1, "zone": 2 },
     "rueckstoss_stepshields": { "liegend": 1 },
     "haltezahl_max": 10,
+    "schrot_rumpf_start": "brust",
     "garbenfaktor_aus_feuerrate": [ { "bis": 10, "faktor": 1 }, { "bis": 20, "faktor": 2 }, { "bis": null, "faktor": 3 } ],
     "reichweitenbaender": [
       { "id": "bedraengt", "name": "bedrängt", "beschreibung": "bis 2 m (Armeslänge, Nahkampf)" },
@@ -230,6 +238,8 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
   "aufstieg": { "statrank_up_kosten": 1, "skill_level_kosten": 1, "skill_min": 0, "skill_max": 5, "rang_max": "S" },
   "wuerfel": { "w100_null_null": 100, "w10_null": 10 },
   "krit": { "schwelle_min": 0, "zielwert_100_zehner": 10 },
+  "deckung": { "arme_mit": "brust", "arme": ["arm_r", "arm_l"] },
+  "sprengwirkung": { "splitter_liegend_anteil": 0.5 },
   "waffenzustand": { "stufen": ["A", "B", "C", "D"], "neu": "A",
                      "namen": { "A": "neuwertig", "B": "gebraucht", "C": "verschlissen", "D": "schrottreif" },
                      "preis_viertel": { "A": 4, "B": 3, "C": 2, "D": 1 }, "vorlaeufig": true },
@@ -238,6 +248,12 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
 ```
 
 - **`aufstieg`**, **`wuerfel`**, **`krit`**: Kosten und Grenzen des Aufstiegs, Lesart der Würfel (0+0 beim W100 = 100, 0 beim W10 = 10), Untergrenze der Krit-Schwelle. **`waffenzustand.preis_viertel`**: Viertel der Geldwertspanne je Zustand (4 = oberstes). **`reizgas`**: Probe und Wolke der Gasgranate (Sprengwirkung, Reizgas).
+
+- **`steps.faktoren`**: ungerundete Faktoren aus den Abschlägen 15 %, 25 %, 35 %, 45 %, 55 % auf die jeweils vorherige Stufe (Regelwerk: Stats, Skills und Perks, Steps). Die gerundeten Werte der Tabelle im Regelwerk (0,638; 0,414 …) treffen dessen Beispiel 35 → 15 nicht ([offen.md](offen.md), Schritt 2).
+- **`leiter.rundenende`**: Malsteps der Nerve-Probe je Auslöser, Anstieg ohne Probe, Änderung je Ergebnis der Probe. **`leiter.senken`**, **`leiter.verschieben`**: Änderung bzw. Betrag je Ergebnis. Positive Zahl = steigen.
+- **`symptome.*.wirkung`**: was das Symptom im Regelkern bewirkt. Erlaubte Werte: `kein_stagger`, `keine_ansage`, `zweite_bewegung`, `keine_antizipation`, `zielen_als_main`, `stagger_ab_gleich`, `weitblick`, `kein_hechten`. Ein neues Symptom mit bekannter Wirkung braucht keine Codeänderung. **`symptome_nur_verluste`** (Over the Edge): Gewinne entfallen.
+- **`zustaende.*.mit_perk`**: Perk-ID → Malsteps, die mit diesem Perk statt des Standards gelten.
+- **`schiessen.schrot_rumpf_start`**: Zone der ersten Schrotkugel nach der Ansage „Rumpf“. **`deckung`**: Ist `arme_mit` verdeckt, gelten auch die Zonen in `arme` als verdeckt (Deckung und Rüstung, Deckung). **`sprengwirkung.splitter_liegend_anteil`**: Anteil der Splitterzahl für Liegende, abgerundet.
 
 **Leiter:** `name` ist der Text in der Oberfläche; `null` bei 0 heißt: keine Anzeige. Das Wort „Leiter“ erscheint dort nie ([konzept.md § 2](konzept.md#texte-in-der-oberfläche)). **Vorzeichen:** In `gruppe_a`/`gruppe_b` bedeutet eine positive Zahl Stepshields, eine negative Malsteps.
 
