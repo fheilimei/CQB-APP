@@ -18,6 +18,7 @@
   import Dialog from '../Dialog.svelte';
   import ProbeKern from '../probe/ProbeKern.svelte';
   import Wuerfel from '../Wuerfel.svelte';
+  import Wuerfelbereich from '../Wuerfelbereich.svelte';
   import { ERGEBNIS_NAME, bandName, dkMw, kugelnText, stepsText, wurfZahl, zoneName, type Zeile } from '../texte';
 
   interface Props {
@@ -130,6 +131,7 @@
   <Bericht titel="Schießen" zeilen={bericht.zeilen} onweiter={() => onfertig(bericht!.nach)} onzurueck={() => (bericht = null)} />
 {:else}
   <Dialog titel="Schießen">
+    <div class="abschnitte">
     <p class="waffe"><strong>{v.waffe.name}</strong>
       <span class="hinweis">{#if v.werfer}{e.munitionstyp ? (sprengwaffe(e.munitionstyp, d)?.name ?? e.munitionstyp) : 'nicht geladen'}{:else}{e.munitionstyp}{#if mun} · {dkMw(mun.dk, mun.mw, mun.stumpf)}{/if} · {magazinText(e, d)}{/if}</span></p>
 
@@ -137,117 +139,147 @@
       <p class="fehler">{v.sperre === 'leer' ? 'Die Waffe ist leer. Lade nach (Main → Nachladen).' : 'Die Waffe hat eine Ladehemmung (Main → Ladehemmung beheben).'}</p>
     {:else}
       {#if !v.werfer}
-        {#if modi.length > 1}
-          <div class="reihe" role="group" aria-label="Feuermodus">
-            <span class="titel">Feuermodus:</span>
-            {#each modi as m (m)}<button class:an={aktModus === m} aria-pressed={aktModus === m} onclick={() => modusWahl(m)}>{m}</button>{/each}
+        <section class="abschnitt">
+          <h3 class="abschnitt-titel">Feuer</h3>
+          {#if modi.length > 1}
+            <div class="gruppe" role="group" aria-label="Feuermodus">
+              <span class="gruppe-titel">Feuermodus:</span>
+              <div class="auswahlreihe">
+                {#each modi as m (m)}<button aria-pressed={aktModus === m} onclick={() => modusWahl(m)}>{m}</button>{/each}
+              </div>
+            </div>
+          {/if}
+          <div class="gruppe">
+            <div class="zaehler">
+              <span class="gruppe-titel">{aktModus === 'Burst' ? `Bursts (je ${v.modus.burst_laenge}):` : 'Schüsse:'}</span>
+              <span class="stepper">
+                <button aria-label="weniger" disabled={anzahl <= 1} onclick={() => (anzahl = Math.max(1, anzahl - 1))}>−</button>
+                <strong>{anzahl}</strong>
+                <button aria-label="mehr" disabled={anzahl >= v.anzahl_max} onclick={() => (anzahl = Math.min(v.anzahl_max, anzahl + 1))}>+</button>
+              </span>
+            </div>
+            <p class="hinweis">{v.schuesse} {v.schuesse === 1 ? 'Schuss' : 'Schüsse'} (höchstens Feuerrate {v.modus.feuerrate}, im Magazin {e.im_magazin}).</p>
           </div>
-        {/if}
-        <div class="zaehler">
-          <span>{aktModus === 'Burst' ? `Bursts (je ${v.modus.burst_laenge})` : 'Schüsse'}</span>
-          <span class="stepper">
-            <button aria-label="weniger" disabled={anzahl <= 1} onclick={() => (anzahl = Math.max(1, anzahl - 1))}>−</button>
-            <strong>{anzahl}</strong>
-            <button aria-label="mehr" disabled={anzahl >= v.anzahl_max} onclick={() => (anzahl = Math.min(v.anzahl_max, anzahl + 1))}>+</button>
-          </span>
-        </div>
-        <p class="hinweis">{v.schuesse} {v.schuesse === 1 ? 'Schuss' : 'Schüsse'} (höchstens Feuerrate {v.modus.feuerrate}, im Magazin {e.im_magazin}).</p>
 
-        <div class="reihe" role="group" aria-label="Ansage">
-          <span class="titel">Ansage:</span>
-          {#each [['keine', 'keine (W8)'], ['rumpf', 'Rumpf'], ['zone', 'Zone']] as [id, text] (id)}
-            <button class:an={ansage === id} aria-pressed={ansage === id} disabled={id !== 'keine' && !v.ansage_moeglich}
-              onclick={() => (ansage = id as Ansage)}>{text}</button>
-          {/each}
-        </div>
-        {#if !v.ansage_moeglich}<p class="hinweis">Keine Ansage möglich (Adrenalin oder keine Sicht).</p>{/if}
-        {#if ansage === 'zone'}
-          <div class="reihe" role="group" aria-label="Angesagte Zone">
-            {#each zonen as z (z.id)}<button class:an={ansageZone === z.id} aria-pressed={ansageZone === z.id} onclick={() => (ansageZone = z.id)}>{z.name}</button>{/each}
-          </div>
-        {/if}
-      {/if}
-
-      <h3>Ziel und Schütze <button class="flach link klein-link" onclick={() => onaendern(neuesZiel(c, d))}>Neues Ziel</button></h3>
-      {#each gruppen as gr (gr.id)}
-        {#if gr.quelle === 'reichweite'}
-          <div class="reihe" role="group" aria-label={gr.name}>
-            <span class="titel">{gr.name}:</span>
-            {#each d.regeln.schiessen.reichweitenbaender as b (b.id)}
-              {@const st = bandSteps(b.id)}
-              <button class:an={auswahl[gr.id] === b.id} aria-pressed={auswahl[gr.id] === b.id} disabled={st === null}
-                onclick={() => umstandWahl(gr.id, b.id, 'eins')}>{b.name}<small>{st === null ? 'n/A' : st.length ? stepsText(st[0]!) : '±0'}</small></button>
-            {/each}
-          </div>
-          {#if !v.band}<p class="hinweis">Entfernung wählen.</p>{/if}
-        {:else}
-          {@const umst = d.regeln.lage.umstaende.filter((u) => u.gruppe === gr.id && !u.nicht_fuer?.includes(ablauf))}
-          {#if umst.length}
-            <div class="reihe" role="group" aria-label={gr.name}>
-              <span class="titel">{gr.name}:</span>
-              {#each umst as u (u.id)}
-                {@const an = gr.auswahl === 'eins' ? auswahl[gr.id] === u.id : ((auswahl[gr.id] as string[]) ?? []).includes(u.id)}
-                {@const gesperrt = !!u.nur_ohne_eigene_bewegung && (!!g.bewegt || g.gehechtet)}
-                {@const wirktNicht = !!v.band && !!u.nicht_in_baendern?.includes(v.band)}
-                <button class:an class:wirkungslos={wirktNicht} aria-pressed={an} disabled={gesperrt} onclick={() => umstandWahl(gr.id, u.id, gr.auswahl)}>
-                  {u.name}<small>{stepsText(u) || '±0'}</small></button>
+          <div class="gruppe" role="group" aria-label="Ansage">
+            <span class="gruppe-titel">Ansage:</span>
+            <div class="auswahlreihe">
+              {#each [['keine', 'keine (W8)'], ['rumpf', 'Rumpf'], ['zone', 'Zone']] as [id, text] (id)}
+                <button aria-pressed={ansage === id} disabled={id !== 'keine' && !v.ansage_moeglich}
+                  onclick={() => (ansage = id as Ansage)}>{text}</button>
               {/each}
             </div>
-            {#each umst as u (u.id)}
-              {@const an = gr.auswahl === 'eins' ? auswahl[gr.id] === u.id : ((auswahl[gr.id] as string[]) ?? []).includes(u.id)}
-              {#if an && u.hinweis}<p class="hinweis">{u.name}: {u.hinweis}.</p>{/if}
-              {#if an && v.band && u.nicht_in_baendern?.includes(v.band)}<p class="hinweis">{u.name}: wirkt nicht im Band {bandName(v.band, d)}.</p>{/if}
-              {#if u.nur_ohne_eigene_bewegung && (g.bewegt || g.gehechtet)}<p class="hinweis">{u.name}: gesperrt, du hast dich in dieser Runde bewegt.</p>{/if}
-            {/each}
+            {#if !v.ansage_moeglich}<p class="hinweis">Keine Ansage möglich (Adrenalin oder keine Sicht).</p>{/if}
+          </div>
+          {#if ansage === 'zone'}
+            <div class="gruppe" role="group" aria-label="Angesagte Zone">
+              <span class="gruppe-titel">Angesagte Zone:</span>
+              <div class="auswahlreihe">
+                {#each zonen as z (z.id)}<button aria-pressed={ansageZone === z.id} onclick={() => (ansageZone = z.id)}>{z.name}</button>{/each}
+              </div>
+              {#if !ansageZone}<p class="fehler">Wähle die angesagte Zone.</p>{/if}
+            </div>
           {/if}
-        {/if}
-      {/each}
+        </section>
+      {/if}
+
+      <section class="abschnitt">
+        <h3 class="abschnitt-titel">Ziel und Schütze <button class="flach link klein-link" onclick={() => onaendern(neuesZiel(c, d))}>Neues Ziel</button></h3>
+        {#each gruppen as gr (gr.id)}
+          {#if gr.quelle === 'reichweite'}
+            <div class="gruppe" role="group" aria-label={gr.name}>
+              <span class="gruppe-titel">{gr.name}:</span>
+              <div class="auswahlreihe">
+                {#each d.regeln.schiessen.reichweitenbaender as b (b.id)}
+                  {@const st = bandSteps(b.id)}
+                  <button aria-pressed={auswahl[gr.id] === b.id} disabled={st === null}
+                    onclick={() => umstandWahl(gr.id, b.id, 'eins')}>{b.name}<small>{st === null ? 'n/A' : st.length ? stepsText(st[0]!) : '±0'}</small></button>
+                {/each}
+              </div>
+              {#if v.sperre === 'entfernung'}<p class="fehler">Wähle die Entfernung zum Ziel.</p>
+              {:else if v.sperre === 'band'}<p class="fehler">Die Waffe reicht nicht bis {bandName(v.band!, d)}.</p>{/if}
+            </div>
+          {:else}
+            {@const umst = d.regeln.lage.umstaende.filter((u) => u.gruppe === gr.id && !u.nicht_fuer?.includes(ablauf))}
+            {#if umst.length}
+              <div class="gruppe" role="group" aria-label={gr.name}>
+                <span class="gruppe-titel">{gr.name}:</span>
+                <div class="auswahlreihe">
+                  {#each umst as u (u.id)}
+                    {@const an = gr.auswahl === 'eins' ? auswahl[gr.id] === u.id : ((auswahl[gr.id] as string[]) ?? []).includes(u.id)}
+                    {@const gesperrt = !!u.nur_ohne_eigene_bewegung && (!!g.bewegt || g.gehechtet)}
+                    {@const wirktNicht = !!v.band && !!u.nicht_in_baendern?.includes(v.band)}
+                    <button class:wirkungslos={wirktNicht} aria-pressed={an} disabled={gesperrt} onclick={() => umstandWahl(gr.id, u.id, gr.auswahl)}>
+                      {u.name}<small>{stepsText(u) || '±0'}</small></button>
+                  {/each}
+                </div>
+                {#each umst as u (u.id)}
+                  {@const an = gr.auswahl === 'eins' ? auswahl[gr.id] === u.id : ((auswahl[gr.id] as string[]) ?? []).includes(u.id)}
+                  {#if an && u.hinweis}<p class="hinweis">{u.name}: {u.hinweis}.</p>{/if}
+                  {#if an && v.band && u.nicht_in_baendern?.includes(v.band)}<p class="hinweis">{u.name}: wirkt nicht im Band {bandName(v.band, d)}.</p>{/if}
+                  {#if u.nur_ohne_eigene_bewegung && (g.bewegt || g.gehechtet)}<p class="hinweis">{u.name}: gesperrt, du hast dich in dieser Runde bewegt.</p>{/if}
+                {/each}
+              </div>
+            {/if}
+          {/if}
+        {/each}
+      </section>
 
       {#if schalterAufsaetze.length}
-        <h3>Aufsätze im Einsatz</h3>
-        {#each schalterAufsaetze as a (a.id)}
-          <label class="schalter"><input type="checkbox" checked={schalter.includes(a.id)} onchange={() => schalterUm(a.id)} /> {a.schalter_text ?? a.name}</label>
-          {#if schalter.includes(a.id) && a.hinweis}<p class="hinweis">{a.hinweis}</p>{/if}
-        {/each}
+        <section class="abschnitt">
+          <h3 class="abschnitt-titel">Aufsätze im Einsatz</h3>
+          <div class="gruppe">
+            {#each schalterAufsaetze as a (a.id)}
+              <label class="schalter"><input type="checkbox" checked={schalter.includes(a.id)} onchange={() => schalterUm(a.id)} /> {a.schalter_text ?? a.name}</label>
+              {#if schalter.includes(a.id) && a.hinweis}<p class="hinweis">{a.hinweis}</p>{/if}
+            {/each}
+          </div>
+        </section>
       {/if}
 
-      <div class="kern">
+      <section class="abschnitt">
+        <h3 class="abschnitt-titel">Trefferwert</h3>
         <ProbeKern {c} {d} anfrage={v.anfrage} hinweise={['schiessen']} wuerfelModus={modusFuer('probe', einstellungen)} sichtVorgewaehlt ohneWurf
           bind:sl bind:ausgeschaltet {onaendern} />
-      </div>
 
-      {#if v.haltezahl}
-        <button class="flach zeile-knopf" aria-expanded={haltezahlAuf} onclick={() => (haltezahlAuf = !haltezahlAuf)}>
-          <span>Haltezahl (Rückstoß {v.modus.rueckstoss})</span><strong>{v.haltezahl.wert}</strong></button>
-        {#if haltezahlAuf}
-          <ul class="haltezahl">
-            {#each v.haltezahl.quellen as q, i (i)}<li>{q.name} <strong>{stepsText(q)}</strong></li>{/each}
-            {#if !v.haltezahl.quellen.length}<li class="hinweis">nur Rückstoß und Skill Rückstoßkontrolle</li>{/if}
-          </ul>
+        {#if v.haltezahl}
+          <div class="gruppe">
+            <button class="flach zeile-knopf" aria-expanded={haltezahlAuf} onclick={() => (haltezahlAuf = !haltezahlAuf)}>
+              <span>Haltezahl (Rückstoß {v.modus.rueckstoss})</span><strong>{v.haltezahl.wert}</strong></button>
+            {#if haltezahlAuf}
+              <ul class="haltezahl">
+                {#each v.haltezahl.quellen as q, i (i)}<li>{q.name} <strong>{stepsText(q)}</strong></li>{/each}
+                {#if !v.haltezahl.quellen.length}<li class="hinweis">nur Rückstoß und Skill Rückstoßkontrolle</li>{/if}
+              </ul>
+            {/if}
+            <p class="hinweis">Folgetreffer = Haltezahl − Rückstoßwürfel{v.garbenfaktor > 1 ? `, je ${v.garbenfaktor} Kugeln (Garbenfaktor)` : ''}; zusammen höchstens {v.schuesse - 1} {v.schuesse - 1 === 1 ? 'Kugel' : 'Kugeln'}.</p>
+          </div>
         {/if}
-        <p class="hinweis">Folgetreffer = Haltezahl − Rückstoßwürfel{v.garbenfaktor > 1 ? `, je ${v.garbenfaktor} Kugeln (Garbenfaktor)` : ''}; zusammen höchstens {v.schuesse - 1} {v.schuesse - 1 === 1 ? 'Kugel' : 'Kugeln'}.</p>
-      {/if}
-      {#if v.kugeln > 1}<p class="hinweis">Schrot: {kugelnText(v.kugeln)} je Treffer im Band {bandName(v.band!, d)}, Zonen fortlaufend nach unten.</p>{/if}
-      <p class="lh">{lhAb === null ? 'Keine Ladehemmung möglich (Rate 0 %).' : `Ladehemmung bei Wurf ${lhAb === 100 ? '100' : `${lhAb}–100`} (Rate ${v.lh_rate} %); 100 = schwer.`}</p>
+        {#if v.kugeln > 1}<p class="hinweis">Schrot: {kugelnText(v.kugeln)} je Treffer im Band {bandName(v.band!, d)}, Zonen fortlaufend nach unten.</p>{/if}
+        <p class="hinweis">{lhAb === null ? 'Keine Ladehemmung möglich (Rate 0 %).' : `Ladehemmung bei Wurf ${lhAb === 100 ? '100' : `${lhAb}–100`} (Rate ${v.lh_rate} %); 100 = schwer.`}</p>
+      </section>
 
-      {#if v.sperre === 'entfernung'}
-        <p class="fehler">Wähle die Entfernung zum Ziel.</p>
-      {:else if v.sperre === 'band'}
-        <p class="fehler">Die Waffe reicht nicht bis {bandName(v.band!, d)}.</p>
-      {:else if ansage === 'zone' && !ansageZone}
-        <p class="fehler">Wähle die angesagte Zone.</p>
-      {:else}
-        <Wuerfel art="W100" modus={modusFuer('probe', einstellungen)} titel="Trefferwurf (W100)" onwurf={(x) => (wurf = x.ergebnis)} />
-        {#if brauchtW8}
-          <Wuerfel art="W8" modus={modusFuer('trefferzone', einstellungen)}
-            titel={v.werfer ? 'Richtung (W8)' : stufe === 'misserfolg' ? 'Zone beim Beteiligten (W8)' : 'Trefferzone (W8)'} onwurf={(x) => (w8 = x.ergebnis)} />
+      <Wuerfelbereich>
+        {#if v.sperre === 'entfernung' || v.sperre === 'band' || (ansage === 'zone' && !ansageZone)}
+          <p class="hinweis">Erst oben {v.sperre === 'entfernung' ? 'die Entfernung' : v.sperre === 'band' ? 'eine erreichbare Entfernung' : 'die angesagte Zone'} wählen, dann würfeln.</p>
+        {:else}
+          <Wuerfel eingebettet art="W100" modus={modusFuer('probe', einstellungen)} titel="Trefferwurf (W100)" onwurf={(x) => (wurf = x.ergebnis)} />
+          {#if brauchtW8}
+            <Wuerfel eingebettet art="W8" modus={modusFuer('trefferzone', einstellungen)}
+              titel={v.werfer ? 'Richtung (W8)' : stufe === 'misserfolg' ? 'Zone beim Beteiligten (W8)' : 'Trefferzone (W8)'} onwurf={(x) => (w8 = x.ergebnis)} />
+          {/if}
+          {#if brauchtRueckstoss}
+            <Wuerfel eingebettet art="W10" modus={modusFuer('rueckstoss', einstellungen)} titel="Rückstoßwürfel (W10)" onwurf={(x) => (rueckstoss = x.ergebnis)} />
+          {/if}
+          {#if lhJetzt || stufe}
+            <div class="wuerfel-ergebnis" aria-live="polite">
+              {#if lhJetzt}<p class="ansage fehler">Ladehemmung!</p>{:else if stufe}<p class="ansage {stufe}">{ERGEBNIS_NAME[stufe]} · {wurfZahl(wurf!)}</p>{/if}
+            </div>
+          {/if}
         {/if}
-        {#if brauchtRueckstoss}
-          <Wuerfel art="W10" modus={modusFuer('rueckstoss', einstellungen)} titel="Rückstoßwürfel (W10)" onwurf={(x) => (rueckstoss = x.ergebnis)} />
-        {/if}
-        {#if lhJetzt}<p class="fehler ansage">Ladehemmung!</p>{:else if stufe}<p class="ansage {stufe}">{ERGEBNIS_NAME[stufe]} · {wurfZahl(wurf!)}</p>{/if}
-      {/if}
+      </Wuerfelbereich>
     {/if}
+    </div>
 
     {#snippet knoepfe()}
       <button onclick={onabbrechen}>Abbrechen</button>
@@ -257,22 +289,10 @@
 {/if}
 
 <style>
-  .waffe { display: flex; flex-direction: column; margin: 0 0 8px; }
-  h3 { font-size: 0.9rem; color: var(--text-2); margin: 16px 0 6px; display: flex; justify-content: space-between; align-items: center; }
-  .klein-link { font-size: 0.9rem; color: var(--akzent); }
-  .reihe { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 6px 0; }
-  .reihe .titel { flex-basis: 100%; font-size: 0.9rem; color: var(--text-2); }
-  .reihe button { padding: 4px 10px; display: flex; flex-direction: column; align-items: center; line-height: 1.2; }
-  .reihe button small { font-size: 0.75rem; color: var(--text-2); }
-  .reihe button.an { border: 2px solid var(--akzent); background: var(--flaeche-2); font-weight: 700; }
-  .reihe button.wirkungslos { opacity: 0.6; }
-  .zaehler { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
-  .kern { margin-top: 12px; }
-  .zeile-knopf { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0 12px; margin-top: 12px;
+  .waffe { display: flex; flex-direction: column; gap: var(--abstand-1); margin: 0; }
+  .klein-link { font-size: 0.9rem; font-weight: 400; color: var(--akzent); }
+  .zaehler { display: flex; justify-content: space-between; align-items: center; }
+  .zeile-knopf { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0 var(--abstand-3);
     background: var(--flaeche-2); border-radius: var(--radius); }
-  .haltezahl { margin: 4px 0; padding-left: 20px; }
-  .lh { font-size: 0.9rem; }
-  .ansage { font-size: 1.8rem; font-weight: 800; text-align: center; margin: 12px 0; padding: 12px; border-radius: var(--radius); background: var(--flaeche-2); }
-  .ansage.krit, .ansage.erfolg { color: var(--ok); }
-  .ansage.misserfolg { color: var(--gefahr); }
+  .haltezahl { margin: 0; padding-left: var(--abstand-4); }
 </style>

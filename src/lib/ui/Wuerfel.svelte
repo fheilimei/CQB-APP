@@ -20,9 +20,11 @@
     onausgang?: (a: Ausgang) => void;
     /** Ansage des Ergebnisses (z. B. „Erfolg · 47“); steht im Kasten unter der gewürfelten Zahl. */
     children?: Snippet;
+    /** Teil eines Wuerfelbereichs: ohne eigenen Kasten, Trennlinie zum vorigen Wurf. */
+    eingebettet?: boolean;
   }
 
-  let { art, modus, titel = '', mitAusgang = false, onwurf, onausgang, children }: Props = $props();
+  let { art, modus, titel = '', mitAusgang = false, onwurf, onausgang, children, eingebettet = false }: Props = $props();
 
   let aktiv = $state<Quelle>('hand');
   $effect.pre(() => { aktiv = modus; });
@@ -62,9 +64,9 @@
   }
 </script>
 
-<section class="wuerfel" aria-label={titel || art}>
+<section class={eingebettet ? 'wuerfel-teil' : 'abschnitt wuerfelbereich'} aria-label={titel || art}>
   <div class="kopf">
-    <h3 class="titel">{titel || art}</h3>
+    <svelte:element this={eingebettet ? 'h4' : 'h3'} class="titel">{titel || art}</svelte:element>
     <div class="umschalter" role="group" aria-label="Wer würfelt">
       <button class:an={aktiv === 'app'} aria-pressed={aktiv === 'app'} onclick={() => (aktiv = 'app')}>App würfelt</button>
       <button class:an={aktiv === 'hand'} aria-pressed={aktiv === 'hand'} onclick={() => (aktiv = 'hand')}>von Hand</button>
@@ -104,7 +106,7 @@
   {/if}
 
   {#if letzter || (ausgangGewaehlt && children)}
-    <div class="ergebnis" aria-live="polite">
+    <div class="wuerfel-ergebnis" aria-live="polite">
       {#if letzter}
         <p class="zahl"><span class="hinweis">{letzter.quelle === 'app' ? 'Gewürfelt' : 'Eingetragen'}</span>
           <strong>{beschreibe(letzter)}</strong>
@@ -116,9 +118,7 @@
 </section>
 
 <style>
-  /* Abgesetzter Kasten: eigene Fläche und kräftiger Rand, damit er nicht wie eine weitere Auswahl wirkt. */
-  .wuerfel { display: flex; flex-direction: column; gap: var(--abstand-3); padding: var(--abstand-3);
-    background: var(--wuerfel-flaeche); border: 2px solid var(--wuerfel-rand); border-radius: var(--radius); }
+  /* Kasten und Ergebnisbereich: .wuerfelbereich, .wuerfel-teil, .wuerfel-ergebnis in app.css. */
   .kopf { display: flex; justify-content: space-between; align-items: center; gap: var(--abstand-2); flex-wrap: wrap; }
   .titel { margin: 0; font-size: 1.05rem; }
   .umschalter { display: flex; border: 1px solid var(--wuerfel-rand); border-radius: var(--radius); overflow: hidden; background: var(--flaeche); }
@@ -130,7 +130,6 @@
   .ausgang-gruppe { display: flex; flex-direction: column; gap: var(--abstand-2); }
   .ausgang { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--abstand-2); }
   .ausgang button { padding: 0 var(--abstand-1); }
-  .ergebnis { display: flex; flex-direction: column; gap: var(--abstand-2); padding-top: var(--abstand-3); border-top: 1px solid var(--wuerfel-rand); }
   .zahl { margin: 0; display: flex; align-items: baseline; justify-content: center; gap: var(--abstand-2); }
   .zahl strong { font-size: 2rem; font-variant-numeric: tabular-nums; }
 </style>

@@ -84,9 +84,32 @@ label { display: block; font-weight: 600; margin: 16px 0 6px; }
 .stepper button { padding: 0; width: 44px; font-size: 1.2rem; }
 .inline { display: flex; flex-direction: column; gap: 4px; margin: 8px 0; font-weight: 400; }
 .schalter { display: flex; align-items: center; gap: 8px; margin: 0; font-weight: 400; min-height: 44px; }
-.schalter input { width: 22px; height: 22px; min-height: 0; }
+.schalter input { width: 22px; height: 22px; min-height: 0; accent-color: var(--akzent); }
+/* Eingeschalteter Schalter: ganze Zeile hervorgehoben, nicht nur das Häkchen. */
+.schalter:has(input:checked) { font-weight: 700; }
 button.link { padding: 0 4px; min-height: 44px; min-width: 0; text-decoration: underline; text-underline-offset: 3px; text-align: left; }
 table.rechnung { width: 100%; border-collapse: collapse; margin: 4px 0 8px; }
 table.rechnung td { padding: 2px 0; }
 table.rechnung td:last-child { text-align: right; white-space: nowrap; }
 table.rechnung tr.summe td { border-top: 1px solid var(--linie); font-weight: 700; padding-top: 6px; }
+
+/* Gliederung eines Bildschirms: Abschnitte mit Überschrift, darin Gruppen (Überschrift + Elemente). */
+.abschnitte { display: flex; flex-direction: column; gap: var(--abstand-4); }
+.abschnitt { display: flex; flex-direction: column; gap: var(--abstand-3); margin: 0; }
+.abschnitt + .abschnitt:not(.wuerfelbereich) { border-top: 1px solid var(--linie); padding-top: var(--abstand-4); }
+.abschnitt-titel { margin: 0; font-size: 1.05rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; gap: var(--abstand-2); }
+.gruppe { display: flex; flex-direction: column; gap: var(--abstand-2); }
+.gruppe > p, .abschnitt > p { margin: 0; }
+.gruppe-titel { margin: 0; font-size: 0.9rem; font-weight: 600; color: var(--text-2); }
+/* Auswahl als Reihe von Knöpfen (Chips); optional mit kleiner Unterzeile (small). */
+.auswahlreihe { display: flex; flex-wrap: wrap; gap: var(--abstand-2); }
+.auswahlreihe button { padding: var(--abstand-1) var(--abstand-3); display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.2; }
+.auswahlreihe button small { font-size: 0.75rem; color: var(--text-2); font-weight: 400; }
+.auswahlreihe button.wirkungslos { opacity: 0.6; }
+
+/* Würfelbereich: abgesetzter Kasten, immer zuletzt; bündelt alle Würfe eines Ablaufs und das Ergebnis. */
+.wuerfelbereich { display: flex; flex-direction: column; gap: var(--abstand-3); padding: var(--abstand-3);
+  background: var(--wuerfel-flaeche); border: 2px solid var(--wuerfel-rand); border-radius: var(--radius); }
+.wuerfel-teil { display: flex; flex-direction: column; gap: var(--abstand-3); }
+.wuerfel-teil + .wuerfel-teil { border-top: 1px dashed var(--wuerfel-rand); padding-top: var(--abstand-3); }
+.wuerfel-ergebnis { display: flex; flex-direction: column; gap: var(--abstand-2); padding-top: var(--abstand-3); border-top: 1px solid var(--wuerfel-rand); }

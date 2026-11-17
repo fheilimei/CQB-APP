@@ -96,9 +96,11 @@
   const zeichen = (herkunft: string) => d.darstellung.herkunft[herkunft];
 </script>
 
+<div class="probe">
 {#if p.statwert === null}
   <p class="fehler">{mitZeichen('stat', anfrage.stat, d)} hat noch keinen Wert.</p>
 {:else if w}
+  <div class="gruppe">
   <button class="kopfzeile flach" aria-expanded={aufgeklappt} onclick={() => (aufgeklappt = !aufgeklappt)}>
     <span class="steps">▼ {w.malsteps} · ▲ {w.abzug - (p.skillstufe ?? 0)}{#if p.skillstufe}{' · '}{d.darstellung.typen.skill.zeichen} {p.skillstufe}{/if} · netto {w.netto}</span>
     {#if w.moeglich}
@@ -124,10 +126,12 @@
       </tbody>
     </table>
   {/if}
+  </div>
 {/if}
 
 {#if p.automatisch.length}
-  <h3>Automatisch</h3>
+  <div class="gruppe">
+  <h3 class="gruppe-titel">Automatisch</h3>
   <ul class="chips">
     {#each p.automatisch as q (q.id)}
       {@const aus = ausgeschaltet.includes(q.id!)}
@@ -143,6 +147,7 @@
       </li>
     {/each}
   </ul>
+  </div>
 {/if}
 
 {#if sichtSchalter}
@@ -150,16 +155,19 @@
 {/if}
 {#if sichtSchalter || sichtVorgewaehlt}
   {#if brauchtSicht}
-    <div class="auswahl" role="group" aria-label="Sicht">
-      <span class="hinweis">Sicht:</span>
+    <div class="gruppe" role="group" aria-label="Sicht">
+      <span class="gruppe-titel">Sicht:</span>
+      <div class="auswahlreihe">
       {#each d.regeln.sicht.stufen as s (s.id)}
         <button class:an={sichtstufe === s.id} aria-pressed={sichtstufe === s.id} onclick={() => sichtWaehlen(s.id)}>{s.name}</button>
       {/each}
+      </div>
     </div>
   {/if}
 {/if}
 
-<h3>SL</h3>
+<div class="gruppe">
+<h3 class="gruppe-titel">Steps der SL</h3>
 <div class="sl">
   <div class="zaehler">
     <span>+ Malstep</span>
@@ -187,6 +195,7 @@
     <button onclick={fuersGefecht}>Für das ganze Gefecht merken</button>
   {/if}
 </div>
+</div>
 
 {#if perks.length}
   <ul class="perks">
@@ -204,23 +213,23 @@
   </Wuerfel>
 {/if}
 
+</div>
+
 <style>
-  h3 { font-size: 0.9rem; color: var(--text-2); margin: 16px 0 6px; }
-  .kopfzeile { width: 100%; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 12px;
-    padding: 8px 12px; background: var(--flaeche-2); border-radius: var(--radius); text-align: left; position: sticky; top: 0; z-index: 1; }
+  .probe { display: flex; flex-direction: column; gap: var(--abstand-3); }
+  .kopfzeile { width: 100%; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--abstand-1) var(--abstand-3);
+    padding: var(--abstand-2) var(--abstand-3); background: var(--flaeche-2); border-radius: var(--radius); text-align: left; position: sticky; top: 0; z-index: 1; }
   .steps { font-variant-numeric: tabular-nums; }
   .ziel strong { font-size: 1.4rem; }
-  .chips { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
-  .chip { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 0 0 12px;
+  .chips { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--abstand-2); }
+  .chip { display: flex; align-items: center; justify-content: space-between; gap: var(--abstand-2); padding: 0 0 0 var(--abstand-3);
     border: 1px solid var(--linie); border-radius: var(--radius); }
   .chip.aus > span { text-decoration: line-through; color: var(--text-2); }
-  .klein { min-width: 44px; padding: 0 10px; }
+  .klein { min-width: 44px; padding: 0 var(--abstand-2); }
   .gefahr-text { color: var(--gefahr); }
-  .auswahl { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
-  .auswahl button { padding: 0 12px; }
-  .auswahl button.an, .gruende button:hover { background: var(--flaeche-2); font-weight: 700; border-color: var(--text-2); }
-  .sl { display: flex; flex-direction: column; gap: 8px; }
+  .gruende button:hover { background: var(--flaeche-2); }
+  .sl { display: flex; flex-direction: column; gap: var(--abstand-2); }
   .zaehler { display: flex; justify-content: space-between; align-items: center; }
-  .gruende { display: flex; flex-wrap: wrap; gap: 6px; }
-  .perks { margin: 12px 0; padding-left: 20px; }
+  .gruende { display: flex; flex-wrap: wrap; gap: var(--abstand-2); }
+  .perks { margin: 0; padding-left: var(--abstand-4); }
 </style>
