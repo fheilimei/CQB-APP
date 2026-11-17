@@ -11,6 +11,15 @@
   --ok: #2e7d32;
   --radius: 12px;
   --tipp: 48px;
+  /* Abstandsraster: innerhalb eines Elements, innerhalb einer Gruppe, zwischen Gruppen, zwischen Abschnitten. */
+  --abstand-1: 4px;
+  --abstand-2: 8px;
+  --abstand-3: 16px;
+  --abstand-4: 24px;
+  /* Fläche einer gewählten Auswahl; Fläche und Rand des Würfelbereichs. */
+  --gewaehlt: #fbe3d2;
+  --wuerfel-flaeche: #e9eef5;
+  --wuerfel-rand: #9fb0c8;
   color-scheme: light;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   font-size: 16px;
@@ -20,12 +29,14 @@
   :root:not([data-theme='hell']) {
     --hg: #121418; --flaeche: #1c1f25; --flaeche-2: #262a31; --text: #ececec; --text-2: #a4a9b2;
     --linie: #343944; --akzent: #f07a2e; --akzent-text: #16181d; --gefahr: #f2786f; --ok: #6cc070;
+    --gewaehlt: #4a2d18; --wuerfel-flaeche: #1d2737; --wuerfel-rand: #4c6284;
     color-scheme: dark;
   }
 }
 :root[data-theme='dunkel'] {
   --hg: #121418; --flaeche: #1c1f25; --flaeche-2: #262a31; --text: #ececec; --text-2: #a4a9b2;
   --linie: #343944; --akzent: #f07a2e; --akzent-text: #16181d; --gefahr: #f2786f; --ok: #6cc070;
+  --gewaehlt: #4a2d18; --wuerfel-flaeche: #1d2737; --wuerfel-rand: #4c6284;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -38,6 +49,16 @@ button.haupt { background: var(--akzent); color: var(--akzent-text); border-colo
 button.gefahr { color: var(--gefahr); border-color: var(--gefahr); }
 button.flach { border-color: transparent; background: transparent; }
 button:disabled { opacity: 0.45; cursor: default; }
+/* Rückmeldung beim Tippen: jeder Knopf gibt sichtbar nach. */
+button:not(:disabled):active { filter: brightness(0.88); transform: scale(0.97); }
+@media (prefers-reduced-motion: reduce) { button:not(:disabled):active { transform: none; } }
+/* Gewählte Auswahl: überall gleich, hängt am Zustand aria-pressed. Rahmen + Fläche + Fettschrift, nicht nur Farbe. */
+button[aria-pressed='true'] { border: 2px solid var(--akzent); background: var(--gewaehlt); font-weight: 700; }
+/* Ansage eines Ergebnisses (Krit, Erfolg, Misserfolg, Ladehemmung). */
+.ansage { font-size: 1.8rem; font-weight: 800; text-align: center; margin: 0; padding: var(--abstand-3); border-radius: var(--radius);
+  background: var(--flaeche); }
+.ansage.krit, .ansage.erfolg { color: var(--ok); }
+.ansage.misserfolg, .ansage.fehler { color: var(--gefahr); }
 button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--akzent); outline-offset: 2px; }
 input, textarea, select { font: inherit; color: inherit; background: var(--flaeche); border: 1px solid var(--linie);
   border-radius: var(--radius); padding: 12px; width: 100%; min-height: var(--tipp); }

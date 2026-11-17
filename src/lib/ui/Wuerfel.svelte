@@ -1,6 +1,9 @@
 <script lang="ts">
   // Gemeinsame Würfelkomponente (konzept.md § 2, Leitlinie 6): App würfelt oder Eingabe von Hand.
   // Wo nur der Ausgang zählt, bietet sie zusätzlich die drei Knöpfe Krit · gelungen · misslungen.
+  // Gestaltung: eigener abgesetzter Kasten; der gewählte Ausgang bleibt markiert; das Ergebnis steht im Kasten
+  // (Zahl und, über children, die Ansage des Ablaufs).
+  import type { Snippet } from 'svelte';
   import { spanne, vonHand, wuerfle, type Wuerfelart, type Wurf } from '../wuerfel/wuerfel';
   import type { Quelle } from '../speicher/charakter';
 
@@ -15,37 +18,53 @@
     mitAusgang?: boolean;
     onwurf: (w: Wurf) => void;
     onausgang?: (a: Ausgang) => void;
+    /** Ansage des Ergebnisses (z. B. „Erfolg · 47“); steht im Kasten unter der gewürfelten Zahl. */
+    children?: Snippet;
   }
 
-  let { art, modus, titel = '', mitAusgang = false, onwurf, onausgang }: Props = $props();
+  let { art, modus, titel = '', mitAusgang = false, onwurf, onausgang, children }: Props = $props();
 
   let aktiv = $state<Quelle>('hand');
   $effect.pre(() => { aktiv = modus; });
   let eingabe = $state<(number | null)[]>([null, null]);
   let letzter = $state<Wurf | null>(null);
+  let ausgangGewaehlt = $state<Ausgang | null>(null);
 
   const zwei = $derived(art === '2W10');
   const grenzen = $derived(spanne(art));
   const gueltig = $derived(vonHand(art, (zwei ? eingabe : eingabe.slice(0, 1)).map((x) => x ?? NaN)));
+  /** Die Eingabe von Hand ist genau die zuletzt übernommene: Knopf zeigt „Übernommen“. */
+  const uebernommen = $derived(
+    !!letzter && letzter.quelle === 'hand' && !!gueltig && gueltig.ergebnis === letzter.ergebnis &&
+      gueltig.werte.join() === letzter.werte.join()
+  );
+  const AUSGAENGE: [Ausgang, string][] = [['krit', 'Krit'], ['gelungen', 'gelungen'], ['misslungen', 'misslungen']];
 
   function appWuerfelt() {
     letzter = wuerfle(art);
+    ausgangGewaehlt = null;
     onwurf(letzter);
   }
   function uebernehmen() {
     if (!gueltig) return;
     letzter = gueltig;
+    ausgangGewaehlt = null;
     onwurf(gueltig);
   }
+  function ausgangWaehlen(a: Ausgang) {
+    ausgangGewaehlt = a;
+    letzter = null;
+    onausgang?.(a);
+  }
   function beschreibe(w: Wurf): string {
-    if (w.art === '2W10') return `${w.werte[0]} − ${w.werte[1]} = ${w.ergebnis > 0 ? '+' : ''}${w.ergebnis}`;
+    if (w.art === '2W10') return `${w.ergebnis > 0 ? '+' : ''}${w.ergebnis}`;
     return String(w.ergebnis);
   }
 </script>
 
-<div class="wuerfel karte">
+<section class="wuerfel" aria-label={titel || art}>
   <div class="kopf">
-    <span class="titel">{titel || art}</span>
+    <h3 class="titel">{titel || art}</h3>
     <div class="umschalter" role="group" aria-label="Wer würfelt">
       <button class:an={aktiv === 'app'} aria-pressed={aktiv === 'app'} onclick={() => (aktiv = 'app')}>App würfelt</button>
       <button class:an={aktiv === 'hand'} aria-pressed={aktiv === 'hand'} onclick={() => (aktiv = 'hand')}>von Hand</button>
@@ -53,7 +72,7 @@
   </div>
 
   {#if aktiv === 'app'}
-    <button class="haupt breit" onclick={appWuerfelt}>{art} würfeln</button>
+    <button class="breit" class:haupt={!letzter} onclick={appWuerfelt}>{letzter ? 'Neu würfeln' : `${art} würfeln`}</button>
   {:else}
     <div class="eingabe">
       {#if zwei}
@@ -69,33 +88,49 @@
         </label>
       {/if}
     </div>
-    <button class="haupt breit" disabled={!gueltig} onclick={uebernehmen}>Übernehmen</button>
-  {/if}
-
-  {#if letzter}
-    <p class="ergebnis" aria-live="polite">Ergebnis: <strong>{beschreibe(letzter)}</strong>
-      <span class="hinweis">({letzter.quelle === 'app' ? 'von der App gewürfelt' : 'von Hand'})</span></p>
+    <button class="breit" class:haupt={!uebernommen} disabled={!gueltig} onclick={uebernehmen}>
+      {uebernommen ? '✓ Übernommen' : 'Übernehmen'}</button>
   {/if}
 
   {#if mitAusgang && onausgang}
-    <div class="ausgang" role="group" aria-label="Nur den Ausgang eintragen">
-      <button onclick={() => onausgang('krit')}>Krit</button>
-      <button onclick={() => onausgang('gelungen')}>gelungen</button>
-      <button onclick={() => onausgang('misslungen')}>misslungen</button>
+    <div class="ausgang-gruppe">
+      <span class="hinweis">Oder nur den Ausgang eintragen:</span>
+      <div class="ausgang" role="group" aria-label="Ausgang">
+        {#each AUSGAENGE as [id, text] (id)}
+          <button aria-pressed={ausgangGewaehlt === id} onclick={() => ausgangWaehlen(id)}>{text}</button>
+        {/each}
+      </div>
     </div>
   {/if}
-</div>
+
+  {#if letzter || (ausgangGewaehlt && children)}
+    <div class="ergebnis" aria-live="polite">
+      {#if letzter}
+        <p class="zahl"><span class="hinweis">{letzter.quelle === 'app' ? 'Gewürfelt' : 'Eingetragen'}</span>
+          <strong>{beschreibe(letzter)}</strong>
+          {#if letzter.art === '2W10'}<span class="hinweis">({letzter.werte[0]} − {letzter.werte[1]})</span>{/if}</p>
+      {/if}
+      {@render children?.()}
+    </div>
+  {/if}
+</section>
 
 <style>
-  .wuerfel { display: flex; flex-direction: column; gap: 12px; }
-  .kopf { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
-  .titel { font-weight: 600; }
-  .umschalter { display: flex; border: 1px solid var(--linie); border-radius: var(--radius); overflow: hidden; }
-  .umschalter button { border: none; border-radius: 0; background: transparent; padding: 0 12px; }
-  .umschalter button.an { background: var(--flaeche-2); font-weight: 600; }
-  .eingabe { display: flex; gap: 12px; }
-  .eingabe label { flex: 1; margin: 0; font-weight: 400; }
+  /* Abgesetzter Kasten: eigene Fläche und kräftiger Rand, damit er nicht wie eine weitere Auswahl wirkt. */
+  .wuerfel { display: flex; flex-direction: column; gap: var(--abstand-3); padding: var(--abstand-3);
+    background: var(--wuerfel-flaeche); border: 2px solid var(--wuerfel-rand); border-radius: var(--radius); }
+  .kopf { display: flex; justify-content: space-between; align-items: center; gap: var(--abstand-2); flex-wrap: wrap; }
+  .titel { margin: 0; font-size: 1.05rem; }
+  .umschalter { display: flex; border: 1px solid var(--wuerfel-rand); border-radius: var(--radius); overflow: hidden; background: var(--flaeche); }
+  .umschalter button { border: none; border-radius: 0; background: transparent; padding: 0 var(--abstand-3); font-weight: 400; }
+  .umschalter button.an { background: var(--gewaehlt); font-weight: 700; box-shadow: inset 0 -3px 0 var(--akzent); }
+  .eingabe { display: flex; gap: var(--abstand-3); }
+  .eingabe label { flex: 1; margin: 0; font-weight: 400; display: flex; flex-direction: column; gap: var(--abstand-1); }
   .breit { width: 100%; }
-  .ergebnis { margin: 0; }
-  .ausgang { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .ausgang-gruppe { display: flex; flex-direction: column; gap: var(--abstand-2); }
+  .ausgang { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--abstand-2); }
+  .ausgang button { padding: 0 var(--abstand-1); }
+  .ergebnis { display: flex; flex-direction: column; gap: var(--abstand-2); padding-top: var(--abstand-3); border-top: 1px solid var(--wuerfel-rand); }
+  .zahl { margin: 0; display: flex; align-items: baseline; justify-content: center; gap: var(--abstand-2); }
+  .zahl strong { font-size: 2rem; font-variant-numeric: tabular-nums; }
 </style>

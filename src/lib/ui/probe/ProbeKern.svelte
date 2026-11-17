@@ -197,13 +197,11 @@
 {/if}
 
 {#if w?.moeglich && !ohneWurf}
-  <Wuerfel art="W100" modus={wuerfelModus} titel="Wurf" {mitAusgang} onwurf={(x) => gewuerfelt(x.ergebnis)} onausgang={ausgang} />
-{/if}
-
-{#if ergebnis}
-  <p class="ansage {ergebnis.stufe}" aria-live="polite">
-    {ansage(ergebnis.stufe, ergebnis.wurf, zielwertAnsagen && w ? w.zielwert : undefined)}
-  </p>
+  <Wuerfel art="W100" modus={wuerfelModus} titel="Wurf" {mitAusgang} onwurf={(x) => gewuerfelt(x.ergebnis)} onausgang={ausgang}>
+    {#if ergebnis}
+      <p class="ansage {ergebnis.stufe}">{ansage(ergebnis.stufe, ergebnis.wurf, zielwertAnsagen && w ? w.zielwert : undefined)}</p>
+    {/if}
+  </Wuerfel>
 {/if}
 
 <style>
@@ -225,9 +223,4 @@
   .zaehler { display: flex; justify-content: space-between; align-items: center; }
   .gruende { display: flex; flex-wrap: wrap; gap: 6px; }
   .perks { margin: 12px 0; padding-left: 20px; }
-  .ansage { font-size: 1.8rem; font-weight: 800; text-align: center; margin: 12px 0; padding: 12px; border-radius: var(--radius);
-    background: var(--flaeche-2); }
-  .ansage.krit, .ansage.erfolg { color: var(--ok); }
-  .ansage.misserfolg { color: var(--gefahr); }
-  :global(.dialog) .ansage { margin-bottom: 4px; }
 </style>
