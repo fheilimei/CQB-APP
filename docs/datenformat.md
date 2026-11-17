@@ -79,7 +79,13 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
     ],
     "rundenende": { "malsteps_je_ausloeser": 1, "anstieg": 1, "probe": { "krit": -1, "gelungen": 0, "misslungen": 1 } },
     "senken": { "krit": -2, "gelungen": -1, "misslungen": 0 },
-    "verschieben": { "krit": 2, "gelungen": 1, "misslungen": 0 }
+    "verschieben": { "krit": 2, "gelungen": 1, "misslungen": 0 },
+    "proben": {
+      "nerve_start":   { "stat": "nerve",   "skill": "selbstbeherrschung" },
+      "nerve_anstieg": { "stat": "nerve",   "skill": "selbstbeherrschung" },
+      "nerve_senken":  { "stat": "nerve",   "skill": "selbstbeherrschung" },
+      "verschieben":   { "stat": "empathy", "skill": "fuehrung" }
+    }
   },
   "symptome": {
     "a1": { "gewinn": "Schmerz ignorieren: kein Stagger", "verlust": "Keine Ansage einer Trefferzone",
@@ -97,7 +103,7 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
     "geblendet": { "sichtstufe": "keine", "malsteps_mit_gereizt_addieren": true },
     "gereizt": { "malsteps": 2, "probe": "grit" }
   },
-  "initiative": { "stat": "decisiveness", "skill": null, "krit_break_extra": 1, "ueberrascht_malsteps": 1 },
+  "initiative": { "stat": "decisiveness", "skill": null, "krit_break_extra": 1, "ueberrascht_malsteps": 1, "ueberrascht_mit_perk": { "entschlossen": 0 } },
   "breakaction": {
     "reaktion": { "stat": "twitch", "skill": "reflexe", "malsteps": { "gesehen": 0, "gehoert": 1 } },
     "antizipation": { "stat": "intellect", "skill": "lagegespuer",
@@ -251,6 +257,8 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
 
 - **`steps.faktoren`**: ungerundete Faktoren aus den Abschlägen 15 %, 25 %, 35 %, 45 %, 55 % auf die jeweils vorherige Stufe (Regelwerk: Stats, Skills und Perks, Steps). Die gerundeten Werte der Tabelle im Regelwerk (0,638; 0,414 …) treffen dessen Beispiel 35 → 15 nicht ([offen.md](offen.md), Schritt 2).
 - **`leiter.rundenende`**: Malsteps der Nerve-Probe je Auslöser, Anstieg ohne Probe, Änderung je Ergebnis der Probe. **`leiter.senken`**, **`leiter.verschieben`**: Änderung bzw. Betrag je Ergebnis. Positive Zahl = steigen.
+- **`leiter.proben`**: Stat und Skill der Proben rund um Adrenalin und Ruhepuls (Gefechtsbeginn, Anstieg, Senken, Verbündete verschieben). Der Schlüssel ist die Probenart; sie braucht einen Namen in `darstellung.json` (`proben`), damit Modifikatoren darauf zielen können. Alle vier Einträge sind Pflicht.
+- **`initiative.ueberrascht_mit_perk`**: Perks, die die Malsteps der Überraschung auf die Initiative ersetzen (kleinster Wert gilt), z. B. Entschlossen → 0.
 - **`symptome.*.wirkung`**: was das Symptom im Regelkern bewirkt. Erlaubte Werte: `kein_stagger`, `keine_ansage`, `zweite_bewegung`, `keine_antizipation`, `zielen_als_main`, `stagger_ab_gleich`, `weitblick`, `kein_hechten`. Ein neues Symptom mit bekannter Wirkung braucht keine Codeänderung. **`symptome_nur_verluste`** (Over the Edge): Gewinne entfallen.
 - **`zustaende.*.mit_perk`**: Perk-ID → Malsteps, die mit diesem Perk statt des Standards gelten.
 - **`schiessen.schrot_rumpf_start`**: Zone der ersten Schrotkugel nach der Ansage „Rumpf“. **`deckung`**: Ist `arme_mit` verdeckt, gelten auch die Zonen in `arme` als verdeckt (Deckung und Rüstung, Deckung). **`sprengwirkung.splitter_liegend_anteil`**: Anteil der Splitterzahl für Liegende, abgerundet.
@@ -319,7 +327,7 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
 - `kurz`: Kurzbeschreibung (eine Zeile, eingeklappt sichtbar).
 - `wirkung`: vollständiger Text (ausgeklappt).
 - `modifikatoren`: Liste von [Modifikatoren](#modifikator), die die App selbst verrechnet. Leer, wenn der Perk eine Sonderregel ist.
-- `hinweis_bei`: Stellen, an denen die App einen Hinweis auf den Perk zeigt (`schiessen`, `probe`, `leiter`, `schaden`, `heilung`, `nahkampf`, `breakaction`). Leer, wenn der Perk vollständig über Modifikatoren läuft.
+- `hinweis_bei`: Stellen, an denen die App einen Hinweis auf den Perk zeigt (`schiessen`, `probe`, `leiter`, `schaden`, `heilung`, `nahkampf`, `breakaction`, `initiative`). Leer, wenn der Perk vollständig über Modifikatoren läuft.
 
 ```json
 {
@@ -846,7 +854,8 @@ Zeichen und Farben der Herkunftsmarkierung ([konzept.md § 3.0b](konzept.md#30b-
     "leiter":     { "zeichen": "♥", "farbe": "#c0392b", "name": "Adrenalin/Ruhepuls" },
     "zustand":    { "zeichen": "●", "farbe": "#7d3c98", "name": "Zustand" },
     "lage":       { "zeichen": "◇", "farbe": "#7f8c8d", "name": "Lage" },
-    "aufsatz":    { "zeichen": "⚙", "farbe": "#2e7d32", "name": "Aufsatz" }
+    "aufsatz":    { "zeichen": "⚙", "farbe": "#2e7d32", "name": "Aufsatz" },
+    "sl":         { "zeichen": "⚑", "farbe": "#b8860b", "name": "SL" }
   },
   "typen": {
     "stat":  { "zeichen": "■", "farbe": "#0f6e56", "name": "Stat" },
@@ -1043,7 +1052,13 @@ IndexedDB-Datenbank `cqb` mit zwei Speichern: `charaktere` (ein Datensatz je Cha
 - **`gefecht.stand`:** `stehen`, `hocke`, `liegen`. **`gefecht.bewegt`:** `null` oder Art der Bewegung in dieser Runde (`gehen`, `laufen`, `rennen`, `kriechen`). **`gefecht.zielen_stepshield`:** Stepshield aus Zielen für den nächsten Schuss.
 - **`gefecht.zaehler`:** verbleibende Aktionen dieser Runde. `over_the_edge_gesamt` ersetzt bei Over the Edge die vier Einzelzähler (gemeinsamer Zähler); sonst `null`. Startwerte je Runde aus `regeln.json`.
 - **`gefecht.deckung`:** aktueller Deckungswert und verdeckte Zonen (`null` = keine Deckung). Gespeichert sind die tatsächlich verdeckten Zonen, nach Anwendung der Regeln für Rumpf und Arme. Wird bei Gefechtsende gelöscht.
-- **`gefecht.protokoll`:** Ereignisse des laufenden Gefechts mit Eingabe und den daraus folgenden Änderungen (für Rückgängig). `art`: `treffer`, `schaden_direkt`, `schuss`, `rundenende`, `senken`. Wird bei Gefechtsende gelöscht.
+- **`gefecht.protokoll`:** Ereignisse des laufenden Gefechts mit Eingabe und den daraus folgenden Änderungen (für Rückgängig). `art`: `treffer`, `schaden_direkt`, `schuss`, `leiter`. Wird bei Gefechtsende gelöscht.
+	- `leiter`: jede Änderung von Adrenalin bzw. Ruhepuls mit `runde`, `zeit`, `ursache` (`start`, `rad`, `rundenende`, `senken`), `von`, `nach` und `gesenkt_vorher` (Stand von `gesenkt_diese_runde` vorher). Auch ein misslungenes Senken bekommt einen Eintrag (`von` = `nach`). Rückgängig nimmt den letzten Eintrag zurück, wenn er aus der laufenden Runde stammt oder das gerade abgeschlossene Rundenende ist; der Start des Gefechts bleibt.
+- **Außerhalb des Gefechts** ist `gefecht` nur `{ "aktiv": false }`. „Gefecht starten“ legt alle Felder neu an, „Gefecht beenden“ setzt wieder `{ "aktiv": false }`. Felder, die erst mit späteren Schritten kommen (`stand`, `bewegt`, `zielen_stepshield`, `zaehler`, `deckung`, `lage.auswahl`), fehlen bis dahin; die App ergänzt sie beim Start eines Gefechts.
+- **`gefecht.initiative`:** Ergebnis der Initiative dieser Runde (`wurf` = `null`, wenn nur der Ausgang eingetragen wurde), `null` bis zum Wurf.
+- **`gefecht.lage.sl_gefecht`:** Steps der SL für das ganze Gefecht. Ohne `gilt_fuer` gelten sie für alle Proben.
+- **`gefecht.lage.letzte_gruende`:** die zuletzt verwendeten Gründe der SL (höchstens 6), zum Antippen.
+- **`gefecht.sichtstufe`:** Sichtstufe aus `regeln.json` (`sicht.stufen`); Start ist die erste Stufe.
 - **Wunde `blutung.status`:** `offen` (Frist läuft oder Gefecht noch aktiv), `gestoppt`, `abgelaufen` (normale Wunde hat Nachschaden verursacht).
 - **Wunde `blutung.frist_ende`:** Zeitpunkt (ISO 8601), gesetzt bei Gefechtsende. Echtzeit oder Spielzeit ist noch offen; vorerst Spielzeit in Minuten seit Gefechtsende als Zahl erlaubt.
 - **Wunde `versorgt`:** `null`, `druckverband`, `tourniquet`, `operation`.

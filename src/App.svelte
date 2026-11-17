@@ -15,6 +15,17 @@
   import { MODUS_NAME, punkte, type Modus, type Zeile } from './lib/ui/texte';
   import Werte from './lib/ui/Werte.svelte';
   import { modusFuer } from './lib/wuerfel/wuerfel';
+  import { adrenalinschockBeenden, gefechtBeenden, leiterSetzen, letzteLeiterAenderung, rueckgaengig } from './lib/regeln/gefecht';
+  import { overTheEdge } from './lib/regeln/leiter';
+  import { gefechtVon, lebenslageDes } from './lib/regeln/probenrechner';
+  import Adrenalinrad from './lib/ui/gefecht/Adrenalinrad.svelte';
+  import GefechtStarten from './lib/ui/gefecht/GefechtStarten.svelte';
+  import Initiative from './lib/ui/gefecht/Initiative.svelte';
+  import LeiterDetail from './lib/ui/gefecht/LeiterDetail.svelte';
+  import LeiterProbe from './lib/ui/gefecht/LeiterProbe.svelte';
+  import NaechsteRunde from './lib/ui/gefecht/NaechsteRunde.svelte';
+  import Probenrechner from './lib/ui/probe/Probenrechner.svelte';
+  import { ansage, standText } from './lib/ui/texte';
 
   const APP_VERSION = __APP_VERSION__;
 
@@ -32,6 +43,13 @@
 
   let modus = $state<Modus>('lesen');
   let bericht = $state<{ titel: string; zeilen: Zeile[]; weiter: () => void } | null>(null);
+  /** Offener Dialog des Spiels: Probenrechner, Abläufe rund um Gefecht und Adrenalin. */
+  type Spieldialog =
+    | { art: 'probe'; stat: string | null; skill: string | null }
+    | { art: 'start' | 'initiative' | 'runde' | 'senken' | 'verschieben' | 'detail' };
+  let dialog = $state<Spieldialog | null>(null);
+  /** Kurze Meldung mit „Rückgängig“ nach einer Änderung von Adrenalin bzw. Ruhepuls (konzept.md § 3.7). */
+  let rueckgaengigText = $state('');
 
   const aktiv = $derived(charaktere.find((c) => c.id === aktiveId) ?? null);
   /** Charakter in Erstellung: neuer, noch ungespeicherter Entwurf oder ein gespeicherter Entwurf. */
@@ -39,6 +57,9 @@
   const entwuerfe = $derived(charaktere.filter((c) => c.status === 'erstellung'));
   const abweichungModus = $derived(modusFuer('abweichung', einstellungen.wuerfeln));
   const imGefecht = $derived(!!aktiv?.spielstand.gefecht.aktiv);
+  const gefecht = $derived(aktiv ? gefechtVon(aktiv) : null);
+  const probeModus = $derived(modusFuer('probe', einstellungen.wuerfeln));
+  const kampfunfaehig = $derived(!!aktiv && !!daten && lebenslageDes(aktiv, daten) !== 'einsatzfaehig');
 
   const { needRefresh, updateServiceWorker } = useRegisterSW();
 
@@ -139,6 +160,70 @@
     };
   }
 
+  // ---- Gefecht und Adrenalin (konzept.md § 3.0e, § 3.7)
+
+  let rueckgaengigZeit: ReturnType<typeof setTimeout> | undefined;
+  function zeigeRueckgaengig(text: string) {
+    rueckgaengigText = text;
+    clearTimeout(rueckgaengigZeit);
+    rueckgaengigZeit = setTimeout(() => (rueckgaengigText = ''), 5000);
+  }
+
+  async function leiterDrehen(stand: number) {
+    if (!aktiv || !gefecht) return;
+    const von = gefecht.leiter;
+    await speichern(leiterSetzen(aktiv, stand, daten!));
+    zeigeRueckgaengig(`${standText(von, daten!)} → ${standText(stand, daten!)}`);
+  }
+
+  async function zuruecknehmen() {
+    if (!aktiv) return;
+    rueckgaengigText = '';
+    await speichern(rueckgaengig(aktiv, daten!));
+  }
+
+  /** Nach einem Ablauf mit Bericht: speichern, Änderung von Adrenalin melden. */
+  async function nachAblauf(c: Charakter, folgt: Spieldialog | null = null) {
+    const von = gefecht?.leiter ?? 0;
+    await speichern(c);
+    const nach = gefechtVon(c)?.leiter ?? 0;
+    dialog = folgt;
+    if (von !== nach && !folgt) zeigeRueckgaengig(`${standText(von, daten!)} → ${standText(nach, daten!)}`);
+  }
+
+  function gefechtStarten() {
+    if (modus === 'aufstieg') modus = 'lesen';
+    dialog = { art: 'start' };
+  }
+
+  function gefechtEndeFrage() {
+    if (!aktiv || !gefecht) return;
+    const c = aktiv;
+    const g = gefecht;
+    const zeilen: Zeile[] = [{ text: 'Das Gefecht endet.', fett: true }];
+    zeilen.push({ text: g.leiter === 0 ? 'Du bist bei 0 und bleibst dort.' : `${standText(g.leiter, daten!)} fällt auf 0.` });
+    if (g.adrenalin4_erreicht) {
+      const r = daten!.regeln.zustaende.adrenalinschock;
+      zeilen.push({ text: `Du hast Over the Edge erreicht: Du erleidest einen Adrenalinschock. Alle Proben sind erschwert, bis du ${r.ende_ruhe_stunden} Stunden ununterbrochen ruhst.`, fett: true });
+    }
+    if (g.lage.sl_gefecht.length) zeilen.push({ text: 'Die Steps der SL für dieses Gefecht entfallen.' });
+    bericht = { titel: 'Gefecht beenden', zeilen, weiter: () => { void speichern(gefechtBeenden(c)); bericht = null; dialog = null; } };
+  }
+
+  function schockFrage() {
+    if (!aktiv) return;
+    const c = aktiv;
+    const stunden = daten!.regeln.zustaende.adrenalinschock.ende_ruhe_stunden;
+    bericht = {
+      titel: 'Adrenalinschock',
+      zeilen: [
+        { text: `Der Adrenalinschock endet nach ${stunden} Stunden ununterbrochener Ruhe.` },
+        { text: `Hattest du diese Ruhe? Dann endet er jetzt.`, fett: true }
+      ],
+      weiter: () => { void speichern(adrenalinschockBeenden(c)); bericht = null; }
+    };
+  }
+
   async function importieren() {
     menueOffen = false;
     const text = await dateiOeffnen();
@@ -203,11 +288,29 @@
       <button class="flach" aria-label="Menü öffnen" onclick={() => (menueOffen = true)}>☰</button>
       <div class="titel">
         <strong>{aktiv.name || 'ohne Namen'}</strong>
+        {#if gefecht && gefecht.leiter !== 0}<span class="chip-klein" style:background={daten.darstellung.leiter_farben[String(gefecht.leiter)]}>{standText(gefecht.leiter, daten)}</span>{/if}
+        {#if aktiv.spielstand.adrenalinschock.aktiv}
+          <button class="chip-klein zustand" onclick={schockFrage}>Adrenalinschock</button>
+        {/if}
       </div>
       {#if modus !== 'lesen'}
         <div class="modus">
           <span class="status an">{MODUS_NAME[modus]}</span>
           <button class="haupt klein" onclick={() => (modus = 'lesen')}>Fertig</button>
+        </div>
+      {/if}
+      {#if gefecht}
+        <div class="gefechtszeile">
+          <span class="status an">Gefecht · Runde {gefecht.runde}</span>
+          {#if gefecht.initiative}
+            <button class="flach initiative" onclick={() => (dialog = { art: 'initiative' })}>Initiative: {ansage(gefecht.initiative.stufe, gefecht.initiative.wurf, gefecht.initiative.zielwert)}</button>
+          {:else}
+            <button class="flach initiative" onclick={() => (dialog = { art: 'initiative' })}>Initiative würfeln</button>
+          {/if}
+          <span class="rechts">
+            <button class="klein" onclick={() => (dialog = { art: 'runde' })}>Nächste Runde</button>
+            <button class="klein" onclick={gefechtEndeFrage}>Gefecht beenden</button>
+          </span>
         </div>
       {/if}
     </header>
@@ -219,21 +322,64 @@
           {#if aktiv.aussehen}<p>{aktiv.aussehen}</p>{/if}
           <p class="hinweis">Hier entsteht die Figur mit Silhouette. Deine Werte findest du im Reiter Werte.</p>
         </section>
+        <div class="figur-knoepfe">
+          <button class="breit" onclick={() => (dialog = { art: 'probe', stat: null, skill: null })}>Probe</button>
+          {#if !gefecht}
+            <button class="haupt breit gross" class:warnung={kampfunfaehig} onclick={gefechtStarten}>
+              {#if kampfunfaehig}⚠ {/if}Gefecht starten</button>
+            {#if kampfunfaehig}<p class="fehler">kampfunfähig: im Gefecht keine Aktionen</p>{/if}
+          {/if}
+        </div>
       {:else if reiter === 'werte'}
-        <Werte c={aktiv} d={daten} {modus} {abweichungModus} onaendern={aendern} />
+        <Werte c={aktiv} d={daten} {modus} {abweichungModus} onaendern={aendern}
+          onprobe={(stat, skill) => (dialog = { art: 'probe', stat, skill })} />
       {:else}
         <section class="karte"><p class="hinweis">Dieser Reiter folgt in einer der nächsten Versionen.</p></section>
       {/if}
     </main>
 
+    <div class="unten">
+    {#if rueckgaengigText}
+      <div class="toast karte rueck" role="status">
+        <span>{rueckgaengigText}</span>
+        <button class="flach link" onclick={zuruecknehmen}>Rückgängig</button>
+      </div>
+    {:else if meldung}<div class="toast karte" role="status">{meldung}</div>{/if}
+    {#if gefecht}
+      {#if overTheEdge(gefecht.leiter, daten.regeln)}
+        <div class="banner" role="status">Over the Edge: nur 1 Aktion pro Runde</div>
+      {/if}
+      <Adrenalinrad stand={gefecht.leiter} d={daten} onsetzen={leiterDrehen} ondetail={() => (dialog = { art: 'detail' })} />
+    {/if}
     <nav class="reiter" aria-label="Reiter">
       {#each [['figur', 'Figur'], ['werte', 'Werte'], ['ausruestung', 'Ausrüstung'], ['verlauf', 'Verlauf']] as [id, text] (id)}
         <button class="flach" class:an={reiter === id} aria-current={reiter === id ? 'page' : undefined}
           onclick={() => (reiter = id as typeof reiter)}>{text}</button>
       {/each}
     </nav>
+    </div>
+  {/if}
 
-    {#if meldung}<div class="toast karte" role="status">{meldung}</div>{/if}
+  {#if aktiv && !inErstellung && dialog}
+    {#if dialog.art === 'probe'}
+      <Probenrechner c={aktiv} d={daten} stat={dialog.stat} skill={dialog.skill} wuerfelModus={probeModus} onaendern={aendern}
+        onschliessen={() => (dialog = null)} />
+    {:else if dialog.art === 'start'}
+      <GefechtStarten c={aktiv} d={daten} wuerfelModus={probeModus} onaendern={aendern}
+        onfertig={(c) => nachAblauf(c, { art: 'initiative' })} onabbrechen={() => (dialog = null)} />
+    {:else if dialog.art === 'initiative' && gefecht}
+      <Initiative c={aktiv} d={daten} wuerfelModus={probeModus} onaendern={aendern} onschliessen={() => (dialog = null)} />
+    {:else if dialog.art === 'runde' && gefecht}
+      <NaechsteRunde c={aktiv} d={daten} wuerfelModus={probeModus} onaendern={aendern}
+        onfertig={(c) => nachAblauf(c, { art: 'initiative' })} onabbrechen={() => (dialog = null)} />
+    {:else if (dialog.art === 'senken' || dialog.art === 'verschieben') && gefecht}
+      <LeiterProbe art={dialog.art} c={aktiv} d={daten} wuerfelModus={probeModus} onaendern={aendern}
+        onfertig={(c) => nachAblauf(c)} onschliessen={() => (dialog = null)} />
+    {:else if dialog.art === 'detail' && gefecht}
+      <LeiterDetail stand={gefecht.leiter} d={daten} letzte={letzteLeiterAenderung(aktiv)}
+        onsenken={() => (dialog = { art: 'senken' })} onverschieben={() => (dialog = { art: 'verschieben' })}
+        onrueckgaengig={() => { void zuruecknehmen(); dialog = null; }} onschliessen={() => (dialog = null)} />
+    {/if}
   {/if}
 
   <Menue offen={menueOffen} {charaktere} {aktiveId} klassen={daten.klassen.eintraege} {einstellungen}
@@ -267,11 +413,26 @@
   .status { font-size: 0.8rem; padding: 2px 8px; border-radius: 999px; background: var(--flaeche-2); color: var(--text-2); }
   .bogen { flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
   .bogen h2 { margin-top: 0; }
+  .unten { position: sticky; bottom: 0; z-index: 5; }
   .reiter { display: grid; grid-template-columns: repeat(4, 1fr); background: var(--flaeche); border-top: 1px solid var(--linie);
-    position: sticky; bottom: 0; padding-bottom: env(safe-area-inset-bottom); }
+    padding-bottom: env(safe-area-inset-bottom); }
   .reiter button { border-radius: 0; padding: 0 4px; font-size: 0.9rem; color: var(--text-2); min-height: 56px; }
   .reiter button.an { color: var(--akzent); font-weight: 700; box-shadow: inset 0 3px 0 var(--akzent); }
-  .toast { position: fixed; left: 16px; right: 16px; bottom: calc(72px + env(safe-area-inset-bottom)); z-index: 15; }
+  .toast { position: absolute; left: 16px; right: 16px; bottom: calc(100% + 8px); z-index: 15; }
+  .rueck { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 4px 4px 4px 16px; }
+  .banner { background: #2b0a0a; color: #fff; text-align: center; font-weight: 700; padding: 6px; }
+  .kopfzeile { flex-wrap: wrap; }
+  .titel { flex-wrap: wrap; }
+  .chip-klein { font-size: 0.8rem; padding: 2px 8px; border-radius: 999px; color: #fff; white-space: nowrap; min-height: 0; min-width: 0; }
+  .chip-klein.zustand { background: #7d3c98; border: none; min-height: 32px; }
+  .gefechtszeile { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+  .gefechtszeile .rechts { margin-left: auto; display: flex; gap: 6px; }
+  .gefechtszeile .klein { padding: 0 10px; font-size: 0.9rem; }
+  .initiative { padding: 0 6px; font-size: 0.9rem; min-height: 40px; text-decoration: underline; text-underline-offset: 3px; }
+  .figur-knoepfe { margin-top: auto; display: flex; flex-direction: column; gap: 12px; }
+  .breit { width: 100%; }
+  .gross { min-height: 64px; font-size: 1.15rem; }
+  .warnung { background: var(--gefahr); }
   .update { position: fixed; left: 16px; right: 16px; bottom: calc(72px + env(safe-area-inset-bottom)); z-index: 50;
     display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .datenfehler { margin: 8px 16px 0; border-color: var(--gefahr); }

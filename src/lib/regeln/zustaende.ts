@@ -57,6 +57,11 @@ export function wirksameSicht(sichtstufe: string, geblendet: boolean, r: Regeln)
 /** Malsteps der Sichtstufe für eine Probenart aus sicht.gilt_fuer (schiessen, werfen, nahkampf …). */
 export function sichtSteps(sichtstufe: string, geblendet: boolean, probe: string, r: Regeln): StepQuelle[] {
   if (!r.sicht.gilt_fuer.includes(probe)) return [];
+  return sichtstufenSteps(sichtstufe, geblendet, r);
+}
+
+/** Malsteps der Sichtstufe ohne Rücksicht auf die Probenart (Schalter „braucht Sicht“ im Probenrechner). */
+export function sichtstufenSteps(sichtstufe: string, geblendet: boolean, r: Regeln): StepQuelle[] {
   const id = wirksameSicht(sichtstufe, geblendet, r);
   const s = r.sicht.stufen.find((x) => x.id === id);
   if (!s || !s.malsteps) return [];

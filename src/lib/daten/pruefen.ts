@@ -9,7 +9,7 @@ const RAENGE = ['S', 'A', 'B', 'C', 'D', 'E', 'F'];
 const ANSCHLUESSE = ['schiene_oben', 'schiene_unten', 'schiene_seitlich', 'muendung_pistole', 'muendung_gewehr', 'magazin'];
 const SKILLGRUPPEN = ['waffen', 'kampf', 'koerper', 'technik', 'entscheidung', 'medizin', 'sozial', 'exklusiv'];
 const PERKGRUPPEN = ['grundwerte', 'kampfkunst', 'kampf', 'allgemein', 'exklusiv'];
-const HINWEIS_STELLEN = ['schiessen', 'probe', 'leiter', 'schaden', 'heilung', 'nahkampf', 'breakaction'];
+const HINWEIS_STELLEN = ['schiessen', 'probe', 'leiter', 'schaden', 'heilung', 'nahkampf', 'breakaction', 'initiative'];
 const LADEARTEN = ['wechselmagazin', 'trommel', 'roehrenmagazin', 'fest', 'einzelschuss'];
 const FEUERMODI = ['EF', 'Burst', 'VA'];
 const KLASSENARTEN = ['grundklasse', 'spezialisierung', 'erweiterte_form', 'meister'];
@@ -120,7 +120,16 @@ export function pruefeDaten(d: Spieldaten): string[] {
       if (!perkIds.has(p)) f('regeln.json', `Zustand ${z}: unbekannter Perk „${p}“ in mit_perk`);
   for (const z of [r.schiessen.schrot_rumpf_start, r.deckung.arme_mit, ...r.deckung.arme])
     if (!zonenIds.has(z)) f('regeln.json', `unbekannte Körperzone „${z}“`);
-  if (r.initiative && !statIds.has((r.initiative as { stat: string }).stat)) f('regeln.json', 'initiative.stat unbekannt');
+  if (!statIds.has(r.initiative.stat)) f('regeln.json', 'initiative.stat unbekannt');
+  for (const p of Object.keys(r.initiative.ueberrascht_mit_perk ?? {}))
+    if (!perkIds.has(p)) f('regeln.json', `initiative: unbekannter Perk „${p}“ in ueberrascht_mit_perk`);
+  for (const [art, probe] of Object.entries(r.leiter.proben ?? {})) {
+    if (!statIds.has(probe.stat)) f('regeln.json', `leiter.proben.${art}: unbekannter Stat „${probe.stat}“`);
+    if (probe.skill && !skillIds.has(probe.skill)) f('regeln.json', `leiter.proben.${art}: unbekannter Skill „${probe.skill}“`);
+    if (!d.darstellung.proben?.[art]) f('regeln.json', `leiter.proben.${art} hat keinen Namen in darstellung.json (proben)`);
+  }
+  for (const art of ['nerve_start', 'nerve_anstieg', 'nerve_senken', 'verschieben'])
+    if (!r.leiter.proben?.[art]) f('regeln.json', `leiter.proben.${art} fehlt`);
 
   // ---------- stats.json
   for (const s of d.stats.eintraege) {

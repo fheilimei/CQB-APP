@@ -35,6 +35,11 @@
       "zeichen": "⚙",
       "farbe": "#2e7d32",
       "name": "Aufsatz"
+    },
+    "sl": {
+      "zeichen": "⚑",
+      "farbe": "#b8860b",
+      "name": "SL"
     }
   },
   "typen": {
@@ -76,6 +81,8 @@
     "erholungsprobe": "Erholungsprobe",
     "nerve_anstieg": "Nerve-Probe beim Anstieg",
     "nerve_senken": "Nerve-Probe zum Senken",
-    "initiative": "Initiative"
+    "initiative": "Initiative",
+    "nerve_start": "Nerve-Probe vor dem Gefecht",
+    "verschieben": "Verbündete verschieben"
   }
 }

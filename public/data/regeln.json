@@ -164,6 +164,24 @@
       "krit": 2,
       "gelungen": 1,
       "misslungen": 0
+    },
+    "proben": {
+      "nerve_start": {
+        "stat": "nerve",
+        "skill": "selbstbeherrschung"
+      },
+      "nerve_anstieg": {
+        "stat": "nerve",
+        "skill": "selbstbeherrschung"
+      },
+      "nerve_senken": {
+        "stat": "nerve",
+        "skill": "selbstbeherrschung"
+      },
+      "verschieben": {
+        "stat": "empathy",
+        "skill": "fuehrung"
+      }
     }
   },
   "symptome": {
@@ -232,7 +250,10 @@
     "stat": "decisiveness",
     "skill": null,
     "krit_break_extra": 1,
-    "ueberrascht_malsteps": 1
+    "ueberrascht_malsteps": 1,
+    "ueberrascht_mit_perk": {
+      "entschlossen": 0
+    }
   },
   "breakaction": {
     "reaktion": {

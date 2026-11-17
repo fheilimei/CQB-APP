@@ -398,7 +398,8 @@
       "modifikatoren": [],
       "hinweis_bei": [
         "breakaction",
-        "leiter"
+        "leiter",
+        "initiative"
       ],
       "vorlaeufig": true
     },
@@ -782,7 +783,8 @@
       "modifikatoren": [],
       "hinweis_bei": [
         "schiessen",
-        "breakaction"
+        "breakaction",
+        "initiative"
       ],
       "exklusiv": [
         "kommandosoldat"
@@ -1236,7 +1238,8 @@
       "wirkung": "Einmal pro Gefecht haben alle Verbündeten, die dich hören, in der nächsten Runde 1 Stepshield auf Initiative.",
       "modifikatoren": [],
       "hinweis_bei": [
-        "breakaction"
+        "breakaction",
+        "initiative"
       ],
       "exklusiv": [
         "schutzkommandofuehrer"

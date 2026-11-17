@@ -54,6 +54,14 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 ## Offen aus Schritt 4 (Bogen, 17.11.2026)
 
 1. **Notizen im Lesemodus.** Das Konzept legt nicht fest, ob Notizen gesperrt sind. *Vorläufig:* in jedem Modus änderbar (sie sind kein Wert des Charakters) und ohne Eintrag im Protokoll.
-2. **Skill antippen.** Laut Konzept § 3.4 öffnet das den Probenrechner. Bis zu Schritt 5 klappt der Skill ein Detail auf: Stat der Probe, Wirkung der Stufe, Perks und Anpassungen darauf.
+2. **Skill antippen.** Erledigt (17.11.2026, Schritt 5): Im Lesemodus öffnet der Skill den Probenrechner; im Aufstiegs- und Schreibmodus klappt er das Detail auf.
 3. **Formular für Anpassungen.** Ziele: Grundwert, Proben auf einen Stat, Proben mit einem Skill, alle Proben; Betrag 1–5. *Noch nicht:* Probenarten (Schießen, Haltezahl …), Bedingungen (Band, Stand …) und Änderung der Krit-Schwelle. Lässt sich ergänzen, wenn die SL so etwas braucht.
 4. **Markierung bei Bedingungen.** Ein Modifikator mit Bedingung (z. B. Kernschuss nur mit dem Präzisionsgewehr) markiert seinen Stat bzw. Skill immer; ob er wirkt, zeigt erst der Probenrechner.
+
+## Offen aus Schritt 5 (Probenrechner und Adrenalin, 17.11.2026)
+
+1. **Offene kritische Wunde.** Für „kampfunfähig“ zählt vorläufig jede kritische Wunde, deren Blutung nicht gestoppt ist. Wird mit den Wunden (Schritt 7) genau festgelegt.
+2. **Steps der SL für das ganze Gefecht** gelten vorläufig für **alle** Proben. Die Auswahl, für welche Proben sie gelten (Schießen, Werfen, alle; `gilt_fuer`), kommt mit dem Schussrechner (Schritt 6); das Datenformat kennt sie schon.
+3. **Senken und Verbündete verschieben** sind Mainactions. Den Zähler der Aktionsleiste ziehen sie erst ab Schritt 6 ab.
+4. **Rückhalt und Einsamer Wolf** (Stepshield gegen den Anstieg bzw. beim Senken, wenn Verbündete in Hörweite sind bzw. nicht) erscheinen als Hinweis; den Stepshield trägt der Spieler im Block SL ein, weil die App nicht weiß, wer in Hörweite ist.
+5. **Zeichen für Steps der SL:** ⚑ (in `darstellung.json`, `herkunft.sl`), damit SL-Steps in Chips und Rechnung von Lage und Anpassungen unterscheidbar sind. Lässt sich dort ändern.

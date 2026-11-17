@@ -3,6 +3,7 @@
 import type { Modifikator, Rang, Spieldaten } from '../daten/typen';
 import type { Sperre } from '../regeln/aufstieg';
 import type { Fehlt } from '../regeln/erstellung';
+import type { Ergebnisstufe } from '../regeln/probe';
 import type { Abweichungswurf } from '../speicher/charakter';
 
 /** Modus eines fertigen Charakters (konzept.md § 3.0a); wird nicht gespeichert. */
@@ -113,3 +114,36 @@ export function fehltText(f: Fehlt, d: Spieldaten): string {
     case 'frist': return 'Frist der Schulden fehlt';
   }
 }
+
+// ---- Proben, Adrenalin und Ruhepuls (konzept.md § 3.6, § 3.7)
+
+export const ERGEBNIS_NAME: Record<Ergebnisstufe, string> = { krit: 'Krit', erfolg: 'Erfolg', misserfolg: 'Misserfolg' };
+/** Ergebnis im Satz („Deine Probe ist …“). */
+export const ERGEBNIS_SATZ: Record<Ergebnisstufe, string> = { krit: 'ein Krit', erfolg: 'gelungen', misserfolg: 'misslungen' };
+
+/** Wurf zweistellig, wie er auf den Würfeln steht („07“). */
+export const wurfZahl = (w: number) => String(w).padStart(2, '0');
+
+/** Was der Spieler ansagt: „Erfolg · 54“, „Krit · 07“; bei Misserfolg ohne Wurf oder mit Zielwert (Initiative). */
+export function ansage(stufe: Ergebnisstufe, wurf: number | null, zielwertBeiMisserfolg?: number): string {
+  if (stufe === 'misserfolg') return zielwertBeiMisserfolg !== undefined ? `Misserfolg · Zielwert ${zielwertBeiMisserfolg}` : 'Misserfolg';
+  return wurf === null ? ERGEBNIS_NAME[stufe] : `${ERGEBNIS_NAME[stufe]} · ${wurfZahl(wurf)}`;
+}
+
+/** Steps einer Quelle: „▼2“, „▲1“, „Krit-Schwelle +1“, mehrere mit Leerzeichen. */
+export function stepsText(q: { malsteps?: number; stepshields?: number; krit_schwelle?: number }): string {
+  const teile: string[] = [];
+  if (q.malsteps) teile.push(q.malsteps > 0 ? `▼${q.malsteps}` : `▲${-q.malsteps}`);
+  if (q.stepshields) teile.push(q.stepshields > 0 ? `▲${q.stepshields}` : `▼${-q.stepshields}`);
+  if (q.krit_schwelle) teile.push(`Krit-Schwelle ${vorzeichen(q.krit_schwelle)}`);
+  return teile.join(' ');
+}
+
+/** Stand im Satz: „Adrenalin 2“, „Ruhepuls 1“, „Over the Edge“; 0 als „0“. */
+export const standText = (stand: number, d: Spieldaten) => d.regeln.leiter.stufen[String(stand)]?.name ?? '0';
+
+/** Malsteps im Satz. */
+export const malstepsText = (n: number) => `${n} ${n === 1 ? 'Malstep' : 'Malsteps'}`;
+
+/** Kurzform eines Symptoms für die Zusammenfassung am Rad: Text vor dem Doppelpunkt. */
+export const symptomKurz = (text: string) => text.split(':')[0]!.trim();

@@ -33,6 +33,8 @@ export function naechsterRang(rang: Rang, regeln: Regeln): Rang | null {
 
 /** Eine Quelle von Steps, mit Namen für die Aufschlüsselung (konzept.md § 3.0b). */
 export interface StepQuelle {
+  /** Feste Kennung der Quelle in einer Probe, z. B. zum Ausschalten per × (konzept.md § 3.8c). */
+  id?: string;
   /** Woher die Steps kommen: lage, leiter, zustand, perk, anpassung, aufsatz, sl, skill … */
   herkunft: string;
   /** Anzeigename, z. B. „Reichweite mittel“ oder „Adrenalin 2“. */

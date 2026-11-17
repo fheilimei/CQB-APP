@@ -11,7 +11,9 @@
   import { GROESSEN } from '../regeln/erstellung';
   import { anpassen, korrigiere, type Anpassungsaktion, type Korrektur } from '../regeln/korrektur';
   import type { HerkunftModifikator } from '../regeln/modifikatoren';
-  import { rangfolge, statwert } from '../regeln/probe';
+  import { leiterSteps } from '../regeln/leiter';
+  import { rangfolge, statwert, summe } from '../regeln/probe';
+  import { leiterStand } from '../regeln/probenrechner';
   import type { Charakter, Quelle } from '../speicher/charakter';
   import Begriff from './Begriff.svelte';
   import Bericht from './Bericht.svelte';
@@ -25,8 +27,18 @@
   import Anpassungen from './werte/Anpassungen.svelte';
   import Grundwerte from './werte/Grundwerte.svelte';
 
-  interface Props { c: Charakter; d: Spieldaten; modus: Modus; abweichungModus: Quelle; onaendern: (c: Charakter) => void }
-  let { c, d, modus, abweichungModus, onaendern }: Props = $props();
+  interface Props {
+    c: Charakter; d: Spieldaten; modus: Modus; abweichungModus: Quelle; onaendern: (c: Charakter) => void;
+    /** Probenrechner öffnen (konzept.md § 3.4: Skill antippen). */
+    onprobe: (stat: string, skill: string | null) => void;
+  }
+  let { c, d, modus, abweichungModus, onaendern, onprobe }: Props = $props();
+  const stand = $derived(leiterStand(c));
+  /** Netto-Malsteps aus Adrenalin bzw. Ruhepuls auf diesen Stat; Stepshields allein lassen den Statwert gelten. */
+  function leiterSpalte(statId: string): { spalte: number; wirkt: boolean } {
+    const q = leiterSteps(stand, statId, d);
+    return { spalte: Math.max(0, summe(q, 'malsteps') - summe(q, 'stepshields')), wirkt: q.length > 0 };
+  }
 
   const klasse = $derived.by(() => { const id = aktuelleKlasse(c); return id ? d.klassen.eintraege.find((k) => k.id === id) ?? null : null; });
   const eingefroren = $derived(new Set(eingefroreneSkills(c, d)));
@@ -207,16 +219,17 @@
         {@const sw = statwert(e, d.regeln)}
         {@const mods = modifikatorenAn(c, d, 'stat', s.id)}
         {@const offen = offenStat === s.id}
+        {@const lt = leiterSpalte(s.id)}
         <li id="stat-{s.id}">
           <button class="zeile flach stat" aria-expanded={offen} onclick={() => (offenStat = offen ? null : s.id)}>
             <span class="statkopf">
               <Begriff art="stat" name={s.name} darstellung={d.darstellung} />
-              <span class="werte"><span class="hinweis">{e.rang}</span><strong class="wert" class:hand={markiert(`stats.${s.id}`)}>{sw ?? '–'}<Herkunft quellen={quellenVon(mods, `stats.${s.id}`)} darstellung={d.darstellung} /></strong></span>
+              <span class="werte"><span class="hinweis">{e.rang}</span><strong class="wert" class:hand={markiert(`stats.${s.id}`)} class:gilt={lt.wirkt && lt.spalte === 0}>{sw ?? '–'}<Herkunft quellen={[...quellenVon(mods, `stats.${s.id}`), ...(lt.wirkt ? ['leiter'] : [])]} darstellung={d.darstellung} /></strong></span>
             </span>
             {#if sw !== null}
               <span class="reihe" aria-label="Zielwert bei 1 bis {statSchwelle - 1} Malsteps: {stepReihe(sw, d.regeln).slice(1).join(', ')}">
                 <span></span>
-                {#each stepReihe(sw, d.regeln).slice(1) as z, i (i)}<span>{z}</span>{/each}
+                {#each stepReihe(sw, d.regeln).slice(1) as z, i (i)}<span class:gilt={lt.wirkt && lt.spalte === i + 1}>{z}</span>{/each}
               </span>
             {/if}
           </button>
@@ -236,6 +249,8 @@
               {:else}
                 <p>Rang {e.rang} ({e.rang ? d.regeln.raenge[e.rang] : '–'}) · Abweichung {e.wurf ? vorzeichen(e.wurf.positiv - e.wurf.negativ) : '–'}
                   {#if e.wurf}<span class="hinweis">({wurfText(e.wurf)}, {e.wurf.quelle === 'app' ? 'von der App gewürfelt' : 'von Hand'})</span>{/if}</p>
+                {#if lt.wirkt}<p class="hinweis">{d.darstellung.herkunft.leiter?.zeichen} {stand > 0 ? 'Adrenalin' : 'Ruhepuls'} wirkt: hervorgehoben ist der Zielwert, der jetzt gilt.</p>{/if}
+                {#if modus === 'lesen'}<button class="haupt" onclick={() => onprobe(s.id, null)}>Probe auf {mitZeichen('stat', s.id, d)}</button>{/if}
                 {#if modus === 'aufstieg' && statrankUpSperre(c, s.id, d) === null}
                   <button class="haupt" onclick={() => (rankUp = s.id)}>Statrank-Up ({punkte(d.regeln.aufstieg.statrank_up_kosten)})</button>
                 {/if}
@@ -262,7 +277,8 @@
       {@const offen = offenSkill === s.id}
       <li id="skill-{s.id}">
         <div class="skill">
-          <button class="zeile flach name" aria-expanded={offen} onclick={() => (offenSkill = offen ? null : s.id)}>
+          <button class="zeile flach name" aria-expanded={modus === 'lesen' ? undefined : offen}
+            onclick={() => (modus === 'lesen' ? onprobe(s.stat, s.id) : (offenSkill = offen ? null : s.id))}>
             <span class="skillname"><Begriff art="skill" name={s.name} darstellung={d.darstellung} />
               {#if kalt}<span class="schloss" title="eingefroren">🔒</span>{/if}</span>
             {#if modus !== 'schreiben'}
@@ -373,6 +389,7 @@
   .reihe { display: grid; grid-template-columns: 1.6fr repeat(5, 1fr); font-size: 0.85rem; color: var(--text-2);
     font-variant-numeric: tabular-nums; }
   .reihe > span { text-align: right; }
+  .gilt { outline: 2px solid var(--akzent); outline-offset: 1px; border-radius: 4px; color: var(--text); font-weight: 700; }
   .kopfreihe { font-size: 0.75rem; border-bottom: 1px solid var(--linie); padding-bottom: 2px; }
   .kopfreihe > span:first-child { text-align: left; }
 

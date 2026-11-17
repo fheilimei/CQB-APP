@@ -69,7 +69,10 @@ export interface Regeln {
     rundenende: { malsteps_je_ausloeser: number; anstieg: number; probe: StufenAenderung };
     senken: StufenAenderung;
     verschieben: StufenAenderung;
+    /** Proben rund um Adrenalin und Ruhepuls; Schlüssel = Probenart (darstellung.json proben). */
+    proben: Record<string, { stat: string; skill: string | null }>;
   };
+  initiative: { stat: string; skill: string | null; krit_break_extra: number; ueberrascht_malsteps: number; ueberrascht_mit_perk?: Record<string, number> };
   symptome: Record<
     string,
     { gewinn: string; verlust: string; wirkung: { gewinn: SymptomWirkung; verlust: SymptomWirkung }; vorlaeufig?: boolean }

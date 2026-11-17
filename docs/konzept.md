@@ -129,7 +129,7 @@ Formen und Farben unterscheiden sich, damit die Markierung auch ohne Farbsehen l
 
 **Hinweise für Sonderregeln.** Perks, die die App nicht rechnen kann (z. B. Triple Tap, Starrsinn), nennen, wo sie greifen (`hinweis_bei`). Dort erscheint ein Hinweis mit Zeichen und Kurzbeschreibung, z. B. im Schussrechner „◆ Triple Tap: bei Ansage Bauch Folgetreffer Brust, dann Kopf“. Gerechnet wird nichts.
 
-**Probenrechner.** Er zeigt jeden Step mit seiner Quelle: Lage, Leiter, Zustand, Perk, Anpassung der SL ([§ 3.6](#36-probenrechner-r)).
+**Probenrechner.** Er zeigt jeden Step mit seiner Quelle: Lage, Leiter, Zustand, Perk, Anpassung der SL, Steps der SL (⚑) ([§ 3.6](#36-probenrechner-r)).
 
 ### 3.0c Bericht „Was ist passiert“ (A)
 Immer wenn die App mehr als einen Wert auf einmal ändert, zeigt sie zuerst einen **Bericht**. Das gilt u. a. für: Treffer erhalten, Schießen, Rundenende, Gefecht starten und beenden, Ruhetag, Aufstiegsschritte.
@@ -275,7 +275,7 @@ HP (Höchstwert), Schmerzresistenz, Nahkampfschaden, Wurfweite. Startwerte aus `
 Direkt unter den Stats. Je Skill: Name, Stufe (0–5), zugehöriger Stat.
 - **Standardansicht:** nur Skills mit Stufe ≥ 1.
 - **Aufklappfeld „Alle Skills“:** alle Skills aus `skills.json`, auch mit Stufe 0.
-- Antippen eines Skills öffnet den Probenrechner mit Stat und Skill vorausgewählt ([§ 3.6](#36-probenrechner-r)).
+- Antippen eines Skills öffnet im Lesemodus den Probenrechner mit Stat und Skill vorausgewählt ([§ 3.6](#36-probenrechner-r)). Im Aufstiegs- und Schreibmodus klappt es das Detail auf (Stat der Probe, Perks und Anpassungen darauf). Ein Stat öffnet per Antippen sein Detail; dort steht der Knopf „Probe auf ■ …“.
 - **Aufstiegsmodus:** Neben jedem steigerbaren Skill stehen die Kosten der nächsten Stufe und eine Schaltfläche zum Steigern. Steigerbar ist nur, was die aktuelle Klasse anbietet ([§ 4.11](#411-charaktererstellung-und-aufstieg)).
 - **Eingefrorene Skills:** Ein Skill mit Stufe ≥ 1, den die aktuelle Klasse nicht anbietet, bleibt in der Standardansicht und wirkt normal. Er trägt ein Schloss-Zeichen; im Aufstiegsmodus steht dort „eingefroren: nicht im Zugang von <Klasse>“ statt der Schaltfläche.
 
@@ -296,6 +296,17 @@ Automatisch einbezogen: Steps aus der Leiter und aus Zuständen ([§ 4.5](#45-zu
 **Skill austauschen.** Wo immer ein Ablauf einen Skill vorwählt (Probenrechner, Schießen, Werfen, Nahkampf, Breakaction …), kann der Spieler ihn durch einen anderen Skill ersetzen. Die SL erlaubt das mit guten Argumenten (Regelwerk: Stats, Skills und Perks, Skills). Der Bericht nennt den verwendeten Skill.
 Ausgabe: **Zielwert**, **Krit-Schwelle**, oder „keine Probe möglich“ ([§ 4.2](#42-steps-und-zielwert), [§ 4.3](#43-krit)). Die App zeigt die Herkunft jedes Steps mit Zeichen und Namen ([§ 3.0b](#30b-herkunft-von-werten-a-r)), außerdem die Hinweise passender Perks.
 
+**Aufbau** (Dialog, erreichbar über den Knopf **Probe** auf dem Reiter Figur, über einen Skill und über das Detail eines Stats):
+- Oben neun Stat-Knöpfe mit Statwert (drei Spalten), darunter die Auswahl **Skill**: zuerst die eigenen Skills mit Stufe, dann die übrigen mit Stufe 0. Wird ein Skill gewählt, bevor ein Stat gewählt ist, übernimmt die App dessen Stat. Gehört der Skill zu einem anderen Stat, steht der Hinweis „Skill ausgetauscht … Das muss die SL erlauben.“
+- Kopfzeile „▼ Malsteps · ▲ Stepshields · ⬢ Skillstufe · netto n“ mit **Zielwert** und **Krit ≤**; Antippen klappt die Rechnung auf (Stat, Skill, jede Quelle, Ergebnis).
+- **Automatisch** (Lage-Block 1): Chips mit Herkunftszeichen, je mit × bzw. ↺; Steps der SL für das ganze Gefecht zusätzlich mit „löschen“.
+- Schalter **braucht Sicht**, darunter die Sichtstufe als Satz („Sicht: klar · eingeschränkt …“); im Gefecht gilt und speichert die Sichtstufe des Gefechts.
+- **SL** (Lage-Block 3): Zähler + Malstep, + Stepshield, Feld Grund, zuletzt verwendete Gründe; im Gefecht der Knopf **Für das ganze Gefecht merken**.
+- Würfel (Würfelstelle „Proben“) und groß die **Ansage**: „Krit · 07“, „Erfolg · 54“, „Misserfolg“. Ändert der Spieler danach Steps, wertet die App den Wurf neu aus.
+- Der Probenrechner ändert am Charakter nur die Steps der SL für das Gefecht, die Sichtstufe des Gefechts und die zuletzt verwendeten Gründe.
+
+Dieselbe Probe (ohne Stat- und Skill-Auswahl, mit den drei Knöpfen Krit · gelungen · misslungen) steckt in allen Abläufen mit Probe: Gefecht starten, Rundenende, Senken, Verbündete verschieben, Initiative.
+
 ### 3.7 Leiter (M, R)
 Regeln: [§ 4.4](#44-die-leiter). Ziel: höchstens zwei Handgriffe pro Runde; alles Weitere rechnet die App.
 
@@ -307,13 +318,17 @@ Regeln: [§ 4.4](#44-die-leiter). Ziel: höchstens zwei Handgriffe pro Runde; al
 - **Schutz vor Versehen:** Nur ein waagerechtes Wischen auf dem Rad selbst dreht es; senkrechtes Scrollen der Seite dreht es nie. Jede Änderung zeigt kurz „Adrenalin 2 → 3 · Rückgängig“.
 - **Farbe:** Das Rad und die Zeile färben sich nach Stufe: Ruhepuls blau, 0 neutral, Adrenalin orange bis rot, Over the Edge schwarz-rot (Farben in `darstellung.json`).
 - **Zusammenfassung** in derselben Zeile neben der Mitte, gekürzt auf die Symptome: „✔ Sprint, Schmerz ignorieren · ✖ keine Ansage, Tunnelblick“.
+- **Nachbarstufen antippen** dreht ebenfalls um eine Stufe (für alle, die nicht wischen können oder wollen).
 - **Antippen der Mitte** öffnet das **Detail** als Blatt von unten: Steps je Gruppe (mit den Stats), Symptome im Volltext, **Senken**, **Verbündete verschieben**, **Rückgängig** (letzte Änderung, auch aus den Abläufen). Wischen nach unten schließt es.
+- **Rückgängig** nimmt nur den Stand zurück (und ob in der Runde gesenkt wurde), nicht die Rundenzahl. Es reicht zurück bis zum Anfang der laufenden Runde bzw. bis zum gerade abgeschlossenen Rundenende; den Start des Gefechts nimmt es nicht zurück.
 - **Nächste Runde** und **Gefecht beenden** stehen nicht am Rad, sondern als kleine Knöpfe in der Kopfzeile neben „Gefecht · Runde n“ ([§ 3.0e](#30e-gefecht-und-ruhe-m)).
 
 **Folgen im Bogen.**
 - **Stats:** In der Step-Reihe jedes Stats ist der Wert hervorgehoben, der mit den Steps der Leiter gilt; die Markierung ♥ zeigt, dass Adrenalin bzw. Ruhepuls mitwirkt ([§ 3.0b](#30b-herkunft-von-werten-a-r)).
 - **Rechner:** Proben- und Schussrechner rechnen die Leiter automatisch ein. Ab Adrenalin 1 bietet der Schussrechner keine Ansage an; die Symptome Empfindlich und Schmerz ignorieren gehen in die Stagger-Prüfung ein ([§ 3.10](#310-treffer-wunden-und-blutung-m-r)).
-- **Over the Edge:** deutliches Banner „Over the Edge: nur 1 Aktion pro Runde“; der Adrenalinschock wird für das Gefechtsende vorgemerkt.
+- **Over the Edge:** deutliches Banner „Over the Edge: nur 1 Aktion pro Runde“; der Adrenalinschock wird für das Gefechtsende vorgemerkt. Nimmt der Spieler die Änderung auf Over the Edge zurück, entfällt die Vormerkung.
+- **Kopfzeile:** Adrenalin bzw. Ruhepuls als farbiger Chip neben dem Namen (bei 0 nichts); Adrenalinschock als Chip. Antippen des Chips Adrenalinschock fragt, ob die Ruhe aus `regeln.json` (4 Stunden ununterbrochen) erfüllt ist, und beendet ihn.
+- **Initiative:** Bis die Aktionsleiste kommt ([§ 3.7a](#37a-aktionsleiste-m-r)), steht das Ergebnis in der Gefechtszeile der Kopfzeile („Initiative: Erfolg · 54“); Antippen öffnet die Initiative erneut. „Später“ schließt die Initiative ohne Eintrag; dann steht dort „Initiative würfeln“.
 
 **Abläufe als Knöpfe.**
 - **Gefecht starten:** Auswahl normal / überrascht → Anzeige von Zielwert und Krit-Schwelle der Nerve-Probe → Ergebnis antippen (Krit / gelungen / misslungen) → Leiter springt auf die Startstufe → weiter zur Initiative der ersten Runde ([§ 3.7b](#37b-initiative-und-breakaction-m-r)). Bei „überrascht“ rechnet die App in Runde 1 je 1 Malstep auf Initiative und Breakaction ein.

@@ -57,6 +57,44 @@ export interface Erstellungsstand {
   kaeufe: Erstellungskauf[];
 }
 
+/** Steps der SL für das ganze Gefecht (konzept.md § 3.8c, Block 3). */
+export interface SlUmstand {
+  id: string;
+  malsteps: number;
+  stepshields: number;
+  grund: string;
+  /** Probenarten, für die der Umstand gilt; fehlt = alle Proben. */
+  gilt_fuer?: string[];
+}
+
+/** Ein Eintrag im Gefechtsprotokoll; `leiter` hält jede Änderung von Adrenalin bzw. Ruhepuls (für Rückgängig). */
+export interface Gefechtsereignis {
+  runde: number;
+  zeit: string;
+  art: 'leiter';
+  /** Was die Änderung ausgelöst hat: rad, start, rundenende, senken. */
+  ursache: 'rad' | 'start' | 'rundenende' | 'senken';
+  von: number;
+  nach: number;
+  /** Stand von „gesenkt“ vor der Änderung, damit Rückgängig ihn wiederherstellt. */
+  gesenkt_vorher: boolean;
+}
+
+/** Laufendes Gefecht (datenformat.md § Charakter, spielstand.gefecht). Außerhalb des Gefechts nur { aktiv: false }. */
+export interface Gefecht {
+  aktiv: true;
+  runde: number;
+  initiative: { wurf: number | null; stufe: 'krit' | 'erfolg' | 'misserfolg'; zielwert: number } | null;
+  leiter: number;
+  adrenalin4_erreicht: boolean;
+  ueberrascht: boolean;
+  gesenkt_diese_runde: boolean;
+  ausloeser_diese_runde: string[];
+  sichtstufe: string;
+  lage: { sl_gefecht: SlUmstand[]; letzte_gruende: string[] };
+  protokoll: Gefechtsereignis[];
+}
+
 export interface Anpassung extends Modifikator {
   id: string;
   grund: string;
@@ -105,7 +143,7 @@ export interface Charakter {
     sonstiges: string;
   };
   spielstand: {
-    gefecht: Record<string, unknown> & { aktiv: boolean };
+    gefecht: Gefecht | { aktiv: false };
     hp_verlust_wunden: number;
     prellungen: number;
     tot: boolean;
