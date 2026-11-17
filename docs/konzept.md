@@ -452,7 +452,9 @@ Alles, was Schaden austeilt oder einsteckt, läuft über **einen Dialog in zwei 
 6. **Weiter:** übernimmt; Break-Zähler −1; Eintrag im Gefechtsprotokoll.
 
 **Nachladen** (Main; Break nur mit Perk Schnell nachladen). Keine Probe. Der Ablauf hängt von der **Ladeart** der Waffe ab (Kampfsystem, Nachladen):
-- **Wechselmagazin:** Der Spieler wählt das neue Magazin aus der Reserve (vorgewählt: das vollste). Das eingesetzte Magazin geht mit seinem Rest in die Reserve; eine Patrone im Lauf bleibt in der Waffe. Leere Magazine werden aus der Reserve entfernt.
+- **Wechselmagazin:** Der Spieler wählt das neue Magazin aus der Reserve (vorgewählt: das vollste). Das eingesetzte Magazin geht mit seinem Rest in die Reserve; eine Patrone im Lauf bleibt in der Waffe. Ein leeres Magazin zählt als leeres Magazin.
+
+**Magazine füllen** (nur außerhalb des Gefechts, Knopf an der Waffe im Reiter Ausrüstung): füllt aus den losen Patronen, so weit sie reichen, zuerst die Waffe, dann angebrochene Ersatzmagazine, dann leere Magazine; bei Waffen ohne Wechselmagazin leere Schnelllader und Ladestreifen. Vorher zeigt ein Bericht, was passiert.
 - **Trommel, Röhrenmagazin, festes Magazin** ohne Zubehör: **einzeln laden**, Main mit leichter Konzentration, bis zu 2 Patronen (Perk Fingerfertig: 3) aus der losen Munition. Nie als Break. Bei Unterbrechung bleiben bereits geladene Patronen drin; nur die der laufenden Runde fehlen.
 - **Mit Schnelllader oder Ladestreifen** (Zubehör im Charakter): füllt auf einmal wie ein Magazin. Leere Schnelllader und Ladestreifen werden einzeln gefüllt.
 - **Werfer** (Magazingröße 1): Main mit voller Konzentration. Der Magazinstand ist das geladene Geschoss. Nachladen nimmt ein passendes Geschoss aus dem **Vorrat** (Anzahl −1, Auswahl nach Typ, z. B. OG-7V oder PG-7V); Schießen verbraucht es. Der Bericht nennt statt Zone den Landepunkt ([§ 3.8a](#38a-werfen-a-m-r)).

@@ -90,7 +90,8 @@ export function neuerWaffenEintrag(waffeId: string, d: Spieldaten, id: string, t
     munitionstyp: werfer ? '' : (typen[0] ?? ''),
     im_magazin: werfer ? 0 : w.magazin + (w.patrone_im_lauf ? 1 : 0),
     reserve: [],
-    ...(w.ladeart === 'wechselmagazin' || werfer ? {} : { lose_patronen: 0 }),
+    ...(werfer ? {} : { lose_patronen: 0 }),
+    ...(w.ladeart === 'wechselmagazin' ? { leere_magazine: 0 } : {}),
     ...(w.zubehoer?.length ? { zubehoer: w.zubehoer.map((art) => ({ art, gefuellt: 0, leer: 0 })) } : {}),
     zustand: d.regeln.waffenzustand.neu,
     aufsaetze: [],
@@ -151,7 +152,7 @@ export function einzelnProAktion(c: Charakter, d: Spieldaten): number {
 
 /**
  * Magazin wechseln: Das eingesetzte Magazin geht mit seinem Rest in die Reserve, eine Patrone im Lauf bleibt in der Waffe.
- * Leere Magazine entfallen.
+ * Ein leeres altes Magazin zählt zu den leeren Magazinen (zum Füllen nach dem Gefecht).
  */
 export function magazinWechseln(e: WaffenEintrag, index: number, d: Spieldaten): WaffenEintrag {
   const w = waffeVon(e, d);
@@ -161,7 +162,12 @@ export function magazinWechseln(e: WaffenEintrag, index: number, d: Spieldaten):
   const rest = e.im_magazin - imLauf;
   const reserve = e.reserve.filter((_, i) => i !== index);
   if (rest > 0) reserve.push(rest);
-  return { ...e, im_magazin: neu + imLauf, reserve: reserve.filter((n) => n > 0) };
+  return {
+    ...e,
+    im_magazin: neu + imLauf,
+    reserve: reserve.filter((n) => n > 0),
+    ...(rest > 0 ? {} : { leere_magazine: (e.leere_magazine ?? 0) + 1 })
+  };
 }
 
 /** Schnelllader bzw. Ladestreifen: füllt auf einmal; Patronen, die noch drin waren, kommen zu den losen Patronen. */
@@ -270,4 +276,62 @@ export function ladehemmungBeheben(e: WaffenEintrag, stufe: Ergebnisstufe, d: Sp
   if (stufe === 'misserfolg') return e;
   const zustand = e.ladehemmung === 'schwer' ? zustandSenken(e.zustand, d.regeln.ladehemmung.schwer_beheben.zustand_stufen, d) : e.zustand;
   return { ...e, ladehemmung: null, zustand };
+}
+
+// ---------- Magazine füllen (außerhalb des Gefechts)
+
+export interface Fuellung {
+  eintrag: WaffenEintrag;
+  /** Verbrauchte lose Patronen. */
+  patronen: number;
+  /** Was gefüllt wurde, in Reihenfolge: Waffe, angebrochene Magazine, leere Magazine bzw. Schnelllader/Ladestreifen. */
+  waffe: [number, number] | null;
+  reserve: { vorher: number; nachher: number }[];
+  leere: number;
+  zubehoer: { art: string; anzahl: number }[];
+}
+
+/**
+ * Füllt aus den losen Patronen, so weit sie reichen: zuerst die Waffe (Wechselmagazin bis zur Kapazität), dann
+ * angebrochene Ersatzmagazine, dann leere Magazine; bei Waffen ohne Wechselmagazin leere Schnelllader und Ladestreifen
+ * (je Magazingröße). Einzeln laden in die Waffe selbst bleibt beim Nachladen.
+ */
+export function magazineFuellen(e: WaffenEintrag, d: Spieldaten): Fuellung {
+  const w = waffeVon(e, d);
+  const groesse = magazinGroesse(e, d);
+  let lose = e.lose_patronen ?? 0;
+  const start = lose;
+  const f: Fuellung = { eintrag: e, patronen: 0, waffe: null, reserve: [], leere: 0, zubehoer: [] };
+  if (w.ladeart === 'wechselmagazin') {
+    let im = e.im_magazin;
+    const k = Math.min(lose, kapazitaet(e, d) - im);
+    if (k > 0) { f.waffe = [im, im + k]; im += k; lose -= k; }
+    const reserve = e.reserve.map((n) => {
+      const x = Math.min(lose, groesse - n);
+      if (x <= 0) return n;
+      lose -= x;
+      f.reserve.push({ vorher: n, nachher: n + x });
+      return n + x;
+    });
+    let leere = e.leere_magazine ?? 0;
+    while (leere > 0 && lose > 0) {
+      const x = Math.min(lose, groesse);
+      reserve.push(x);
+      lose -= x;
+      leere--;
+      f.leere++;
+    }
+    f.eintrag = { ...e, im_magazin: im, reserve, leere_magazine: leere, lose_patronen: lose };
+  } else if (e.zubehoer?.length) {
+    const zubehoer = e.zubehoer.map((z) => {
+      const n = Math.min(z.leer, Math.floor(lose / groesse));
+      if (n <= 0) return z;
+      lose -= n * groesse;
+      f.zubehoer.push({ art: z.art, anzahl: n });
+      return { ...z, gefuellt: z.gefuellt + n, leer: z.leer - n };
+    });
+    f.eintrag = { ...e, zubehoer, lose_patronen: lose };
+  }
+  f.patronen = start - lose;
+  return f;
 }

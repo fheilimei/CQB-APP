@@ -7,10 +7,11 @@
   import { magazinText } from '../../regeln/schuss';
   import {
     eintragErsetzen, freieId, istWerfer, kaliberName, kapazitaet, magazinGroesse, munitionstypen, munitionswerte, nachladearten,
-    neuerWaffenEintrag, passendeAufsaetze, sprengwaffe, waffeAktivieren, waffeVon
+    magazineFuellen, neuerWaffenEintrag, passendeAufsaetze, sprengwaffe, waffeAktivieren, waffeVon
   } from '../../regeln/waffen';
+  import Bericht from '../Bericht.svelte';
   import type { Charakter, WaffenEintrag } from '../../speicher/charakter';
-  import { dkMw, trageortName, zustandName, type Modus } from '../texte';
+  import { dkMw, patronenText, trageortName, zustandName, type Modus, type Zeile } from '../texte';
 
   interface Props {
     c: Charakter;
@@ -30,6 +31,20 @@
   let neueNk = $state('');
   let neuerVorrat = $state('');
   let neueRuestung = $state('');
+  let bericht = $state<{ zeilen: Zeile[]; nach: WaffenEintrag } | null>(null);
+
+  /** Magazine füllen (außerhalb des Gefechts): Bericht vor der Sammeländerung (konzept.md § 3.0c). */
+  function fuellenFrage(e: WaffenEintrag) {
+    const f = magazineFuellen(e, d);
+    const zeilen: Zeile[] = [{ text: `Du füllst aus den losen Patronen nach (${patronenText(f.patronen)}).`, fett: true }];
+    if (f.waffe) zeilen.push({ text: `In der Waffe: ${f.waffe[0]} → ${f.waffe[1]}.` });
+    for (const r of f.reserve) zeilen.push({ text: `Angebrochenes Magazin: ${r.vorher} → ${r.nachher}.` });
+    if (f.leere) zeilen.push({ text: `${f.leere} ${f.leere === 1 ? 'leeres Magazin wird' : 'leere Magazine werden'} gefüllt.` });
+    for (const z of f.zubehoer) zeilen.push({ text: `${d.aufsaetze.zubehoer.find((x) => x.id === z.art)?.name ?? z.art}: ${z.anzahl} gefüllt.` });
+    if (f.eintrag.reserve.length) zeilen.push({ text: `Ersatzmagazine danach: ${f.eintrag.reserve.join(' · ')}.` });
+    zeilen.push({ text: `Lose Patronen: ${e.lose_patronen ?? 0} → ${f.eintrag.lose_patronen ?? 0}.` });
+    bericht = { zeilen, nach: f.eintrag };
+  }
 
   const kategorien = $derived([...new Set(d.waffen.eintraege.map((w) => w.kategorie))]);
 
@@ -103,6 +118,7 @@
         {:else}
           <p>{kaliberName(w, d)}, {e.munitionstyp}{#if mun}: {dkMw(mun.dk, mun.mw, mun.stumpf)}{/if}</p>
           {#if w.ladeart === 'wechselmagazin'}<p>Ersatzmagazine: {reserveText(e)}</p>{/if}
+          {#if (e.leere_magazine ?? 0) > 0}<p>Leere Magazine: {e.leere_magazine}</p>{/if}
           {#if e.lose_patronen !== undefined}<p>Lose Patronen: {e.lose_patronen}</p>{/if}
           {#each e.zubehoer ?? [] as z (z.art)}
             <p>{d.aufsaetze.zubehoer.find((x) => x.id === z.art)?.name ?? z.art}: {z.gefuellt} gefüllt, {z.leer} leer</p>
@@ -116,6 +132,7 @@
           <div class="knoepfe">
             {#if !aktiv}<button onclick={() => onaendern(waffeAktivieren(c, e.id))}>Als aktive Waffe nehmen</button>{/if}
             {#if nachladearten(c, e, d).length}<button onclick={() => onnachladen(e.id)}>Nachladen</button>{/if}
+            {#if magazineFuellen(e, d).patronen > 0}<button onclick={() => fuellenFrage(e)}>Magazine füllen</button>{/if}
             {#if e.ladehemmung}<button onclick={() => onladehemmung(e.id)}>Ladehemmung beheben</button>{/if}
           </div>
         {/if}
@@ -137,11 +154,16 @@
                   <input inputmode="numeric" value={e.reserve.join(' ')} onchange={(ev) => reserveSetzen(e, (ev.target as HTMLInputElement).value)} />
                 </label>
                 <button onclick={() => setze({ ...e, reserve: [...e.reserve, magazinGroesse(e, d)] })}>+ volles Magazin ({magazinGroesse(e, d)})</button>
-              {:else}
+                <label>Leere Magazine
+                  <input type="number" inputmode="numeric" min="0" value={e.leere_magazine ?? 0}
+                    onchange={(ev) => setze({ ...e, leere_magazine: zahl((ev.target as HTMLInputElement).value) })} />
+                </label>
+              {/if}
                 <label>Lose Patronen
                   <input type="number" inputmode="numeric" min="0" value={e.lose_patronen ?? 0}
                     onchange={(ev) => setze({ ...e, lose_patronen: zahl((ev.target as HTMLInputElement).value) })} />
                 </label>
+              {#if w.ladeart !== 'wechselmagazin'}
                 {#each e.zubehoer ?? [] as z (z.art)}
                   {@const name = d.aufsaetze.zubehoer.find((x) => x.id === z.art)?.name ?? z.art}
                   <label>{name}: gefüllt
@@ -334,6 +356,10 @@
     <p class:hinweis={!c.ausruestung.sonstiges}>{c.ausruestung.sonstiges || 'nichts eingetragen'}</p>
   {/if}
 </section>
+
+{#if bericht}
+  <Bericht titel="Magazine füllen" zeilen={bericht.zeilen} onweiter={() => { setze(bericht!.nach); bericht = null; }} onzurueck={() => (bericht = null)} />
+{/if}
 
 <style>
   .name { display: flex; flex-direction: column; min-width: 0; }

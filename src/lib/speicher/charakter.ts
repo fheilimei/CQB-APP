@@ -158,8 +158,10 @@ export interface WaffenEintrag {
   im_magazin: number;
   /** Inhalt jedes Ersatzmagazins. */
   reserve: number[];
-  /** Munition ohne Magazin (einzeln laden, Schnelllader und Ladestreifen füllen). */
+  /** Munition ohne Magazin (einzeln laden, Magazine, Schnelllader und Ladestreifen füllen). */
   lose_patronen?: number;
+  /** Leere Ersatzmagazine (Wechselmagazin); entstehen beim Nachladen, werden mit „Magazine füllen“ wieder voll. */
+  leere_magazine?: number;
   /** Schnelllader bzw. Ladestreifen. */
   zubehoer?: { art: string; gefuellt: number; leer: number }[];
   zustand: string;

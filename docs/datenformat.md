@@ -1090,11 +1090,11 @@ IndexedDB-Datenbank `cqb` mit zwei Speichern: `charaktere` (ein Datensatz je Cha
 - **HP aktuell** = HP-Höchstwert − `hp_verlust_wunden` − `prellungen`. `hp_verlust_wunden` sinkt nur durch Erholungsproben, `prellungen` nur durch eine Nacht Ruhe.
 - **`ausruestung.aktive_waffe`:** `id` der aktiven Waffe (genau eine). Waffen in der Ausrüstung haben eine eigene `id`, weil ein Charakter dieselbe Waffe mehrmals besitzen kann.
 - **Waffe `im_magazin`:** aktueller Inhalt inklusive Patrone im Lauf. Jeder abgegebene Schuss wird abgezogen.
-- **Waffe `reserve`:** Inhalt jedes Ersatzmagazins (angebrochene Magazine möglich). Beim Nachladen wandert der Rest des eingesetzten Magazins hierher; leere Magazine entfallen.
+- **Waffe `reserve`:** Inhalt jedes Ersatzmagazins (angebrochene Magazine möglich). Beim Nachladen wandert der Rest des eingesetzten Magazins hierher; ein leeres zählt zu `leere_magazine`.
 - **Waffe `aufsaetze`:** IDs der angebrachten Aufsätze aus `aufsaetze.json`. Ob ein Schalter-Aufsatz gerade im Einsatz ist, wird nicht gespeichert; er wird je Schuss eingeschaltet.
 - **`ausruestung.vorrat`:** Granaten und Geschosse mit Anzahl. Jeder Wurf und jedes Laden eines Werfers zieht 1 ab. Die Anzahl ist jederzeit von Hand erhöhbar. Bei 0 bleibt der Eintrag stehen (zum Auffüllen).
 - **`trageort`** (Waffen, Nahkampfwaffen, Vorrat): `schlinge`, `weste` (Rig oder Weste), `holster`, `guertel` (auch Scheide), `ruecken`, `rucksack`. Bestimmt die Kosten des Wechsels; die Tabelle steht in `regeln.json` (Regelwerk: Kampfsystem, Waffe wechseln).
-- **`lose_patronen`:** Munition ohne Magazin, für einzeln laden und zum Füllen von Schnellladern und Ladestreifen. **`zubehoer`:** Schnelllader bzw. Ladestreifen der Waffe mit Zahl gefüllt und leer.
+- **`lose_patronen`:** Munition ohne Magazin, für einzeln laden und zum Füllen von Magazinen, Schnellladern und Ladestreifen (alle Waffen außer Werfern). **`leere_magazine`** (nur Wechselmagazin): leere Ersatzmagazine; ein leeres Magazin wandert beim Nachladen hierher statt zu entfallen. **`zubehoer`:** Schnelllader bzw. Ladestreifen der Waffe mit Zahl gefüllt und leer.
 - **`ausruestung.nahkampfwaffen`:** eigene Nahkampfwaffen, je Eintrag mit `anzahl` (fehlt das Feld: 1). Ein Wurf zieht 1 ab; bei 0 bleibt der Eintrag stehen, eingesammelte Waffen werden von Hand wieder dazugezählt. Körperwaffen und Einsätze mit der Schusswaffe (Kolben, Lauf, Pistolengriff) bietet die App ohne Eintrag an.
 - **`ausruestung.schild`:** `null` oder ID aus `schutz.json` (`schilde`).
 - **Waffe `ladehemmung`:** `null`, `einfach` oder `schwer`. Blockiert das Schießen.

@@ -74,7 +74,7 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 4. **Atemkontrolle.** *Vorläufig:* Ob der Charakter liegt oder die Waffe aufgelegt ist, zählt im Moment des Zielens (Schalter im Zielen, vorbelegt mit dem Stand).
 5. **Aufsätze im Gefecht anbringen.** Die App führt keine losen Aufsätze. *Vorläufig:* Der Spieler hakt an, was danach an der Waffe ist, und wählt nur, was er dabeihat.
 6. **Schnelllader und Ladestreifen.** *Vorläufig:* Patronen, die beim Laden noch in der Waffe sind, kommen zu den losen Patronen.
-7. **Magazine nach dem Gefecht füllen.** Leere Ersatzmagazine entfallen beim Nachladen; neue oder aufgefüllte trägt der Spieler im Schreibmodus ein. Soll es einen Knopf „Magazine aus losen Patronen füllen“ geben?
+7. **Magazine nach dem Gefecht füllen.** Entschieden (18.11.2026): Knopf „Magazine füllen“ außerhalb des Gefechts; leere Magazine werden gezählt statt verworfen. *Vorläufig* ist die Reihenfolge: Waffe, angebrochene Magazine, leere Magazine. Es kostet keine Zeit; wie lange das Füllen dauert, sagt das Regelwerk nicht.
 8. **Ausrüstung ohne Laden.** Im Schreibmodus frei eintragbar, ohne Kassenbuch und ohne Eintrag im Protokoll. Mit dem Laden (§ 3.14) ändert sich das.
 9. **Noch nicht da:** Knöpfe Getroffen und Ereignis, Wurfaktion, Nahkampf, Wunde versorgen (im Menü ausgegraut), Schaden beim Ziel vorrechnen im Schussbericht, Malstep und Waffen-Einschränkung des ballistischen Schilds beim Schießen. Kommen mit Schritt 7 (Treffer, Wunden, Schutz).
 10. **Skill austauschen beim Schießen** (Konzept § 3.6) fehlt noch; der Schussrechner nimmt immer den Waffenskill der Waffe.

@@ -8,7 +8,7 @@ import { gefechtStarten, initiativeEintragen, leiterSetzen, naechsteRunde, senke
 import { gefechtVon } from '../src/lib/regeln/probenrechner';
 import { lageAuswahl, schussAuswerten, schussStellen, schussUebernehmen, type Schusseinstellung } from '../src/lib/regeln/schuss';
 import {
-  einzelnLaden, einzelnProAktion, kapazitaet, ladehemmungBeheben, lhBehebenAnfrage, magazinWechseln, mitZubehoerLaden, nachladearten,
+  einzelnLaden, einzelnProAktion, magazineFuellen, kapazitaet, ladehemmungBeheben, lhBehebenAnfrage, magazinWechseln, mitZubehoerLaden, nachladearten,
   nachladenAlsBreak, neuerWaffenEintrag, passendeAufsaetze, waffenskill, wechselkosten, werferLaden
 } from '../src/lib/regeln/waffen';
 import { neuerCharakter, type Charakter, type Gefecht, type WaffenEintrag } from '../src/lib/speicher/charakter';
@@ -167,6 +167,26 @@ describe('Waffen', () => {
     expect(magazinWechseln(e, 0, d)).toMatchObject({ im_magazin: 31, reserve: [30, 12, 25] });
     expect(magazinWechseln(waffe('ak47', { im_magazin: 1, reserve: [30] }), 0, d)).toMatchObject({ im_magazin: 31, reserve: [] });
     expect(magazinWechseln(waffe('ak47', { im_magazin: 0, reserve: [30] }), 0, d)).toMatchObject({ im_magazin: 30, reserve: [] });
+  });
+
+  it('Magazin wechseln: ein leeres altes Magazin zählt zu den leeren Magazinen', () => {
+    expect(magazinWechseln(waffe('ak47', { im_magazin: 1, reserve: [30] }), 0, d).leere_magazine).toBe(1);
+    expect(magazinWechseln(waffe('ak47', { im_magazin: 26, reserve: [30] }), 0, d).leere_magazine).toBe(0);
+  });
+
+  it('Magazine füllen: erst die Waffe, dann angebrochene, dann leere Magazine, so weit die Patronen reichen', () => {
+    const f = magazineFuellen(waffe('ak47', { im_magazin: 20, reserve: [12], leere_magazine: 2, lose_patronen: 50 }), d);
+    expect(f.waffe).toEqual([20, 31]);
+    expect(f.reserve).toEqual([{ vorher: 12, nachher: 30 }]);
+    expect(f.leere).toBe(1);
+    expect(f.eintrag).toMatchObject({ im_magazin: 31, reserve: [30, 21], leere_magazine: 1, lose_patronen: 0 });
+    expect(f.patronen).toBe(50);
+  });
+
+  it('Magazine füllen ohne Wechselmagazin: leere Schnelllader je volle Magazingröße', () => {
+    const e = waffe('sw_model_10', { lose_patronen: 14, zubehoer: [{ art: 'schnelllader', gefuellt: 0, leer: 3 }] });
+    const f = magazineFuellen(e, d);
+    expect(f.eintrag).toMatchObject({ lose_patronen: 2, zubehoer: [{ art: 'schnelllader', gefuellt: 2, leer: 1 }] });
   });
 
   it('Nachladearten: Vorwahl ist das vollste Magazin', () => {
