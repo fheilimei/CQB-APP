@@ -533,7 +533,7 @@ Die **Quelle** steht nicht im Modifikator; sie ergibt sich aus dem Ort (Perk, An
   "eintraege": [
     { "id": "koerper", "name": "Faust, Tritt, Ellenbogen, Knie", "art": "stumpf", "haende": null, "laenge": "kurz", "mw": 0, "dk": null, "immer_verfuegbar": true },
     { "id": "kampfmesser", "name": "Kampfmesser", "art": "scharf", "haende": 1, "laenge": "kurz", "mw": 1, "dk": 1,
-      "werfbar": true, "vorratslevel": 2, "preis": { "min": 40, "max": 200 } },
+      "wurf": { "bedraengt": 1, "nah": 2, "mittel": 4, "weit": null }, "vorratslevel": 2, "preis": { "min": 40, "max": 200 } },
     { "id": "gewehrkolben", "name": "Gewehrkolben", "art": "stumpf", "haende": 2, "laenge": "mittel", "mw": 1, "dk": null, "mit_waffe": ["AR", "SG", "DMR", "SR", "LMG"] },
     { "id": "bajonett", "name": "Bajonett", "art": "scharf", "vorratslevel": 3, "preis": { "min": 30, "max": 150 },
       "varianten": {
@@ -547,7 +547,7 @@ Die **Quelle** steht nicht im Modifikator; sie ergibt sich aus dem Ort (Perk, An
 - `art`: `stumpf` (keine DK, immer Wuchttreffer, Krit = Stagger) oder `scharf`. `laenge`: `kurz`, `mittel`, `lang` (Regelwerk: Kampfsystem, Länge der Waffe).
 - `mw`: Bonus auf den Nahkampfschaden des Charakters. MW des Treffers = Nahkampfschaden + `mw`.
 - `mit_waffe`: Einsatz mit einer Schusswaffe dieser Kategorien (Kolben, Lauf, Pistolengriff); keine eigene Waffe im Inventar.
-- `werfbar`: kann als Wurfwaffe geworfen werden; Schaden wie im Nahkampf (Regelwerk: Kampfsystem, Werfen).
+- `wurf` (Pflichtfeld): Wurf-Reichweite. Malsteps je Reichweitenband (`bedraengt`, `nah`, `mittel`, `weit`), wie `reichweite` bei Schusswaffen als positive Zahl („−2“ im Regelwerk → `2`); `null` = in diesem Band nicht werfbar. `"wurf": null` = gar nicht werfbar (Körperwaffen, Schlagring, Einsätze mit der Schusswaffe). Jede Nahkampfwaffe ist werfbar, soweit dieses Feld es zulässt; Schaden wie im Nahkampf. Dazu kommen die Malsteps der Wurfweite des Charakters (Regelwerk: Kampfsystem, Werfen; Nahkampfwaffen, Wurf). Eine Variante kann ein eigenes `wurf` tragen (Bajonett aufgepflanzt: `null`); sonst gilt das der Waffe.
 - `haende`: `1`, `2`, `[1, 2]` (ein- oder zweihändig) oder `null` (Körperwaffen).
 - `varianten`: Waffen mit zwei Einsatzarten (Bajonett; Klappspaten mit Kante und Fläche). Jede Variante hat `name`, `haende`, `laenge`, `mw`, `dk` und optional `art`, wenn sie von der Waffe abweicht (Fläche des Klappspatens: `stumpf`).
 
@@ -617,7 +617,7 @@ Die Wirkung eines Aufsatzes steht hier, nicht bei der Waffe, weil ein Aufsatz an
 
 ## wurf_und_sprengwaffen.json
 
-Wurfwaffen, Granaten und Geschosse für Werfer. Alle drei sind **Vorratsgegenstände**: Der Charakter führt sie als Anzahl ([Felder im Spielstand](#felder-im-spielstand)). Regeln: Kampfsystem (Werfen), Sprengwirkung; Werte: Ausrüstung/Sprengwaffen, Nahkampfwaffen (werfbar). Alle Felder außer `id`, `name`, `art`, `einsatz` dürfen `null` sein.
+Granaten und Geschosse für Werfer. Beide sind **Vorratsgegenstände**: Der Charakter führt sie als Anzahl ([Felder im Spielstand](#felder-im-spielstand)). Regeln: Kampfsystem (Werfen), Sprengwirkung; Werte: Ausrüstung/Sprengwaffen. Wurfwaffen (Wurfmesser, Wurfaxt) sind Nahkampfwaffen und stehen in [`nahkampfwaffen.json`](#nahkampfwaffenjson) (`wurf`). Alle Felder außer `id`, `name`, `art`, `einsatz` dürfen `null` sein.
 
 ```json
 {
@@ -641,15 +641,6 @@ Wurfwaffen, Granaten und Geschosse für Werfer. Alle drei sind **Vorratsgegenst�
       "ausloeser": ["beschossen"]
     },
     {
-      "id": "wurfmesser",
-      "name": "Wurfmesser",
-      "art": "wurfwaffe",
-      "einsatz": "wurf",
-      "vorratslevel": 1,
-      "preis": null,
-      "schaden": { "dk": null, "mw": null }
-    },
-    {
       "id": "og7v",
       "name": "OG-7V Splittergeschoss",
       "art": "splitter",
@@ -671,14 +662,13 @@ Wurfwaffen, Granaten und Geschosse für Werfer. Alle drei sind **Vorratsgegenst�
 }
 ```
 
-- `art`: `wurfwaffe`, `splitter`, `blend`, `rauch`, `gas`, `sonstiges`.
+- `art`: `splitter`, `blend`, `rauch`, `gas`, `sonstiges`.
 - `einsatz`: `wurf` (Wurfaktion) oder `geschoss` (aus einem Werfer). `verwendet_in`: nur bei Geschossen, IDs der Werfer aus `waffen.json`.
 - `zuender`: `zeit`, `aufschlag`, `kontakt`. `verzoegerung`: Runden bis zur Detonation ([Sprengwirkung](../../Grundmechanik/Sprengwirkung.md), Zündung); Aufschlag- und Kontaktzünder 0. Bei langer Flugzeit ein Objekt je Reichweitenband, z. B. `{ "weit": 1, "sehr_weit": 2 }`.
 - `bereiche`: Splitterzahl je Reichweitenband (vom Explosionspunkt); fehlende Bänder: keine Wirkung. `kern`: Bänder, in denen die Druckwelle wirkt (Standard `["bedraengt"]`).
 - `splitter`: DK/MW je Splitter. `druckwelle`: MW der Druckwelle (stumpfer Treffer, nur im Kern). `strahl`: nur bei Hohlladungen `{ "dk": …, "mw": … }`, sonst `null`.
 - `sonderwirkung`: `null` oder Objekt mit `art` (`blendung`, `rauch`, `reizgas`) und `text`; dazu Werte der Wirkung, z. B. `geblendet_runden` je Band und `stagger` (Bänder) bei der Blendgranate, `baender` und `dauer_runden` bei Rauch und Reizgas.
 - `besonderheiten`: Text aus dem Regelwerk.
-- Das Regelwerk führt derzeit keine eigenen Wurfwaffen (Wurfmesser o. Ä.). Werfbar ist das Kampfmesser aus `nahkampfwaffen.json` (`werfbar`). Das Beispiel `wurfmesser` oben zeigt nur das Format.
 - `ausloeser`: Auslöser der Leiter für Betroffene.
 - In der Ausrüstung des Charakters als Vorrat: `{ "id": "m67", "anzahl": 2 }`.
 
@@ -1019,10 +1009,10 @@ IndexedDB-Datenbank `cqb` mit zwei Speichern: `charaktere` (ein Datensatz je Cha
 - **Waffe `im_magazin`:** aktueller Inhalt inklusive Patrone im Lauf. Jeder abgegebene Schuss wird abgezogen.
 - **Waffe `reserve`:** Inhalt jedes Ersatzmagazins (angebrochene Magazine möglich). Beim Nachladen wandert der Rest des eingesetzten Magazins hierher; leere Magazine entfallen.
 - **Waffe `aufsaetze`:** IDs der angebrachten Aufsätze aus `aufsaetze.json`. Ob ein Schalter-Aufsatz gerade im Einsatz ist, wird nicht gespeichert; er wird je Schuss eingeschaltet.
-- **`ausruestung.vorrat`:** Wurfwaffen, Granaten und Geschosse mit Anzahl. Jeder Wurf und jedes Laden eines Werfers zieht 1 ab. Die Anzahl ist jederzeit von Hand erhöhbar, z. B. wenn Wurfmesser nach dem Gefecht eingesammelt werden. Bei 0 bleibt der Eintrag stehen (zum Auffüllen).
+- **`ausruestung.vorrat`:** Granaten und Geschosse mit Anzahl. Jeder Wurf und jedes Laden eines Werfers zieht 1 ab. Die Anzahl ist jederzeit von Hand erhöhbar. Bei 0 bleibt der Eintrag stehen (zum Auffüllen).
 - **`trageort`** (Waffen, Nahkampfwaffen, Vorrat): `schlinge`, `weste` (Rig oder Weste), `holster`, `guertel` (auch Scheide), `ruecken`, `rucksack`. Bestimmt die Kosten des Wechsels; die Tabelle steht in `regeln.json` (Regelwerk: Kampfsystem, Waffe wechseln).
 - **`lose_patronen`:** Munition ohne Magazin, für einzeln laden und zum Füllen von Schnellladern und Ladestreifen. **`zubehoer`:** Schnelllader bzw. Ladestreifen der Waffe mit Zahl gefüllt und leer.
-- **`ausruestung.nahkampfwaffen`:** eigene Nahkampfwaffen. Körperwaffen und Einsätze mit der Schusswaffe (Kolben, Lauf, Pistolengriff) bietet die App ohne Eintrag an.
+- **`ausruestung.nahkampfwaffen`:** eigene Nahkampfwaffen, je Eintrag mit `anzahl` (fehlt das Feld: 1). Ein Wurf zieht 1 ab; bei 0 bleibt der Eintrag stehen, eingesammelte Waffen werden von Hand wieder dazugezählt. Körperwaffen und Einsätze mit der Schusswaffe (Kolben, Lauf, Pistolengriff) bietet die App ohne Eintrag an.
 - **`ausruestung.schild`:** `null` oder ID aus `schutz.json` (`schilde`).
 - **Waffe `ladehemmung`:** `null`, `einfach` oder `schwer`. Blockiert das Schießen.
 - **`gefecht.stand`:** `stehen`, `hocke`, `liegen`. **`gefecht.bewegt`:** `null` oder Art der Bewegung in dieser Runde (`gehen`, `laufen`, `rennen`, `kriechen`). **`gefecht.zielen_stepshield`:** Stepshield aus Zielen für den nächsten Schuss.

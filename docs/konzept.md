@@ -431,7 +431,7 @@ Alles, was Schaden austeilt oder einsteckt, läuft über **einen Dialog in zwei 
 - **Mit Schnelllader oder Ladestreifen** (Zubehör im Charakter): füllt auf einmal wie ein Magazin. Leere Schnelllader und Ladestreifen werden einzeln gefüllt.
 - **Werfer** (Magazingröße 1): Main mit voller Konzentration. Der Magazinstand ist das geladene Geschoss. Nachladen nimmt ein passendes Geschoss aus dem **Vorrat** (Anzahl −1, Auswahl nach Typ, z. B. OG-7V oder PG-7V); Schießen verbraucht es. Der Bericht nennt statt Zone den Landepunkt ([§ 3.8a](#38a-werfen-a-m-r)).
 
-**Vorrat.** Wurfwaffen, Granaten und Geschosse werden als Anzahl geführt. Sie sinkt automatisch beim Werfen und beim Laden eines Werfers. Von Hand lässt sie sich jederzeit wieder erhöhen, z. B. für eingesammelte Wurfmesser nach dem Gefecht.
+**Vorrat.** Granaten und Geschosse werden als Anzahl geführt. Sie sinkt automatisch beim Werfen und beim Laden eines Werfers. Von Hand lässt sie sich jederzeit wieder erhöhen. Nahkampfwaffen tragen ebenfalls eine Anzahl (meist 1); eine geworfene Nahkampfwaffe zieht 1 ab, eingesammelte Wurfmesser nach dem Gefecht werden von Hand wieder dazugezählt.
 
 **Ladehemmung beheben** (Main): einfache Ladehemmung per Probe auf Control mit Waffenskill, Malsteps LH-Behebenmod. + Sichtstufe + Leiter (Krit: Main nicht verbraucht); schwere Ladehemmung ist im Gefecht nicht behebbar (nur Hinweis; außerhalb: Intellect-Probe, Zustand −1).
 
@@ -439,8 +439,8 @@ Alles, was Schaden austeilt oder einsteckt, läuft über **einen Dialog in zwei 
 Main → Wurfaktion (Break nur mit Perk Quickthrow). Regeln: Kampfsystem (Werfen), Sprengwirkung.
 
 **Ausgehend (Main → Werfen):**
-1. **Gegenstand:** Wurfwaffen und Granaten aus dem Vorrat (mit Anzahl) oder „sonstiger Gegenstand“.
-2. **Ziel:** Reichweitenband; die App zeigt, bis wohin der Wurf genau ist (Grundwert Wurfweite + Wurfarm, [§ 4.10](#410-grundwerte)). Ein Band weiter: 2 Malsteps; darüber hinaus nicht möglich. Bei Granaten mit Zeitzünder: Schalter „Kochen lassen“ (1 Malstep, Verzögerung −1). Wurfwaffe gegen eine Person: Ansage wie beim Schießen. Sprengwaffe: Zielpunkt.
+1. **Gegenstand:** eigene Nahkampfwaffen (jede ist werfbar, soweit ihre Wurf-Reichweite es zulässt; Wurfmesser und Wurfaxt sind dafür gebaut) und Granaten aus dem Vorrat, jeweils mit Anzahl, oder „sonstiger Gegenstand“.
+2. **Ziel:** Reichweitenband; die App zeigt, bis wohin der Wurf genau ist (Grundwert Wurfweite + Wurfarm, [§ 4.10](#410-grundwerte)). Ein Band weiter: 2 Malsteps; darüber hinaus nicht möglich. Bei Nahkampfwaffen kommen die Malsteps der Wurf-Reichweite der Waffe dazu; Bänder mit „n/A“ sind nicht wählbar. Bei Granaten mit Zeitzünder: Schalter „Kochen lassen“ (1 Malstep, Verzögerung −1). Wurfwaffe gegen eine Person: Ansage wie beim Schießen. Sprengwaffe: Zielpunkt.
 3. **Vor dem Wurf:** Zielwert und Krit-Schwelle auf Agility mit Herkunft der Steps. Skill: Wurfwaffen oder Granaten, je nach Gegenstand vorgewählt (austauschbar, [§ 3.6](#36-probenrechner-r)).
 4. **Würfe eintragen:** W100; Wurfwaffe: W8 für die Zone (ohne Ansage); Sprengwaffe: W8 für die Richtung bei Misserfolg.
 5. **Bericht:** Wurfwaffe: Treffer, Zone, Krit, DK/MW (Schadensablauf wie beim Schießen). Sprengwaffe: Landepunkt (Krit genau, Erfolg bedrängt, Misserfolg nah + Richtung), Zünder und Verzögerung, Splitterzahlen je Band. Vorrat −1; Block **„Für die SL“**.
@@ -776,7 +776,7 @@ Perk I: Rang 1, Stat ≥ 50. Perk II: Rang 2, Stat ≥ 70 und Perk I *(v)*. Stat
 
 **Nahkampf:** Angriff = Mainaction (mit kurzer Waffe gegen Armeslänge oder als Abfangen mit langer Waffe auch Breakaction). Contested Roll Agility + Nahkampf; Verteidigung kostet keine Aktion, braucht Wahrnehmung des Angreifers und unterbricht Konzentration. Angreifer gewinnt → Treffer; sonst kein Treffer. Je weitere Verteidigung in der Runde +1 Malstep. Lange Waffe gegen Ziel in Armeslänge: 1 Malstep. **Stand:** Liegen schlägt Stehen, Stehen schlägt Hocke, Hocke schlägt Liegen; überlegener Stand gibt dem Gegner 1 Malstep; Sieg mit überlegenem Stand löst die Wirkung eines passenden Kampfkunst-Perks aus (höchstens eine). Treffer: Zone wie beim Schießen, MW = Nahkampfschaden + MW der Waffe, dann Schadensablauf.
 
-**Werfen:** Mainaction (Break mit Quickthrow), Agility + Wurfwaffen/Granaten. Malsteps: Reichweite (bis zur genauen Wurfweite 0, ein Band darüber 2, weiter unmöglich) + Lage (ohne „aufgelegt“) + Leiter auf Agility. Wurfwaffe wie ein Schuss; Sprengwaffe: Landepunkt (Krit genau, Erfolg bedrängt, Misserfolg nah in Richtung W8). Kochen lassen: 1 Malstep, Verzögerung −1.
+**Werfen:** Mainaction (Break mit Quickthrow), Agility + Wurfwaffen/Granaten. Malsteps: Wurfweite (bis zur genauen Wurfweite 0, ein Band darüber 2, weiter unmöglich) + Wurf-Reichweite der Waffe (Malsteps je Band aus `nahkampfwaffen.json`, `null` = nicht werfbar; Granaten: keine) + Lage (ohne „aufgelegt“) + Leiter auf Agility. Jede Nahkampfwaffe ist werfbar, soweit ihre Wurf-Reichweite es zulässt. Wurfwaffe wie ein Schuss; Sprengwaffe: Landepunkt (Krit genau, Erfolg bedrängt, Misserfolg nah in Richtung W8). Kochen lassen: 1 Malstep, Verzögerung −1.
 
 **Konzentration:** nur ohne zuvor eingesetzte Breakaction; danach keine Breakaction in dieser Runde; leicht: Bewegung höchstens Gehen; voll: keine Bewegung, kein Standwechsel. Kann mehrere Runden dauern (Probe in der letzten). Stagger, Nahkampfverteidigung und Verstoß gegen die Beschränkung unterbrechen; die Aktion ist dann wirkungslos. Liste in `regeln.json`.
 

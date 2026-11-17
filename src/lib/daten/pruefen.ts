@@ -231,6 +231,16 @@ export function pruefeDaten(d: Spieldaten): string[] {
     const ort = `nahkampfwaffen.json ${n.id}`;
     pflicht(ort, n, ['id', 'name', 'art']);
     if (!['stumpf', 'scharf'].includes(n.art)) f(ort, 'art muss „stumpf“ oder „scharf“ sein');
+    if (!('wurf' in n)) f(ort, 'wurf fehlt (Objekt mit Malsteps je Band oder null)');
+    for (const wurf of [n.wurf, ...Object.values(n.varianten ?? {}).map((v) => v.wurf)]) {
+      if (wurf === null || wurf === undefined) continue;
+      if (typeof wurf !== 'object') f(ort, 'wurf muss ein Objekt oder null sein');
+      else
+        for (const [b, m] of Object.entries(wurf)) {
+          if (!baender.has(b as never)) f(ort, `unbekanntes Band „${b}“ in wurf`);
+          if (m !== null && !(Number.isInteger(m) && m >= 0)) f(ort, `wurf ${b}: Malsteps müssen eine ganze Zahl ≥ 0 oder null sein`);
+        }
+    }
     const varianten = n.varianten ? Object.values(n.varianten) : [n];
     for (const v of varianten) {
       if (!['kurz', 'mittel', 'lang'].includes(v.laenge ?? '')) f(ort, 'Länge fehlt oder ist ungültig');

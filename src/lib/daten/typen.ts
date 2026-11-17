@@ -222,7 +222,12 @@ export interface NahkampfVariante {
   laenge: 'kurz' | 'mittel' | 'lang';
   mw: number;
   dk: number | null;
+  /** Abweichende Wurf-Reichweite dieser Variante; fehlt das Feld, gilt die der Waffe. */
+  wurf?: WurfReichweite;
 }
+
+/** Malsteps je Reichweitenband beim Werfen; null = in diesem Band nicht werfbar. Ganz null = nicht werfbar. */
+export type WurfReichweite = Partial<Record<BandId, number | null>> | null;
 
 export interface Nahkampfwaffe {
   id: string;
@@ -232,11 +237,11 @@ export interface Nahkampfwaffe {
   laenge?: 'kurz' | 'mittel' | 'lang';
   mw?: number;
   dk?: number | null;
+  wurf: WurfReichweite;
   varianten?: Record<string, NahkampfVariante>;
   vorratslevel?: number;
   preis?: Spanne;
   immer_verfuegbar?: boolean;
-  werfbar?: boolean;
   mit_waffe?: string[];
   besonderheiten: string;
   vorlaeufig?: boolean;
@@ -245,7 +250,7 @@ export interface Nahkampfwaffe {
 export interface Sprengwaffe {
   id: string;
   name: string;
-  art: 'wurfwaffe' | 'splitter' | 'blend' | 'rauch' | 'gas' | 'sonstiges';
+  art: 'splitter' | 'blend' | 'rauch' | 'gas' | 'sonstiges';
   einsatz: 'wurf' | 'geschoss';
   verwendet_in?: string[];
   vorratslevel: number | null;

@@ -17,6 +17,13 @@ describe('Spieldaten', () => {
     }
   });
 
+  it('enthalten Wurfmesser und Wurfaxt; jede Nahkampfwaffe hat eine Wurf-Reichweite', () => {
+    const n = daten.nahkampfwaffen.eintraege;
+    expect(n.find((x) => x.id === 'wurfmesser')?.wurf).toEqual({ bedraengt: 0, nah: 0, mittel: 2, weit: null });
+    expect(n.find((x) => x.id === 'wurfaxt')?.wurf).toEqual({ bedraengt: 0, nah: 1, mittel: 2, weit: null });
+    for (const w of n) expect('wurf' in w).toBe(true);
+  });
+
   it('enthalten neun Stats und fünf Stufen', () => {
     expect(daten.stats.eintraege).toHaveLength(9);
     expect(daten.klassen.stufen.map((s) => s.stufe)).toEqual([1, 2, 3, 4, 5]);
@@ -68,6 +75,17 @@ describe('Datenprüfung erkennt Fehler', () => {
     const fehler = pruefeDaten(d).join('\n');
     expect(fehler).toContain('Pflichtfeld „kurz“ fehlt');
     expect(fehler).toContain('Garbenfaktor 3 passt nicht');
+  });
+
+  it('fehlende oder ungültige Wurf-Reichweite einer Nahkampfwaffe', () => {
+    const d = kopie();
+    const [a, b] = d.nahkampfwaffen.eintraege;
+    delete (a as { wurf?: unknown }).wurf;
+    b!.wurf = { nah: -1, sehr_nah: 0 } as never;
+    const fehler = pruefeDaten(d).join('\n');
+    expect(fehler).toContain('wurf fehlt');
+    expect(fehler).toContain('unbekanntes Band „sehr_nah“ in wurf');
+    expect(fehler).toContain('wurf nah: Malsteps');
   });
 
   it('Zugang, der im Kreis läuft', () => {

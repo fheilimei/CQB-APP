@@ -350,9 +350,11 @@ Stepshields heben Malsteps auf; übrige Stepshields erhöhen die Krit-Schwelle (
 # Werfen
 
 **Wurfaktion.** Werfen ist eine Mainaction ([[#Mainaction]]). Die Wurfwaffe oder Granate muss bereit sein; was das Bereitmachen kostet, hängt vom Trageort ab ([[#Waffe wechseln]]). Du legst eine Probe auf **Agility** ab, mit dem Skill **Wurfwaffen** oder **Granaten** ([[Stats, Skills und Perks#Kampf]]).
-- **Malsteps:** Reichweite + Lage ([[#Lage]]) + Steps der Leiter auf Agility ([[Adrenalin#Steps]]). Bis zur genauen Wurfweite ([[Charaktererstellung#Grundwerte]]) bringt die Reichweite keine Malsteps. Ein Band darüber hinaus bringt **2 Malsteps**; weiter kannst du nicht werfen.
+- **Malsteps:** Wurfweite + Wurf-Reichweite der Waffe + Lage ([[#Lage]]) + Steps der Leiter auf Agility ([[Adrenalin#Steps]]).
+- **Wurfweite** (des Charakters): Bis zur genauen Wurfweite ([[Charaktererstellung#Grundwerte]]) bringt sie keine Malsteps. Ein Band darüber hinaus bringt **2 Malsteps**; weiter kannst du nicht werfen.
+- **Wurf-Reichweite** (der Waffe): Malsteps je Reichweitenband aus der Zeile „Wurf“ der Waffe ([[Nahkampfwaffen]]), wie bei Schusswaffen. „n/A“: in diesem Band kann die Waffe nicht geworfen werden. Granaten haben keine Wurf-Reichweite; für sie zählt nur die Wurfweite.
 
-**Wurfwaffen** (Messer, Beil, Axt): Der Wurf wird ausgewertet wie ein Schuss ([[#Treffen]]).
+**Wurfwaffen:** Jede Nahkampfwaffe kann geworfen werden, sofern ihre Zeile „Wurf“ für das Band nicht „n/A“ zeigt ([[Nahkampfwaffen]]). Gut geeignet sind Wurfmesser und Wurfaxt. Der Wurf wird ausgewertet wie ein Schuss ([[#Treffen]]).
 - **Ansage** und **Trefferzone** wie beim Schießen (W8 oder Ansage mit Malsteps).
 - **Erfolg:** Treffer. **Krit:** Treffer mit der Krit-Folge der Zone ([[Körperzonen]]). **Misserfolg:** daneben; wo die Waffe landet, legt die SL fest. Ist das Ziel im Nahkampf, trifft sie einen anderen Beteiligten ([[#Schießen in den Nahkampf]]).
 - **Schaden:** wie ein Nahkampftreffer der Waffe: DK der Waffe, MW = Nahkampfschaden + MW der Waffe ([[Nahkampfwaffen]]). Danach der Schadensablauf ([[Schaden, Blutung und Verletzungen]]).

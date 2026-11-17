@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-16",
+  "version": "2026-11-17",
   "eintraege": [
     {
       "id": "koerper",
@@ -9,6 +9,7 @@
       "laenge": "kurz",
       "mw": 0,
       "dk": null,
+      "wurf": null,
       "besonderheiten": "immer verfügbar.",
       "immer_verfuegbar": true,
       "vorlaeufig": true
@@ -21,6 +22,7 @@
       "laenge": "kurz",
       "mw": 1,
       "dk": null,
+      "wurf": null,
       "vorratslevel": 2,
       "preis": {
         "min": 10,
@@ -37,6 +39,12 @@
       "laenge": "mittel",
       "mw": 1,
       "dk": null,
+      "wurf": {
+        "bedraengt": 2,
+        "nah": 4,
+        "mittel": null,
+        "weit": null
+      },
       "vorratslevel": 2,
       "preis": {
         "min": 20,
@@ -53,6 +61,12 @@
       "laenge": "lang",
       "mw": 2,
       "dk": null,
+      "wurf": {
+        "bedraengt": 2,
+        "nah": 4,
+        "mittel": null,
+        "weit": null
+      },
       "vorratslevel": 1,
       "preis": {
         "min": 20,
@@ -72,6 +86,12 @@
       "laenge": "mittel",
       "mw": 2,
       "dk": null,
+      "wurf": {
+        "bedraengt": 2,
+        "nah": 4,
+        "mittel": null,
+        "weit": null
+      },
       "vorratslevel": 1,
       "preis": {
         "min": 10,
@@ -88,6 +108,7 @@
       "laenge": "mittel",
       "mw": 1,
       "dk": null,
+      "wurf": null,
       "besonderheiten": "mit jeder Langwaffe möglich; keine eigene Waffe.",
       "mit_waffe": [
         "AR",
@@ -106,6 +127,7 @@
       "laenge": "mittel",
       "mw": 1,
       "dk": null,
+      "wurf": null,
       "besonderheiten": "mit jeder Langwaffe möglich; keine eigene Waffe.",
       "mit_waffe": [
         "AR",
@@ -124,6 +146,7 @@
       "laenge": "kurz",
       "mw": 1,
       "dk": null,
+      "wurf": null,
       "besonderheiten": "mit jeder Pistole möglich; keine eigene Waffe.",
       "mit_waffe": [
         "Pistole"
@@ -138,6 +161,12 @@
       "laenge": "kurz",
       "mw": 0,
       "dk": 1,
+      "wurf": {
+        "bedraengt": 1,
+        "nah": 3,
+        "mittel": null,
+        "weit": null
+      },
       "vorratslevel": 1,
       "preis": {
         "min": 5,
@@ -154,13 +183,18 @@
       "laenge": "kurz",
       "mw": 1,
       "dk": 1,
+      "wurf": {
+        "bedraengt": 1,
+        "nah": 2,
+        "mittel": 4,
+        "weit": null
+      },
       "vorratslevel": 2,
       "preis": {
         "min": 40,
         "max": 200
       },
-      "besonderheiten": "werfbar.",
-      "werfbar": true,
+      "besonderheiten": "–",
       "vorlaeufig": true
     },
     {
@@ -172,6 +206,12 @@
         "min": 30,
         "max": 150
       },
+      "wurf": {
+        "bedraengt": 1,
+        "nah": 2,
+        "mittel": 4,
+        "weit": null
+      },
       "besonderheiten": "Aufpflanzen an einer Mündung (Gewehr).",
       "varianten": {
         "aufgepflanzt": {
@@ -179,7 +219,8 @@
           "haende": 2,
           "laenge": "lang",
           "mw": 1,
-          "dk": 2
+          "dk": 2,
+          "wurf": null
         },
         "in_der_hand": {
           "name": "in der Hand",
@@ -199,6 +240,12 @@
       "laenge": "mittel",
       "mw": 2,
       "dk": 1,
+      "wurf": {
+        "bedraengt": 1,
+        "nah": 3,
+        "mittel": 4,
+        "weit": null
+      },
       "vorratslevel": 1,
       "preis": {
         "min": 15,
@@ -215,6 +262,12 @@
       "preis": {
         "min": 20,
         "max": 70
+      },
+      "wurf": {
+        "bedraengt": 2,
+        "nah": 4,
+        "mittel": null,
+        "weit": null
       },
       "besonderheiten": "auch Werkzeug (Graben). Mit der Fläche geschlagen: stumpf.",
       "varianten": {
@@ -241,6 +294,50 @@
           "dk": null
         }
       },
+      "vorlaeufig": true
+    },
+    {
+      "id": "wurfmesser",
+      "name": "Wurfmesser",
+      "art": "scharf",
+      "haende": 1,
+      "laenge": "kurz",
+      "mw": 0,
+      "dk": 1,
+      "wurf": {
+        "bedraengt": 0,
+        "nah": 0,
+        "mittel": 2,
+        "weit": null
+      },
+      "vorratslevel": 2,
+      "preis": {
+        "min": 10,
+        "max": 50
+      },
+      "besonderheiten": "für den Wurf gebaut. Leicht zu verbergen.",
+      "vorlaeufig": true
+    },
+    {
+      "id": "wurfaxt",
+      "name": "Wurfaxt",
+      "art": "scharf",
+      "haende": 1,
+      "laenge": "mittel",
+      "mw": 2,
+      "dk": 1,
+      "wurf": {
+        "bedraengt": 0,
+        "nah": 1,
+        "mittel": 2,
+        "weit": null
+      },
+      "vorratslevel": 2,
+      "preis": {
+        "min": 30,
+        "max": 120
+      },
+      "besonderheiten": "für den Wurf gebaut. Auch Werkzeug (Holz).",
       "vorlaeufig": true
     }
   ]
