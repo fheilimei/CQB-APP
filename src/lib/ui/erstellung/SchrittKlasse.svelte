@@ -27,28 +27,31 @@
   }
 </script>
 
-<label for="name">Name</label>
-<input id="name" bind:value={c.name} autocomplete="off" enterkeyhint="next" />
-<label for="aussehen">Aussehen <span class="hinweis">(optional)</span></label>
-<textarea id="aussehen" rows="3" bind:value={c.aussehen} placeholder="z. B. Größe, Statur, Gesicht, Kleidung, Merkmale"></textarea>
+<label class="feld">Name
+  <input id="name" bind:value={c.name} autocomplete="off" enterkeyhint="next" /></label>
+<label class="feld">Aussehen <span class="hinweis">(optional)</span>
+  <textarea id="aussehen" rows="3" bind:value={c.aussehen} placeholder="z. B. Größe, Statur, Gesicht, Kleidung, Merkmale"></textarea></label>
 
-<h3>Laufbahn</h3>
-<div class="wahl" role="group" aria-label="Laufbahn">
+<div class="gruppe" role="group" aria-label="Laufbahn">
+<h3 class="abschnitt-titel">Laufbahn</h3>
+<div class="auswahlreihe">
   {#each d.klassen.laufbahnen as l (l.id)}
     <button aria-pressed={laufbahn === l.id} onclick={() => waehleLaufbahn(l.id)}>{l.name}</button>
   {/each}
   <button aria-pressed={laufbahn === 'ohne'} onclick={() => waehleLaufbahn('ohne')}>ohne Klasse</button>
 </div>
+</div>
 
 {#if laufbahn === 'ohne'}
   <p class="hinweis">Freie Erstellung, z. B. für Tests: Ränge und Vorratslevel setzt du von Hand, ohne Prüfung gegen ein Rank-Set. Alle Skills und Perks sind zugänglich.</p>
-  <label for="vorrat">Vorratslevel</label>
+  <label class="feld">Vorratslevel
   <input id="vorrat" type="number" inputmode="numeric" min="1" max="5"
-    value={c.vorratslevel_manuell ?? ''} oninput={(ev) => (c.vorratslevel_manuell = Number((ev.target as HTMLInputElement).value) || null)} />
-  <label for="punkte">Freie Punkte zu Beginn</label>
-  <input id="punkte" type="number" inputmode="numeric" min="0" bind:value={c.erstellung!.freie_punkte_start} />
+    value={c.vorratslevel_manuell ?? ''} oninput={(ev) => (c.vorratslevel_manuell = Number((ev.target as HTMLInputElement).value) || null)} /></label>
+  <label class="feld">Freie Punkte zu Beginn
+  <input id="punkte" type="number" inputmode="numeric" min="0" bind:value={c.erstellung!.freie_punkte_start} /></label>
 {:else if laufbahn}
-  <h3>Klasse</h3>
+  <div class="gruppe">
+  <h3 class="abschnitt-titel">Klasse</h3>
   <ul class="klassen">
     {#each klassen as k (k.id)}
       <li>
@@ -59,6 +62,7 @@
       </li>
     {/each}
   </ul>
+  </div>
 {/if}
 
 {#if gewaehlt}
@@ -73,12 +77,14 @@
       <dt>Freie Punkte</dt><dd>{punkte(gewaehlt.freie_punkte_start)}</dd>
     </dl>
     {#if gewaehlt.art === 'meister'}
-      <h4>Stufe-4-Klasse, aus der du kommst</h4>
-      <div class="wahl spalte" role="group" aria-label="Stufe-4-Klasse">
+      <div class="gruppe" role="group" aria-label="Stufe-4-Klasse">
+      <h4 class="gruppe-titel">Stufe-4-Klasse, aus der du kommst</h4>
+      <div class="auswahlreihe spalte">
         {#each stufe4Optionen(gewaehlt.id, d) as s4 (s4.id)}
           <button aria-pressed={e.stufe4 === s4.id}
             onclick={() => (c.erstellung = { ...c.erstellung!, stufe4: s4.id, meister_skills: [] })}>{s4.name}</button>
         {/each}
+      </div>
       </div>
       <p class="hinweis">Ihre Mindestskills gelten. Dein Weg: ihre Spezialisierung → sie → {gewaehlt.name}.</p>
     {:else if gewaehlt.art === 'erweiterte_form'}
@@ -88,14 +94,10 @@
 {/if}
 
 <style>
-  h3 { margin: 20px 0 8px; }
-  .wahl { display: flex; flex-wrap: wrap; gap: 8px; }
-  .wahl.spalte { flex-direction: column; }
-  .klassen { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  .spalte { flex-direction: column; }
+  .klassen { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--abstand-2); }
   .zeile { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 8px; text-align: left; }
-  .detail { margin-top: 16px; }
-  .detail h3 { margin-top: 0; }
-  dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin: 0; }
+  dl { display: grid; grid-template-columns: auto 1fr; gap: var(--abstand-1) var(--abstand-3); margin: 0; }
   dt { color: var(--text-2); }
   dd { margin: 0; }
 </style>

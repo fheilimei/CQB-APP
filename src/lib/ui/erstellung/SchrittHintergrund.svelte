@@ -25,16 +25,21 @@
     onchange={(e) => (c.hintergrund.schulden = (e.target as HTMLInputElement).checked ? { groesse: 'klein', glaeubiger: '', frist_auftraege: 0, sicherheit: '' } : null)} />
     <strong>Schulden</strong> <span class="hinweis">Du hast dir Geld geliehen.</span></label>
   {#if c.hintergrund.schulden}
-    <div class="wahl" role="group" aria-label="Größe der Schulden">
-      <span>Größe:</span>
+    <div class="gruppe" role="group" aria-label="Größe der Schulden">
+      <span class="gruppe-titel">Größe:</span>
+      <div class="auswahlreihe">
       {#each groessen as gr (gr)}
         <button aria-pressed={c.hintergrund.schulden.groesse === gr} onclick={() => (c.hintergrund.schulden!.groesse = gr)}>{GROESSEN[gr]}</button>
       {/each}
+      </div>
     </div>
     <p>+{geld(g.schulden[c.hintergrund.schulden.groesse])} · Rückzahlung {geld(rueckzahlung(c.hintergrund.schulden.groesse, d))} bis zur Frist</p>
-    <label for="gl">Gläubiger</label><input id="gl" bind:value={c.hintergrund.schulden.glaeubiger} />
-    <label for="fr">Frist (in Aufträgen)</label><input id="fr" type="number" inputmode="numeric" min="1" bind:value={c.hintergrund.schulden.frist_auftraege} />
-    <label for="si">Sicherheit</label><input id="si" bind:value={c.hintergrund.schulden.sicherheit} />
+    <label class="feld">Gläubiger
+  <input id="gl" bind:value={c.hintergrund.schulden.glaeubiger} /></label>
+    <label class="feld">Frist (in Aufträgen)
+  <input id="fr" type="number" inputmode="numeric" min="1" bind:value={c.hintergrund.schulden.frist_auftraege} /></label>
+    <label class="feld">Sicherheit
+  <input id="si" bind:value={c.hintergrund.schulden.sicherheit} /></label>
   {/if}
 </section>
 
@@ -43,15 +48,19 @@
     onchange={(e) => (c.hintergrund.coup = (e.target as HTMLInputElement).checked ? { groesse: 'klein', beute: '', feind: '' } : null)} />
     <strong>Coup</strong> <span class="hinweis">Du hast etwas erbeutet und zu Geld gemacht.</span></label>
   {#if c.hintergrund.coup}
-    <div class="wahl" role="group" aria-label="Größe des Coups">
-      <span>Größe:</span>
+    <div class="gruppe" role="group" aria-label="Größe des Coups">
+      <span class="gruppe-titel">Größe:</span>
+      <div class="auswahlreihe">
       {#each groessen as gr (gr)}
         <button aria-pressed={c.hintergrund.coup.groesse === gr} onclick={() => (c.hintergrund.coup!.groesse = gr)}>{GROESSEN[gr]}</button>
       {/each}
+      </div>
     </div>
     <p>+{geld(g.coup[c.hintergrund.coup.groesse])} · Feind: {FEINDE[c.hintergrund.coup.groesse]}</p>
-    <label for="be">Beute</label><input id="be" bind:value={c.hintergrund.coup.beute} />
-    <label for="fe">Feind</label><input id="fe" bind:value={c.hintergrund.coup.feind} />
+    <label class="feld">Beute
+  <input id="be" bind:value={c.hintergrund.coup.beute} /></label>
+    <label class="feld">Feind
+  <input id="fe" bind:value={c.hintergrund.coup.feind} /></label>
   {/if}
 </section>
 
@@ -61,22 +70,24 @@
     <strong>Vertrag</strong> <span class="hinweis">Du bist einem Auftraggeber verpflichtet.</span></label>
   {#if c.hintergrund.vertrag}
     <p>Gehalt pro Auftrag: {k ? geld(k.gehalt) : 'keins (ohne Klasse)'}{k && k.stufe >= g.einstiegsgehalt_ab_stufe ? ` · Einstiegsgehalt +${geld(k.gehalt)}` : ''}</p>
-    <label for="ag">Auftraggeber</label><input id="ag" bind:value={c.hintergrund.vertrag.auftraggeber} />
-    <label for="vp">Verpflichtung</label><input id="vp" bind:value={c.hintergrund.vertrag.verpflichtung} />
+    <label class="feld">Auftraggeber
+  <input id="ag" bind:value={c.hintergrund.vertrag.auftraggeber} /></label>
+    <label class="feld">Verpflichtung
+  <input id="vp" bind:value={c.hintergrund.vertrag.verpflichtung} /></label>
   {/if}
 </section>
 
-<label for="ort">Geburtsort</label><input id="ort" bind:value={c.hintergrund.geburtsort} />
-<label for="pers">Wichtige Personen</label><textarea id="pers" rows="2" bind:value={c.hintergrund.personen}></textarea>
-<label for="lm">Lebensmittelpunkt</label><input id="lm" bind:value={c.hintergrund.lebensmittelpunkt} />
+<label class="feld">Geburtsort
+  <input id="ort" bind:value={c.hintergrund.geburtsort} /></label>
+<label class="feld">Wichtige Personen
+  <textarea id="pers" rows="2" bind:value={c.hintergrund.personen}></textarea></label>
+<label class="feld">Lebensmittelpunkt
+  <input id="lm" bind:value={c.hintergrund.lebensmittelpunkt} /></label>
 
 <style>
-  .startgeld { position: sticky; top: 0; z-index: 2; display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; padding: 10px 16px; }
+  .startgeld { position: sticky; top: 0; z-index: 2; display: grid; grid-template-columns: 1fr auto; gap: 2px var(--abstand-2); padding: var(--abstand-2) var(--abstand-3); }
   .startgeld strong { font-size: 1.2rem; }
   .teile { grid-column: 1 / -1; }
-  .option { margin-top: 12px; }
   .option.an { border-color: var(--akzent); }
-  .schalter { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0; font-weight: 400; min-height: 44px; }
-  .schalter input { width: 22px; height: 22px; min-height: 0; }
-  .wahl { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .schalter { flex-wrap: wrap; }
 </style>

@@ -32,7 +32,8 @@
 <p class="hinweis">Nicht ausgegebene Punkte bleiben dir erhalten.</p>
 
 {#if c.erstellung!.kaeufe.length}
-  <h3>Gekauft</h3>
+  <div class="gruppe">
+  <h3 class="abschnitt-titel">Gekauft</h3>
   <ul class="gekauft">
     {#each c.erstellung!.kaeufe as k, i (i)}
       {@const b = beschreibe(k)}
@@ -47,6 +48,7 @@
       </li>
     {/each}
   </ul>
+  </div>
 {/if}
 
 <Kaufliste c={x} {d} {liste} onkaufen={kaufen} />
@@ -58,9 +60,8 @@
 {/if}
 
 <style>
-  .leiste { position: sticky; top: 0; z-index: 2; text-align: center; padding: 10px; margin-bottom: 4px; }
-  h3 { margin: 16px 0 8px; }
-  .gekauft { list-style: none; margin: 0 0 16px; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+  .leiste { position: sticky; top: 0; z-index: 2; text-align: center; padding: var(--abstand-2); }
+  .gekauft { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--abstand-1); }
   .gekauft li { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
   .ungueltig { color: var(--gefahr); }
 </style>

@@ -367,13 +367,13 @@
   .aktiv-text { color: var(--akzent); font-weight: 700; }
   li.aktiv .zeile strong { color: var(--akzent); }
   .lh { color: var(--gefahr); font-size: 0.8rem; font-weight: 700; }
-  .knoepfe { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
-  .bearbeiten { display: flex; flex-direction: column; gap: 4px; border-top: 1px dashed var(--linie); padding-top: 8px; }
-  .bearbeiten label:not(.schalter) { margin: 8px 0 0; font-weight: 400; }
-  fieldset { border: 1px solid var(--linie); border-radius: var(--radius); margin: 8px 0; }
-  .neu { display: flex; gap: 8px; margin-top: 12px; }
+  .knoepfe { display: flex; flex-wrap: wrap; gap: var(--abstand-2); }
+  .bearbeiten { display: flex; flex-direction: column; gap: var(--abstand-3); border-top: 1px dashed var(--linie); padding-top: var(--abstand-3); }
+  .bearbeiten label:not(.schalter) { margin: 0; display: flex; flex-direction: column; gap: var(--abstand-1); font-weight: 600; }
+  fieldset { border: 1px solid var(--linie); border-radius: var(--radius); margin: 0; }
+  .neu { display: flex; gap: var(--abstand-2); }
   .neu select { flex: 1; min-width: 0; }
-  .anzahl-zeile { display: flex; align-items: center; gap: 8px; justify-content: space-between; padding: 6px 0; min-height: 52px; }
+  .anzahl-zeile { display: flex; align-items: center; gap: var(--abstand-2); justify-content: space-between; padding: var(--abstand-1) 0; min-height: 52px; }
   .klein { min-width: 44px; padding: 0 8px; }
   .ort { padding: 4px 8px; min-height: 40px; margin-top: 4px; }
   .gefahr-text { color: var(--gefahr); }

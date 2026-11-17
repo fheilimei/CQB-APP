@@ -92,14 +92,14 @@
 {/if}
 
 <style>
-  .pool { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; min-height: 48px; }
+  .pool { display: flex; flex-wrap: wrap; gap: var(--abstand-2); min-height: 48px; }
   .rang { font-weight: 700; font-size: 1.1rem; min-width: 48px; padding: 0 12px; }
-  .stats { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  .stats { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--abstand-2); }
   .zeile { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 8px; text-align: left; }
   .ohne { margin: 0; font-weight: 400; }
   .ohne select { width: 120px; }
   .werte { display: flex; gap: 12px; align-items: baseline; }
   .rangfeld { font-size: 1.1rem; min-width: 1.2em; text-align: center; }
   .wert { color: var(--text-2); min-width: 2em; text-align: right; }
-  .breit { width: 100%; margin-top: 12px; }
+  .breit { width: 100%; }
 </style>

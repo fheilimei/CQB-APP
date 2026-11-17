@@ -33,7 +33,7 @@
     sperreText(m.sperre, m.kosten, m.id, c.freie_punkte, d, (id) => statwert(c.stats[id], d.regeln), (id) => c.perks.includes(id));
 </script>
 
-<section class="kaufliste">
+<section class="kaufliste stapel">
   <div class="kopf">
     <h3>Jetzt möglich</h3>
     <label class="schalter"><input type="checkbox" bind:checked={inReichweite} /> in Reichweite</label>
@@ -43,7 +43,8 @@
   {/if}
   {#each gruppen as g (g.art)}
     {#if g.eintraege.length}
-      <h4>{g.titel}</h4>
+      <div class="gruppe">
+      <h4 class="gruppe-titel">{g.titel}</h4>
       <ul>
         {#each g.eintraege as m (m.art + m.id)}
           <li>
@@ -57,16 +58,16 @@
           </li>
         {/each}
       </ul>
+      </div>
     {/if}
   {/each}
 </section>
 
 <style>
-  .kopf { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .kopf { display: flex; justify-content: space-between; align-items: center; gap: var(--abstand-2); }
   h3 { margin: 0; }
-  h4 { margin: 16px 0 6px; font-size: 0.95rem; color: var(--text-2); }
-  ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
-  .zeile { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 12px; text-align: left; padding: 8px 12px; }
+  ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--abstand-2); }
+  .zeile { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: var(--abstand-3); text-align: left; padding: var(--abstand-2) var(--abstand-3); }
   .links { display: flex; flex-direction: column; min-width: 0; }
   .links .hinweis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .kosten { white-space: nowrap; font-weight: 600; }

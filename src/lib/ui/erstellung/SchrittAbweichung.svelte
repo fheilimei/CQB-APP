@@ -48,10 +48,9 @@
 </ul>
 
 <style>
-  .breit { width: 100%; margin-bottom: 12px; }
-  .stats { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
-  .stats li { padding: 12px; }
+  .breit { width: 100%; }
+  .stats { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--abstand-2); }
+  .stats li { padding: var(--abstand-3); }
   .kopf, .ergebnis { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-  .ergebnis { margin-top: 6px; }
   .statwert { font-size: 1.3rem; font-weight: 700; }
 </style>

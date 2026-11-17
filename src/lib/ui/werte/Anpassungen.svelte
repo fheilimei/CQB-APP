@@ -70,10 +70,11 @@
     {#if schreiben}
       <details class="neu">
         <summary>Neue Anpassung</summary>
-        <label for="anp-grund">Grund</label>
-        <input id="anp-grund" bind:value={grund} placeholder="z. B. Bonus der SL: Ortskenntnis" />
-        <label for="anp-ziel">Wirkt auf</label>
-        <select id="anp-ziel" bind:value={ziel}>
+        <div class="stapel">
+        <label class="feld">Grund
+  <input id="anp-grund" bind:value={grund} placeholder="z. B. Bonus der SL: Ortskenntnis" /></label>
+        <label class="feld">Wirkt auf
+  <select id="anp-ziel" bind:value={ziel}>
           <option value="" disabled>– wählen –</option>
           <optgroup label="Grundwerte">
             {#each Object.keys(d.regeln.grundwerte) as id (id)}<option value="grundwert:{id}">{grundwertName(id, d)}</option>{/each}
@@ -85,13 +86,15 @@
             {#each d.skills.eintraege as s (s.id)}<option value="skill:{s.id}">{d.darstellung.typen.skill.zeichen} {s.name}</option>{/each}
           </optgroup>
           <option value="alle">alle Proben</option>
-        </select>
-        <div class="wahl" role="group" aria-label="Art der Anpassung">
-          <span>Art:</span>
+        </select></label>
+        <div class="gruppe" role="group" aria-label="Art der Anpassung">
+          <span class="gruppe-titel">Art:</span>
+          <div class="auswahlreihe">
           <button aria-pressed={richtung === 'bonus'} onclick={() => (richtung = 'bonus')}>
             {istGrundwert ? 'erhöhend (+)' : 'erleichternd (▲)'}</button>
           <button aria-pressed={richtung === 'malus'} onclick={() => (richtung = 'malus')}>
             {istGrundwert ? 'senkend (−)' : 'erschwerend (▼)'}</button>
+          </div>
         </div>
         <div class="wahl">
           <span>{istGrundwert ? (ziel === 'grundwert:wurfweite_band' ? 'Bänder' : 'Betrag') : richtung === 'bonus' ? 'Stepshields' : 'Malsteps'}:</span>
@@ -102,18 +105,20 @@
           </span>
         </div>
         <button class="haupt breit" onclick={anlegen} disabled={!!fehlt}>{fehlt || 'Anpassung anlegen'}</button>
+        </div>
       </details>
     {/if}
   </section>
 {/if}
 
 <style>
-  .anpassung { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 8px 0; flex-wrap: wrap; }
+  .anpassung { display: flex; justify-content: space-between; align-items: center; gap: var(--abstand-2); padding: var(--abstand-2) 0; flex-wrap: wrap; }
   .anpassung > div:first-child { display: flex; flex-direction: column; min-width: 0; }
   .aus { opacity: 0.6; }
-  .knoepfe { display: flex; align-items: center; gap: 8px; }
-  .neu { margin-top: 12px; border-top: 1px solid var(--linie); padding-top: 4px; }
+  .knoepfe { display: flex; align-items: center; gap: var(--abstand-2); }
+  .neu { border-top: 1px solid var(--linie); padding-top: var(--abstand-1); }
+  .neu[open] > .stapel { padding-bottom: var(--abstand-2); }
   .neu summary { min-height: 44px; display: flex; align-items: center; font-weight: 600; cursor: pointer; }
-  .wahl { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
-  .breit { width: 100%; margin-top: 16px; }
+  .wahl { display: flex; align-items: center; justify-content: space-between; gap: var(--abstand-2); }
+  .breit { width: 100%; }
 </style>

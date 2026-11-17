@@ -26,7 +26,8 @@
 {#if !k}
   <p class="hinweis">Ohne Klasse gibt es keine Mindestskills und keine vorgegebenen Perks. Skills und Perks kaufst du im nächsten Schritt mit freien Punkten.</p>
 {:else}
-  <h3>Mindestskills</h3>
+  <div class="gruppe">
+  <h3 class="abschnitt-titel">Mindestskills</h3>
   {#if skills.length}
     <ul class="liste">
       {#each skills as [id, stufe] (id)}
@@ -36,16 +37,20 @@
   {:else}
     <p class="hinweis">Keine.</p>
   {/if}
+  </div>
 
-  <h3>Vorgegebene Perks</h3>
+  <div class="gruppe">
+  <h3 class="abschnitt-titel">Vorgegebene Perks</h3>
   {#if perks.length}
     <ul class="liste">{#each perks as id (id)}<li><Begriff art="perk" name={perkName(id, d)} darstellung={d.darstellung} /></li>{/each}</ul>
   {:else}
     <p class="hinweis">Keine vorgegeben.</p>
   {/if}
+  </div>
 
   {#if wahl}
-    <h3>{wahl.anzahl} Skills auf {wahl.wert}</h3>
+    <div class="gruppe">
+    <h3 class="abschnitt-titel">{wahl.anzahl} Skills auf {wahl.wert}</h3>
     <p class="hinweis">Davon {wahl.davon_exklusiv === 1 ? 'einer' : wahl.davon_exklusiv} ein exklusiver Skill deiner Spezialisierung (markiert). Gewählt: {e.meister_skills.length} von {wahl.anzahl}.</p>
     <ul class="liste wahl">
       {#each optionen as id (id)}
@@ -58,12 +63,12 @@
         </li>
       {/each}
     </ul>
+    </div>
   {/if}
 {/if}
 
 <style>
-  h3 { margin: 20px 0 8px; }
-  .liste { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+  .liste { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--abstand-1); }
   .liste li { display: flex; justify-content: space-between; align-items: center; min-height: 32px; }
   .wahl li { min-height: 0; }
   .zeile { width: 100%; display: flex; justify-content: space-between; align-items: center; text-align: left; }

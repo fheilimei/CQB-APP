@@ -78,5 +78,5 @@
   .aktion.leer { opacity: 0.45; }
   .aktion.leer .zahl { background: var(--text-2); }
   .aktion.warnung { border-color: var(--gefahr); }
-  .korrektur { position: absolute; left: 8px; right: 8px; bottom: calc(100% + 6px); z-index: 20; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 12px; }
+  .korrektur { position: absolute; left: 8px; right: 8px; bottom: calc(100% + 6px); z-index: 20; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 12px; }
 </style>

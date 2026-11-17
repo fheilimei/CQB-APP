@@ -65,19 +65,21 @@ input, textarea, select { font: inherit; color: inherit; background: var(--flaec
 label { display: block; font-weight: 600; margin: 16px 0 6px; }
 .hinweis { color: var(--text-2); font-size: 0.9rem; }
 .fehler { color: var(--gefahr); }
-.karte { background: var(--flaeche); border: 1px solid var(--linie); border-radius: var(--radius); padding: 16px; }
+.karte { background: var(--flaeche); border: 1px solid var(--linie); border-radius: var(--radius); padding: var(--abstand-3);
+  display: flex; flex-direction: column; gap: var(--abstand-3); }
+.karte > * { margin: 0; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 
 /* Listen im Bogen (Reiter Werte): Zeilen mit Name links und Wert rechts, aufklappbares Detail. */
-.karte > h2, .karte .kopf h2 { margin: 0 0 8px; font-size: 1.1rem; }
+.karte > h2, .karte .kopf h2 { margin: 0; font-size: 1.1rem; }
 .zeilen { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
 .zeilen > li { border-top: 1px solid var(--linie); }
 .zeilen > li:first-child { border-top: none; }
 .zeilen .zeile { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 8px; text-align: left;
   padding: 4px 0; min-height: 48px; border-radius: 0; }
 .zeilen .wert { font-size: 1.15rem; min-width: 1.6em; text-align: right; white-space: nowrap; }
-.zeilen .detail { padding: 0 0 12px; }
-.zeilen .detail p { margin: 4px 0 8px; }
+.zeilen .detail { padding: 0 0 var(--abstand-3); display: flex; flex-direction: column; gap: var(--abstand-2); }
+.zeilen .detail > * { margin: 0; }
 .hand { outline: 2px dashed var(--text-2); outline-offset: 2px; border-radius: 4px; }
 .stepper { display: inline-flex; align-items: center; gap: 8px; }
 .stepper strong { min-width: 1.4em; text-align: center; }
@@ -130,3 +132,10 @@ table.rechnung tr.summe td { border-top: 1px solid var(--linie); font-weight: 70
 .auswahlreihe.gleich { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; }
 .auswahlreihe.gleich button { padding-left: var(--abstand-1); padding-right: var(--abstand-1); }
 .warnung { color: var(--gefahr); font-weight: 700; }
+
+/* Eingabefeld mit Beschriftung: Beschriftung umschließt das Feld, beide eng beieinander. */
+label.feld { display: flex; flex-direction: column; gap: var(--abstand-1); margin: 0; font-weight: 600; }
+label.feld > :is(input, select, textarea) { font-weight: 400; }
+/* Stapel: Inhalte untereinander mit Gruppenabstand (z. B. Seite der Erstellung, aufgeklappte Karte). */
+.stapel { display: flex; flex-direction: column; gap: var(--abstand-3); }
+.stapel > * { margin: 0; }

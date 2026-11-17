@@ -134,11 +134,12 @@
 <section class="karte">
   <details bind:open={stammOffen}>
     <summary><h2>Stammdaten</h2><span class="hinweis">{klasse ? klasse.name : 'ohne Klasse'}</span></summary>
+    <div class="stapel stamm">
     {#if schreiben}
-      <label for="st-name">Name</label>
-      <input id="st-name" value={c.name} onchange={(e) => { const v = wert(e).trim(); if (v) k({ art: 'text', feld: 'name', wert: v }); }} />
-      <label for="st-aussehen">Aussehen</label>
-      <textarea id="st-aussehen" rows="2" value={c.aussehen} onchange={(e) => k({ art: 'text', feld: 'aussehen', wert: wert(e) })}></textarea>
+      <label class="feld">Name
+  <input id="st-name" value={c.name} onchange={(e) => { const v = wert(e).trim(); if (v) k({ art: 'text', feld: 'name', wert: v }); }} /></label>
+      <label class="feld">Aussehen
+  <textarea id="st-aussehen" rows="2" value={c.aussehen} onchange={(e) => k({ art: 'text', feld: 'aussehen', wert: wert(e) })}></textarea></label>
     {:else if c.aussehen}
       <p class="hinweis">{c.aussehen}</p>
     {/if}
@@ -169,7 +170,8 @@
       </dd>
     </dl>
 
-    <h3>Hintergrund</h3>
+    <div class="gruppe">
+    <h3 class="abschnitt-titel">Hintergrund</h3>
     {#if c.hintergrund.schulden || c.hintergrund.coup || c.hintergrund.vertrag}
       <ul class="hintergrund">
         {#if c.hintergrund.schulden}
@@ -189,15 +191,18 @@
     {/if}
     {#each [['geburtsort', 'Geburtsort'], ['personen', 'Wichtige Personen'], ['lebensmittelpunkt', 'Lebensmittelpunkt']] as const as [feld, titel] (feld)}
       {#if schreiben}
-        <label for="hg-{feld}">{titel}</label>
-        <input id="hg-{feld}" value={c.hintergrund[feld]} onchange={(e) => k({ art: 'hintergrund', feld, wert: wert(e) })} />
+        <label class="feld">{titel}
+  <input id="hg-{feld}" value={c.hintergrund[feld]} onchange={(e) => k({ art: 'hintergrund', feld, wert: wert(e) })} /></label>
       {:else if c.hintergrund[feld]}
         <p><span class="hinweis">{titel}:</span> {c.hintergrund[feld]}</p>
       {/if}
     {/each}
 
-    <label for="st-notizen">Notizen</label>
-    <textarea id="st-notizen" rows="3" value={c.notizen} onchange={(e) => notizen(wert(e))}></textarea>
+    </div>
+
+    <label class="feld">Notizen
+  <textarea id="st-notizen" rows="3" value={c.notizen} onchange={(e) => notizen(wert(e))}></textarea></label>
+    </div>
   </details>
 </section>
 
@@ -212,7 +217,8 @@
     {#each malstepSpalten as n (n)}<span>▼{n}</span>{/each}
   </div>
   {#each gruppen as gruppe (gruppe)}
-    <h3 class="gruppe">Gruppe {gruppe}</h3>
+    <div class="gruppe">
+    <h3 class="gruppe-titel">Gruppe {gruppe}</h3>
     <ul class="zeilen">
       {#each d.stats.eintraege.filter((s) => s.gruppe === gruppe) as s (s.id)}
         {@const e = c.stats[s.id]!}
@@ -261,6 +267,7 @@
         </li>
       {/each}
     </ul>
+    </div>
   {/each}
 </section>
 
@@ -371,14 +378,12 @@
   .leiste { position: sticky; top: 56px; z-index: 4; text-align: center; padding: 10px; }
   summary { min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 8px; cursor: pointer; }
   summary h2 { margin: 0; font-size: 1.1rem; }
-  h3 { font-size: 1rem; margin: 16px 0 4px; }
-  h3.gruppe { font-size: 0.85rem; color: var(--text-2); font-weight: 600; margin: 12px 0 0; }
-  dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; margin: 8px 0 0; align-items: center; }
+  dl { display: grid; grid-template-columns: auto 1fr; gap: var(--abstand-2) var(--abstand-3); margin: 0; align-items: center; }
+  .stamm { padding-top: var(--abstand-2); }
   dt { color: var(--text-2); }
   dd { margin: 0; }
   .zahl { width: 90px; }
-  .hintergrund { margin: 4px 0; padding-left: 20px; }
-  .hintergrund li { margin: 4px 0; }
+  .hintergrund { margin: 0; padding-left: var(--abstand-4); display: flex; flex-direction: column; gap: var(--abstand-1); }
   .kopf { display: flex; justify-content: space-between; align-items: center; }
   .kopf h2 { margin: 0; }
   .werte { display: flex; align-items: center; gap: 12px; }
@@ -396,13 +401,13 @@
   .skill { display: flex; align-items: center; gap: 8px; }
   .skill .name { flex: 1; min-width: 0; }
   .skillname { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; }
-  .klein { font-size: 0.8rem; margin: 0 0 8px; }
+  .klein { font-size: 0.8rem; margin: 0 0 var(--abstand-2); }
   .plus { padding: 0; width: 44px; font-size: 1.2rem; }
   .perk { align-items: flex-start; }
   .perk > span:first-child { display: flex; flex-direction: column; }
   .wirkt { display: flex; flex-wrap: wrap; align-items: center; gap: 0 8px; }
-  .mods { list-style: none; margin: 4px 0 0; padding: 0; }
+  .mods { list-style: none; margin: 0; padding: 0; }
   .mods li { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-  .zwei { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .hinzu { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 12px; }
+  .zwei { display: grid; grid-template-columns: 1fr 1fr; gap: var(--abstand-3); }
+  .hinzu { display: grid; grid-template-columns: 1fr auto; gap: var(--abstand-2); }
 </style>

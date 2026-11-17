@@ -454,15 +454,14 @@
   .status.an { background: var(--akzent); color: var(--akzent-text); font-weight: 600; }
   .klein { min-height: 40px; padding: 0 12px; }
   .status { font-size: 0.8rem; padding: 2px 8px; border-radius: 999px; background: var(--flaeche-2); color: var(--text-2); }
-  .bogen { flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
-  .bogen h2 { margin-top: 0; }
+  .bogen { flex: 1; padding: var(--abstand-3); display: flex; flex-direction: column; gap: var(--abstand-3); }
   .unten { position: sticky; bottom: 0; z-index: 5; }
   .reiter { display: grid; grid-template-columns: repeat(4, 1fr); background: var(--flaeche); border-top: 1px solid var(--linie);
     padding-bottom: env(safe-area-inset-bottom); }
   .reiter button { border-radius: 0; padding: 0 4px; font-size: 0.9rem; color: var(--text-2); min-height: 56px; }
   .reiter button.an { color: var(--akzent); font-weight: 700; box-shadow: inset 0 3px 0 var(--akzent); }
   .toast { position: absolute; left: 16px; right: 16px; bottom: calc(100% + 8px); z-index: 15; }
-  .rueck { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 4px 4px 4px 16px; }
+  .rueck { display: flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 8px; padding: 4px 4px 4px 16px; }
   .banner { background: #2b0a0a; color: #fff; text-align: center; font-weight: 700; padding: 6px; }
   .kopfzeile { flex-wrap: wrap; }
   .titel { flex-wrap: wrap; }
@@ -472,12 +471,12 @@
   .gefechtszeile .rechts { margin-left: auto; display: flex; gap: 6px; }
   .gefechtszeile .klein { padding: 0 10px; font-size: 0.9rem; }
   .initiative { padding: 0 6px; font-size: 0.9rem; min-height: 40px; text-decoration: underline; text-underline-offset: 3px; }
-  .figur-knoepfe { margin-top: auto; display: flex; flex-direction: column; gap: 12px; }
+  .figur-knoepfe { margin-top: auto; display: flex; flex-direction: column; gap: var(--abstand-3); }
   .breit { width: 100%; }
   .gross { min-height: 64px; font-size: 1.15rem; }
   .warnung { background: var(--gefahr); }
   .update { position: fixed; left: 16px; right: 16px; bottom: calc(72px + env(safe-area-inset-bottom)); z-index: 50;
-    display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-  .datenfehler { margin: 8px 16px 0; border-color: var(--gefahr); }
+    display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: var(--abstand-3); }
+  .datenfehler { margin: var(--abstand-2) var(--abstand-3) 0; border-color: var(--gefahr); display: block; }
   .datenfehler summary { color: var(--gefahr); font-weight: 600; min-height: 44px; display: flex; align-items: center; }
 </style>

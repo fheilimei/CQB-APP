@@ -58,6 +58,7 @@ Der Spieler muss auf einen Blick sehen, was ein Element tut:
 
 ### 4. Gleiches sieht gleich aus
 - Vorhandene gemeinsame Bausteine in `src/app.css`: `.abschnitte`/`.abschnitt`/`.abschnitt-titel` (Gliederung), `.gruppe`/`.gruppe-titel` (Überschrift + Elemente), `.auswahlreihe` (Chips, `.gleich` für gleich breite Knöpfe), `.auswahlliste` (Karten untereinander mit `small`-Unterzeile), `.umschalter` (zwei bis drei Teile), `.ansage`, `.warnung`, `.wuerfelbereich`. Gewählt-Zustand nur über `aria-pressed` (globaler Stil), keine eigenen `.an`-Stile.
+- `.karte` ordnet ihre Kinder selbst untereinander (Abstand 3, ohne eigene Ränder); waagrechte Karten (Meldungen) setzen `flex-direction: row`. `.stapel` tut dasselbe ohne Rahmen. Eingabefelder: `<label class="feld">Name <input …></label>`, nicht Beschriftung und Feld als Geschwister.
 - `Dialog` setzt die Abstände zwischen seinen Kindern selbst (Abstand 3, Kinder ohne eigenen Rand). Was enger zusammengehört, kommt in eine `.gruppe`.
 - Bevor du einen Stil schreibst: Suche in `src/app.css` und in den anderen Komponenten nach einem vorhandenen Baustein (`.karte`, `.zeilen`, `.stepper`, `.schalter`, `Dialog`, `Bericht`, `Wuerfel` …). Nutze ihn.
 - Kommt ein Muster in zwei oder mehr Komponenten vor (z. B. Auswahl-Chips `.reihe`, Auswahlliste `.liste`, Abschnittsüberschrift), gehört es als gemeinsame Klasse nach `src/app.css` und wird aus den Komponenten entfernt.
