@@ -41,7 +41,7 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
 
 ```json
 {
-  "version": "2026-11-16",
+  "version": "2026-11-18",
   "raenge": { "S": 90, "A": 80, "B": 70, "C": 60, "D": 50, "E": 40, "F": 30 },
   "abweichung": { "min": -9, "max": 9 },
   "steps": {
@@ -118,9 +118,30 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
   },
   "nachladen": { "einzeln_patronen": 2 },
   "waffe_wechseln": {
-    "schlinge": "ohne", "weste": "ohne", "holster": "main", "guertel": "main",
-    "ruecken": { "aktion": "main", "konzentration": "leicht" },
-    "rucksack": { "aktion": "main", "konzentration": "leicht", "runden": 2 }
+    "trageorte": {
+      "schlinge": "ohne", "weste": "ohne", "holster": "main", "guertel": "main",
+      "ruecken": { "aktion": "main", "konzentration": "leicht" },
+      "rucksack": { "aktion": "main", "konzentration": "leicht", "runden": 2 }
+    }
+  },
+  "zielen": { "stepshields": 1 },
+  "staende": [
+    { "id": "stehen", "name": "Stehen", "adjektiv": "stehend" },
+    { "id": "hocke", "name": "Hocke", "adjektiv": "hockend" },
+    { "id": "liegen", "name": "Liegen", "adjektiv": "liegend", "liegend": true, "kein_hechten": true }
+  ],
+  "hechten": { "staende": ["hocke", "liegen"] },
+  "perk_wirkungen": {
+    "cqb": [ { "art": "reichweite_frei", "baender": ["bedraengt"] } ],
+    "feuer_in_bewegung": [ { "art": "eigene_bewegung_weniger", "malsteps": 1 } ],
+    "atemkontrolle": [ { "art": "zielen_stepshields", "stepshields": 2, "bedingung": "liegend_oder_aufgelegt" } ],
+    "gezielter_schuss": [ { "art": "zielen_ohne_reichweite", "bedingung": "ohne_bewegung" } ],
+    "triple_tap": [ { "art": "folgetreffer_zonen", "ansage": "bauch", "zonen": ["brust", "kopf"] } ],
+    "fingerfertig": [ { "art": "einzeln_patronen", "patronen": 3 } ],
+    "schnell_nachladen": [ { "art": "nachladen_als_break" } ],
+    "schnellzieher": [ { "art": "ziehen_ohne_aktion", "trageorte": ["holster", "guertel"] } ],
+    "quickthrow": [ { "art": "werfen_als_break" } ],
+    "schutzreflex": [ { "art": "eingreifen_als_break" } ]
   },
   "bewegung": {
     "arten": {
@@ -129,7 +150,8 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
       "laufen":   { "stand": ["stehen"], "meter": 6, "hoerbar": "mittel" },
       "rennen":   { "stand": ["stehen"], "meter": 9, "hoerbar": "weit" }
     },
-    "hechten": { "meter": 2, "hoerbar": "mittel" }
+    "hechten": { "meter": 2, "hoerbar": "mittel" },
+    "reihenfolge": ["kriechen", "gehen", "laufen", "rennen"]
   },
   "lage": {
     "eigene_bewegung": { "kriechen": 1, "gehen": 1, "laufen": 2, "hechten": 2, "rennen": 4 },
@@ -144,7 +166,7 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
       { "id": "ziel_steht", "gruppe": "ziel_bewegung", "name": "ruhend oder gehend", "malsteps": 0, "standard": true },
       { "id": "ziel_laeuft", "gruppe": "ziel_bewegung", "name": "laufend", "malsteps": 1 },
       { "id": "ziel_rennt", "gruppe": "ziel_bewegung", "name": "rennend oder hechtend", "malsteps": 2 },
-      { "id": "ziel_nahkampf", "gruppe": "ziel_bewegung", "name": "im Nahkampf", "malsteps": 1, "hinweis": "Fehlschuss trifft einen anderen Beteiligten", "nicht_fuer": ["werfer", "sprengwaffe"] },
+      { "id": "ziel_nahkampf", "gruppe": "ziel_bewegung", "name": "im Nahkampf", "malsteps": 1, "hinweis": "Fehlschuss trifft einen anderen Beteiligten", "nicht_fuer": ["werfer", "sprengwaffe"], "fehlschuss_trifft_beteiligten": true },
       { "id": "ziel_stehend", "gruppe": "ziel_stand", "name": "stehend", "malsteps": 0, "standard": true },
       { "id": "ziel_hocke", "gruppe": "ziel_stand", "name": "hockend", "malsteps": 1, "nicht_in_baendern": ["bedraengt"] },
       { "id": "ziel_liegt", "gruppe": "ziel_stand", "name": "liegend", "malsteps": 2, "nicht_in_baendern": ["bedraengt"] },
@@ -178,6 +200,8 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
     "zustand_zuschlag": { "zuverlaessig": { "A": 0, "B": 1, "C": 3, "D": 6 }, "normal": { "A": 0, "B": 2, "C": 5, "D": 9 } },
     "trommelmagazin_zuschlag": 2,
     "schwer_bei_wurf": 100,
+    "beheben": { "stat": "control" },
+    "schwer_beheben": { "stat": "intellect", "skill": "mechanik", "minuten": 10, "zustand_stufen": 1 },
     "vorlaeufig": true
   },
   "nahkampf": {
@@ -202,7 +226,10 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
   "aktionen": { "main": 1, "break": 1, "bewegung": 1, "stand": 1, "over_the_edge_gesamt": 1, "sprint_bewegung": 2 },
   "schiessen": {
     "ansage_malsteps": { "rumpf": 1, "zone": 2 },
-    "rueckstoss_stepshields": { "liegend": 1 },
+    "rueckstoss_stepshields": { "liegen": 1 },
+    "stat": "control",
+    "haltezahl": { "stat": "brawn", "skill": "rueckstosskontrolle" },
+    "ausloeser": "geschossen",
     "haltezahl_max": 10,
     "schrot_rumpf_start": "brust",
     "garbenfaktor_aus_feuerrate": [ { "bis": 10, "faktor": 1 }, { "bis": 20, "faktor": 2 }, { "bis": null, "faktor": 3 } ],
@@ -245,7 +272,12 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
   "wuerfel": { "w100_null_null": 100, "w10_null": 10 },
   "krit": { "schwelle_min": 0, "zielwert_100_zehner": 10 },
   "deckung": { "arme_mit": "brust", "arme": ["arm_r", "arm_l"] },
-  "sprengwirkung": { "splitter_liegend_anteil": 0.5 },
+  "sprengwirkung": {
+    "splitter_liegend_anteil": 0.5,
+    "landepunkt": { "krit": "genau am Zielpunkt", "erfolg": "bedrängt zum Zielpunkt; die genaue Stelle legt die SL fest",
+                    "misserfolg": "nah zum Zielpunkt, in der Richtung des W8" },
+    "richtungen": ["zu kurz", "zu kurz links", "links", "zu weit links", "zu weit", "zu weit rechts", "rechts", "zu kurz rechts"]
+  },
   "waffenzustand": { "stufen": ["A", "B", "C", "D"], "neu": "A",
                      "namen": { "A": "neuwertig", "B": "gebraucht", "C": "verschlissen", "D": "schrottreif" },
                      "preis_viertel": { "A": 4, "B": 3, "C": 2, "D": 1 }, "vorlaeufig": true },
@@ -266,11 +298,20 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
 **Leiter:** `name` ist der Text in der Oberfläche; `null` bei 0 heißt: keine Anzeige. Das Wort „Leiter“ erscheint dort nie ([konzept.md § 2](konzept.md#texte-in-der-oberfläche)). **Vorzeichen:** In `gruppe_a`/`gruppe_b` bedeutet eine positive Zahl Stepshields, eine negative Malsteps.
 
 - **Breakaction** ohne Eintrag in `krit_folgen`: Ein Krit setzt nur in der Rangfolge vor alle Erfolge (Regelwerk: Kampfsystem, Krit-Folgen).
-- **Zweibein, Vordergriff, Kompensator** wirken über ihre Modifikatoren in `aufsaetze.json` auf die Haltezahl, nicht über `rueckstoss_stepshields`.
+- **Zweibein, Vordergriff, Kompensator** wirken über ihre Modifikatoren in `aufsaetze.json` auf die Haltezahl, nicht über `rueckstoss_stepshields`. Die Schlüssel von `rueckstoss_stepshields` sind Stand-IDs aus `staende`.
+- **`schiessen.stat`**: Stat der Trefferprobe; der Skill ist der Waffenskill, dessen `waffenkategorien` (skills.json) die Kategorie der Waffe enthält. **`schiessen.haltezahl`**: Stat und Skill der Haltezahl. **`schiessen.ausloeser`**: Auslöser aus `leiter.ausloeser`, den ein abgegebener Schuss setzt.
+- **`ladehemmung.beheben`**: Stat der Probe für eine einfache Ladehemmung (Skill: Waffenskill). **`ladehemmung.schwer_beheben`**: Probe, Dauer und Zustandsverlust bei einer schweren Ladehemmung (nur außerhalb des Gefechts).
+- **`staende`**: eigener Stand in der Aktionsleiste; der erste ist der Start eines Gefechts. `name` für Knöpfe („Liegen“), `adjektiv` für Sätze („Dein Stand: liegend“). `kein_hechten`: aus diesem Stand ist Hechten gesperrt. `liegend`: zählt als liegend (Atemkontrolle). **`hechten.staende`**: Stände, in die gehechtet wird.
+- **`bewegung.reihenfolge`**: Bewegungsarten von langsam nach schnell, für „höchstens Gehen“ (Konzentration, Schutzanzug, Schild) und für Sprint (die schnellere zählt).
+- **`waffe_wechseln.trageorte`**: Kosten je Trageort: `ohne`, `main` oder `{ aktion, konzentration, runden }`. Ein Wechsel kostet den teureren der beiden Trageorte (alte und neue Waffe). Namen der Trageorte in `darstellung.json` (`trageorte`).
+- **`zielen.stepshields`**: Stepshield des Zielens für den nächsten Schuss in der nächsten Runde.
+- **`perk_wirkungen`**: Perks, deren Wirkung der Regelkern selbst ausführt, Perk-ID → Liste von Wirkungen. Erlaubte `art`: `reichweite_frei` (`baender`: keine Malsteps der Reichweite), `eigene_bewegung_weniger` (`malsteps`), `zielen_stepshields` (`stepshields`, `bedingung`: `liegend_oder_aufgelegt`), `zielen_ohne_reichweite` (`bedingung`: `ohne_bewegung`), `folgetreffer_zonen` (`ansage`: Zone, `zonen`: Zonen der Folgetreffer der Reihe nach, die letzte wiederholt sich), `einzeln_patronen` (`patronen`), `nachladen_als_break`, `ziehen_ohne_aktion` (`trageorte`), `werfen_als_break`, `eingreifen_als_break`. Ein neuer Perk mit bekannter Wirkung braucht keine Codeänderung.
+- **`sprengwirkung.landepunkt`**: Landepunkt eines Werfergeschosses bzw. einer Wurfladung je Ergebnis; **`richtungen`**: Richtung bei Misserfolg, Index = W8 − 1 (Sprengwirkung, Landepunkt).
 - **Bänder** in `bewegung`, `sicht` und `lautstaerke` sind IDs aus `schiessen.reichweitenbaender`. `"keins"`: man erkennt niemanden.
 - **Lage:** Die App baut die Lage-Auswahl allein aus `lage.gruppen` und `lage.umstaende` ([konzept.md § 3.8c](konzept.md#38c-lage-auswahl-r)). Ein neuer Umstand ist ein neuer Eintrag, ohne Codeänderung.
 	- `auswahl`: `eins` (genau ein Umstand der Gruppe; `standard` ist vorgewählt) oder `schalter` (jeder einzeln an/aus).
 	- `zuruecksetzen`: wann die Auswahl auf den Standard zurückfällt: `rundenende`, `neues_ziel` oder `gefechtsende`.
+	- `fehlschuss_trifft_beteiligten`: Bei Misserfolg trifft der Schuss einen anderen Beteiligten (Zone aus W8, nie Krit); Ansage gilt nicht.
 	- `malsteps` bzw. `stepshields`: Wirkung. `nicht_in_baendern`: wirkt in diesen Bändern nicht (ausgegraut mit Hinweis). `nur_ohne_eigene_bewegung`: gesperrt, wenn der Charakter sich in dieser Runde bewegt hat. `nicht_fuer`: Abläufe, in denen der Umstand fehlt (`werfen`, `werfer`, `sprengwaffe`). `hinweis`: Text, der bei Auswahl erscheint.
 	- **Eigene Bewegung** steht nicht in der Auswahl; die App kennt sie aus der Aktionsleiste (`eigene_bewegung`).
 	- `quelle: reichweite`: Die Gruppe hat keine Einträge in `umstaende`. Ihre Knöpfe sind die Reichweitenbänder (`schiessen.reichweitenbaender`); die Malsteps kommen beim Schießen aus der `reichweite` der aktiven Waffe (`null` = Knopf gesperrt), beim Werfen aus der Wurfweite. Kein Standard: Vor dem ersten Schuss auf ein Ziel muss ein Band gewählt werden.
@@ -869,12 +910,17 @@ Zeichen und Farben der Herkunftsmarkierung ([konzept.md § 3.0b](konzept.md#30b-
     "4": "#2b0a0a"
   },
   "grundwerte": { "hp": "HP", "schmerzresistenz": "Schmerzresistenz", "nahkampfschaden": "Nahkampfschaden", "wurfweite_band": "Wurfweite" },
-  "proben": { "schiessen": "Schießen", "haltezahl": "Haltezahl", "erholungsprobe": "Erholungsprobe", "nerve_anstieg": "Nerve-Probe beim Anstieg", "nerve_senken": "Nerve-Probe zum Senken", "initiative": "Initiative" }
+  "proben": { "schiessen": "Schießen", "haltezahl": "Haltezahl", "erholungsprobe": "Erholungsprobe", "nerve_anstieg": "Nerve-Probe beim Anstieg", "nerve_senken": "Nerve-Probe zum Senken", "initiative": "Initiative", "ladehemmung_beheben": "Ladehemmung beheben", "reaktion": "Reaktion", "antizipation": "Antizipation" },
+  "trageorte": { "schlinge": "Schlinge", "weste": "Rig oder Weste", "holster": "Holster", "guertel": "Gürtel oder Scheide", "ruecken": "Rücken", "rucksack": "Rucksack oder Tasche" },
+  "bewegungen": { "kriechen": "Kriechen", "gehen": "Gehen", "laufen": "Laufen", "rennen": "Rennen", "hechten": "Hechten" },
+  "informationen": { "gesehen": "gesehen", "gehoert": "nur gehört", "funk": "per Funk gemeldet", "diese_runde": "diese Runde", "letzte_runde": "letzte Runde", "aelter": "älter" }
 }
 ```
 
 - `grundwerte`: Anzeigenamen der Grundwerte; jeder Schlüssel aus `regeln.json` `grundwerte` braucht einen Namen (Datenprüfung).
 - `proben`: Anzeigenamen der Probenarten. Jede Probenart, auf die ein Modifikator zielt (`ziel.art` = `probe`), braucht hier einen Namen (Datenprüfung).
+- `trageorte`, `bewegungen`: Anzeigenamen der Trageorte (`regeln.json` `waffe_wechseln.trageorte`) und der Bewegungsarten (`bewegung.arten`, dazu Hechten). Jeder Schlüssel braucht einen Namen (Datenprüfung).
+- `informationen`: Anzeigenamen für Wahrnehmung, Güte und Alter einer Information (Schlüssel aus `regeln.json` `breakaction`); der Hinweis zur Breakaction baut daraus die Malsteps.
 
 Leiter, Zustand und Lage erscheinen nur in den Rechnern, nicht am Wert im Bogen.
 
@@ -972,16 +1018,19 @@ Speicherformat eines Charakters, lokal und als Exportdatei (`<name>.cqb.json`). 
       "ausloeser_diese_runde": [],
       "stand": "stehen",
       "bewegt": null,
-      "zielen_stepshield": false,
+      "bewegungen": 0,
+      "gehechtet": false,
+      "zielen": { "runde": 3, "stepshields": 1, "ohne_reichweite": false, "gezielt_in": 2 },
+      "konzentration": null,
       "lage": {
-        "auswahl": { "entfernung": "mittel", "ziel_bewegung": "ziel_laeuft", "ziel_stand": "ziel_stehend", "ziel_groesse": "ziel_normal", "schuetze": [] },
-        "sl_dieser_schuss": { "malsteps": 0, "stepshields": 0, "grund": "" },
+        "auswahl": { "entfernung": "mittel", "ziel_bewegung": "ziel_laeuft" },
         "sl_gefecht": [ { "id": "u1", "malsteps": 1, "stepshields": 0, "grund": "Seitenwind", "gilt_fuer": ["schiessen", "werfen"] } ],
-        "ausgeschaltet": [],
         "letzte_gruende": ["Seitenwind", "wackelnder Untergrund"]
       },
       "sichtstufe": "klar",
-      "zaehler": { "main": 1, "break": 1, "bewegung": 1, "stand": 1, "over_the_edge_gesamt": null },
+      "verbraucht": { "main": 1, "break": 0, "bewegung": 1, "stand": 0 },
+      "korrektur": { "main": 0, "break": 0, "bewegung": 0, "stand": 0 },
+      "break_verloren": false,
       "deckung": { "wert": 2, "zonen": ["bein_l", "bein_r", "unterleib", "bauch", "brust", "arm_l", "arm_r"] },
       "protokoll": [
         { "id": "g1", "runde": 2, "zeit": "2026-11-20T21:14:00+01:00", "art": "treffer",
@@ -1049,12 +1098,16 @@ IndexedDB-Datenbank `cqb` mit zwei Speichern: `charaktere` (ein Datensatz je Cha
 - **`ausruestung.nahkampfwaffen`:** eigene Nahkampfwaffen, je Eintrag mit `anzahl` (fehlt das Feld: 1). Ein Wurf zieht 1 ab; bei 0 bleibt der Eintrag stehen, eingesammelte Waffen werden von Hand wieder dazugezählt. Körperwaffen und Einsätze mit der Schusswaffe (Kolben, Lauf, Pistolengriff) bietet die App ohne Eintrag an.
 - **`ausruestung.schild`:** `null` oder ID aus `schutz.json` (`schilde`).
 - **Waffe `ladehemmung`:** `null`, `einfach` oder `schwer`. Blockiert das Schießen.
-- **`gefecht.stand`:** `stehen`, `hocke`, `liegen`. **`gefecht.bewegt`:** `null` oder Art der Bewegung in dieser Runde (`gehen`, `laufen`, `rennen`, `kriechen`). **`gefecht.zielen_stepshield`:** Stepshield aus Zielen für den nächsten Schuss.
-- **`gefecht.zaehler`:** verbleibende Aktionen dieser Runde. `over_the_edge_gesamt` ersetzt bei Over the Edge die vier Einzelzähler (gemeinsamer Zähler); sonst `null`. Startwerte je Runde aus `regeln.json`.
+- **Waffe `munitionstyp`:** Typ des Kalibers (Schlüssel in `munition.json` `typen`); bei Werfern die ID des geladenen Geschosses, leer = ungeladen.
+- **`gefecht.stand`:** Stand-ID aus `regeln.json` (`staende`). **`gefecht.bewegt`:** `null` oder die schnellste Bewegung dieser Runde (`bewegung.arten`); **`bewegungen`**: Zahl der Bewegungen dieser Runde (Sprint). **`gehechtet`**: in dieser Runde gehechtet (zählt als eigene Bewegung für die Lage; es zählt die mit mehr Malsteps).
+- **`gefecht.zielen`:** Merker aus Zielen: gilt nur für einen Schuss in Runde `runde` (Break-Zielen: nächste Runde; Main-Zielen mit Ruhige Hand: dieselbe Runde). `stepshields` für den Schuss, `ohne_reichweite` (Gezielter Schuss), `gezielt_in`: Runde des Zielens; bewegt sich der Charakter danach in dieser Runde, entfällt `ohne_reichweite` und es gilt der Stepshield. Jeder Schuss und „Neues Ziel“ löschen den Merker.
+- **`gefecht.konzentration`:** `null`, `leicht` oder `voll` für diese Runde (Break 0; Bewegung bzw. Standwechsel beschränkt).
+- **`gefecht.verbraucht`**, **`gefecht.korrektur`:** verbrauchte Aktionen dieser Runde und Korrektur von Hand (langer Druck, ±1). Die verbleibende Zahl wird berechnet: Höchstzahl (aus `regeln.json` `aktionen`; Sprint, Initiative-Krit, Konzentration) − verbraucht + Korrektur; bei Over the Edge ein gemeinsamer Zähler `over_the_edge_gesamt`. **`break_verloren`**: Breakaction durch Stagger verloren. „Nächste Runde“ setzt alles zurück.
 - **`gefecht.deckung`:** aktueller Deckungswert und verdeckte Zonen (`null` = keine Deckung). Gespeichert sind die tatsächlich verdeckten Zonen, nach Anwendung der Regeln für Rumpf und Arme. Wird bei Gefechtsende gelöscht.
-- **`gefecht.protokoll`:** Ereignisse des laufenden Gefechts mit Eingabe und den daraus folgenden Änderungen (für Rückgängig). `art`: `treffer`, `schaden_direkt`, `schuss`, `leiter`. Wird bei Gefechtsende gelöscht.
+- **`gefecht.protokoll`:** Ereignisse des laufenden Gefechts mit Eingabe und den daraus folgenden Änderungen (für Rückgängig). `art`: `treffer`, `schaden_direkt`, `schuss`, `aktion`, `leiter`. Wird bei Gefechtsende gelöscht.
+	- `schuss`: `runde`, `zeit`, `waffe` (ID des Waffeneintrags) und `text` (Zeilen des Berichts). `aktion`: `runde`, `zeit`, `text` (Nachladen, Waffe wechseln, Zielen, Hechten …).
 	- `leiter`: jede Änderung von Adrenalin bzw. Ruhepuls mit `runde`, `zeit`, `ursache` (`start`, `rad`, `rundenende`, `senken`), `von`, `nach` und `gesenkt_vorher` (Stand von `gesenkt_diese_runde` vorher). Auch ein misslungenes Senken bekommt einen Eintrag (`von` = `nach`). Rückgängig nimmt den letzten Eintrag zurück, wenn er aus der laufenden Runde stammt oder das gerade abgeschlossene Rundenende ist; der Start des Gefechts bleibt.
-- **Außerhalb des Gefechts** ist `gefecht` nur `{ "aktiv": false }`. „Gefecht starten“ legt alle Felder neu an, „Gefecht beenden“ setzt wieder `{ "aktiv": false }`. Felder, die erst mit späteren Schritten kommen (`stand`, `bewegt`, `zielen_stepshield`, `zaehler`, `deckung`, `lage.auswahl`), fehlen bis dahin; die App ergänzt sie beim Start eines Gefechts.
+- **Außerhalb des Gefechts** ist `gefecht` nur `{ "aktiv": false }`. „Gefecht starten“ legt alle Felder neu an, „Gefecht beenden“ setzt wieder `{ "aktiv": false }`. Felder, die erst mit späteren Schritten kommen (`deckung`), fehlen bis dahin; die App ergänzt sie beim Start eines Gefechts. Fehlen in einem laufenden Gefecht Felder einer neueren Version (z. B. `verbraucht`), ergänzt die App sie beim Lesen mit leeren Werten.
 - **`gefecht.initiative`:** Ergebnis der Initiative dieser Runde (`wurf` = `null`, wenn nur der Ausgang eingetragen wurde), `null` bis zum Wurf.
 - **`gefecht.lage.sl_gefecht`:** Steps der SL für das ganze Gefecht. Ohne `gilt_fuer` gelten sie für alle Proben.
 - **`gefecht.lage.letzte_gruende`:** die zuletzt verwendeten Gründe der SL (höchstens 6), zum Antippen.

@@ -41,6 +41,27 @@ export type SymptomWirkung =
   | 'weitblick'
   | 'kein_hechten';
 
+/** Wirkungen von Perks, die der Regelkern selbst ausführt (regeln.json `perk_wirkungen`, datenformat.md). */
+export type PerkWirkung =
+  | { art: 'reichweite_frei'; baender: BandId[] }
+  | { art: 'eigene_bewegung_weniger'; malsteps: number }
+  | { art: 'zielen_stepshields'; stepshields: number; bedingung?: 'liegend_oder_aufgelegt' }
+  | { art: 'zielen_ohne_reichweite'; bedingung?: 'ohne_bewegung' }
+  | { art: 'folgetreffer_zonen'; ansage: string; zonen: string[] }
+  | { art: 'einzeln_patronen'; patronen: number }
+  | { art: 'nachladen_als_break' }
+  | { art: 'ziehen_ohne_aktion'; trageorte: string[] }
+  | { art: 'werfen_als_break' }
+  | { art: 'eingreifen_als_break' };
+
+export const PERK_WIRKUNGEN: PerkWirkung['art'][] = [
+  'reichweite_frei', 'eigene_bewegung_weniger', 'zielen_stepshields', 'zielen_ohne_reichweite', 'folgetreffer_zonen',
+  'einzeln_patronen', 'nachladen_als_break', 'ziehen_ohne_aktion', 'werfen_als_break', 'eingreifen_als_break'
+];
+
+/** Kosten eines Waffenwechsels je Trageort: ohne Aktion, Mainaction oder Mainaction mit Konzentration (mehrere Runden). */
+export type Wechselkosten = 'ohne' | 'main' | { aktion: 'main'; konzentration: 'leicht' | 'voll'; runden?: number };
+
 export interface LageUmstand {
   id: string;
   gruppe: string;
@@ -52,6 +73,8 @@ export interface LageUmstand {
   nicht_fuer?: string[];
   nicht_in_baendern?: string[];
   nur_ohne_eigene_bewegung?: boolean;
+  /** Fehlschuss trifft einen anderen Beteiligten (Ziel im Nahkampf). */
+  fehlschuss_trifft_beteiligten?: boolean;
 }
 
 export interface Regeln {
@@ -98,8 +121,36 @@ export interface Regeln {
     schrot_rumpf_start: string;
     garbenfaktor_aus_feuerrate: { bis: number | null; faktor: number }[];
     reichweitenbaender: { id: BandId; name: string; beschreibung: string }[];
+    /** Auslöser (leiter.ausloeser), den ein abgegebener Schuss setzt. */
+    ausloeser: string;
+    /** Stat der Trefferprobe; der Skill ist der Waffenskill der Waffe (skills.json `waffenkategorien`). */
+    stat: string;
+    haltezahl: { stat: string; skill: string };
   };
-  aktionen: Record<string, number>;
+  zielen: { stepshields: number };
+  /** Eigener Stand; der erste ist der Start eines Gefechts. Schlüssel von schiessen.rueckstoss_stepshields sind Stand-IDs. */
+  staende: { id: string; name: string; adjektiv: string; liegend?: boolean; kein_hechten?: boolean }[];
+  /** Stände, in die gehechtet werden kann. */
+  hechten: { staende: string[] };
+  nachladen: { einzeln_patronen: number };
+  waffe_wechseln: { trageorte: Record<string, Wechselkosten> };
+  konzentration: {
+    leicht: { bewegung_max: string | null; standwechsel: boolean };
+    voll: { bewegung_max: string | null; standwechsel: boolean };
+    aktionen: Record<string, 'leicht' | 'voll'>;
+  };
+  bewegung: {
+    arten: Record<string, { stand: string[]; meter: number | Record<string, number>; hoerbar: BandId }>;
+    hechten: { meter: number; hoerbar: BandId };
+    /** Bewegungsarten von langsam nach schnell (für „höchstens Gehen“ und Sprint). */
+    reihenfolge: string[];
+  };
+  breakaction: {
+    reaktion: { stat: string; skill: string; malsteps: Record<string, number> };
+    antizipation: { stat: string; skill: string; malsteps_guete: Record<string, number>; malsteps_alter: Record<string, number>; vorlaeufig?: boolean };
+  };
+  perk_wirkungen: Record<string, PerkWirkung[]>;
+  aktionen: { main: number; break: number; bewegung: number; stand: number; over_the_edge_gesamt: number; sprint_bewegung: number };
   lebenspunkte: { kampfunfaehig_bei: number; tot_bei: number };
   geld: {
     ersparnisse: number;
@@ -113,9 +164,21 @@ export interface Regeln {
   krit: { schwelle_min: number; zielwert_100_zehner: number };
   /** Ist die Zone `arme_mit` verdeckt, gelten auch die Zonen `arme` als verdeckt. */
   deckung: { arme_mit: string; arme: string[] };
-  sprengwirkung: { splitter_liegend_anteil: number };
+  sprengwirkung: {
+    splitter_liegend_anteil: number;
+    /** Landepunkt je Ergebnis (krit, erfolg, misserfolg). */
+    landepunkt: Record<'krit' | 'erfolg' | 'misserfolg', string>;
+    /** Richtung bei Misserfolg, Index = W8 − 1. */
+    richtungen: string[];
+  };
   waffenzustand: { stufen: string[]; neu: string; namen: Record<string, string>; preis_viertel: Record<string, number> };
-  ladehemmung: { zustand_zuschlag: Record<string, Record<string, number>>; trommelmagazin_zuschlag: number; schwer_bei_wurf: number };
+  ladehemmung: {
+    zustand_zuschlag: Record<string, Record<string, number>>;
+    trommelmagazin_zuschlag: number;
+    schwer_bei_wurf: number;
+    beheben: { stat: string };
+    schwer_beheben: { stat: string; skill: string; minuten: number; zustand_stufen: number };
+  };
   [weitere: string]: unknown;
 }
 
@@ -383,6 +446,12 @@ export interface Darstellung {
   grundwerte: Record<string, string>;
   /** Anzeigenamen der Probenarten, auf die Modifikatoren zielen können (`ziel.art` = `probe`). */
   proben: Record<string, string>;
+  /** Anzeigenamen der Bewegungsarten (regeln.json `bewegung.arten`) und von Hechten. */
+  bewegungen: Record<string, string>;
+  /** Anzeigenamen der Wahrnehmung, Güte und des Alters einer Information (regeln.json `breakaction`). */
+  informationen: Record<string, string>;
+  /** Anzeigenamen der Trageorte (Schlüssel wie in regeln.json `waffe_wechseln.trageorte`). */
+  trageorte: Record<string, string>;
 }
 
 /** Alle Spieldaten zusammen, wie der Regelkern und die Oberfläche sie bekommen. */

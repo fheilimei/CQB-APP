@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-17",
+  "version": "2026-11-18",
   "herkunft": {
     "perk": {
       "zeichen": "◆",
@@ -83,6 +83,32 @@
     "nerve_senken": "Nerve-Probe zum Senken",
     "initiative": "Initiative",
     "nerve_start": "Nerve-Probe vor dem Gefecht",
-    "verschieben": "Verbündete verschieben"
+    "verschieben": "Verbündete verschieben",
+    "ladehemmung_beheben": "Ladehemmung beheben",
+    "reaktion": "Reaktion",
+    "antizipation": "Antizipation"
+  },
+  "trageorte": {
+    "schlinge": "Schlinge",
+    "weste": "Rig oder Weste",
+    "holster": "Holster",
+    "guertel": "Gürtel oder Scheide",
+    "ruecken": "Rücken",
+    "rucksack": "Rucksack oder Tasche"
+  },
+  "bewegungen": {
+    "kriechen": "Kriechen",
+    "gehen": "Gehen",
+    "laufen": "Laufen",
+    "rennen": "Rennen",
+    "hechten": "Hechten"
+  },
+  "informationen": {
+    "gesehen": "gesehen",
+    "gehoert": "nur gehört",
+    "funk": "per Funk gemeldet",
+    "diese_runde": "diese Runde",
+    "letzte_runde": "letzte Runde",
+    "aelter": "älter"
   }
 }

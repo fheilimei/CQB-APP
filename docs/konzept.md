@@ -359,7 +359,7 @@ Ein **langer Druck** auf einen Knopf erlaubt ±1 von Hand (Sonderregeln, Fehltip
 | Main | Skill/Probe einsetzen | Probenrechner ([§ 3.6](#36-probenrechner-r)); Skills mit Konzentration setzen die Beschränkung ([§ 4.12](#412-aktionen)) |
 | | Nachladen | keine Probe; Ablauf nach Ladeart ([§ 3.8](#38-waffen-und-schießen-a-m-r)) |
 | | Ladehemmung beheben | Probe (Control + Waffenskill); Waffe wieder frei ([§ 3.8](#38-waffen-und-schießen-a-m-r)) |
-| | Waffe wechseln | Auswahl der neuen aktiven Waffe; Kosten nach Trageort (ohne Aktion / Main / Main mit leichter Konzentration / 2 Runden; Kampfsystem, Waffe wechseln) |
+| | Waffe wechseln | Auswahl der neuen aktiven Waffe; Kosten nach Trageort (ohne Aktion / Main / Main mit leichter Konzentration / 2 Runden; Kampfsystem, Waffe wechseln). Es zählt der teurere Trageort von alter und neuer Waffe |
 | | Aufsatz anbringen/abnehmen | Main mit leichter Konzentration (Schusswaffen, Aufsätze) |
 | | Adrenalin senken | Leiter-Ablauf ([§ 3.7](#37-leiter-m-r)) |
 | | Verbündete verschieben | Probe (Empathy + Führung) |
@@ -368,11 +368,12 @@ Ein **langer Druck** auf einen Knopf erlaubt ±1 von Hand (Sonderregeln, Fehltip
 | | Nahkampfangriff | Vergleichsprobe ([§ 3.8b](#38b-nahkampf-m-r)) |
 | | Hechten | bis 2 m in Hocke oder Liegen; setzt den Stand und „gehechtet“ für die Lage; gesperrt im Liegen und ab Ruhepuls 2 |
 | | Zielen | nur mit Symptom „Ruhige Hand“: Stepshield schon für den nächsten Schuss dieser Runde |
+| | Skill/Probe, Sonderfähigkeit | Konzentration wählt der Spieler (keine, leicht, voll); gesperrt, wenn die Breakaction schon eingesetzt ist |
 | | Wachsamkeit, Ballistik | Probenrechner; Ballistik: Erfolg/Krit merkt 1/2 Malsteps weniger Reichweite für den nächsten Schuss auf das Ziel |
 | | Sonderfähigkeit | Perks wie Offangle und Overwatch: Regeltext und Merker bis zum nächsten Zug; sonst Freitext |
 | Break | *zuerst* | ohne Probe, Reaktion oder Antizipation ([§ 3.7b](#37b-initiative-und-breakaction-m-r)); danach eine der folgenden Aktionen |
 | | **Schießen** | Schussrechner ([§ 3.8](#38-waffen-und-schießen-a-m-r)) |
-| | Zielen | merkt 1 Stepshield für den nächsten Schuss (nächste Runde); mit Atemkontrolle 2, mit Gezielter Schuss stattdessen „keine Malsteps der Reichweite“ |
+| | Zielen | merkt 1 Stepshield für den nächsten Schuss (nächste Runde); mit Atemkontrolle 2, mit Gezielter Schuss stattdessen „keine Malsteps der Reichweite“. Gilt nur in der nächsten Runde; ein Schuss in der Runde des Zielens und „Neues Ziel“ lassen es verfallen |
 | | Hechten | wie unter Main |
 | | Standwechsel | setzt den Stand |
 | | Nahkampfangriff, Abfangen | nur mit kurzer bzw. langer Nahkampfwaffe ([§ 3.8b](#38b-nahkampf-m-r)) |
@@ -380,7 +381,9 @@ Ein **langer Druck** auf einen Knopf erlaubt ±1 von Hand (Sonderregeln, Fehltip
 | | Nachladen | nur mit Perk Schnell nachladen; nur Magazin, Schnelllader, Ladestreifen |
 | | Eingreifen | nur mit Perk Schutzreflex (Abschirmen: bis 3 m) |
 | Bewegung | Kriechen, Gehen, Laufen, Rennen | merkt die Art für diese Runde (Lage-Malsteps, Hörbarkeit); erlaubt nach Stand (Stehen: alle außer Kriechen; Hocke: Gehen; Liegen: Kriechen) und gesperrt durch Konzentration, Schutzanzug und Schild (höchstens Gehen) |
-| Stand | Stehen, Hocke, Liegen | merkt den Stand; die Silhouette zeigt ihn an. Der Stand fließt in Lage, Splitter und Nahkampf ein (überlegener Stand, Kampfsystem, Stand im Nahkampf). |
+| Stand | Stehen, Hocke, Liegen | merkt den Stand; die Silhouette zeigt ihn an. Ist der Standwechsel der Runde verbraucht, kostet ein weiterer die Breakaction. Der Stand fließt in Lage, Splitter und Nahkampf ein (überlegener Stand, Kampfsystem, Stand im Nahkampf). |
+
+Unter jedem Knopf steht klein, was gerade gilt (Bewegung dieser Runde, eigener Stand, Konzentration).
 
 Stand, Bewegung, Hechten und Zielen fließen in die Rechner ein: eigene Bewegung und Hechten als Lage-Malsteps, Zielen als Stepshield auf die Trefferprobe, liegend als Stepshield **nur auf die Haltezahl** (Kampfsystem, Treffen, Rückstoß abfangen). Die Werte stehen in `regeln.json`.
 
@@ -455,6 +458,8 @@ Alles, was Schaden austeilt oder einsteckt, läuft über **einen Dialog in zwei 
 - **Werfer** (Magazingröße 1): Main mit voller Konzentration. Der Magazinstand ist das geladene Geschoss. Nachladen nimmt ein passendes Geschoss aus dem **Vorrat** (Anzahl −1, Auswahl nach Typ, z. B. OG-7V oder PG-7V); Schießen verbraucht es. Der Bericht nennt statt Zone den Landepunkt ([§ 3.8a](#38a-werfen-a-m-r)).
 
 **Vorrat.** Granaten und Geschosse werden als Anzahl geführt. Sie sinkt automatisch beim Werfen und beim Laden eines Werfers. Von Hand lässt sie sich jederzeit wieder erhöhen. Nahkampfwaffen tragen ebenfalls eine Anzahl (meist 1); eine geworfene Nahkampfwaffe zieht 1 ab, eingesammelte Wurfmesser nach dem Gefecht werden von Hand wieder dazugezählt.
+
+**Ausrüstung eintragen.** Bis der Laden ([§ 3.14](#314-laden-kaufen-und-verkaufen-m-r)) fertig ist, trägt der Spieler Waffen, Munition, Aufsätze, Nahkampfwaffen, Vorrat und Rüstung im **Schreibmodus** im Reiter Ausrüstung ein, ohne Geld. Außerhalb des Gefechts sind dort aktive Waffe, Nachladen und Ladehemmung beheben frei (ohne Aktion).
 
 **Ladehemmung beheben** (Main): einfache Ladehemmung per Probe auf Control mit Waffenskill, Malsteps LH-Behebenmod. + Sichtstufe + Leiter (Krit: Main nicht verbraucht); schwere Ladehemmung ist im Gefecht nicht behebbar (nur Hinweis; außerhalb: Intellect-Probe, Zustand −1).
 

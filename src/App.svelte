@@ -25,6 +25,14 @@
   import LeiterProbe from './lib/ui/gefecht/LeiterProbe.svelte';
   import NaechsteRunde from './lib/ui/gefecht/NaechsteRunde.svelte';
   import Probenrechner from './lib/ui/probe/Probenrechner.svelte';
+  import Ausruestung from './lib/ui/ausruestung/Ausruestung.svelte';
+  import Aktionsleiste from './lib/ui/gefecht/Aktionsleiste.svelte';
+  import Aktionsmenue, { type Ablauf } from './lib/ui/gefecht/Aktionsmenue.svelte';
+  import LadehemmungBeheben from './lib/ui/gefecht/LadehemmungBeheben.svelte';
+  import Nachladen from './lib/ui/gefecht/Nachladen.svelte';
+  import Schiessen from './lib/ui/gefecht/Schiessen.svelte';
+  import WaffeWechseln from './lib/ui/gefecht/WaffeWechseln.svelte';
+  import type { Aktion } from './lib/speicher/charakter';
   import { ansage, standText } from './lib/ui/texte';
 
   const APP_VERSION = __APP_VERSION__;
@@ -45,8 +53,11 @@
   let bericht = $state<{ titel: string; zeilen: Zeile[]; weiter: () => void } | null>(null);
   /** Offener Dialog des Spiels: Probenrechner, Abläufe rund um Gefecht und Adrenalin. */
   type Spieldialog =
-    | { art: 'probe'; stat: string | null; skill: string | null }
-    | { art: 'start' | 'initiative' | 'runde' | 'senken' | 'verschieben' | 'detail' };
+    | { art: 'probe'; stat: string | null; skill: string | null; alsMain?: boolean }
+    | { art: 'start' | 'initiative' | 'runde' | 'senken' | 'verschieben' | 'detail' | 'schiessen' | 'wechseln' }
+    | { art: 'aktion'; aktion: Aktion }
+    | { art: 'nachladen'; id: string; als: 'main' | 'break' | null }
+    | { art: 'ladehemmung'; id: string };
   let dialog = $state<Spieldialog | null>(null);
   /** Kurze Meldung mit „Rückgängig“ nach einer Änderung von Adrenalin bzw. Ruhepuls (konzept.md § 3.7). */
   let rueckgaengigText = $state('');
@@ -191,6 +202,20 @@
     if (von !== nach && !folgt) zeigeRueckgaengig(`${standText(von, daten!)} → ${standText(nach, daten!)}`);
   }
 
+  /** Ablauf aus dem Menü der Aktionsleiste öffnen (konzept.md § 3.7a). */
+  function ablauf(a: Ablauf) {
+    const aktiveWaffe = aktiv?.ausruestung.aktive_waffe ?? '';
+    switch (a.art) {
+      case 'probe_main': dialog = { art: 'probe', stat: null, skill: null, alsMain: true }; break;
+      case 'schiessen': dialog = { art: 'schiessen' }; break;
+      case 'nachladen': dialog = { art: 'nachladen', id: aktiveWaffe, als: a.als }; break;
+      case 'ladehemmung': dialog = { art: 'ladehemmung', id: aktiveWaffe }; break;
+      case 'wechseln': dialog = { art: 'wechseln' }; break;
+      case 'senken': dialog = { art: 'senken' }; break;
+      case 'verschieben': dialog = { art: 'verschieben' }; break;
+    }
+  }
+
   function gefechtStarten() {
     if (modus === 'aufstieg') modus = 'lesen';
     dialog = { art: 'start' };
@@ -333,6 +358,9 @@
       {:else if reiter === 'werte'}
         <Werte c={aktiv} d={daten} {modus} {abweichungModus} onaendern={aendern}
           onprobe={(stat, skill) => (dialog = { art: 'probe', stat, skill })} />
+      {:else if reiter === 'ausruestung'}
+        <Ausruestung c={aktiv} d={daten} {modus} onaendern={aendern}
+          onnachladen={(id) => (dialog = { art: 'nachladen', id, als: null })} onladehemmung={(id) => (dialog = { art: 'ladehemmung', id })} />
       {:else}
         <section class="karte"><p class="hinweis">Dieser Reiter folgt in einer der nächsten Versionen.</p></section>
       {/if}
@@ -349,6 +377,7 @@
       {#if overTheEdge(gefecht.leiter, daten.regeln)}
         <div class="banner" role="status">Over the Edge: nur 1 Aktion pro Runde</div>
       {/if}
+      <Aktionsleiste c={aktiv} d={daten} {kampfunfaehig} onaendern={aendern} onoeffnen={(a) => (dialog = { art: 'aktion', aktion: a })} />
       <Adrenalinrad stand={gefecht.leiter} d={daten} onsetzen={leiterDrehen} ondetail={() => (dialog = { art: 'detail' })} />
     {/if}
     <nav class="reiter" aria-label="Reiter">
@@ -363,7 +392,21 @@
   {#if aktiv && !inErstellung && dialog}
     {#if dialog.art === 'probe'}
       <Probenrechner c={aktiv} d={daten} stat={dialog.stat} skill={dialog.skill} wuerfelModus={probeModus} onaendern={aendern}
-        onschliessen={() => (dialog = null)} />
+        onschliessen={() => (dialog = null)} alsMain={!!dialog.alsMain && !!gefecht} onfertig={(c) => nachAblauf(c)} />
+    {:else if dialog.art === 'aktion' && gefecht}
+      <Aktionsmenue c={aktiv} d={daten} aktion={dialog.aktion} wuerfelModus={probeModus} onaendern={aendern}
+        onfertig={(c) => nachAblauf(c)} onablauf={ablauf} onschliessen={() => (dialog = null)} />
+    {:else if dialog.art === 'schiessen' && gefecht && aktiv.ausruestung.aktive_waffe}
+      <Schiessen c={aktiv} d={daten} einstellungen={einstellungen.wuerfeln} onaendern={aendern}
+        onfertig={(c) => nachAblauf(c)} onabbrechen={() => (dialog = null)} />
+    {:else if dialog.art === 'nachladen' && aktiv.ausruestung.waffen.some((w) => dialog?.art === 'nachladen' && w.id === dialog.id)}
+      <Nachladen c={aktiv} d={daten} eintragId={dialog.id} als={gefecht ? dialog.als : null}
+        onfertig={(c) => nachAblauf(c)} onabbrechen={() => (dialog = null)} />
+    {:else if dialog.art === 'ladehemmung' && aktiv.ausruestung.waffen.some((w) => dialog?.art === 'ladehemmung' && w.id === dialog.id)}
+      <LadehemmungBeheben c={aktiv} d={daten} eintragId={dialog.id} wuerfelModus={probeModus} onaendern={aendern}
+        onfertig={(c) => nachAblauf(c)} onabbrechen={() => (dialog = null)} />
+    {:else if dialog.art === 'wechseln' && gefecht}
+      <WaffeWechseln c={aktiv} d={daten} onfertig={(c) => nachAblauf(c)} onabbrechen={() => (dialog = null)} />
     {:else if dialog.art === 'start'}
       <GefechtStarten c={aktiv} d={daten} wuerfelModus={probeModus} onaendern={aendern}
         onfertig={(c) => nachAblauf(c, { art: 'initiative' })} onabbrechen={() => (dialog = null)} />

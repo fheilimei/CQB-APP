@@ -11,7 +11,7 @@ export function reichweitenSteps(waffe: Waffe, band: BandId, r: Regeln): StepQue
   const m = waffe.reichweite[band];
   if (m === null || m === undefined) return null;
   const name = r.schiessen.reichweitenbaender.find((b) => b.id === band)?.name ?? band;
-  return m ? [{ herkunft: 'lage', name: `Reichweite ${name}`, malsteps: m }] : [];
+  return m ? [{ id: 'reichweite', herkunft: 'lage', name: `Reichweite ${name}`, malsteps: m }] : [];
 }
 
 export type Ansage = 'keine' | 'rumpf' | 'zone';
@@ -25,7 +25,7 @@ export function ansageMoeglich(leiterstand: number, sichtstufe: string, r: Regel
 export function ansageSteps(ansage: Ansage, r: Regeln): StepQuelle[] {
   if (ansage === 'keine') return [];
   const m = r.schiessen.ansage_malsteps[ansage] ?? 0;
-  return [{ herkunft: 'lage', name: ansage === 'rumpf' ? 'Ansage Rumpf' : 'Ansage Zone', malsteps: m }];
+  return [{ id: 'ansage', herkunft: 'lage', name: ansage === 'rumpf' ? 'Ansage Rumpf' : 'Ansage Zone', malsteps: m }];
 }
 
 export interface LageAuswahl {
@@ -43,7 +43,7 @@ export function lageSteps(l: LageAuswahl, r: Regeln): StepQuelle[] {
   const quellen: StepQuelle[] = [];
   if (l.eigene_bewegung) {
     const m = r.lage.eigene_bewegung[l.eigene_bewegung];
-    if (m) quellen.push({ herkunft: 'lage', name: `eigene Bewegung: ${l.eigene_bewegung}`, malsteps: m });
+    if (m) quellen.push({ id: 'eigene_bewegung', herkunft: 'lage', name: `eigene Bewegung: ${l.eigene_bewegung}`, malsteps: m });
   }
   const gewaehlt = new Set(Object.values(l.auswahl).flatMap((v) => (v == null ? [] : Array.isArray(v) ? v : [v])));
   for (const u of r.lage.umstaende) {
@@ -52,7 +52,7 @@ export function lageSteps(l: LageAuswahl, r: Regeln): StepQuelle[] {
     if (l.band && u.nicht_in_baendern?.includes(l.band)) continue;
     if (u.nur_ohne_eigene_bewegung && l.eigene_bewegung) continue;
     if (!u.malsteps && !u.stepshields) continue;
-    quellen.push({ herkunft: 'lage', name: u.name, malsteps: u.malsteps, stepshields: u.stepshields });
+    quellen.push({ id: `lage:${u.id}`, herkunft: 'lage', name: u.name, malsteps: u.malsteps, stepshields: u.stepshields });
   }
   return quellen;
 }

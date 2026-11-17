@@ -1,0 +1,388 @@
+// Tests für Aktionen, Waffen und Schussrechner (konzept.md § 3.7a, § 3.8, § 3.8c, § 4.6, § 4.12).
+import { describe, expect, it } from 'vitest';
+import {
+  bewegen, bewegungsarten, hechten, hechtenSperre, konzentrationSetzen, korrigieren, lageWaehlen, neuesZiel, standWechseln,
+  standwechselAls, verbrauchen, verfuegbar, zaehler, zielen, zielenAktiv, zielwirkung
+} from '../src/lib/regeln/aktionen';
+import { gefechtStarten, initiativeEintragen, leiterSetzen, naechsteRunde, senkenEintragen } from '../src/lib/regeln/gefecht';
+import { gefechtVon } from '../src/lib/regeln/probenrechner';
+import { lageAuswahl, schussAuswerten, schussStellen, schussUebernehmen, type Schusseinstellung } from '../src/lib/regeln/schuss';
+import {
+  einzelnLaden, einzelnProAktion, kapazitaet, ladehemmungBeheben, lhBehebenAnfrage, magazinWechseln, mitZubehoerLaden, nachladearten,
+  nachladenAlsBreak, neuerWaffenEintrag, passendeAufsaetze, waffenskill, wechselkosten, werferLaden
+} from '../src/lib/regeln/waffen';
+import { neuerCharakter, type Charakter, type Gefecht, type WaffenEintrag } from '../src/lib/speicher/charakter';
+import { ladeTestdaten } from './hilfen';
+
+const d = ladeTestdaten();
+const r = d.regeln;
+
+/** Alle Stats auf C ohne Abweichung: Statwert 60, Step-Reihe 60, 51, 38, 25, 14, 6. */
+function fertig(extra: Partial<Charakter> = {}): Charakter {
+  const c = neuerCharakter(d.stats.eintraege.map((s) => s.id));
+  for (const id of Object.keys(c.stats)) c.stats[id] = { rang: 'C', wurf: { positiv: 5, negativ: 5, quelle: 'app' } };
+  return { ...c, status: 'fertig', erstellung: null, name: 'Mara', ...extra };
+}
+const g = (c: Charakter) => gefechtVon(c) as Gefecht;
+const imGefecht = (stand = 0, extra: Partial<Charakter> = {}) => leiterSetzen(gefechtStarten(fertig(extra), false, 'erfolg', d), stand, d);
+const waffe = (id: string, mehr: Partial<WaffenEintrag> = {}): WaffenEintrag => ({ ...neuerWaffenEintrag(id, d, `w_${id}`, 'schlinge'), ...mehr });
+function bewaffnet(e: WaffenEintrag, extra: Partial<Charakter> = {}, stand = 0): Charakter {
+  const c = imGefecht(stand, extra);
+  return { ...c, ausruestung: { ...c.ausruestung, waffen: [e, ...c.ausruestung.waffen], aktive_waffe: e.id } };
+}
+const einstellung = (mehr: Partial<Schusseinstellung> = {}): Schusseinstellung => ({
+  modus: 'EF', anzahl: 1, ansage: 'keine', ansage_zone: null, schalter: [], ausgeschaltet: [], sl: { malsteps: 0, stepshields: 0, grund: '' }, ...mehr
+});
+
+describe('Zähler der Aktionsleiste', () => {
+  it('zu Beginn je 1; Verbrauchen zieht ab', () => {
+    const c = imGefecht();
+    expect(zaehler(c, d)).toEqual({ main: 1, break: 1, bewegung: 1, stand: 1 });
+    expect(verfuegbar(verbrauchen(c, 'main'), 'main', d)).toBe(0);
+  });
+
+  it('Sprint ab Adrenalin 2: zwei Bewegungen', () => {
+    expect(verfuegbar(imGefecht(2), 'bewegung', d)).toBe(2);
+    expect(verfuegbar(imGefecht(1), 'bewegung', d)).toBe(1);
+  });
+
+  it('Over the Edge: ein gemeinsamer Zähler, nach einer Aktion alles 0 und keine zweite Bewegung', () => {
+    const c = imGefecht(4);
+    expect(zaehler(c, d)).toEqual({ main: 1, break: 1, bewegung: 1, stand: 1 });
+    expect(zaehler(verbrauchen(c, 'break'), d)).toEqual({ main: 0, break: 0, bewegung: 0, stand: 0 });
+  });
+
+  it('Initiative-Krit: Break 2 in dieser Runde', () => {
+    const c = initiativeEintragen(imGefecht(), { wurf: 3, stufe: 'krit', zielwert: 60 });
+    expect(verfuegbar(c, 'break', d)).toBe(2);
+  });
+
+  it('Konzentration: Break 0; voll auch keine Bewegung und kein Standwechsel; leicht höchstens Gehen', () => {
+    const leicht = konzentrationSetzen(imGefecht(), 'leicht');
+    expect(zaehler(leicht, d)).toMatchObject({ break: 0, bewegung: 1, stand: 1 });
+    expect(bewegungsarten(leicht, d).filter((b) => b.erlaubt).map((b) => b.id)).toEqual(['gehen']);
+    expect(zaehler(konzentrationSetzen(imGefecht(), 'voll'), d)).toMatchObject({ break: 0, bewegung: 0, stand: 0 });
+  });
+
+  it('Korrektur von Hand ±1, nie unter 0', () => {
+    let c = korrigieren(imGefecht(), 'main', 1, d);
+    expect(verfuegbar(c, 'main', d)).toBe(2);
+    c = korrigieren(korrigieren(korrigieren(c, 'main', -1, d), 'main', -1, d), 'main', -1, d);
+    expect(verfuegbar(c, 'main', d)).toBe(0);
+  });
+
+  it('Senken verbraucht die Mainaction', () => {
+    expect(verfuegbar(senkenEintragen(imGefecht(2), 'erfolg', d), 'main', d)).toBe(0);
+  });
+
+  it('Nächste Runde setzt Zähler, Bewegung, Hechten und Konzentration zurück', () => {
+    let c = bewegen(konzentrationSetzen(verbrauchen(imGefecht(), 'main'), 'leicht'), 'gehen', d);
+    c = naechsteRunde(c, { ausloeser: [], probe: null }, d);
+    expect(zaehler(c, d)).toEqual({ main: 1, break: 1, bewegung: 1, stand: 1 });
+    expect(g(c)).toMatchObject({ bewegt: null, gehechtet: false, konzentration: null });
+  });
+});
+
+describe('Bewegung, Stand, Hechten', () => {
+  it('Bewegungsart nach Stand: Stehen alle außer Kriechen, Hocke nur Gehen, Liegen nur Kriechen', () => {
+    const erlaubt = (c: Charakter) => bewegungsarten(c, d).filter((b) => b.erlaubt).map((b) => b.id);
+    const c = imGefecht();
+    expect(erlaubt(c)).toEqual(['gehen', 'laufen', 'rennen']);
+    expect(erlaubt(standWechseln(c, 'hocke', 'stand'))).toEqual(['gehen']);
+    expect(erlaubt(standWechseln(c, 'liegen', 'stand'))).toEqual(['kriechen']);
+  });
+
+  it('Schutzanzug: höchstens Gehen', () => {
+    const c = imGefecht(0);
+    const mitAnzug = { ...c, ausruestung: { ...c.ausruestung, ruestung: ['schutzanzug'] } };
+    expect(bewegungsarten(mitAnzug, d).find((b) => b.id === 'rennen')).toMatchObject({ erlaubt: false, grund: 'ausruestung' });
+  });
+
+  it('Sprint: die schnellere Bewegung zählt', () => {
+    const c = bewegen(bewegen(imGefecht(2), 'rennen', d), 'gehen', d);
+    expect(g(c)).toMatchObject({ bewegt: 'rennen', bewegungen: 2 });
+  });
+
+  it('zweiter Standwechsel verbraucht die Breakaction', () => {
+    const c = standWechseln(imGefecht(), 'hocke', 'stand');
+    expect(standwechselAls(c, d)).toBe('break');
+    expect(standwechselAls(verbrauchen(c, 'break'), d)).toBeNull();
+  });
+
+  it('Hechten: gesperrt im Liegen und mit Ruhepuls 2; setzt Stand und zählt als Bewegung für die Lage', () => {
+    expect(hechtenSperre(standWechseln(imGefecht(), 'liegen', 'stand'), d)).toBe('stand');
+    expect(hechtenSperre(imGefecht(-2), d)).toBe('symptom');
+    const c = hechten(imGefecht(), 'hocke', 'main');
+    expect(g(c)).toMatchObject({ stand: 'hocke', gehechtet: true });
+    expect(verfuegbar(c, 'main', d)).toBe(0);
+  });
+});
+
+describe('Zielen', () => {
+  it('als Breakaction: Stepshield für den nächsten Schuss in der nächsten Runde', () => {
+    let c = zielen(imGefecht(), d, 'break', false);
+    expect(zielenAktiv(g(c))).toBeNull();
+    c = naechsteRunde(c, { ausloeser: [], probe: null }, d);
+    expect(zielenAktiv(g(c))).toMatchObject({ stepshields: 1, ohne_reichweite: false });
+    c = naechsteRunde(c, { ausloeser: [], probe: null }, d);
+    expect(zielenAktiv(g(c))).toBeNull();
+  });
+
+  it('Atemkontrolle: 2 Stepshields, wenn liegend oder aufgelegt', () => {
+    const c = imGefecht(0, { perks: ['atemkontrolle'] });
+    expect(zielwirkung(c, d, false).stepshields).toBe(1);
+    expect(zielwirkung(c, d, true)).toMatchObject({ stepshields: 2, perk: 'Atemkontrolle' });
+  });
+
+  it('Gezielter Schuss: ohne Bewegung keine Reichweite; bewegt er sich danach, bleibt der Stepshield', () => {
+    let c = zielen(imGefecht(0, { perks: ['gezielter_schuss'] }), d, 'break', false);
+    expect(g(c).zielen).toMatchObject({ ohne_reichweite: true, stepshields: 0 });
+    c = bewegen(c, 'gehen', d);
+    expect(g(c).zielen).toMatchObject({ ohne_reichweite: false, stepshields: 1 });
+  });
+});
+
+describe('Waffen', () => {
+  it('Kapazität mit Patrone im Lauf; erweitertes Magazin ersetzt die Größe', () => {
+    expect(kapazitaet(waffe('m4'), d)).toBe(21);
+    expect(kapazitaet(waffe('m4', { aufsaetze: ['magazin_m4_30'] }), d)).toBe(31);
+    expect(kapazitaet(waffe('sw_model_10'), d)).toBe(6);
+  });
+
+  it('passende Aufsätze nach Anschlüssen; Magazine nur für ihre Waffe', () => {
+    const ids = passendeAufsaetze(d.waffen.eintraege.find((w) => w.id === 'm4')!, d).map((a) => a.id);
+    expect(ids).toContain('reflexvisier');
+    expect(ids).toContain('magazin_m4_30');
+    expect(ids).not.toContain('magazin_five_seven_20');
+    expect(passendeAufsaetze(d.waffen.eintraege.find((w) => w.id === 'makarov')!, d)).toEqual([]);
+  });
+
+  it('Waffenskill aus der Kategorie', () => {
+    expect(waffenskill(d.waffen.eintraege.find((w) => w.id === 'ak47')!, d)).toBe('waffe_ar');
+    expect(waffenskill(d.waffen.eintraege.find((w) => w.id === 'mosin_nagant')!, d)).toBe('waffe_praezision');
+  });
+
+  it('Magazin wechseln: Rest in die Reserve, Patrone im Lauf bleibt, leere Magazine entfallen', () => {
+    const e = waffe('ak47', { im_magazin: 26, reserve: [30, 30, 12] });
+    expect(magazinWechseln(e, 0, d)).toMatchObject({ im_magazin: 31, reserve: [30, 12, 25] });
+    expect(magazinWechseln(waffe('ak47', { im_magazin: 1, reserve: [30] }), 0, d)).toMatchObject({ im_magazin: 31, reserve: [] });
+    expect(magazinWechseln(waffe('ak47', { im_magazin: 0, reserve: [30] }), 0, d)).toMatchObject({ im_magazin: 30, reserve: [] });
+  });
+
+  it('Nachladearten: Vorwahl ist das vollste Magazin', () => {
+    const c = fertig();
+    expect(nachladearten(c, waffe('ak47', { im_magazin: 3, reserve: [12, 30, 20] }), d)).toEqual([{ art: 'magazin', vorwahl: 1 }]);
+    expect(nachladearten(c, waffe('ak47', { reserve: [] }), d)).toEqual([]);
+  });
+
+  it('einzeln laden: 2 Patronen, mit Fingerfertig 3; nie über die Kapazität', () => {
+    expect(einzelnProAktion(fertig(), d)).toBe(2);
+    expect(einzelnProAktion(fertig({ perks: ['fingerfertig'] }), d)).toBe(3);
+    const e = waffe('sw_model_10', { im_magazin: 2, lose_patronen: 10 });
+    expect(einzelnLaden(e, 2, d)).toMatchObject({ im_magazin: 4, lose_patronen: 8 });
+    expect(einzelnLaden({ ...e, im_magazin: 5 }, 3, d)).toMatchObject({ im_magazin: 6, lose_patronen: 9 });
+  });
+
+  it('Schnelllader füllt die Trommel; Reste kommen zu den losen Patronen', () => {
+    const e = waffe('sw_model_10', { im_magazin: 1, lose_patronen: 0, zubehoer: [{ art: 'schnelllader', gefuellt: 2, leer: 0 }] });
+    expect(mitZubehoerLaden(e, 'schnelllader', d)).toMatchObject({ im_magazin: 6, lose_patronen: 1, zubehoer: [{ art: 'schnelllader', gefuellt: 1, leer: 1 }] });
+    expect(nachladenAlsBreak(fertig({ perks: ['schnell_nachladen'] }), 'zubehoer', d)).toBe(true);
+    expect(nachladenAlsBreak(fertig({ perks: ['schnell_nachladen'] }), 'einzeln', d)).toBe(false);
+  });
+
+  it('Werfer laden nimmt ein Geschoss aus dem Vorrat', () => {
+    const e = waffe('rpg7');
+    let c = fertig();
+    c = { ...c, ausruestung: { ...c.ausruestung, waffen: [e], vorrat: [{ id: 'pg7v', anzahl: 2, trageort: 'rucksack' }] } };
+    expect(nachladearten(c, e, d)).toEqual([{ art: 'werfer', geschosse: [{ id: 'pg7v', anzahl: 2 }] }]);
+    c = werferLaden(c, e, 'pg7v');
+    expect(c.ausruestung.waffen[0]).toMatchObject({ munitionstyp: 'pg7v', im_magazin: 1 });
+    expect(c.ausruestung.vorrat[0]!.anzahl).toBe(1);
+  });
+
+  it('Waffe wechseln: der teurere Trageort zählt; Schnellzieher zieht aus dem Holster ohne Aktion', () => {
+    const lang = { ...waffe('ak47'), id: 'a', trageort: 'schlinge' };
+    const pistole = { ...waffe('m1911'), id: 'b', trageort: 'holster' };
+    const c = { ...fertig(), ausruestung: { ...fertig().ausruestung, waffen: [lang, pistole], aktive_waffe: 'a' } };
+    expect(wechselkosten(c, 'b', d).kosten).toBe('main');
+    expect(wechselkosten({ ...c, perks: ['schnellzieher'] }, 'b', d)).toEqual({ kosten: 'ohne', perk: 'Schnellzieher' });
+    const ruecken = { ...c, ausruestung: { ...c.ausruestung, waffen: [lang, { ...pistole, trageort: 'rucksack' }] } };
+    expect(wechselkosten(ruecken, 'b', d).kosten).toMatchObject({ aktion: 'main', konzentration: 'leicht', runden: 2 });
+  });
+
+  it('Ladehemmung beheben: Control mit Waffenskill und LH-Behebenmod.; schwere senkt den Zustand', () => {
+    expect(lhBehebenAnfrage(waffe('m4'), d)).toMatchObject({ stat: 'control', skill: 'waffe_ar', fest: [{ malsteps: 1 }] });
+    expect(ladehemmungBeheben(waffe('m4', { ladehemmung: 'einfach' }), 'misserfolg', d).ladehemmung).toBe('einfach');
+    expect(ladehemmungBeheben(waffe('m4', { ladehemmung: 'einfach' }), 'erfolg', d)).toMatchObject({ ladehemmung: null, zustand: 'A' });
+    expect(ladehemmungBeheben(waffe('m4', { ladehemmung: 'schwer', zustand: 'B' }), 'erfolg', d)).toMatchObject({ ladehemmung: null, zustand: 'C' });
+  });
+});
+
+describe('Schussrechner', () => {
+  const nah = (c: Charakter) => lageWaehlen(c, 'entfernung', 'nah');
+
+  it('ohne Entfernung gesperrt; Grundfall nah: Reichweite 1 + Skill 0 → Trefferwert 38', () => {
+    const c = bewaffnet(waffe('ak47'));
+    expect(schussStellen(c, d, waffe('ak47'), einstellung()).sperre).toBe('entfernung');
+    const v = schussStellen(nah(c), d, waffe('ak47'), einstellung());
+    expect(v.sperre).toBeNull();
+    expect(v.probe.wert).toMatchObject({ netto: 2, zielwert: 38 });
+    expect(v.haltezahl).toBeNull();
+  });
+
+  it('Standard der Lage-Gruppen: ruhendes, stehendes Ziel, Person', () => {
+    const a = lageAuswahl(g(imGefecht()), d);
+    expect(a).toMatchObject({ entfernung: null, ziel_bewegung: 'ziel_steht', ziel_stand: 'ziel_stehend', ziel_groesse: 'ziel_normal', schuetze: [] });
+  });
+
+  it('Lage, Ansage, eigene Bewegung und Zielen fließen ein; Reflexvisier nur in bedrängt und nah', () => {
+    let c = nah(bewaffnet(waffe('m4', { aufsaetze: ['reflexvisier'] }), { skills: { waffe_ar: 2 } }));
+    c = lageWaehlen(c, 'ziel_bewegung', 'ziel_laeuft');
+    c = bewegen(c, 'gehen', d);
+    const v = schussStellen(c, d, waffe('m4', { aufsaetze: ['reflexvisier'] }), einstellung({ ansage: 'rumpf' }));
+    // Malsteps: Ziel läuft 1, eigene Bewegung 1, Ansage Rumpf 1 = 3; Abzug: Skill 2 + Reflexvisier 1 = 3 → netto 0.
+    expect(v.probe.wert).toMatchObject({ malsteps: 3, abzug: 3, netto: 0, zielwert: 60 });
+    const weit = lageWaehlen(c, 'entfernung', 'weit');
+    expect(schussStellen(weit, d, waffe('m4', { aufsaetze: ['reflexvisier'] }), einstellung()).probe.quellen.some((q) => q.herkunft === 'aufsatz')).toBe(false);
+  });
+
+  it('aufgelegt nur ohne eigene Bewegung; Zweibein setzt „aufgelegt“', () => {
+    const e = waffe('m4', { aufsaetze: ['zweibein'] });
+    const c = nah(bewaffnet(e));
+    const mit = schussStellen(c, d, e, einstellung({ schalter: ['zweibein'] }));
+    expect(mit.probe.quellen.some((q) => q.id === 'lage:aufgelegt')).toBe(true);
+    const bewegt = schussStellen(bewegen(c, 'gehen', d), d, e, einstellung({ schalter: ['zweibein'] }));
+    expect(bewegt.probe.quellen.some((q) => q.id === 'lage:aufgelegt')).toBe(false);
+  });
+
+  it('CQB: im Band bedrängt keine Malsteps der Reichweite; Feuer in Bewegung: 1 Malstep weniger', () => {
+    const c = lageWaehlen(bewaffnet(waffe('ak47'), { perks: ['cqb', 'feuer_in_bewegung'] }), 'entfernung', 'bedraengt');
+    expect(schussStellen(c, d, waffe('ak47'), einstellung()).probe.wert).toMatchObject({ malsteps: 1 });
+    const gelaufen = bewegen(c, 'laufen', d);
+    expect(schussStellen(gelaufen, d, waffe('ak47'), einstellung()).probe.wert).toMatchObject({ malsteps: 2 });
+  });
+
+  it('Haltezahl: Brawn 60, Rückstoß 3 + Skill 0 → 14 → 1; liegend 1 Stepshield → 25 → 2; Vordergriff ebenso', () => {
+    const e = waffe('ak47');
+    const c = nah(bewaffnet(e));
+    expect(schussStellen(c, d, e, einstellung({ modus: 'VA', anzahl: 10 })).haltezahl!.wert).toBe(1);
+    expect(schussStellen(standWechseln(c, 'liegen', 'stand'), d, e, einstellung({ modus: 'VA', anzahl: 10 })).haltezahl!.wert).toBe(2);
+    const m4 = waffe('m4', { aufsaetze: ['vordergriff'] });
+    // M4 VA: Rückstoß 2 + Skill 0 = 3, Vordergriff 1 → netto 2 → 38 → 3.
+    expect(schussStellen(nah(bewaffnet(m4)), d, m4, einstellung({ modus: 'VA', anzahl: 10 })).haltezahl!.wert).toBe(3);
+  });
+
+  it('Burst: Schüsse = Bursts × Länge, höchstens Feuerrate; nie mehr als im Magazin', () => {
+    const e = waffe('m16a4');
+    const c = nah(bewaffnet(e));
+    expect(schussStellen(c, d, e, einstellung({ modus: 'Burst', anzahl: 2 })).schuesse).toBe(6);
+    expect(schussStellen(c, d, { ...e, im_magazin: 4 }, einstellung({ modus: 'Burst', anzahl: 2 })).schuesse).toBe(4);
+  });
+
+  it('Vollautomatik: Folgetreffer mit Garbenfaktor, höchstens angesagte Schüsse − 1', () => {
+    const e = waffe('ak47', { im_magazin: 31 });
+    const c = nah(bewaffnet(e, { skills: { waffe_ar: 2, rueckstosskontrolle: 2 } }));
+    const s = einstellung({ modus: 'VA', anzahl: 10 });
+    const v = schussStellen(c, d, e, s);
+    // Haltezahl: Rückstoß 3, Skill 2 → netto 1 → 51 → 5. Rückstoßwürfel 1 → 4 Folgetreffer × 2 Kugeln = 8 (≤ 9).
+    expect(v.haltezahl!.wert).toBe(5);
+    const b = schussAuswerten(c, d, v, s, { wurf: 30, w8: 7, rueckstoss: 1 });
+    expect(b).toMatchObject({ ladehemmung: 'keine', stufe: 'erfolg', folgetreffer: 4, verbraucht: 10, magazin_nachher: 21 });
+    expect(b.treffer).toEqual([{ zone: 'brust', kugeln: 1, krit: false, folgetreffer: false }, { zone: 'brust', kugeln: 8, krit: false, folgetreffer: true }]);
+  });
+
+  it('Misserfolg: alle Schüsse ins Leere, Munition verbraucht', () => {
+    const e = waffe('ak47');
+    const c = nah(bewaffnet(e));
+    const s = einstellung({ anzahl: 3 });
+    const b = schussAuswerten(c, d, schussStellen(c, d, e, s), s, { wurf: 90, w8: 7, rueckstoss: 5 });
+    expect(b).toMatchObject({ stufe: 'misserfolg', treffer: [], verbraucht: 3, magazin_nachher: 28 });
+  });
+
+  it('Ladehemmung: Wurf über 100 − Rate, kein Schuss, Magazin bleibt; 100 = schwer', () => {
+    const e = waffe('m4', { zustand: 'C' });
+    const c = nah(bewaffnet(e));
+    const s = einstellung();
+    const v = schussStellen(c, d, e, s);
+    expect(v.lh_rate).toBe(9); // EF 4 + Zustand C (normal) 5
+    expect(schussAuswerten(c, d, v, s, { wurf: 91, w8: 1, rueckstoss: null }).ladehemmung).toBe('keine');
+    expect(schussAuswerten(c, d, v, s, { wurf: 92, w8: 1, rueckstoss: null })).toMatchObject({ ladehemmung: 'einfach', verbraucht: 0, magazin_nachher: 21 });
+    expect(schussAuswerten(c, d, v, s, { wurf: 100, w8: 1, rueckstoss: null }).ladehemmung).toBe('schwer');
+  });
+
+  it('Buckshot: Schrotzahl im Band, Zonen fortlaufend nach unten, nur die erste Kugel kann critten', () => {
+    const e = waffe('spas12', { munitionstyp: 'Buckshot' });
+    const c = nah(bewaffnet(e, { skills: { waffe_schrot: 3 } }));
+    const s = einstellung();
+    const v = schussStellen(c, d, e, s);
+    expect(v.kugeln).toBe(3);
+    const b = schussAuswerten(c, d, v, s, { wurf: 2, w8: 7, rueckstoss: null });
+    expect(b.treffer).toEqual([
+      { zone: 'brust', kugeln: 1, krit: true, folgetreffer: false },
+      { zone: 'bauch', kugeln: 1, krit: false, folgetreffer: false },
+      { zone: 'unterleib', kugeln: 1, krit: false, folgetreffer: false }
+    ]);
+  });
+
+  it('Triple Tap: Ansage Bauch, erster Folgetreffer Brust, weitere Kopf', () => {
+    const e = waffe('ak47');
+    const c = nah(bewaffnet(e, { perks: ['triple_tap'], skills: { waffe_ar: 5, rueckstosskontrolle: 5 } }));
+    const s = einstellung({ anzahl: 3, ansage: 'zone', ansage_zone: 'bauch' });
+    const b = schussAuswerten(c, d, schussStellen(c, d, e, s), s, { wurf: 20, w8: null, rueckstoss: 1 });
+    expect(b.treffer.map((t) => t.zone)).toEqual(['bauch', 'brust', 'kopf']);
+  });
+
+  it('Ziel im Nahkampf: Fehlschuss trifft einen anderen Beteiligten in der Zone des W8, nie kritisch', () => {
+    const e = waffe('ak47');
+    const c = lageWaehlen(nah(bewaffnet(e)), 'ziel_bewegung', 'ziel_nahkampf');
+    const s = einstellung({ ansage: 'zone', ansage_zone: 'kopf' });
+    const v = schussStellen(c, d, e, s);
+    expect(v.nahkampf).toBe(true);
+    const b = schussAuswerten(c, d, v, s, { wurf: 95, w8: 2, rueckstoss: null });
+    expect(b).toMatchObject({ stufe: 'misserfolg', fehlschuss_beteiligter: true, treffer: [{ zone: 'bein_r', kugeln: 1, krit: false }] });
+  });
+
+  it('Werfer: Landepunkt nach Ergebnis, bei Misserfolg Richtung aus dem W8', () => {
+    const e = waffe('rpg7', { munitionstyp: 'pg7v', im_magazin: 1 });
+    const c = nah(bewaffnet(e));
+    const s = einstellung();
+    const v = schussStellen(c, d, e, s);
+    expect(v.werfer).toBe(true);
+    expect(schussAuswerten(c, d, v, s, { wurf: 90, w8: 3, rueckstoss: null }).landepunkt).toEqual({ stufe: 'misserfolg', richtung: 'links' });
+  });
+
+  it('Übernehmen: Magazin, Break −1, Auslöser „geschossen“, Zielen verbraucht, Protokoll', () => {
+    const e = waffe('ak47');
+    let c = nah(bewaffnet(e));
+    c = naechsteRunde(zielen(c, d, 'break', false), { ausloeser: [], probe: null }, d);
+    const s = einstellung({ anzahl: 2 });
+    const v = schussStellen(c, d, e, s);
+    expect(v.probe.quellen.some((q) => q.id === 'zielen')).toBe(true);
+    const b = schussAuswerten(c, d, v, s, { wurf: 10, w8: 7, rueckstoss: 9 });
+    c = schussUebernehmen(c, d, e, b, ['Treffer']);
+    expect(c.ausruestung.waffen[0]!.im_magazin).toBe(29);
+    expect(verfuegbar(c, 'break', d)).toBe(0);
+    expect(g(c).ausloeser_diese_runde).toContain('geschossen');
+    expect(g(c).zielen).toBeNull();
+    expect(g(c).protokoll.at(-1)).toMatchObject({ art: 'schuss', text: ['Treffer'] });
+  });
+
+  it('Neues Ziel setzt Entfernung, Stand und Größe zurück, Bewegung des Ziels bleibt', () => {
+    let c = lageWaehlen(nah(imGefecht()), 'ziel_bewegung', 'ziel_laeuft');
+    c = neuesZiel(c, d);
+    expect(g(c).lage.auswahl).toEqual({ ziel_bewegung: 'ziel_laeuft' });
+  });
+
+  it('Rundenende setzt Bewegung des Ziels und „aufgelegt“ zurück, die Entfernung bleibt', () => {
+    let c = lageWaehlen(lageWaehlen(nah(imGefecht()), 'ziel_bewegung', 'ziel_laeuft'), 'schuetze', ['aufgelegt']);
+    c = naechsteRunde(c, { ausloeser: [], probe: null }, d);
+    expect(g(c).lage.auswahl).toEqual({ entfernung: 'nah' });
+  });
+});
+
+describe('Regeldaten', () => {
+  it('regeln.json kennt die Werte für Schritt 6', () => {
+    expect(r.schiessen.stat).toBe('control');
+    expect(r.aktionen).toMatchObject({ main: 1, break: 1, over_the_edge_gesamt: 1, sprint_bewegung: 2 });
+  });
+});

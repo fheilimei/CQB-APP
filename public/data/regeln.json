@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-16",
+  "version": "2026-11-18",
   "raenge": {
     "S": 90,
     "A": 80,
@@ -304,18 +304,20 @@
     "einzeln_patronen": 2
   },
   "waffe_wechseln": {
-    "schlinge": "ohne",
-    "weste": "ohne",
-    "holster": "main",
-    "guertel": "main",
-    "ruecken": {
-      "aktion": "main",
-      "konzentration": "leicht"
-    },
-    "rucksack": {
-      "aktion": "main",
-      "konzentration": "leicht",
-      "runden": 2
+    "trageorte": {
+      "schlinge": "ohne",
+      "weste": "ohne",
+      "holster": "main",
+      "guertel": "main",
+      "ruecken": {
+        "aktion": "main",
+        "konzentration": "leicht"
+      },
+      "rucksack": {
+        "aktion": "main",
+        "konzentration": "leicht",
+        "runden": 2
+      }
     }
   },
   "bewegung": {
@@ -356,7 +358,13 @@
     "hechten": {
       "meter": 2,
       "hoerbar": "mittel"
-    }
+    },
+    "reihenfolge": [
+      "kriechen",
+      "gehen",
+      "laufen",
+      "rennen"
+    ]
   },
   "lage": {
     "eigene_bewegung": {
@@ -428,7 +436,8 @@
         "nicht_fuer": [
           "werfer",
           "sprengwaffe"
-        ]
+        ],
+        "fehlschuss_trifft_beteiligten": true
       },
       {
         "id": "ziel_stehend",
@@ -571,7 +580,16 @@
     },
     "trommelmagazin_zuschlag": 2,
     "vorlaeufig": true,
-    "schwer_bei_wurf": 100
+    "schwer_bei_wurf": 100,
+    "beheben": {
+      "stat": "control"
+    },
+    "schwer_beheben": {
+      "stat": "intellect",
+      "skill": "mechanik",
+      "minuten": 10,
+      "zustand_stufen": 1
+    }
   },
   "nahkampf": {
     "stat": "agility",
@@ -643,7 +661,7 @@
       "zone": 2
     },
     "rueckstoss_stepshields": {
-      "liegend": 1
+      "liegen": 1
     },
     "haltezahl_max": 10,
     "garbenfaktor_aus_feuerrate": [
@@ -692,7 +710,13 @@
         "beschreibung": "ab 251 m"
       }
     ],
-    "schrot_rumpf_start": "brust"
+    "schrot_rumpf_start": "brust",
+    "stat": "control",
+    "haltezahl": {
+      "stat": "brawn",
+      "skill": "rueckstosskontrolle"
+    },
+    "ausloeser": "geschossen"
   },
   "lebenspunkte": {
     "kampfunfaehig_bei": 0,
@@ -810,6 +834,118 @@
     ]
   },
   "sprengwirkung": {
-    "splitter_liegend_anteil": 0.5
+    "splitter_liegend_anteil": 0.5,
+    "landepunkt": {
+      "krit": "genau am Zielpunkt",
+      "erfolg": "bedrängt zum Zielpunkt; die genaue Stelle legt die SL fest",
+      "misserfolg": "nah zum Zielpunkt, in der Richtung des W8"
+    },
+    "richtungen": [
+      "zu kurz",
+      "zu kurz links",
+      "links",
+      "zu weit links",
+      "zu weit",
+      "zu weit rechts",
+      "rechts",
+      "zu kurz rechts"
+    ]
+  },
+  "zielen": {
+    "stepshields": 1
+  },
+  "perk_wirkungen": {
+    "cqb": [
+      {
+        "art": "reichweite_frei",
+        "baender": [
+          "bedraengt"
+        ]
+      }
+    ],
+    "feuer_in_bewegung": [
+      {
+        "art": "eigene_bewegung_weniger",
+        "malsteps": 1
+      }
+    ],
+    "atemkontrolle": [
+      {
+        "art": "zielen_stepshields",
+        "stepshields": 2,
+        "bedingung": "liegend_oder_aufgelegt"
+      }
+    ],
+    "gezielter_schuss": [
+      {
+        "art": "zielen_ohne_reichweite",
+        "bedingung": "ohne_bewegung"
+      }
+    ],
+    "triple_tap": [
+      {
+        "art": "folgetreffer_zonen",
+        "ansage": "bauch",
+        "zonen": [
+          "brust",
+          "kopf"
+        ]
+      }
+    ],
+    "fingerfertig": [
+      {
+        "art": "einzeln_patronen",
+        "patronen": 3
+      }
+    ],
+    "schnell_nachladen": [
+      {
+        "art": "nachladen_als_break"
+      }
+    ],
+    "schnellzieher": [
+      {
+        "art": "ziehen_ohne_aktion",
+        "trageorte": [
+          "holster",
+          "guertel"
+        ]
+      }
+    ],
+    "quickthrow": [
+      {
+        "art": "werfen_als_break"
+      }
+    ],
+    "schutzreflex": [
+      {
+        "art": "eingreifen_als_break"
+      }
+    ]
+  },
+  "staende": [
+    {
+      "id": "stehen",
+      "name": "Stehen",
+      "adjektiv": "stehend"
+    },
+    {
+      "id": "hocke",
+      "name": "Hocke",
+      "adjektiv": "hockend"
+    },
+    {
+      "id": "liegen",
+      "name": "Liegen",
+      "adjektiv": "liegend",
+      "liegend": true,
+      "kein_hechten": true
+    }
+  ],
+  "hechten": {
+    "staende": [
+      "hocke",
+      "liegen"
+    ]
   }
 }

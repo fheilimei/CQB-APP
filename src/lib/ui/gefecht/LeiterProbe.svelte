@@ -2,6 +2,7 @@
   // Senken und Verbündete verschieben (konzept.md § 3.7; Regelwerk: Adrenalin, Senken; Verbündete verschieben).
   // Senken ändert den eigenen Stand (mit Bericht); Verschieben zeigt nur, um wie viel der Verbündete sich verschiebt.
   import type { Spieldaten } from '../../daten/typen';
+  import { protokolliere, verbrauchen } from '../../regeln/aktionen';
   import { senkenEintragen } from '../../regeln/gefecht';
   import { senken, verschiebung } from '../../regeln/leiter';
   import { leiterStand } from '../../regeln/probenrechner';
@@ -37,7 +38,8 @@
       { text: 'Du versuchst, dich zu beruhigen (Mainaction).', fett: true },
       { text: `Deine ${mitZeichen('stat', probe.stat, d)}-Probe ist ${ERGEBNIS_SATZ[ergebnis.stufe]} (${ergebnis.wurf === null ? 'Ausgang eingetragen' : `Wurf ${wurfZahl(ergebnis.wurf)}`}, Zielwert ${w.zielwert}, Krit ≤ ${w.krit_schwelle}).` },
       nach === stand ? { text: `Du bleibst bei ${standText(stand, d)}.` } : { text: `Du sinkst von ${standText(stand, d)} auf ${standText(nach, d)}.` },
-      { text: 'Am Ende dieser Runde steigst du nicht.' }
+      { text: 'Am Ende dieser Runde steigst du nicht.' },
+      { text: 'Main −1.' }
     ];
   }
 </script>
@@ -64,7 +66,8 @@
         <button onclick={onschliessen}>Abbrechen</button>
         <button class="haupt" disabled={!ergebnis} onclick={weiter}>Weiter</button>
       {:else}
-        <button class="haupt" onclick={onschliessen}>Schließen</button>
+        <button onclick={onschliessen}>Abbrechen</button>
+        <button class="haupt" disabled={!ergebnis} onclick={() => onfertig(protokolliere(verbrauchen(c, 'main'), 'Verbündete verschieben'))}>Ausgeführt (Main −1)</button>
       {/if}
     {/snippet}
   </Dialog>

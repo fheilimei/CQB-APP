@@ -2,7 +2,8 @@
 // Initiative, Rückgängig und Gefecht beenden. Jede Funktion gibt einen neuen Charakter zurück; nichts wird gespeichert.
 
 import type { Spieldaten } from '../daten/typen';
-import type { Charakter, Gefecht, Gefechtsereignis, SlUmstand } from '../speicher/charakter';
+import { KEINE_AKTIONEN, type Charakter, type Gefecht, type Gefechtsereignis, type SlUmstand } from '../speicher/charakter';
+import { rundeZuruecksetzen } from './aktionen';
 import { begrenzen, gefechtsende, overTheEdge, rundenende, senken, startStand } from './leiter';
 import type { Ergebnisstufe } from './probe';
 import { gefechtVon } from './probenrechner';
@@ -49,7 +50,16 @@ export function gefechtStarten(c: Charakter, ueberrascht: boolean, ergebnis: Erg
     gesenkt_diese_runde: false,
     ausloeser_diese_runde: [],
     sichtstufe: d.regeln.sicht.stufen[0]!.id,
-    lage: { sl_gefecht: [], letzte_gruende: [] },
+    lage: { sl_gefecht: [], letzte_gruende: [], auswahl: {} },
+    stand: d.regeln.staende[0]!.id,
+    bewegt: null,
+    bewegungen: 0,
+    gehechtet: false,
+    zielen: null,
+    konzentration: null,
+    verbraucht: { ...KEINE_AKTIONEN },
+    korrektur: { ...KEINE_AKTIONEN },
+    break_verloren: false,
     protokoll: []
   };
   return mitGefecht(c, setze(leer, startStand(ergebnis, ueberrascht, d.regeln), 'start', d));
@@ -60,7 +70,7 @@ export function leiterSetzen(c: Charakter, stand: number, d: Spieldaten): Charak
   return mitGefecht(c, setze(laufend(c), stand, 'rad', d));
 }
 
-/** Senken mit Ergebnis der Nerve-Probe; die Runde gilt als „gesenkt“, egal wie die Probe ausgeht. */
+/** Senken mit Ergebnis der Nerve-Probe (Mainaction, Zähler −1); die Runde gilt als „gesenkt“, egal wie die Probe ausgeht. */
 export function senkenEintragen(c: Charakter, ergebnis: Ergebnisstufe, d: Spieldaten): Charakter {
   const g = laufend(c);
   const neu = setze(g, senken(g.leiter, ergebnis, d.regeln), 'senken', d);
@@ -68,7 +78,12 @@ export function senkenEintragen(c: Charakter, ergebnis: Ergebnisstufe, d: Spield
   const eintrag: Gefechtsereignis[] = neu === g
     ? [{ runde: g.runde, zeit: jetzt(), art: 'leiter', ursache: 'senken', von: g.leiter, nach: g.leiter, gesenkt_vorher: g.gesenkt_diese_runde }]
     : [];
-  return mitGefecht(c, { ...neu, gesenkt_diese_runde: true, protokoll: [...neu.protokoll, ...eintrag] });
+  return mitGefecht(c, {
+    ...neu,
+    gesenkt_diese_runde: true,
+    verbraucht: { ...neu.verbraucht, main: neu.verbraucht.main + 1 },
+    protokoll: [...neu.protokoll, ...eintrag]
+  });
 }
 
 export interface RundenendeEingabe {
@@ -87,7 +102,7 @@ export function standNachRundenende(c: Charakter, e: RundenendeEingabe, d: Spiel
 /** Nächste Runde: Rundenende von Adrenalin bzw. Ruhepuls, neue Runde ohne Auslöser, Initiative offen. */
 export function naechsteRunde(c: Charakter, e: RundenendeEingabe, d: Spieldaten): Charakter {
   const g = laufend(c);
-  const neu = setze(g, standNachRundenende(c, e, d), 'rundenende', d);
+  const neu = rundeZuruecksetzen(setze(g, standNachRundenende(c, e, d), 'rundenende', d), d);
   return mitGefecht(c, {
     ...neu,
     runde: g.runde + 1,
@@ -108,7 +123,7 @@ export function initiativeEintragen(c: Charakter, initiative: NonNullable<Gefech
  */
 export function letzteLeiterAenderung(c: Charakter): Gefechtsereignis | null {
   const g = gefechtVon(c);
-  const e = g?.protokoll.filter((x) => x.art === 'leiter').at(-1);
+  const e = g?.protokoll.filter((x): x is Gefechtsereignis => x.art === 'leiter').at(-1);
   if (!g || !e || e.ursache === 'start') return null;
   return e.runde === g.runde || (e.ursache === 'rundenende' && e.runde === g.runde - 1) ? e : null;
 }
@@ -119,7 +134,7 @@ export function rueckgaengig(c: Charakter, d: Spieldaten): Charakter {
   if (!e) return c;
   const protokoll = g.protokoll.filter((x) => x !== e);
   // Over the Edge gilt nur noch als erreicht, wenn es außerhalb der zurückgenommenen Änderung erreicht wurde.
-  const erreicht = protokoll.some((x) => overTheEdge(x.nach, d.regeln));
+  const erreicht = protokoll.some((x) => x.art === 'leiter' && overTheEdge(x.nach, d.regeln));
   return mitGefecht(c, { ...g, leiter: e.von, gesenkt_diese_runde: e.gesenkt_vorher, adrenalin4_erreicht: erreicht, protokoll });
 }
 

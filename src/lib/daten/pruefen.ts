@@ -2,7 +2,7 @@
 // Liefert eine Liste lesbarer Fehler; leer heißt: Daten in Ordnung.
 
 import { zugangDerKlasse } from '../regeln/aufstieg';
-import type { Modifikator, Spieldaten, SymptomWirkung } from './typen';
+import { PERK_WIRKUNGEN, type Modifikator, type Spieldaten, type SymptomWirkung } from './typen';
 
 const ID_MUSTER = /^[a-z0-9_]+$/;
 const RAENGE = ['S', 'A', 'B', 'C', 'D', 'E', 'F'];
@@ -130,6 +130,47 @@ export function pruefeDaten(d: Spieldaten): string[] {
   }
   for (const art of ['nerve_start', 'nerve_anstieg', 'nerve_senken', 'verschieben'])
     if (!r.leiter.proben?.[art]) f('regeln.json', `leiter.proben.${art} fehlt`);
+
+  // Schießen, Ladehemmung, Breakaction, Bewegung, Trageorte, Perk-Wirkungen (Schritt 6)
+  for (const [ort, stat] of [['schiessen.stat', r.schiessen.stat], ['schiessen.haltezahl.stat', r.schiessen.haltezahl?.stat],
+    ['ladehemmung.beheben.stat', r.ladehemmung.beheben?.stat], ['ladehemmung.schwer_beheben.stat', r.ladehemmung.schwer_beheben?.stat],
+    ['breakaction.reaktion.stat', r.breakaction.reaktion.stat], ['breakaction.antizipation.stat', r.breakaction.antizipation.stat]] as const)
+    if (!statIds.has(stat as string)) f('regeln.json', `${ort}: unbekannter Stat „${stat}“`);
+  for (const [ort, skill] of [['schiessen.haltezahl.skill', r.schiessen.haltezahl?.skill], ['ladehemmung.schwer_beheben.skill', r.ladehemmung.schwer_beheben?.skill],
+    ['breakaction.reaktion.skill', r.breakaction.reaktion.skill], ['breakaction.antizipation.skill', r.breakaction.antizipation.skill]] as const)
+    if (!skillIds.has(skill as string)) f('regeln.json', `${ort}: unbekannter Skill „${skill}“`);
+  const bewegungsarten = new Set(Object.keys(r.bewegung.arten));
+  if (r.bewegung.reihenfolge.length !== bewegungsarten.size || r.bewegung.reihenfolge.some((b) => !bewegungsarten.has(b)))
+    f('regeln.json', 'bewegung.reihenfolge muss jede Bewegungsart genau einmal enthalten');
+  for (const b of Object.keys(r.lage.eigene_bewegung))
+    if (!bewegungsarten.has(b) && b !== 'hechten') f('regeln.json', `lage.eigene_bewegung: unbekannte Bewegungsart „${b}“`);
+  for (const k of ['leicht', 'voll'] as const) {
+    const max = r.konzentration[k].bewegung_max;
+    if (max !== null && !bewegungsarten.has(max)) f('regeln.json', `konzentration.${k}.bewegung_max: unbekannte Bewegungsart „${max}“`);
+  }
+  const staende = new Set(r.staende.map((s) => s.id));
+  if (!staende.size) f('regeln.json', 'staende ist leer');
+  for (const [id, art] of Object.entries(r.bewegung.arten)) {
+    for (const s of art.stand) if (!staende.has(s)) f('regeln.json', `bewegung.arten.${id}: unbekannter Stand „${s}“`);
+    if (!d.darstellung.bewegungen?.[id]) f('darstellung.json', `Bewegungsart „${id}“ ohne Namen (bewegungen)`);
+  }
+  for (const s of [...r.hechten.staende, ...Object.keys(r.schiessen.rueckstoss_stepshields)])
+    if (!staende.has(s)) f('regeln.json', `unbekannter Stand „${s}“ (hechten bzw. rueckstoss_stepshields)`);
+  if (!r.leiter.ausloeser.some((a) => a.id === r.schiessen.ausloeser)) f('regeln.json', `schiessen.ausloeser: unbekannter Auslöser „${r.schiessen.ausloeser}“`);
+  if (r.sprengwirkung.richtungen.length !== 8) f('regeln.json', 'sprengwirkung.richtungen braucht 8 Einträge (W8)');
+  for (const k of [...Object.keys(r.breakaction.reaktion.malsteps), ...Object.keys(r.breakaction.antizipation.malsteps_guete), ...Object.keys(r.breakaction.antizipation.malsteps_alter)])
+    if (!d.darstellung.informationen?.[k]) f('darstellung.json', `Information „${k}“ ohne Namen (informationen)`);
+  const trageorte = Object.keys(r.waffe_wechseln.trageorte);
+  for (const t of trageorte) if (!d.darstellung.trageorte?.[t]) f('darstellung.json', `Trageort „${t}“ ohne Namen (trageorte)`);
+  for (const [perk, liste] of Object.entries(r.perk_wirkungen)) {
+    if (!perkIds.has(perk)) f('regeln.json', `perk_wirkungen: unbekannter Perk „${perk}“`);
+    for (const w of liste) {
+      if (!PERK_WIRKUNGEN.includes(w.art)) f('regeln.json', `perk_wirkungen.${perk}: unbekannte Wirkung „${w.art}“`);
+      if (w.art === 'reichweite_frei') for (const b of w.baender) if (!baender.has(b)) f('regeln.json', `perk_wirkungen.${perk}: unbekanntes Band „${b}“`);
+      if (w.art === 'folgetreffer_zonen') for (const z of [w.ansage, ...w.zonen]) if (!zonenIds.has(z)) f('regeln.json', `perk_wirkungen.${perk}: unbekannte Zone „${z}“`);
+      if (w.art === 'ziehen_ohne_aktion') for (const t of w.trageorte) if (!trageorte.includes(t)) f('regeln.json', `perk_wirkungen.${perk}: unbekannter Trageort „${t}“`);
+    }
+  }
 
   // ---------- stats.json
   for (const s of d.stats.eintraege) {

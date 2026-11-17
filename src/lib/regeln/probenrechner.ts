@@ -3,15 +3,15 @@
 // ganze Gefecht, Sichtstufe (wenn die Probe Sicht braucht). Dazu die Steps der SL für diese eine Probe.
 
 import type { Perk, Spieldaten } from '../daten/typen';
-import type { Charakter, Gefecht } from '../speicher/charakter';
+import { gefechtErgaenzt, type Charakter, type Gefecht } from '../speicher/charakter';
 import { leiterSteps } from './leiter';
-import { hpAktuell, modifikatorenDes, modifikatorSteps } from './modifikatoren';
+import { hpAktuell, modifikatorenDes, modifikatorSteps, type Probenkontext } from './modifikatoren';
 import { probenwert, statwert, type Probenwert, type StepQuelle } from './probe';
 import { lebenslage, sichtstufenSteps, zustandsSteps, type Lebenslage } from './zustaende';
 
 /** Das laufende Gefecht oder null. */
 export function gefechtVon(c: Charakter): Gefecht | null {
-  return c.spielstand.gefecht.aktiv ? (c.spielstand.gefecht as Gefecht) : null;
+  return c.spielstand.gefecht.aktiv ? gefechtErgaenzt(c.spielstand.gefecht as Gefecht) : null;
 }
 
 /** Stand von Adrenalin bzw. Ruhepuls; außerhalb des Gefechts immer 0 (konzept.md § 3.7). */
@@ -53,6 +53,10 @@ export interface ProbenAnfrage {
   ausgeschaltet?: string[];
   /** Weitere Quellen, die ein Ablauf mitbringt (z. B. Auslöser beim Anstieg, Überraschung bei der Initiative). */
   zusatz?: StepQuelle[];
+  /** Quellen aus einer Auswahl des Spielers (Entfernung, Ziel); sie zählen, erscheinen aber nicht als Chip. */
+  fest?: StepQuelle[];
+  /** Umstände für die Bedingungen von Modifikatoren (Band, Stand, ohne Bewegung, aufgelegt). */
+  kontext?: Omit<Probenkontext, 'stat' | 'skill' | 'probe'>;
 }
 
 export interface Probe {
@@ -85,7 +89,7 @@ export function automatischeQuellen(c: Charakter, d: Spieldaten, a: ProbenAnfrag
   );
   for (const q of zustand) quellen.push({ ...q, id: `zustand:${q.name}` });
   for (const [i, m] of modifikatorenDes(c, d).entries()) {
-    for (const q of modifikatorSteps([m], { stat: a.stat, skill: a.skill, probe: a.probe })) quellen.push({ ...q, id: `${m.herkunft}:${m.quelle}:${i}` });
+    for (const q of modifikatorSteps([m], { ...a.kontext, stat: a.stat, skill: a.skill, probe: a.probe })) quellen.push({ ...q, id: `${m.herkunft}:${m.quelle}:${i}` });
   }
   for (const u of g?.lage.sl_gefecht ?? []) {
     if (u.gilt_fuer && !(a.probe && u.gilt_fuer.includes(a.probe))) continue;
@@ -104,7 +108,7 @@ export function probeStellen(c: Charakter, d: Spieldaten, a: ProbenAnfrage): Pro
   const skillstufe = a.skill ? (c.skills[a.skill] ?? 0) : null;
   const automatisch = automatischeQuellen(c, d, a);
   const aus = new Set(a.ausgeschaltet ?? []);
-  const quellen = automatisch.filter((q) => !aus.has(q.id!));
+  const quellen = [...(a.fest ?? []), ...automatisch.filter((q) => !aus.has(q.id!))];
   if (a.sl && (a.sl.malsteps || a.sl.stepshields)) {
     quellen.push({ id: 'sl', herkunft: 'sl', name: a.sl.grund || 'SL', malsteps: a.sl.malsteps || undefined, stepshields: a.sl.stepshields || undefined });
   }

@@ -147,3 +147,22 @@ export const malstepsText = (n: number) => `${n} ${n === 1 ? 'Malstep' : 'Malste
 
 /** Kurzform eines Symptoms für die Zusammenfassung am Rad: Text vor dem Doppelpunkt. */
 export const symptomKurz = (text: string) => text.split(':')[0]!.trim();
+
+// ---- Waffen und Aktionen (konzept.md § 3.7a, § 3.8)
+
+export const AKTION_NAME: Record<'main' | 'break' | 'bewegung' | 'stand', string> = { main: 'Main', break: 'Break', bewegung: 'Bewegung', stand: 'Stand' };
+
+export const zoneName = (id: string, d: Spieldaten) => d.koerperzonen.eintraege.find((z) => z.id === id)?.name ?? id;
+export const trageortName = (id: string, d: Spieldaten) => d.darstellung.trageorte[id] ?? id;
+export const bewegungName = (id: string, d: Spieldaten) => d.darstellung.bewegungen[id] ?? id;
+export const standAdjektiv = (id: string, d: Spieldaten) => d.regeln.staende.find((s) => s.id === id)?.adjektiv ?? id;
+export const zustandName = (z: string, d: Spieldaten) => `${z} (${d.regeln.waffenzustand.namen[z] ?? ''})`;
+export const waffenName = (id: string, d: Spieldaten) => d.waffen.eintraege.find((w) => w.id === id)?.name ?? id;
+export const kugelnText = (n: number) => `${n} ${n === 1 ? 'Kugel' : 'Kugeln'}`;
+export const patronenText = (n: number) => `${n} ${n === 1 ? 'Patrone' : 'Patronen'}`;
+
+/** DK/MW: „DK 1 / MW 2“, stumpf ohne DK. */
+export function dkMw(dk: number | null | undefined, mw: number | null | undefined, stumpf = false): string {
+  if (stumpf || dk === null || dk === undefined) return `stumpf, MW ${mw ?? '–'}`;
+  return `DK ${dk} / MW ${mw ?? '–'}`;
+}

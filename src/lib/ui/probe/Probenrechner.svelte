@@ -2,6 +2,7 @@
   // Probenrechner (konzept.md § 3.6): Stat (Pflicht), Skill (optional, austauschbar), Lage ohne Entfernung, Wurf.
   // Er ändert nichts am Charakter außer den Steps der SL für das ganze Gefecht und der Sichtstufe des Gefechts.
   import type { Spieldaten } from '../../daten/typen';
+  import { konzentrationMoeglich, konzentrationSetzen, protokolliere, verbrauchen } from '../../regeln/aktionen';
   import { statwert } from '../../regeln/probe';
   import type { Charakter, Quelle } from '../../speicher/charakter';
   import Dialog from '../Dialog.svelte';
@@ -16,8 +17,19 @@
     wuerfelModus: Quelle;
     onaendern: (c: Charakter) => void;
     onschliessen: () => void;
+    /** Aus der Aktionsleiste (Main → Skill oder Probe): „Ausgeführt“ verbraucht die Mainaction, mit Konzentration nach Wahl. */
+    alsMain?: boolean;
+    onfertig?: (c: Charakter) => void;
   }
-  let { c, d, stat: startStat, skill: startSkill, wuerfelModus, onaendern, onschliessen }: Props = $props();
+  let { c, d, stat: startStat, skill: startSkill, wuerfelModus, onaendern, onschliessen, alsMain = false, onfertig }: Props = $props();
+  let konz = $state<'keine' | 'leicht' | 'voll'>('keine');
+
+  function ausgefuehrt() {
+    let x = verbrauchen(c, 'main');
+    if (konz !== 'keine') x = konzentrationSetzen(x, konz);
+    const name = skill ? (d.skills.eintraege.find((s) => s.id === skill)?.name ?? skill) : (d.stats.eintraege.find((s) => s.id === stat)?.name ?? '');
+    onfertig?.(protokolliere(x, `Probe: ${name}${konz !== 'keine' ? ` (Konzentration ${konz})` : ''}`));
+  }
 
   let stat = $state<string | null>(null);
   let skill = $state<string>('');
@@ -72,8 +84,23 @@
     <p class="hinweis">Wähle einen Stat oder einen Skill.</p>
   {/if}
 
+  {#if alsMain}
+    <h3 class="konz-titel">Konzentration der Aktion</h3>
+    <div class="konz" role="group" aria-label="Konzentration">
+      {#each [['keine', 'keine'], ['leicht', 'leicht'], ['voll', 'voll']] as [id, text] (id)}
+        <button class:an={konz === id} aria-pressed={konz === id} disabled={id !== 'keine' && !konzentrationMoeglich(c)} onclick={() => (konz = id as typeof konz)}>{text}</button>
+      {/each}
+    </div>
+    <p class="hinweis">Skills, die Feinarbeit oder Ruhe brauchen, verlangen Konzentration (nach SL). Konzentration: keine Breakaction mehr in dieser Runde.</p>
+  {/if}
+
   {#snippet knoepfe()}
-    <button class="haupt" onclick={onschliessen}>Schließen</button>
+    {#if alsMain}
+      <button onclick={onschliessen}>Abbrechen</button>
+      <button class="haupt" disabled={!stat} onclick={ausgefuehrt}>Ausgeführt (Main −1)</button>
+    {:else}
+      <button class="haupt" onclick={onschliessen}>Schließen</button>
+    {/if}
   {/snippet}
 </Dialog>
 
@@ -85,4 +112,7 @@
   .wert { font-weight: 700; font-size: 1.1rem; }
   .kern { margin-top: 16px; }
   label { margin-top: 12px; }
+  .konz-titel { font-size: 0.9rem; color: var(--text-2); margin: 16px 0 6px; }
+  .konz { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .konz button.an { border: 2px solid var(--akzent); background: var(--flaeche-2); font-weight: 700; }
 </style>

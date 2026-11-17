@@ -39,7 +39,7 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 2. **Rüstung bei der Ansage „Rumpf“.** Das Regelwerk sagt nicht, welche Rumpfzone für die Rüstung zählt. *Vorläufig:* der niedrigste Rüstungswert von Brust, Bauch und Unterleib (bei allen heutigen Westen gleich).
 3. **Krit eines stumpfen Treffers gegen „Schmerz ignorieren“.** Ein stumpfer Krit löst „immer“ einen Stagger aus; das Symptom Schmerz ignorieren sagt „keinen Stagger“. *Vorläufig:* Schmerz ignorieren gewinnt, kein Stagger.
 4. **Wuchttreffer mit 0 Schaden.** *Vorläufig:* keine Prellung, weil nichts zu heilen ist.
-5. **Perks, deren Wirkung nur als Text vorliegt** (z. B. Feuer in Bewegung, Atemkontrolle, Triple Tap). Der Regelkern wendet automatisch nur Perks mit Modifikatoren an (Grundwerte, Kernschuss) und dazu Eiserne Nerven und Durchbeißen über `mit_perk` in `regeln.json`. Für die übrigen Perks fehlt eine maschinenlesbare Form; sie wird mit dem Schussrechner (Schritt 6) festgelegt. Bis dahin erscheinen sie als Hinweis (`hinweis_bei`).
+5. **Perks, deren Wirkung nur als Text vorliegt.** Erledigt für Schritt 6 (18.11.2026): `perk_wirkungen` in `regeln.json` mit festen Wirkungsarten; der Regelkern führt CQB, Feuer in Bewegung, Atemkontrolle, Gezielter Schuss, Triple Tap, Fingerfertig, Schnell nachladen, Schnellzieher, Quickthrow und Schutzreflex selbst aus. Weiter nur als Hinweis: Überfall, Kaltblütig, Geduld, Niederhalten, Lucky Numbers, Korrektur (sie brauchen Wissen, das die App nicht hat, z. B. ob das Ziel dich wahrnimmt).
 6. **Arme hinter Deckung.** Regelwerk: „Verdeckt eine Deckung **von unten** die Brust, gelten auch beide Arme als verdeckt.“ *Vorläufig:* Ist die Brust verdeckt, sind die Arme verdeckt; die Richtung prüft die App nicht.
 
 ## Offen aus Schritt 3 (Erstellung und Modi, 17.11.2026)
@@ -49,7 +49,7 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 3. **Mindestskills der Spezialisierung beim Einstieg als erweiterte Form.** Es gelten nur die Mindestskills der gewählten Klasse (sie enthalten laut Regelwerk die der Klasse darunter).
 4. **Klasse wechseln nach einem Statrank-Up in Schritt 5.** Der Statrank-Up bleibt am Stat (sein Wurf ist fest). Liegt der Stat danach ohne Rang oder schon auf S, zählt er nicht und kostet nichts; der Wurf ist dann verloren.
 5. **Laden in Schritt 7** fehlt noch (§ 3.14). Bis dahin wird nur das Startgeld gebucht.
-6. **Noch nicht im Schreibmodus:** Klasse/Klassenweg, Geld, Optionen des Hintergrunds (Schulden, Coup, Vertrag), Ausrüstung. Kommen mit den Schritten 7 und 8. Klassenwechsel-Dialog kommt mit Schritt 8. Erledigt in Schritt 4: Grundwerte, Anpassungen der SL, Name, Aussehen, Freitexte des Hintergrunds.
+6. **Noch nicht im Schreibmodus:** Klasse/Klassenweg, Geld, Optionen des Hintergrunds (Schulden, Coup, Vertrag). Ausrüstung: erledigt in Schritt 6. Kommen mit den Schritten 7 und 8. Klassenwechsel-Dialog kommt mit Schritt 8. Erledigt in Schritt 4: Grundwerte, Anpassungen der SL, Name, Aussehen, Freitexte des Hintergrunds.
 
 ## Offen aus Schritt 4 (Bogen, 17.11.2026)
 
@@ -62,6 +62,19 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 
 1. **Offene kritische Wunde.** Für „kampfunfähig“ zählt vorläufig jede kritische Wunde, deren Blutung nicht gestoppt ist. Wird mit den Wunden (Schritt 7) genau festgelegt.
 2. **Steps der SL für das ganze Gefecht** gelten vorläufig für **alle** Proben. Die Auswahl, für welche Proben sie gelten (Schießen, Werfen, alle; `gilt_fuer`), kommt mit dem Schussrechner (Schritt 6); das Datenformat kennt sie schon.
-3. **Senken und Verbündete verschieben** sind Mainactions. Den Zähler der Aktionsleiste ziehen sie erst ab Schritt 6 ab.
+3. **Senken und Verbündete verschieben** sind Mainactions. Erledigt (Schritt 6): Sie ziehen die Main ab.
 4. **Rückhalt und Einsamer Wolf** (Stepshield gegen den Anstieg bzw. beim Senken, wenn Verbündete in Hörweite sind bzw. nicht) erscheinen als Hinweis; den Stepshield trägt der Spieler im Block SL ein, weil die App nicht weiß, wer in Hörweite ist.
 5. **Zeichen für Steps der SL:** ⚑ (in `darstellung.json`, `herkunft.sl`), damit SL-Steps in Chips und Rechnung von Lage und Anpassungen unterscheidbar sind. Lässt sich dort ändern.
+
+## Offen aus Schritt 6 (Aktionsleiste, Waffen, Schießen, 18.11.2026)
+
+1. **Kosten des Waffenwechsels.** Ein Wechsel umfasst Wegstecken und Bereitmachen. *Vorläufig:* Es zählt der teurere der beiden Trageorte (Pistole ins Holster, Gewehr von der Schlinge → Mainaction). Rucksack (2 Runden): Die App wechselt sofort und weist auf die zweite Runde hin.
+2. **Wie lange gilt Zielen?** Regelwerk: „in der nächsten Runde einen Bonus“. *Vorläufig:* nur in der nächsten Runde; nicht genutzt, verfällt es. Ein Schuss in der Runde des Zielens lässt es verfallen; „Neues Ziel“ löscht es.
+3. **Bewegung und Hechten in derselben Runde.** *Vorläufig:* Für die Lage zählt nur eins von beiden, das mit mehr Malsteps (wie bei Sprint die schnellere Bewegung).
+4. **Atemkontrolle.** *Vorläufig:* Ob der Charakter liegt oder die Waffe aufgelegt ist, zählt im Moment des Zielens (Schalter im Zielen, vorbelegt mit dem Stand).
+5. **Aufsätze im Gefecht anbringen.** Die App führt keine losen Aufsätze. *Vorläufig:* Der Spieler hakt an, was danach an der Waffe ist, und wählt nur, was er dabeihat.
+6. **Schnelllader und Ladestreifen.** *Vorläufig:* Patronen, die beim Laden noch in der Waffe sind, kommen zu den losen Patronen.
+7. **Magazine nach dem Gefecht füllen.** Leere Ersatzmagazine entfallen beim Nachladen; neue oder aufgefüllte trägt der Spieler im Schreibmodus ein. Soll es einen Knopf „Magazine aus losen Patronen füllen“ geben?
+8. **Ausrüstung ohne Laden.** Im Schreibmodus frei eintragbar, ohne Kassenbuch und ohne Eintrag im Protokoll. Mit dem Laden (§ 3.14) ändert sich das.
+9. **Noch nicht da:** Knöpfe Getroffen und Ereignis, Wurfaktion, Nahkampf, Wunde versorgen (im Menü ausgegraut), Schaden beim Ziel vorrechnen im Schussbericht, Malstep und Waffen-Einschränkung des ballistischen Schilds beim Schießen. Kommen mit Schritt 7 (Treffer, Wunden, Schutz).
+10. **Skill austauschen beim Schießen** (Konzept § 3.6) fehlt noch; der Schussrechner nimmt immer den Waffenskill der Waffe.

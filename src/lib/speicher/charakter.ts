@@ -80,6 +80,37 @@ export interface Gefechtsereignis {
   gesenkt_vorher: boolean;
 }
 
+/** Aktionen einer Runde (konzept.md § 3.7a). */
+export type Aktion = 'main' | 'break' | 'bewegung' | 'stand';
+export type Aktionszahlen = Record<Aktion, number>;
+
+/** Merker aus „Zielen“ für den nächsten Schuss (konzept.md § 3.7a). Gilt nur in der Runde `runde`. */
+export interface Zielen {
+  runde: number;
+  stepshields: number;
+  /** Perk-Wirkung „zielen_ohne_reichweite“ (z. B. Gezielter Schuss): keine Malsteps der Reichweite. */
+  ohne_reichweite: boolean;
+  /** Runde, in der gezielt wurde; bewegt sich der Charakter danach in dieser Runde, entfällt ohne_reichweite. */
+  gezielt_in: number;
+}
+
+/** Ein Schuss im Gefechtsprotokoll (konzept.md § 3.8, Schritt 6 „Weiter“). */
+export interface Schussereignis {
+  runde: number;
+  zeit: string;
+  art: 'schuss';
+  waffe: string;
+  text: string[];
+}
+
+/** Sonstige Aktion im Gefechtsprotokoll (Nachladen, Waffe wechseln, Zielen …). */
+export interface Aktionsereignis {
+  runde: number;
+  zeit: string;
+  art: 'aktion';
+  text: string;
+}
+
 /** Laufendes Gefecht (datenformat.md § Charakter, spielstand.gefecht). Außerhalb des Gefechts nur { aktiv: false }. */
 export interface Gefecht {
   aktiv: true;
@@ -91,8 +122,65 @@ export interface Gefecht {
   gesenkt_diese_runde: boolean;
   ausloeser_diese_runde: string[];
   sichtstufe: string;
-  lage: { sl_gefecht: SlUmstand[]; letzte_gruende: string[] };
-  protokoll: Gefechtsereignis[];
+  lage: {
+    sl_gefecht: SlUmstand[];
+    letzte_gruende: string[];
+    /** Auswahl in Block 2 der Lage-Auswahl je Gruppe (regeln.json `lage.gruppen`); fehlt = Standard bzw. nichts gewählt. */
+    auswahl: Record<string, string | string[] | null>;
+  };
+  /** Eigener Stand: stehen, hocke, liegen. */
+  stand: string;
+  /** Schnellste eigene Bewegung dieser Runde (regeln.json `bewegung.arten`) oder null. */
+  bewegt: string | null;
+  /** Zahl der Bewegungen dieser Runde (Sprint erlaubt eine zweite). */
+  bewegungen: number;
+  gehechtet: boolean;
+  zielen: Zielen | null;
+  /** Konzentration einer Mainaction in dieser Runde. */
+  konzentration: 'leicht' | 'voll' | null;
+  /** Verbrauchte Aktionen dieser Runde. */
+  verbraucht: Aktionszahlen;
+  /** Korrektur von Hand (langer Druck, ±1) je Aktion. */
+  korrektur: Aktionszahlen;
+  /** Break durch Stagger verloren (Schritt 7 setzt das). */
+  break_verloren: boolean;
+  protokoll: (Gefechtsereignis | Schussereignis | Aktionsereignis)[];
+}
+
+/** Schusswaffe in der Ausrüstung (datenformat.md § Felder im Spielstand). */
+export interface WaffenEintrag {
+  id: string;
+  /** ID aus waffen.json. */
+  waffe: string;
+  /** Munitionstyp des Kalibers (z. B. FMJ); bei Werfern die ID des geladenen Geschosses oder leer. */
+  munitionstyp: string;
+  /** Inhalt inklusive Patrone im Lauf. */
+  im_magazin: number;
+  /** Inhalt jedes Ersatzmagazins. */
+  reserve: number[];
+  /** Munition ohne Magazin (einzeln laden, Schnelllader und Ladestreifen füllen). */
+  lose_patronen?: number;
+  /** Schnelllader bzw. Ladestreifen. */
+  zubehoer?: { art: string; gefuellt: number; leer: number }[];
+  zustand: string;
+  aufsaetze: string[];
+  ladehemmung: 'einfach' | 'schwer' | null;
+  trageort: string;
+}
+
+export interface NahkampfEintrag {
+  id: string;
+  waffe: string;
+  trageort: string;
+  /** Fehlt: 1. */
+  anzahl?: number;
+}
+
+/** Granaten und Geschosse (ID aus wurf_und_sprengwaffen.json). */
+export interface VorratEintrag {
+  id: string;
+  anzahl: number;
+  trageort: string;
 }
 
 export interface Anpassung extends Modifikator {
@@ -134,10 +222,10 @@ export interface Charakter {
   anpassungen: Anpassung[];
   protokoll: ({ zeit: string; art: string } & Record<string, unknown>)[];
   ausruestung: {
-    waffen: Record<string, unknown>[];
-    nahkampfwaffen: Record<string, unknown>[];
+    waffen: WaffenEintrag[];
+    nahkampfwaffen: NahkampfEintrag[];
     aktive_waffe: string | null;
-    vorrat: Record<string, unknown>[];
+    vorrat: VorratEintrag[];
     ruestung: string[];
     schild: string | null;
     sonstiges: string;
@@ -194,5 +282,28 @@ export function neuerCharakter(statIds: string[], jetzt: Date = new Date()): Cha
       adrenalinschock: { aktiv: false, ruhe_stunden: 0 },
       wunden: []
     }
+  };
+}
+
+export const KEINE_AKTIONEN: Aktionszahlen = { main: 0, break: 0, bewegung: 0, stand: 0 };
+
+/**
+ * Ergänzt Felder des Gefechts, die erst mit späteren Schritten dazukamen (datenformat.md § Felder im Spielstand),
+ * damit auch ein Gefecht weiterläuft, das mit einer älteren Version gestartet wurde. Ein fehlender Stand bleibt leer;
+ * der Regelkern nimmt dann den ersten Stand aus regeln.json (aktionen.ts, eigenerStand).
+ */
+export function gefechtErgaenzt(g: Gefecht): Gefecht {
+  return {
+    ...g,
+    lage: { ...g.lage, auswahl: g.lage.auswahl ?? {} },
+    stand: g.stand ?? '',
+    bewegt: g.bewegt ?? null,
+    bewegungen: g.bewegungen ?? 0,
+    gehechtet: g.gehechtet ?? false,
+    zielen: g.zielen ?? null,
+    konzentration: g.konzentration ?? null,
+    verbraucht: g.verbraucht ?? { ...KEINE_AKTIONEN },
+    korrektur: g.korrektur ?? { ...KEINE_AKTIONEN },
+    break_verloren: g.break_verloren ?? false
   };
 }

@@ -74,7 +74,7 @@ describe('Probe zusammenstellen', () => {
 
   it('Steps der SL mit gilt_fuer wirken nur auf diese Probenarten', () => {
     const c = imGefecht(0);
-    (gefechtVon(c) as Gefecht).lage.sl_gefecht = [{ id: 'u1', malsteps: 2, stepshields: 0, grund: 'Wind', gilt_fuer: ['schiessen'] }];
+    (c.spielstand.gefecht as Gefecht).lage.sl_gefecht = [{ id: 'u1', malsteps: 2, stepshields: 0, grund: 'Wind', gilt_fuer: ['schiessen'] }];
     expect(probeStellen(c, d, { stat: 'control', skill: null }).wert!.malsteps).toBe(0);
     expect(probeStellen(c, d, { stat: 'control', skill: null, probe: 'schiessen' }).wert!.malsteps).toBe(2);
   });

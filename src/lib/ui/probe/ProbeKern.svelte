@@ -26,6 +26,13 @@
     wuerfelModus: Quelle;
     /** Schalter „braucht Sicht“ anbieten (nur im Probenrechner). */
     sichtSchalter?: boolean;
+    /** Sicht von Anfang an einrechnen (Abläufe, die Sicht verlangen: Schießen, Ladehemmung beheben, Reaktion). */
+    sichtVorgewaehlt?: boolean;
+    /** Ohne Würfel und Ansage: Der Ablauf (Schießen) würfelt selbst. */
+    ohneWurf?: boolean;
+    /** Steps der SL für diese Probe und ausgeschaltete Chips; bindbar, damit ein Ablauf damit weiterrechnen kann. */
+    sl?: SlSteps;
+    ausgeschaltet?: string[];
     /** Drei Knöpfe Krit · gelungen · misslungen zusätzlich zum Wurf. */
     mitAusgang?: boolean;
     /** Bei Misserfolg den Zielwert mit ansagen (Initiative). */
@@ -34,13 +41,13 @@
     onaendern: (c: Charakter) => void;
   }
   let {
-    c, d, anfrage, hinweise, wuerfelModus, sichtSchalter = false, mitAusgang = false, zielwertAnsagen = false,
-    ergebnis = $bindable(null), onaendern
+    c, d, anfrage, hinweise, wuerfelModus, sichtSchalter = false, sichtVorgewaehlt = false, ohneWurf = false, mitAusgang = false,
+    zielwertAnsagen = false, ergebnis = $bindable(null), sl = $bindable({ malsteps: 0, stepshields: 0, grund: '' }),
+    ausgeschaltet = $bindable([]), onaendern
   }: Props = $props();
 
-  let ausgeschaltet = $state<string[]>([]);
-  let sl = $state<SlSteps>({ malsteps: 0, stepshields: 0, grund: '' });
   let brauchtSicht = $state(false);
+  $effect.pre(() => { brauchtSicht = sichtVorgewaehlt; });
   /** Sichtstufe außerhalb des Gefechts; leer = die erste Stufe aus regeln.json. */
   let sichtRuhe = $state('');
   let eingabe = $state<{ wurf: number } | { stufe: Ergebnisstufe } | null>(null);
@@ -140,6 +147,8 @@
 
 {#if sichtSchalter}
   <label class="schalter"><input type="checkbox" bind:checked={brauchtSicht} /> braucht Sicht</label>
+{/if}
+{#if sichtSchalter || sichtVorgewaehlt}
   {#if brauchtSicht}
     <div class="auswahl" role="group" aria-label="Sicht">
       <span class="hinweis">Sicht:</span>
@@ -187,7 +196,7 @@
   </ul>
 {/if}
 
-{#if w?.moeglich}
+{#if w?.moeglich && !ohneWurf}
   <Wuerfel art="W100" modus={wuerfelModus} titel="Wurf" {mitAusgang} onwurf={(x) => gewuerfelt(x.ergebnis)} onausgang={ausgang} />
 {/if}
 
