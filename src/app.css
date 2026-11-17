@@ -46,3 +46,26 @@ label { display: block; font-weight: 600; margin: 16px 0 6px; }
 .fehler { color: var(--gefahr); }
 .karte { background: var(--flaeche); border: 1px solid var(--linie); border-radius: var(--radius); padding: 16px; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+/* Listen im Bogen (Reiter Werte): Zeilen mit Name links und Wert rechts, aufklappbares Detail. */
+.karte > h2, .karte .kopf h2 { margin: 0 0 8px; font-size: 1.1rem; }
+.zeilen { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.zeilen > li { border-top: 1px solid var(--linie); }
+.zeilen > li:first-child { border-top: none; }
+.zeilen .zeile { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 8px; text-align: left;
+  padding: 4px 0; min-height: 48px; border-radius: 0; }
+.zeilen .wert { font-size: 1.15rem; min-width: 1.6em; text-align: right; white-space: nowrap; }
+.zeilen .detail { padding: 0 0 12px; }
+.zeilen .detail p { margin: 4px 0 8px; }
+.hand { outline: 2px dashed var(--text-2); outline-offset: 2px; border-radius: 4px; }
+.stepper { display: inline-flex; align-items: center; gap: 8px; }
+.stepper strong { min-width: 1.4em; text-align: center; }
+.stepper button { padding: 0; width: 44px; font-size: 1.2rem; }
+.inline { display: flex; flex-direction: column; gap: 4px; margin: 8px 0; font-weight: 400; }
+.schalter { display: flex; align-items: center; gap: 8px; margin: 0; font-weight: 400; min-height: 44px; }
+.schalter input { width: 22px; height: 22px; min-height: 0; }
+button.link { padding: 0 4px; min-height: 44px; min-width: 0; text-decoration: underline; text-underline-offset: 3px; text-align: left; }
+table.rechnung { width: 100%; border-collapse: collapse; margin: 4px 0 8px; }
+table.rechnung td { padding: 2px 0; }
+table.rechnung td:last-child { text-align: right; white-space: nowrap; }
+table.rechnung tr.summe td { border-top: 1px solid var(--linie); font-weight: 700; padding-top: 6px; }

@@ -1,6 +1,6 @@
 // Textbausteine der Oberfläche, gesammelt an einer Stelle (konzept.md § 3.0c). Begriffe wie im Regelwerk.
 
-import type { Rang, Spieldaten } from '../daten/typen';
+import type { Modifikator, Rang, Spieldaten } from '../daten/typen';
 import type { Sperre } from '../regeln/aufstieg';
 import type { Fehlt } from '../regeln/erstellung';
 import type { Abweichungswurf } from '../speicher/charakter';
@@ -30,6 +30,49 @@ export const vorzeichen = (n: number) => (n > 0 ? `+${n}` : n < 0 ? `−${-n}` :
 export const rangText = (r: Rang, d: Spieldaten) => `${r} (${d.regeln.raenge[r]})`;
 export const wurfText = (w: Abweichungswurf) => `${w.positiv} − ${w.negativ}`;
 export const geld = (n: number) => `${n.toLocaleString('de-DE')} $`;
+
+export const grundwertName = (id: string, d: Spieldaten) => d.darstellung.grundwerte[id] ?? id;
+export const bandName = (id: string, d: Spieldaten) => d.regeln.schiessen.reichweitenbaender.find((b) => b.id === id)?.name ?? id;
+
+/** Wert eines Grundwerts zum Anzeigen; die Wurfweite ist ein Band. */
+export const grundwertWert = (wert: number | string, d: Spieldaten) => (typeof wert === 'string' ? bandName(wert, d) : String(wert));
+
+/** Wirkung eines Modifikators: „+1“, „▲1“ (Stepshields), „▼1“ (Malsteps), „Krit-Schwelle +1“; Wurfweite in Bändern. */
+export function wirkungText(m: Modifikator): string {
+  const w = m.wirkung;
+  if (w.wert !== undefined) return m.ziel.id === 'wurfweite_band' ? `${vorzeichen(w.wert)} ${Math.abs(w.wert) === 1 ? 'Band' : 'Bänder'}` : vorzeichen(w.wert);
+  if (w.stepshields !== undefined) return w.stepshields >= 0 ? `▲${w.stepshields}` : `▼${-w.stepshields}`;
+  if (w.malsteps !== undefined) return w.malsteps >= 0 ? `▼${w.malsteps}` : `▲${-w.malsteps}`;
+  if (w.krit_schwelle !== undefined) return `Krit-Schwelle ${vorzeichen(w.krit_schwelle)}`;
+  return '';
+}
+
+/** Worauf ein Modifikator wirkt, mit Zeichen der Begriffsart; Bedingungen in Klammern. */
+export function zielText(m: Modifikator, d: Spieldaten): string {
+  const z = m.ziel;
+  let text: string;
+  switch (z.art) {
+    case 'grundwert': text = grundwertName(z.id ?? '', d); break;
+    case 'stat': text = `Proben auf ${mitZeichen('stat', z.id ?? '', d)}`; break;
+    case 'skill': text = `Proben mit ${mitZeichen('skill', z.id ?? '', d)}`; break;
+    case 'probe': text = d.darstellung.proben[z.id ?? ''] ?? z.id ?? ''; break;
+    case 'alle': text = 'alle Proben'; break;
+  }
+  const wenn = bedingungText(m, d);
+  return wenn ? `${text} (${wenn})` : text;
+}
+
+/** Bedingung eines Modifikators als kurzer Text, leer ohne Bedingung. */
+export function bedingungText(m: Modifikator, d: Spieldaten): string {
+  const b = m.bedingung;
+  const wenn: string[] = [];
+  if (b?.skill) wenn.push(`mit ${mitZeichen('skill', b.skill, d)}`);
+  if (b?.baender?.length) wenn.push(b.baender.map((x) => bandName(x, d)).join(', '));
+  if (b?.stand) wenn.push(b.stand);
+  if (b?.ohne_bewegung) wenn.push('ohne Bewegung');
+  if (b?.aufgelegt) wenn.push('aufgelegt');
+  return wenn.join('; ');
+}
 
 /** Warum ein Kauf nicht geht, als kurzer Hinweis. */
 export function sperreText(sperre: Sperre, kosten: number, perkId: string | null, freie: number, d: Spieldaten,

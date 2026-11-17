@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-16",
+  "version": "2026-11-17",
   "herkunft": {
     "perk": {
       "zeichen": "◆",
@@ -63,5 +63,19 @@
     "2": "#e06a1b",
     "3": "#c0392b",
     "4": "#2b0a0a"
+  },
+  "grundwerte": {
+    "hp": "HP",
+    "schmerzresistenz": "Schmerzresistenz",
+    "nahkampfschaden": "Nahkampfschaden",
+    "wurfweite_band": "Wurfweite"
+  },
+  "proben": {
+    "schiessen": "Schießen",
+    "haltezahl": "Haltezahl",
+    "erholungsprobe": "Erholungsprobe",
+    "nerve_anstieg": "Nerve-Probe beim Anstieg",
+    "nerve_senken": "Nerve-Probe zum Senken",
+    "initiative": "Initiative"
   }
 }

@@ -88,7 +88,7 @@ Bis zum Abschluss lässt sich jeder Schritt zurücknehmen, außer den Würfen de
 ### 3.0a Modi: Lesen, Aufstieg, Schreiben (M)
 Ein fertiger Charakter hat drei Modi. Umgeschaltet wird über das **Menü** ([§ 3.0g](#30g-start-charaktere-und-menü-m)). Das **Statusfeld** im Kopf zeigt immer den Modus (im Lesemodus nichts); während der Erstellung zeigt es „Erstellung“.
 
-**Lesemodus** (Standard): Ein Charakter öffnet immer im Lesemodus, auch nach Neustart oder Import. Die Werte des Charakters sind gesperrt. Der Spielstand bleibt bedienbar: Leiter, HP, Wunden, Munition, Zustände, Heilung, Proben- und Schussrechner.
+**Lesemodus** (Standard): Ein Charakter öffnet immer im Lesemodus, auch nach Neustart oder Import. Die Werte des Charakters sind gesperrt. Der Spielstand bleibt bedienbar: Leiter, HP, Wunden, Munition, Zustände, Heilung, Proben- und Schussrechner, Notizen.
 
 **Aufstiegsmodus:** Steigern nach den Regeln, gegen freie Charakterpunkte ([§ 4.11](#411-charaktererstellung-und-aufstieg)).
 - **Leiste und „Jetzt möglich“:** Im Aufstiegsmodus steht oben im Reiter Werte fest eine Leiste mit den freien Punkten („5 Punkte frei“). Darunter zeigt der Abschnitt **Jetzt möglich** alles, was bezahlbar ist und dessen Voraussetzungen erfüllt sind: nächstes Level jedes steigerbaren ⬢ Skills, ■ Statrank-Ups, kaufbare ◆ Perks, jeweils mit Kosten. Ein Tipp kauft (mit Bestätigung). Ein Schalter blendet auch aus, was nur an Punkten scheitert („in Reichweite“).
@@ -101,7 +101,7 @@ Ein fertiger Charakter hat drei Modi. Umgeschaltet wird über das **Menü** ([§
 
 **Schreibmodus:** Für Sonderregeln, Boni und Mali, die die SL beschließt, und für Korrekturen.
 - Alle Werte sind direkt änderbar, ohne Punktkosten und ohne Prüfung der Voraussetzungen: Ränge, Abweichungen, Skills, Perks, Grundwerte, Ausrüstung, Klasse, Geld, freie Punkte.
-- **Dauerhafte Anpassungen:** Neben dem direkten Überschreiben kann der Schreibmodus **Anpassungen** anlegen: Modifikatoren ([§ 3.0b](#30b-herkunft-von-werten-a-r)) mit einem Grund (Freitext, z. B. „Bonus der SL: Ortskenntnis“). Anpassungen fließen automatisch in alle Rechnungen ein und lassen sich einzeln abschalten oder löschen.
+- **Dauerhafte Anpassungen:** Abschnitt „Anpassungen der SL“ im Reiter Werte (in den anderen Modi nur sichtbar, wenn es Anpassungen gibt). Neu anlegen mit Grund, Ziel (Grundwert, Proben auf einen Stat, Proben mit einem Skill, alle Proben), Art (erhöhend/senkend bzw. erleichternd ▲/erschwerend ▼) und Betrag. Neben dem direkten Überschreiben kann der Schreibmodus **Anpassungen** anlegen: Modifikatoren ([§ 3.0b](#30b-herkunft-von-werten-a-r)) mit einem Grund (Freitext, z. B. „Bonus der SL: Ortskenntnis“). Anpassungen fließen automatisch in alle Rechnungen ein und lassen sich einzeln abschalten oder löschen.
 - **Kennzeichnung:** Überschriebene und angepasste Werte tragen die Herkunftsmarkierung ([§ 3.0b](#30b-herkunft-von-werten-a-r)).
 - Jede Änderung wird mit `art: korrektur` bzw. `anpassung` protokolliert (vorher, nachher).
 
@@ -260,12 +260,16 @@ Die Silhouette ist **ein Baustein**, der überall gleich aussieht. Jede Instanz 
 
 ### 3.2 Stats (A, R)
 Neun Stats in drei Gruppen ([§ 4.1](#41-stats)). Gruppe A/B ist sichtbar, weil die Leiter danach wirkt.
-- **Sichtbar** ist je Stat der **Statwert** und seine **Step-Reihe**: Zielwert bei 0 bis 5 Malsteps ([§ 4.2](#42-steps-und-zielwert)).
+- **Sichtbar** ist je Stat der **Statwert** und seine **Step-Reihe**: Zielwert bei 0 bis 5 Malsteps ([§ 4.2](#42-steps-und-zielwert)). Darstellung: Die Stats stehen nach Gruppen (Gruppe A, B, C); oben eine Kopfreihe „Malsteps ▼1 … ▼5“, unter jedem Stat die Zielwerte in diesen Spalten. Der Statwert selbst ist der Wert bei 0 Malsteps.
+- **Markierung:** Zielt ein Perk oder eine Anpassung der SL auf Proben mit diesem Stat, trägt der Statwert ◆ bzw. ★ ([§ 3.0b](#30b-herkunft-von-werten-a-r)); das Detail listet sie auf. Die Step-Reihe bleibt die reine Reihe des Statwerts.
 - **Detail** per Antippen (kein Hover, da Handy): Rang, Abweichung, die beiden Würfel (positiv, negativ) und ob die App oder der Spieler gewürfelt hat.
 - **Vorkalkuliert:** Statwert und Step-Reihe ändern sich im Spiel nicht. Die App berechnet sie neu, sobald Rang oder Wurf sich ändern (Erstellung, Aufstieg, Schreibmodus), und hält sie sonst fest. Probenrechner und Schussrechner lesen daraus ab.
 
 ### 3.3 Grundwerte (A, R)
 HP (Höchstwert), Schmerzresistenz, Nahkampfschaden, Wurfweite. Startwerte aus `regeln.json`, erhöht durch Perks ([§ 4.10](#410-grundwerte)).
+- Unter den Perks. Jeder Grundwert trägt die Herkunftsmarkierung; Antippen zeigt die Aufschlüsselung: Start, je Perk und Anpassung eine Zeile (antippbar, springt zur Quelle), ggf. „von Hand gesetzt“ mit dem Wert, der berechnet wäre, und das Ergebnis.
+- **Schreibmodus:** Wert von Hand setzen (Wurfweite als Band); „Wieder berechnen“ hebt den Wert von Hand und die Markierung ✎ auf.
+- Die Anzeigenamen der Grundwerte stehen in `darstellung.json` (`grundwerte`).
 
 ### 3.4 Skills (A, M)
 Direkt unter den Stats. Je Skill: Name, Stufe (0–5), zugehöriger Stat.

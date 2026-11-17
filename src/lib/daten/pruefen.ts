@@ -83,6 +83,8 @@ export function pruefeDaten(d: Spieldaten): string[] {
       if (m.wirkung.wert !== undefined && m.ziel.art !== 'grundwert') f(ort, '„wert“ ist nur für Grundwerte erlaubt');
       for (const b of m.bedingung?.baender ?? []) if (!baender.has(b as never)) f(ort, `unbekanntes Band „${b}“`);
       if (m.bedingung?.skill && !skillIds.has(m.bedingung.skill)) f(ort, `unbekannter Skill „${m.bedingung.skill}“`);
+      if (m.ziel.art === 'probe' && !d.darstellung.proben?.[m.ziel.id ?? ''])
+        f(ort, `Probenart „${m.ziel.id}“ hat keinen Namen in darstellung.json (proben)`);
     }
   }
 
@@ -354,6 +356,8 @@ export function pruefeDaten(d: Spieldaten): string[] {
   for (const t of ['stat', 'skill', 'perk'] as const) if (!d.darstellung.typen[t]) f('darstellung.json', `Typ „${t}“ fehlt`);
   for (const [name, h] of [...Object.entries(d.darstellung.herkunft), ...Object.entries(d.darstellung.typen)])
     if (NUR_STEPS.includes(h.zeichen)) f('darstellung.json', `„${name}“ nutzt ${h.zeichen}; ▲ und ▼ sind für Steps reserviert`);
+  for (const id of Object.keys(r.grundwerte))
+    if (!d.darstellung.grundwerte?.[id]) f('darstellung.json', `Grundwert „${id}“ hat keinen Namen (grundwerte)`);
 
   return fehler;
 }

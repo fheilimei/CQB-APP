@@ -858,9 +858,14 @@ Zeichen und Farben der Herkunftsmarkierung ([konzept.md § 3.0b](konzept.md#30b-
     "0": "#9e9e9e",
     "1": "#f0a030", "2": "#e06a1b", "3": "#c0392b",
     "4": "#2b0a0a"
-  }
+  },
+  "grundwerte": { "hp": "HP", "schmerzresistenz": "Schmerzresistenz", "nahkampfschaden": "Nahkampfschaden", "wurfweite_band": "Wurfweite" },
+  "proben": { "schiessen": "Schießen", "haltezahl": "Haltezahl", "erholungsprobe": "Erholungsprobe", "nerve_anstieg": "Nerve-Probe beim Anstieg", "nerve_senken": "Nerve-Probe zum Senken", "initiative": "Initiative" }
 }
 ```
+
+- `grundwerte`: Anzeigenamen der Grundwerte; jeder Schlüssel aus `regeln.json` `grundwerte` braucht einen Namen (Datenprüfung).
+- `proben`: Anzeigenamen der Probenarten. Jede Probenart, auf die ein Modifikator zielt (`ziel.art` = `probe`), braucht hier einen Namen (Datenprüfung).
 
 Leiter, Zustand und Lage erscheinen nur in den Rechnern, nicht am Wert im Bogen.
 

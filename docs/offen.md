@@ -49,4 +49,11 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 3. **Mindestskills der Spezialisierung beim Einstieg als erweiterte Form.** Es gelten nur die Mindestskills der gewählten Klasse (sie enthalten laut Regelwerk die der Klasse darunter).
 4. **Klasse wechseln nach einem Statrank-Up in Schritt 5.** Der Statrank-Up bleibt am Stat (sein Wurf ist fest). Liegt der Stat danach ohne Rang oder schon auf S, zählt er nicht und kostet nichts; der Wurf ist dann verloren.
 5. **Laden in Schritt 7** fehlt noch (§ 3.14). Bis dahin wird nur das Startgeld gebucht.
-6. **Noch nicht im Schreibmodus:** Grundwerte, Anpassungen der SL, Klasse/Klassenweg, Geld, Hintergrund, Ausrüstung. Kommen mit den Schritten 4, 7 und 8. Klassenwechsel-Dialog kommt mit Schritt 8.
+6. **Noch nicht im Schreibmodus:** Klasse/Klassenweg, Geld, Optionen des Hintergrunds (Schulden, Coup, Vertrag), Ausrüstung. Kommen mit den Schritten 7 und 8. Klassenwechsel-Dialog kommt mit Schritt 8. Erledigt in Schritt 4: Grundwerte, Anpassungen der SL, Name, Aussehen, Freitexte des Hintergrunds.
+
+## Offen aus Schritt 4 (Bogen, 17.11.2026)
+
+1. **Notizen im Lesemodus.** Das Konzept legt nicht fest, ob Notizen gesperrt sind. *Vorläufig:* in jedem Modus änderbar (sie sind kein Wert des Charakters) und ohne Eintrag im Protokoll.
+2. **Skill antippen.** Laut Konzept § 3.4 öffnet das den Probenrechner. Bis zu Schritt 5 klappt der Skill ein Detail auf: Stat der Probe, Wirkung der Stufe, Perks und Anpassungen darauf.
+3. **Formular für Anpassungen.** Ziele: Grundwert, Proben auf einen Stat, Proben mit einem Skill, alle Proben; Betrag 1–5. *Noch nicht:* Probenarten (Schießen, Haltezahl …), Bedingungen (Band, Stand …) und Änderung der Krit-Schwelle. Lässt sich ergänzen, wenn die SL so etwas braucht.
+4. **Markierung bei Bedingungen.** Ein Modifikator mit Bedingung (z. B. Kernschuss nur mit dem Präzisionsgewehr) markiert seinen Stat bzw. Skill immer; ob er wirkt, zeigt erst der Probenrechner.
