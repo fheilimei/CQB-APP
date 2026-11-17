@@ -15,6 +15,7 @@ Rückmeldung des Nutzers vom 17.11.2026:
 - **Alles ist eine lange Liste.** Man sieht nicht, wo ein Abschnitt endet und der nächste beginnt.
 - **Abstände sind ungleich.** Mal 6, mal 8, mal 12, mal 16 Pixel, ohne erkennbaren Sinn.
 - **Der Würfelteil sieht aus wie eine weitere Auswahl.** Er muss sich klar von den Auswahlknöpfen abheben.
+- **Tippen ohne sichtbare Rückmeldung.** Beispiel Würfel: Tippt man auf eine Schaltfläche (z. B. Krit · gelungen · misslungen), bleibt sie unverändert; nur unten erscheint das Ergebnis. Die getippte Schaltfläche muss danach hervorgehoben sein.
 - Besonders aufgefallen: **Waffe wechseln** (`gefecht/WaffeWechseln.svelte`) und **Schießen** (`gefecht/Schiessen.svelte`).
 
 Jede Arbeit an der Oberfläche muss diese Punkte verbessern oder darf sie zumindest nicht verschlimmern.
@@ -56,7 +57,18 @@ Der Spieler muss auf einen Blick sehen, was ein Element tut:
 - Kommt ein Muster in zwei oder mehr Komponenten vor (z. B. Auswahl-Chips `.reihe`, Auswahlliste `.liste`, Abschnittsüberschrift), gehört es als gemeinsame Klasse nach `src/app.css` und wird aus den Komponenten entfernt.
 - Farben nur über die Farbvariablen (`--akzent`, `--flaeche-2`, `--text-2` …), nie als Farbwert in einer Komponente. Neue Farben in hell **und** dunkel anlegen.
 
-### 5. Lesbarkeit
+### 5. Jedes Tippen hat eine sichtbare Folge
+Der Spieler muss nach jedem Tippen sehen, dass etwas passiert ist und was jetzt gilt. Nur ein Ergebnis weiter unten reicht nicht, denn das liegt oft außerhalb des Blicks.
+- **Im Moment des Tippens:** Jeder Knopf, jeder Chip und jeder Schalter reagiert sofort sichtbar (gemeinsamer `:active`-Stil in `src/app.css`, z. B. dunklere Fläche oder leicht eingedrückt). Gilt für alle Knöpfe, nicht nur einzelne.
+- **Danach bleibt die Wahl sichtbar:** Wer etwas auswählt, sieht die Auswahl dauerhaft hervorgehoben (Akzentrahmen und Fläche, gleiches Aussehen in der ganzen App). Das gilt auch für Knöpfe, die ein Ergebnis eingeben, etwa Krit · gelungen · misslungen im Würfel oder ein von Hand eingegebener Wurf: Der getippte Knopf bleibt markiert, bis der Spieler etwas anderes wählt.
+- **Gewürfelt:** Nach dem Würfeln zeigt der Würfelbereich selbst das Ergebnis groß an (Zahl und Stufe), und der Würfelknopf ändert sich erkennbar (z. B. „Neu würfeln“).
+- **Schalter** (Häkchen, An/Aus) zeigen ihren Zustand mit mehr als nur dem Häkchen, z. B. hervorgehobene Zeile, wenn an.
+- **Zustand für Vorleseprogramme:** Auswahlen tragen `aria-pressed` bzw. `aria-checked`; der hervorgehobene Stil hängt an diesem Zustand, damit Aussehen und Zustand nie auseinanderlaufen.
+- **Gesperrte Knöpfe** sehen gesperrt aus, und daneben steht kurz, warum.
+- **Änderungen an Werten** (Zähler, Kontostand, Munition) sind sichtbar, z. B. kurz hervorgehoben, wenn sich die Zahl ändert.
+- Hervorhebungen funktionieren in hell und dunkel und nicht nur über Farbe (zusätzlich Rahmen, Fettschrift oder Zeichen), damit sie auch bei schlechtem Licht erkennbar sind.
+
+### 6. Lesbarkeit
 - Höchstens drei Schriftgrößen pro Bildschirm. Graue Kleinschrift (`.hinweis`) nur für Nebensachen.
 - Der wichtigste Wert eines Bildschirms (Zielwert, Ergebnis, Kontostand) ist am größten und auf Anhieb zu finden.
 - Lange Knopfbeschriftungen kürzen; Erklärungen gehören in den Hinweis darunter, nicht in den Knopf.
@@ -75,6 +87,7 @@ Der Spieler muss auf einen Blick sehen, was ein Element tut:
 - [ ] Bildschirm in Abschnitte mit Überschrift gegliedert; Grenzen klar sichtbar (Abstand + Linie oder Fläche)
 - [ ] Nur Abstände aus dem Raster; innerhalb einer Gruppe enger als zwischen Gruppen
 - [ ] Auswahl, Würfeln und Handlung sehen verschieden aus; Würfelbereich abgesetzt und zuletzt
+- [ ] Jedes Tippen sichtbar: Druck-Rückmeldung bei allen Knöpfen; gewählte Auswahl und eingegebenes Ergebnis bleiben hervorgehoben; Schalterzustand deutlich
 - [ ] Hinweise und Fehler direkt beim betroffenen Element
 - [ ] Vorhandene Bausteine genutzt; doppelte Stile nach `app.css` verschoben
 - [ ] Tippflächen mindestens 44 × 44 Pixel, auch bei Chips
