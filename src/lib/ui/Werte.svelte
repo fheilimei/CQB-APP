@@ -47,7 +47,6 @@
   const schreiben = $derived(modus === 'schreiben');
   const gruppen = $derived([...new Set(d.stats.eintraege.map((s) => s.gruppe))]);
   const malstepSpalten = $derived(Array.from({ length: d.regeln.steps.keine_probe_ab - 1 }, (_, i) => i + 1));
-  const statSchwelle = $derived(d.regeln.steps.keine_probe_ab);
 
   let offenStat = $state<string | null>(null);
   let offenSkill = $state<string | null>(null);
@@ -212,8 +211,8 @@
 
 <section class="karte">
   <h2>Stats</h2>
-  <div class="reihe kopfreihe" aria-hidden="true">
-    <span class="hinweis">Malsteps</span>
+  <div class="statgitter kopfreihe" style:--spalten={malstepSpalten.length} aria-hidden="true">
+    <span></span><span>Wert</span>
     {#each malstepSpalten as n (n)}<span>▼{n}</span>{/each}
   </div>
   {#each gruppen as gruppe (gruppe)}
@@ -227,16 +226,16 @@
         {@const offen = offenStat === s.id}
         {@const lt = leiterSpalte(s.id)}
         <li id="stat-{s.id}">
-          <button class="zeile flach stat" aria-expanded={offen} onclick={() => (offenStat = offen ? null : s.id)}>
-            <span class="statkopf">
+          <!-- Eine Zeile: Name mit Rang-Marke, groß der Statwert, dann die Zielwerte bei 1 bis 5 Malsteps absteigend. -->
+          <button class="zeile flach stat statgitter" style:--spalten={malstepSpalten.length} aria-expanded={offen} onclick={() => (offenStat = offen ? null : s.id)}>
+            <span class="statname">
               <Begriff art="stat" name={s.name} darstellung={d.darstellung} />
-              <span class="werte"><span class="hinweis">{e.rang}</span><strong class="wert" class:hand={markiert(`stats.${s.id}`)} class:gilt={lt.wirkt && lt.spalte === 0}>{sw ?? '–'}<Herkunft quellen={[...quellenVon(mods, `stats.${s.id}`), ...(lt.wirkt ? ['leiter'] : [])]} darstellung={d.darstellung} /></strong></span>
+              {#if e.rang}<span class="rang" aria-label="Rang {e.rang}">{e.rang}</span>{/if}
             </span>
+            <strong class="statwert" class:hand={markiert(`stats.${s.id}`)} class:gilt={lt.wirkt && lt.spalte === 0}>{sw ?? '–'}<Herkunft quellen={[...quellenVon(mods, `stats.${s.id}`), ...(lt.wirkt ? ['leiter'] : [])]} darstellung={d.darstellung} /></strong>
             {#if sw !== null}
-              <span class="reihe" aria-label="Zielwert bei 1 bis {statSchwelle - 1} Malsteps: {stepReihe(sw, d.regeln).slice(1).join(', ')}">
-                <span></span>
-                {#each stepReihe(sw, d.regeln).slice(1) as z, i (i)}<span class:gilt={lt.wirkt && lt.spalte === i + 1}>{z}</span>{/each}
-              </span>
+              {#each stepReihe(sw, d.regeln).slice(1) as z, i (i)}<span class="step" class:gilt={lt.wirkt && lt.spalte === i + 1}
+                aria-label="bei {i + 1} {i === 0 ? 'Malstep' : 'Malsteps'}: {z}">{z}</span>{/each}
             {/if}
           </button>
           {#if offen}
@@ -386,17 +385,21 @@
   .hintergrund { margin: 0; padding-left: var(--abstand-4); display: flex; flex-direction: column; gap: var(--abstand-1); }
   .kopf { display: flex; justify-content: space-between; align-items: center; }
   .kopf h2 { margin: 0; }
-  .werte { display: flex; align-items: center; gap: 12px; }
 
-  /* Stat: oben Name, Rang, Statwert; darunter die Step-Reihe in Spalten unter der Kopfreihe ▼1 … ▼5. */
-  .stat { flex-direction: column; align-items: stretch; gap: 0; padding: 6px 0; }
-  .statkopf { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-  .reihe { display: grid; grid-template-columns: 1.6fr repeat(5, 1fr); font-size: 0.85rem; color: var(--text-2);
-    font-variant-numeric: tabular-nums; }
-  .reihe > span { text-align: right; }
+  /* Stat in einer Zeile: Name (mit Rang-Marke) | Statwert groß | Zielwerte bei ▼1 … ▼n, von links nach rechts absteigend.
+     Kopfreihe und Zeilen teilen dieselben Spalten, damit die Zahlen untereinander stehen. */
+  /* Spaltenbreiten in rem, damit „Decisiveness“ bei 360 Pixel Breite neben fünf Steps passt. */
+  .statgitter, .zeile.statgitter { display: grid; grid-template-columns: minmax(0, 1fr) 2.6rem repeat(var(--spalten), 1.6rem); align-items: center;
+    column-gap: 2px; font-variant-numeric: tabular-nums; }
+  .stat { padding: var(--abstand-1) 0; }
+  .statname { display: flex; align-items: center; flex-wrap: wrap; gap: var(--abstand-1) var(--abstand-2); min-width: 0; }
+  /* Rang: kleine umrandete Marke am Namen, sieht anders aus als Werte und Steps. */
+  .rang { font-size: 0.75rem; font-weight: 700; line-height: 1; padding: 3px 6px; border: 1px solid var(--text-2); border-radius: 6px; color: var(--text-2); }
+  .statwert { font-size: 1.35rem; text-align: right; white-space: nowrap; }
+  .step { text-align: right; font-size: 0.85rem; color: var(--text-2); }
   .gilt { outline: 2px solid var(--akzent); outline-offset: 1px; border-radius: 4px; color: var(--text); font-weight: 700; }
-  .kopfreihe { font-size: 0.75rem; border-bottom: 1px solid var(--linie); padding-bottom: 2px; }
-  .kopfreihe > span:first-child { text-align: left; }
+  .kopfreihe { font-size: 0.75rem; color: var(--text-2); border-bottom: 1px solid var(--linie); padding-bottom: 2px; }
+  .kopfreihe > span { text-align: right; }
 
   .skill { display: flex; align-items: center; gap: 8px; }
   .skill .name { flex: 1; min-width: 0; }

@@ -20,6 +20,7 @@ Rückmeldung des Nutzers vom 17.11.2026:
 - **Konsistenz** (17.11.2026): Eine Verbesserung an einem Bildschirm wird auf alle gleichartigen Bildschirme übertragen, nicht nur auf den genannten.
 - **Wichtige Werte müssen beim Scrollen sichtbar bleiben** (17.11.2026): Zielwert, Krit-Schwelle, Malsteps und Stepshields stehen im festen Kopf des Dialogs (`dialogkopf.ts`). Gilt sinngemäß für andere Werte, auf die sich die Auswahl weiter unten auswirkt.
 - **Nichts anzeigen, was im gewählten Modus nicht gebraucht wird** (17.11.2026): z. B. keine Knöpfe Krit · gelungen · misslungen, wenn die App würfelt.
+- **Zusammengehöriges in eine Zeile, Arten von Werten unterscheidbar** (17.11.2026, Stats im Reiter Werte): Hauptwert direkt neben dem Namen, Folgewerte (Steps) in derselben Zeile in fester Reihenfolge. Eine Eigenschaft wie der Rang sieht anders aus als Zahlenwerte (kleine Marke) und schwebt nicht über anderen Werten.
 - Besonders aufgefallen: **Waffe wechseln** (`gefecht/WaffeWechseln.svelte`) und **Schießen** (`gefecht/Schiessen.svelte`).
 
 Jede Arbeit an der Oberfläche muss diese Punkte verbessern oder darf sie zumindest nicht verschlimmern.
