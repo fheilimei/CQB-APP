@@ -54,7 +54,7 @@
   {/if}
   <div class="pool" role="group" aria-label="Noch zu vergeben">
     {#each offen as r, i (i)}
-      <button class="rang" class:an={rangWahl === i} aria-pressed={rangWahl === i} onclick={() => tippRang(i)}>{r}</button>
+      <button class="rang" aria-pressed={rangWahl === i} onclick={() => tippRang(i)}>{r}</button>
     {:else}
       <p class="hinweis">Alle Ränge sind vergeben.</p>
     {/each}
@@ -70,7 +70,7 @@
     {@const v = verlangt(s.id)}
     <li>
       {#if set}
-        <button class="zeile" class:an={statWahl === s.id} aria-pressed={statWahl === s.id} onclick={() => tippStat(s.id)}>
+        <button class="zeile" aria-pressed={statWahl === s.id} onclick={() => tippStat(s.id)}>
           <span><Begriff art="stat" name={s.name} darstellung={d.darstellung} />
             {#if v}<span class="hinweis"> · braucht {v.rang}</span>{/if}</span>
           <span class="werte"><strong class="rangfeld">{e.rang ?? '–'}</strong><span class="wert">{wert ?? ''}</span></span>
@@ -94,7 +94,6 @@
 <style>
   .pool { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; min-height: 48px; }
   .rang { font-weight: 700; font-size: 1.1rem; min-width: 48px; padding: 0 12px; }
-  .rang.an, .zeile.an { border-color: var(--akzent); box-shadow: inset 0 0 0 2px var(--akzent); }
   .stats { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
   .zeile { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 8px; text-align: left; }
   .ohne { margin: 0; font-weight: 400; }

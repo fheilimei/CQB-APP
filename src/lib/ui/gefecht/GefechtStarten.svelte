@@ -58,13 +58,15 @@
     {#if kampfunfaehig}
       <p class="warnung">⚠ kampfunfähig: Im Gefecht hast du keine Aktionen. Die SL entscheidet.</p>
     {/if}
-    <div class="auswahl" role="group" aria-label="Beginn des Gefechts">
-      <span>Beginn des Gefechts:</span>
-      <button class:an={!ueberrascht} aria-pressed={!ueberrascht} onclick={() => (ueberrascht = false)}>normal</button>
-      <button class:an={ueberrascht} aria-pressed={ueberrascht} onclick={() => (ueberrascht = true)}>überrascht</button>
-    </div>
-    <p class="hinweis">Nerve-Probe vor dem Gefecht mit {mitZeichen('skill', probe.skill ?? '', d)}. Umstände trägt die SL als Malsteps ein.
+    <div class="gruppe" role="group" aria-label="Beginn des Gefechts">
+      <span class="gruppe-titel">Beginn des Gefechts:</span>
+      <div class="auswahlreihe gleich">
+        <button aria-pressed={!ueberrascht} onclick={() => (ueberrascht = false)}>normal</button>
+        <button aria-pressed={ueberrascht} onclick={() => (ueberrascht = true)}>überrascht</button>
+      </div>
+      <p class="hinweis">Nerve-Probe vor dem Gefecht mit {mitZeichen('skill', probe.skill ?? '', d)}. Umstände trägt die SL als Malsteps ein.
       Krit, gelungen, misslungen: {['krit', 'gelungen', 'misslungen'].map((k) => standText(d.regeln.leiter.start[ueberrascht ? 'ueberrascht' : 'normal']![k as 'krit'], d)).join(' · ')}.</p>
+    </div>
     <ProbeKern {c} {d} anfrage={{ stat: probe.stat, skill: probe.skill, probe: 'nerve_start' }} hinweise={['leiter']} {wuerfelModus}
       mitAusgang bind:ergebnis {onaendern} />
     {#snippet knoepfe()}
@@ -73,9 +75,3 @@
     {/snippet}
   </Dialog>
 {/if}
-
-<style>
-  .auswahl { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-  .auswahl button.an { border: 2px solid var(--akzent); background: var(--flaeche-2); font-weight: 700; }
-  .warnung { color: var(--gefahr); font-weight: 700; }
-</style>

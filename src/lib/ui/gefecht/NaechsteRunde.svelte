@@ -73,14 +73,17 @@
     {#if g.gesenkt_diese_runde}
       <p><strong>Du hast in dieser Runde gesenkt:</strong> kein Anstieg, keine Probe.</p>
     {:else}
-      <p class="hinweis">Was ist dir in dieser Runde passiert? Jeder Auslöser zählt einmal.</p>
+      <div class="gruppe">
+      <h3 class="abschnitt-titel">Was ist dir in dieser Runde passiert?</h3>
+      <p class="hinweis">Jeder Auslöser zählt einmal.</p>
       <ul class="liste">
         {#each d.regeln.leiter.ausloeser as a (a.id)}
           <li><label class="schalter gross"><input type="checkbox" checked={ausloeser.includes(a.id)} onchange={() => umschalten(a.id)} /> {a.name}</label></li>
         {/each}
       </ul>
+      </div>
       {#if mitProbe}
-        <h3>Nerve-Probe gegen den Anstieg (freiwillig)</h3>
+        <h3 class="abschnitt-titel trenner">Nerve-Probe gegen den Anstieg (freiwillig)</h3>
         {#if verzichtet}
           <p>Du verzichtest und steigst. <button class="flach link" onclick={() => (verzichtet = false)}>Doch würfeln</button></p>
         {:else}
@@ -101,6 +104,6 @@
 <style>
   .liste { list-style: none; margin: 0; padding: 0; }
   .gross input { width: 28px; height: 28px; }
-  h3 { font-size: 1rem; margin: 16px 0 8px; }
-  .breit { width: 100%; margin-top: 8px; }
+  .trenner { border-top: 1px solid var(--linie); padding-top: var(--abstand-3); }
+  .breit { width: 100%; }
 </style>

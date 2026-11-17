@@ -68,8 +68,8 @@
   <div class="kopf">
     <svelte:element this={eingebettet ? 'h4' : 'h3'} class="titel">{titel || art}</svelte:element>
     <div class="umschalter" role="group" aria-label="Wer würfelt">
-      <button class:an={aktiv === 'app'} aria-pressed={aktiv === 'app'} onclick={() => (aktiv = 'app')}>App würfelt</button>
-      <button class:an={aktiv === 'hand'} aria-pressed={aktiv === 'hand'} onclick={() => (aktiv = 'hand')}>von Hand</button>
+      <button aria-pressed={aktiv === 'app'} onclick={() => (aktiv = 'app')}>App würfelt</button>
+      <button aria-pressed={aktiv === 'hand'} onclick={() => (aktiv = 'hand')}>von Hand</button>
     </div>
   </div>
 

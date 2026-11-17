@@ -159,7 +159,7 @@
       <span class="gruppe-titel">Sicht:</span>
       <div class="auswahlreihe">
       {#each d.regeln.sicht.stufen as s (s.id)}
-        <button class:an={sichtstufe === s.id} aria-pressed={sichtstufe === s.id} onclick={() => sichtWaehlen(s.id)}>{s.name}</button>
+        <button aria-pressed={sichtstufe === s.id} onclick={() => sichtWaehlen(s.id)}>{s.name}</button>
       {/each}
       </div>
     </div>

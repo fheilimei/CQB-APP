@@ -142,11 +142,12 @@
     {/if}
 
     {#if aktion === 'break'}
-      <h3>Zuerst: mit oder ohne Probe?</h3>
-      <div class="drei" role="group" aria-label="Probe der Breakaction">
-        <button class:an={breakProbe === 'ohne'} aria-pressed={breakProbe === 'ohne'} onclick={() => { breakProbe = 'ohne'; breakErgebnis = null; }}>Ohne Probe</button>
-        <button class:an={breakProbe === 'reaktion'} aria-pressed={breakProbe === 'reaktion'} onclick={() => { breakProbe = 'reaktion'; breakErgebnis = null; }}>Reaktion</button>
-        <button class:an={breakProbe === 'antizipation'} aria-pressed={breakProbe === 'antizipation'} disabled={tunnelblick}
+      <section class="abschnitt">
+      <h3 class="abschnitt-titel">Zuerst: mit oder ohne Probe?</h3>
+      <div class="auswahlreihe gleich" role="group" aria-label="Probe der Breakaction">
+        <button aria-pressed={breakProbe === 'ohne'} onclick={() => { breakProbe = 'ohne'; breakErgebnis = null; }}>Ohne Probe</button>
+        <button aria-pressed={breakProbe === 'reaktion'} onclick={() => { breakProbe = 'reaktion'; breakErgebnis = null; }}>Reaktion</button>
+        <button aria-pressed={breakProbe === 'antizipation'} disabled={tunnelblick}
           onclick={() => { breakProbe = 'antizipation'; breakErgebnis = null; }}>Antizipation</button>
       </div>
       {#if tunnelblick}<p class="hinweis">Tunnelblick: keine Antizipation.</p>{/if}
@@ -163,11 +164,12 @@
         {/key}
         <p class="hinweis">Sag das Ergebnis an. Die Reihenfolge legt die SL fest. Danach wählst du die Aktion.</p>
       {/if}
-      {#if breakProbe}<h3>Aktion</h3>{/if}
+      </section>
+      {#if breakProbe}<h3 class="abschnitt-titel trenner">Aktion</h3>{/if}
     {/if}
 
     {#if aktion === 'main' || (aktion === 'break' && breakProbe)}
-      <ul class="optionen">
+      <ul class="auswahlliste">
         {#each aktion === 'main' ? mainOptionen : breakOptionen as o (o.text)}
           <li><button disabled={!!o.sperre} onclick={o.los}>
             <span>{o.text}</span>
@@ -178,11 +180,11 @@
     {:else if aktion === 'bewegung'}
       {@const arten = bewegungsarten(c, d)}
       <p class="hinweis">Dein Stand: {standAdjektiv(eigenerStand(g, d), d)}. Noch {verfuegbar(c, 'bewegung', d)} × Bewegung.{#if g.bewegt} Bisher: {bewegungName(g.bewegt, d)}.{/if}</p>
-      <ul class="optionen">
+      <ul class="auswahlliste">
         {#each arten as b (b.id)}
           {@const art = r.bewegung.arten[b.id]!}
           {@const m = typeof art.meter === 'number' ? art.meter : (art.meter[eigenerStand(g, d)] ?? Math.max(...Object.values(art.meter)))}
-          <li><button class:an={wahl === b.id} disabled={!b.erlaubt} onclick={() => (wahl = b.id)}>
+          <li><button aria-pressed={wahl === b.id} disabled={!b.erlaubt} onclick={() => (wahl = b.id)}>
             <span>{bewegungName(b.id, d)}</span>
             <small class:sperre={!b.erlaubt}>{b.erlaubt ? `${m} m · hörbar bis ${d.regeln.schiessen.reichweitenbaender.find((x) => x.id === art.hoerbar)?.name}` : b.grund === 'stand' ? 'nicht in diesem Stand' : b.grund === 'konzentration' ? 'Konzentration' : 'Rüstung oder Schild: höchstens Gehen'}</small>
           </button></li>
@@ -197,9 +199,9 @@
     <p>{ansicht.text}</p>
     {#if ansicht.freitext}<input placeholder="Was tust du? (optional)" aria-label="Beschreibung" bind:value={freitext} />{/if}
     {#if ansicht.konzentration}
-      <div class="drei" role="group" aria-label="Konzentration">
+      <div class="auswahlreihe gleich" role="group" aria-label="Konzentration">
         {#each [['keine', 'ohne Konzentration'], ['leicht', 'leicht'], ['voll', 'voll']] as [id, text] (id)}
-          <button class:an={konz === id} aria-pressed={konz === id} disabled={id !== 'keine' && !konzentrationMoeglich(c)} onclick={() => (konz = id as typeof konz)}>{text}</button>
+          <button aria-pressed={konz === id} disabled={id !== 'keine' && !konzentrationMoeglich(c)} onclick={() => (konz = id as typeof konz)}>{text}</button>
         {/each}
       </div>
       {#if konz !== 'keine'}<p class="hinweis">Konzentration: In dieser Runde keine Breakaction mehr; {konz === 'leicht' ? 'Bewegung höchstens Gehen' : 'keine Bewegung und kein Standwechsel'}.</p>{/if}
@@ -209,9 +211,9 @@
   {:else if ansicht.art === 'hechten'}
     <p>Du springst bis zu {r.bewegung.hechten.meter} m weit (hörbar bis {d.regeln.schiessen.reichweitenbaender.find((x) => x.id === r.bewegung.hechten.hoerbar)?.name}).
       Bis Rundenende bist du schwerer zu treffen, und eigene Schüsse haben die Malsteps fürs Hechten. Hechten ist keine Bewegung.</p>
-    <div class="drei" role="group" aria-label="Zielstand">
+    <div class="auswahlreihe gleich" role="group" aria-label="Zielstand">
       {#each r.hechten.staende as s (s)}
-        <button class:an={wahl === s} aria-pressed={wahl === s} onclick={() => (wahl = s)}>{r.staende.find((x) => x.id === s)?.name ?? s}</button>
+        <button aria-pressed={wahl === s} onclick={() => (wahl = s)}>{r.staende.find((x) => x.id === s)?.name ?? s}</button>
       {/each}
     </div>
     <p class="hinweis">Ausführen: {AKTION_NAME[ansicht.als]} −1.</p>
@@ -271,22 +273,14 @@
 {#snippet standWahl()}
   <p class="hinweis">Dein Stand: {standAdjektiv(eigenerStand(g, d), d)}.
     {#if aktion === 'stand'}{standAls === 'break' ? 'Der Standwechsel dieser Runde ist verbraucht; ein weiterer kostet die Breakaction.' : standAls === null ? 'Kein Standwechsel mehr möglich.' : ''}{/if}</p>
-  <div class="drei" role="group" aria-label="Neuer Stand">
+  <div class="auswahlreihe gleich" role="group" aria-label="Neuer Stand">
     {#each r.staende as s (s.id)}
-      <button class:an={wahl === s.id} aria-pressed={wahl === s.id} disabled={s.id === eigenerStand(g, d)} onclick={() => (wahl = s.id)}>{s.name}</button>
+      <button aria-pressed={wahl === s.id} disabled={s.id === eigenerStand(g, d)} onclick={() => (wahl = s.id)}>{s.name}</button>
     {/each}
   </div>
   <p class="hinweis">Liegend: 1 Stepshield nur auf die Haltezahl; Hocke und Liegen machen dich zum kleineren Ziel.</p>
 {/snippet}
 
 <style>
-  h3 { font-size: 0.9rem; color: var(--text-2); margin: 16px 0 6px; }
-  .optionen { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
-  .optionen button { width: 100%; display: flex; flex-direction: column; align-items: flex-start; text-align: left; padding: 6px 12px; }
-  .optionen button.an { border: 2px solid var(--akzent); background: var(--flaeche-2); }
-  .optionen small { color: var(--text-2); font-size: 0.8rem; }
-  .optionen small.sperre { color: var(--gefahr); }
-  .drei { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 8px 0; }
-  .drei button { padding: 0 6px; }
-  .drei button.an { border: 2px solid var(--akzent); background: var(--flaeche-2); font-weight: 700; }
+  .abschnitt-titel.trenner { border-top: 1px solid var(--linie); padding-top: var(--abstand-3); }
 </style>

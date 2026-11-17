@@ -104,34 +104,40 @@
       <p class="hinweis">Ersatzmagazine, lose Patronen und Geschosse trägst du im Reiter Ausrüstung ein.</p>
     {:else}
       {#if arten.length > 1}
-        <div class="wahl" role="group" aria-label="Art">
+        <div class="auswahlreihe" role="group" aria-label="Art">
           {#each arten as a, i (i)}
-            <button class:an={gewaehlt === i} aria-pressed={gewaehlt === i} onclick={() => (gewaehlt = i)}>
+            <button aria-pressed={gewaehlt === i} onclick={() => (gewaehlt = i)}>
               {a.art === 'zubehoer' ? zubehoerName(a.zubehoer) : artName[a.art]}</button>
           {/each}
         </div>
       {/if}
       {#if art?.art === 'magazin'}
-        <p>Welches Magazin?</p>
-        <div class="wahl" role="group" aria-label="Magazin">
+        <div class="gruppe" role="group" aria-label="Magazin">
+        <span class="gruppe-titel">Welches Magazin?</span>
+        <div class="auswahlreihe">
           {#each e.reserve as n, i (i)}
-            <button class:an={(magazin ?? art.vorwahl) === i} aria-pressed={(magazin ?? art.vorwahl) === i} onclick={() => (magazin = i)}>{n}</button>
+            <button aria-pressed={(magazin ?? art.vorwahl) === i} onclick={() => (magazin = i)}>{n}</button>
           {/each}
+        </div>
         </div>
       {:else if art?.art === 'einzeln'}
-        <p>Wie viele Patronen? (höchstens {art.patronen} pro Mainaction)</p>
-        <div class="wahl" role="group" aria-label="Patronen">
+        <div class="gruppe" role="group" aria-label="Patronen">
+        <span class="gruppe-titel">Wie viele Patronen? (höchstens {art.patronen} pro Mainaction)</span>
+        <div class="auswahlreihe">
           {#each Array.from({ length: art.patronen }, (_, i) => i + 1) as n (n)}
-            <button class:an={(einzeln ?? art.patronen) === n} aria-pressed={(einzeln ?? art.patronen) === n} onclick={() => (einzeln = n)}>{n}</button>
+            <button aria-pressed={(einzeln ?? art.patronen) === n} onclick={() => (einzeln = n)}>{n}</button>
           {/each}
         </div>
+        </div>
       {:else if art?.art === 'werfer'}
-        <p>Welches Geschoss?</p>
-        <div class="wahl" role="group" aria-label="Geschoss">
+        <div class="gruppe" role="group" aria-label="Geschoss">
+        <span class="gruppe-titel">Welches Geschoss?</span>
+        <div class="auswahlreihe">
           {#each art.geschosse as g (g.id)}
-            <button class:an={(geschoss ?? art.geschosse[0]!.id) === g.id} aria-pressed={(geschoss ?? art.geschosse[0]!.id) === g.id}
+            <button aria-pressed={(geschoss ?? art.geschosse[0]!.id) === g.id}
               onclick={() => (geschoss = g.id)}>{sprengwaffe(g.id, d)?.name ?? g.id} ({g.anzahl})</button>
           {/each}
+        </div>
         </div>
       {:else if art?.art === 'zubehoer'}
         <p>{zubehoerName(art.zubehoer)}: {art.gefuellt} gefüllt. Füllt die Waffe auf einmal.</p>
@@ -149,8 +155,3 @@
     {/snippet}
   </Dialog>
 {/if}
-
-<style>
-  .wahl { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
-  .wahl button.an { border: 2px solid var(--akzent); background: var(--flaeche-2); font-weight: 700; }
-</style>

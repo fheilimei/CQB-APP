@@ -51,7 +51,7 @@
       {#each optionen as id (id)}
         {@const an = e.meister_skills.includes(id)}
         <li>
-          <button class="zeile" class:an aria-pressed={an} disabled={!an && e.meister_skills.length >= wahl.anzahl} onclick={() => umschalten(id)}>
+          <button class="zeile" aria-pressed={an} disabled={!an && e.meister_skills.length >= wahl.anzahl} onclick={() => umschalten(id)}>
             <Begriff art="skill" name={skillName(id, d)} darstellung={d.darstellung} />
             <span class="hinweis">{exklusiv.includes(id) ? 'exklusiv' : ''}{an ? ' ✓' : ''}</span>
           </button>
@@ -67,5 +67,4 @@
   .liste li { display: flex; justify-content: space-between; align-items: center; min-height: 32px; }
   .wahl li { min-height: 0; }
   .zeile { width: 100%; display: flex; justify-content: space-between; align-items: center; text-align: left; }
-  .zeile.an { border-color: var(--akzent); box-shadow: inset 0 0 0 2px var(--akzent); }
 </style>

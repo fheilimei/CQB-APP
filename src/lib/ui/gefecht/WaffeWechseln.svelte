@@ -58,15 +58,15 @@
   <Dialog titel="Waffe wechseln">
     {#if alt}<p>Jetzt in der Hand: <strong>{waffeVon(alt, d).name}</strong> ({trageortName(alt.trageort, d)})</p>{/if}
     {#if andere.length}
-      <ul class="liste">
+      <ul class="auswahlliste">
         {#each andere as w (w.id)}
           {@const k = wechselkosten(c, w.id, d)}
           {@const sperre = moeglich(k.kosten)}
           <li>
-            <button class:an={ziel === w.id} aria-pressed={ziel === w.id} disabled={!!sperre} onclick={() => (ziel = w.id)}>
+            <button aria-pressed={ziel === w.id} disabled={!!sperre} onclick={() => (ziel = w.id)}>
               <strong>{waffeVon(w, d).name}</strong>
-              <span class="hinweis">{trageortName(w.trageort, d)} · {kostenText(k.kosten)}{k.perk ? ` (◆ ${k.perk})` : ''}</span>
-              {#if sperre}<span class="fehler">{sperre}</span>{/if}
+              <small>{trageortName(w.trageort, d)} · {kostenText(k.kosten)}{k.perk ? ` (◆ ${k.perk})` : ''}</small>
+              {#if sperre}<small class="sperre">{sperre}</small>{/if}
             </button>
           </li>
         {/each}
@@ -80,9 +80,3 @@
     {/snippet}
   </Dialog>
 {/if}
-
-<style>
-  .liste { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
-  .liste button { width: 100%; display: flex; flex-direction: column; align-items: flex-start; padding: 8px 12px; text-align: left; }
-  .liste button.an { border: 2px solid var(--akzent); background: var(--flaeche-2); }
-</style>

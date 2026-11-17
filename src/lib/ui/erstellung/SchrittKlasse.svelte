@@ -35,9 +35,9 @@
 <h3>Laufbahn</h3>
 <div class="wahl" role="group" aria-label="Laufbahn">
   {#each d.klassen.laufbahnen as l (l.id)}
-    <button class:an={laufbahn === l.id} aria-pressed={laufbahn === l.id} onclick={() => waehleLaufbahn(l.id)}>{l.name}</button>
+    <button aria-pressed={laufbahn === l.id} onclick={() => waehleLaufbahn(l.id)}>{l.name}</button>
   {/each}
-  <button class:an={laufbahn === 'ohne'} aria-pressed={laufbahn === 'ohne'} onclick={() => waehleLaufbahn('ohne')}>ohne Klasse</button>
+  <button aria-pressed={laufbahn === 'ohne'} onclick={() => waehleLaufbahn('ohne')}>ohne Klasse</button>
 </div>
 
 {#if laufbahn === 'ohne'}
@@ -52,7 +52,7 @@
   <ul class="klassen">
     {#each klassen as k (k.id)}
       <li>
-        <button class="zeile" class:an={gewaehlt?.id === k.id} aria-pressed={gewaehlt?.id === k.id} onclick={() => waehle(k.id)}>
+        <button class="zeile" aria-pressed={gewaehlt?.id === k.id} onclick={() => waehle(k.id)}>
           <strong>{k.name}</strong>
           <span class="hinweis">{stufeName(k.stufe, d)} · Stufe {k.stufe}</span>
         </button>
@@ -76,7 +76,7 @@
       <h4>Stufe-4-Klasse, aus der du kommst</h4>
       <div class="wahl spalte" role="group" aria-label="Stufe-4-Klasse">
         {#each stufe4Optionen(gewaehlt.id, d) as s4 (s4.id)}
-          <button class:an={e.stufe4 === s4.id} aria-pressed={e.stufe4 === s4.id}
+          <button aria-pressed={e.stufe4 === s4.id}
             onclick={() => (c.erstellung = { ...c.erstellung!, stufe4: s4.id, meister_skills: [] })}>{s4.name}</button>
         {/each}
       </div>
@@ -91,7 +91,6 @@
   h3 { margin: 20px 0 8px; }
   .wahl { display: flex; flex-wrap: wrap; gap: 8px; }
   .wahl.spalte { flex-direction: column; }
-  .wahl button.an, .zeile.an { border-color: var(--akzent); box-shadow: inset 0 0 0 1px var(--akzent); font-weight: 600; }
   .klassen { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
   .zeile { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 8px; text-align: left; }
   .detail { margin-top: 16px; }

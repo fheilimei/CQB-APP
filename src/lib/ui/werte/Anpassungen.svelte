@@ -88,9 +88,9 @@
         </select>
         <div class="wahl" role="group" aria-label="Art der Anpassung">
           <span>Art:</span>
-          <button class:an={richtung === 'bonus'} aria-pressed={richtung === 'bonus'} onclick={() => (richtung = 'bonus')}>
+          <button aria-pressed={richtung === 'bonus'} onclick={() => (richtung = 'bonus')}>
             {istGrundwert ? 'erhöhend (+)' : 'erleichternd (▲)'}</button>
-          <button class:an={richtung === 'malus'} aria-pressed={richtung === 'malus'} onclick={() => (richtung = 'malus')}>
+          <button aria-pressed={richtung === 'malus'} onclick={() => (richtung = 'malus')}>
             {istGrundwert ? 'senkend (−)' : 'erschwerend (▼)'}</button>
         </div>
         <div class="wahl">
@@ -115,6 +115,5 @@
   .neu { margin-top: 12px; border-top: 1px solid var(--linie); padding-top: 4px; }
   .neu summary { min-height: 44px; display: flex; align-items: center; font-weight: 600; cursor: pointer; }
   .wahl { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
-  .wahl button.an { border-color: var(--akzent); box-shadow: inset 0 0 0 2px var(--akzent); font-weight: 600; }
   .breit { width: 100%; margin-top: 16px; }
 </style>

@@ -7,9 +7,11 @@
 </script>
 
 <Dialog {titel}>
-  {#each zeilen as z, i (i)}
-    <p class:fett={z.fett}>{z.text}</p>
-  {/each}
+  <div class="gruppe">
+    {#each zeilen as z, i (i)}
+      <p class:fett={z.fett}>{z.text}</p>
+    {/each}
+  </div>
   {#snippet knoepfe()}
     <button onclick={onzurueck}>Zurück</button>
     <button class="haupt" onclick={onweiter}>{weiter}</button>
@@ -17,6 +19,5 @@
 </Dialog>
 
 <style>
-  p { margin: 0 0 8px; }
   .fett { font-weight: 700; }
 </style>

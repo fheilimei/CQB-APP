@@ -37,7 +37,8 @@
     {/each}
   </ul>
   {#if stufe.symptome.length}
-    <h3>Symptome</h3>
+    <div class="gruppe">
+    <h3 class="abschnitt-titel">Symptome</h3>
     <ul class="symptome">
       {#each stufe.symptome as id (id)}
         {@const s = d.regeln.symptome[id]!}
@@ -45,6 +46,7 @@
         <li>✖ {s.verlust}</li>
       {/each}
     </ul>
+    </div>
   {:else}
     <p class="hinweis">Bei 0 gibt es keine Steps und keine Symptome.</p>
   {/if}
@@ -62,9 +64,7 @@
 
 <style>
   .gruppen, .symptome { list-style: none; margin: 0; padding: 0; }
-  .gruppen li { display: flex; justify-content: space-between; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--linie); }
-  .symptome li { margin: 6px 0; }
-  h3 { font-size: 1rem; margin: 16px 0 4px; }
-  .aktionen { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
-  .warnung { color: var(--gefahr); font-weight: 700; }
+  .gruppen li { display: flex; justify-content: space-between; gap: var(--abstand-2); padding: var(--abstand-2) 0; border-bottom: 1px solid var(--linie); }
+  .symptome { display: flex; flex-direction: column; gap: var(--abstand-1); }
+  .aktionen { display: flex; flex-direction: column; gap: var(--abstand-2); }
 </style>

@@ -65,8 +65,6 @@
   .kopf { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
   h3 { margin: 0; }
   h4 { margin: 16px 0 6px; font-size: 0.95rem; color: var(--text-2); }
-  .schalter { display: flex; align-items: center; gap: 8px; margin: 0; font-weight: 400; min-height: 44px; }
-  .schalter input { width: 22px; height: 22px; min-height: 0; }
   ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
   .zeile { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 12px; text-align: left; padding: 8px 12px; }
   .links { display: flex; flex-direction: column; min-width: 0; }

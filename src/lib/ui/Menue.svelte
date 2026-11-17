@@ -97,9 +97,9 @@
       {#if p.modus}
         <h3>Modus</h3>
         <div class="zwei">
-          <button class:an={p.modus === 'aufstieg'} aria-pressed={p.modus === 'aufstieg'} disabled={p.imGefecht}
+          <button aria-pressed={p.modus === 'aufstieg'} disabled={p.imGefecht}
             onclick={() => p.onmodus(p.modus === 'aufstieg' ? 'lesen' : 'aufstieg')}>Aufstieg</button>
-          <button class:an={p.modus === 'schreiben'} aria-pressed={p.modus === 'schreiben'}
+          <button aria-pressed={p.modus === 'schreiben'}
             onclick={() => p.onmodus(p.modus === 'schreiben' ? 'lesen' : 'schreiben')}>Schreibmodus</button>
         </div>
         {#if p.imGefecht}<p class="hinweis">Im Gefecht ist der Aufstieg gesperrt.</p>{/if}
@@ -114,9 +114,9 @@
     {:else if ansicht === 'einstellungen'}
       <div class="kopf"><button class="flach" onclick={() => (ansicht = 'haupt')}>‹ Zurück</button><h2>Einstellungen</h2></div>
       <h3>Darstellung</h3>
-      <div class="wahl" role="group" aria-label="Darstellung">
+      <div class="umschalter" role="group" aria-label="Darstellung">
         {#each [['system', 'wie System'], ['hell', 'hell'], ['dunkel', 'dunkel']] as [wert, text] (wert)}
-          <button class:an={p.einstellungen.darstellung === wert} aria-pressed={p.einstellungen.darstellung === wert}
+          <button aria-pressed={p.einstellungen.darstellung === wert}
             onclick={() => setzeDarstellung(wert as Einstellungen['darstellung'])}>{text}</button>
         {/each}
       </div>
@@ -124,9 +124,9 @@
       {#each Object.entries(WUERFELSTELLEN) as [stelle, info] (stelle)}
         {@const m = modusFuer(stelle as Wuerfelstelle, p.einstellungen.wuerfeln)}
         <p class="stelle">{info.name}:</p>
-        <div class="wahl" role="group" aria-label="Würfeln: {info.name}">
-          <button class:an={m === 'app'} aria-pressed={m === 'app'} onclick={() => setzeWuerfeln(stelle as Wuerfelstelle, 'app')}>App würfelt</button>
-          <button class:an={m === 'hand'} aria-pressed={m === 'hand'} onclick={() => setzeWuerfeln(stelle as Wuerfelstelle, 'hand')}>von Hand</button>
+        <div class="umschalter" role="group" aria-label="Würfeln: {info.name}">
+          <button aria-pressed={m === 'app'} onclick={() => setzeWuerfeln(stelle as Wuerfelstelle, 'app')}>App würfelt</button>
+          <button aria-pressed={m === 'hand'} onclick={() => setzeWuerfeln(stelle as Wuerfelstelle, 'hand')}>von Hand</button>
         </div>
       {/each}
     {:else}
@@ -168,11 +168,8 @@
   .zeile { flex: 1; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; text-align: left; padding: 6px 12px; }
   .name { font-weight: 600; }
   .aktionen { gap: 8px; padding: 4px 0 8px; flex-wrap: wrap; }
-  .zwei button.an { background: var(--akzent); color: var(--akzent-text); border-color: transparent; }
   .zwei { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
   .eintrag { width: 100%; text-align: left; }
-  .wahl { display: flex; gap: 8px; flex-wrap: wrap; }
-  .wahl button.an { background: var(--akzent); color: var(--akzent-text); border-color: transparent; }
   .stelle { margin: 12px 0 6px; }
   .dialog { position: fixed; left: 16px; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 40; }
   .dialog h3 { text-transform: none; letter-spacing: 0; font-size: 1.1rem; color: var(--text); margin-top: 0; }

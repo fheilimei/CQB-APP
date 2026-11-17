@@ -28,7 +28,7 @@
     <div class="wahl" role="group" aria-label="Größe der Schulden">
       <span>Größe:</span>
       {#each groessen as gr (gr)}
-        <button class:an={c.hintergrund.schulden.groesse === gr} aria-pressed={c.hintergrund.schulden.groesse === gr} onclick={() => (c.hintergrund.schulden!.groesse = gr)}>{GROESSEN[gr]}</button>
+        <button aria-pressed={c.hintergrund.schulden.groesse === gr} onclick={() => (c.hintergrund.schulden!.groesse = gr)}>{GROESSEN[gr]}</button>
       {/each}
     </div>
     <p>+{geld(g.schulden[c.hintergrund.schulden.groesse])} · Rückzahlung {geld(rueckzahlung(c.hintergrund.schulden.groesse, d))} bis zur Frist</p>
@@ -46,7 +46,7 @@
     <div class="wahl" role="group" aria-label="Größe des Coups">
       <span>Größe:</span>
       {#each groessen as gr (gr)}
-        <button class:an={c.hintergrund.coup.groesse === gr} aria-pressed={c.hintergrund.coup.groesse === gr} onclick={() => (c.hintergrund.coup!.groesse = gr)}>{GROESSEN[gr]}</button>
+        <button aria-pressed={c.hintergrund.coup.groesse === gr} onclick={() => (c.hintergrund.coup!.groesse = gr)}>{GROESSEN[gr]}</button>
       {/each}
     </div>
     <p>+{geld(g.coup[c.hintergrund.coup.groesse])} · Feind: {FEINDE[c.hintergrund.coup.groesse]}</p>
@@ -79,5 +79,4 @@
   .schalter { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0; font-weight: 400; min-height: 44px; }
   .schalter input { width: 22px; height: 22px; min-height: 0; }
   .wahl { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-  .wahl button.an { border-color: var(--akzent); box-shadow: inset 0 0 0 2px var(--akzent); font-weight: 600; }
 </style>

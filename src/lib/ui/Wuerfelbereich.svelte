@@ -67,8 +67,8 @@
     <h3 class="abschnitt-titel">{titel}</h3>
     {#if !gesperrt}
       <div class="umschalter" role="group" aria-label="Wer würfelt">
-        <button class:an={aktiv === 'app'} aria-pressed={aktiv === 'app'} onclick={() => (aktiv = 'app')}>App würfelt</button>
-        <button class:an={aktiv === 'hand'} aria-pressed={aktiv === 'hand'} onclick={() => (aktiv = 'hand')}>von Hand</button>
+        <button aria-pressed={aktiv === 'app'} onclick={() => (aktiv = 'app')}>App würfelt</button>
+        <button aria-pressed={aktiv === 'hand'} onclick={() => (aktiv = 'hand')}>von Hand</button>
       </div>
     {/if}
   </div>

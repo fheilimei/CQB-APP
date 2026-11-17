@@ -119,3 +119,14 @@ table.rechnung tr.summe td { border-top: 1px solid var(--linie); font-weight: 70
 .wuerfelbereich .umschalter { border-color: var(--wuerfel-rand); }
 .umschalter button { border: none; border-radius: 0; background: transparent; padding: 0 var(--abstand-3); font-weight: 400; }
 .umschalter button[aria-pressed='true'] { border: none; background: var(--gewaehlt); font-weight: 700; box-shadow: inset 0 -3px 0 var(--akzent); }
+
+/* Liste zum Antippen (Optionen, Waffen): Karten untereinander, Name oben, Unterzeile klein. */
+.auswahlliste { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--abstand-2); }
+.auswahlliste button { width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px;
+  text-align: left; padding: var(--abstand-2) var(--abstand-3); }
+.auswahlliste small { color: var(--text-2); font-size: 0.8rem; font-weight: 400; }
+.auswahlliste small.sperre { color: var(--gefahr); }
+/* Auswahlreihe mit gleich breiten Knöpfen (z. B. drei Stände). */
+.auswahlreihe.gleich { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; }
+.auswahlreihe.gleich button { padding-left: var(--abstand-1); padding-right: var(--abstand-1); }
+.warnung { color: var(--gefahr); font-weight: 700; }
