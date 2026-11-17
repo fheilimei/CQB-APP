@@ -14,6 +14,7 @@
   import { gefechtVon, perkHinweise, probeStellen, type ProbenAnfrage, type SlSteps } from '../../regeln/probenrechner';
   import type { Charakter, Quelle } from '../../speicher/charakter';
   import Begriff from '../Begriff.svelte';
+  import { dialogKopf } from '../dialogkopf';
   import Wuerfel, { type Ausgang } from '../Wuerfel.svelte';
   import { ansage, malstepsText, mitZeichen, skillName, statName, stepsText } from '../texte';
 
@@ -94,40 +95,18 @@
     else sichtRuhe = id;
   }
   const zeichen = (herkunft: string) => d.darstellung.herkunft[herkunft];
+  // Im Dialog stehen Zielwert und Krit-Schwelle im festen Kopf und bleiben beim Scrollen sichtbar.
+  const dk = dialogKopf();
+  const imDialog = !!dk;
+  $effect(() => {
+    if (!dk) return;
+    dk.setzen(kopf);
+    return () => dk.setzen(null);
+  });
 </script>
 
 <div class="probe">
-{#if p.statwert === null}
-  <p class="fehler">{mitZeichen('stat', anfrage.stat, d)} hat noch keinen Wert.</p>
-{:else if w}
-  <div class="gruppe">
-  <button class="kopfzeile flach" aria-expanded={aufgeklappt} onclick={() => (aufgeklappt = !aufgeklappt)}>
-    <span class="steps">▼ {w.malsteps} · ▲ {w.abzug - (p.skillstufe ?? 0)}{#if p.skillstufe}{' · '}{d.darstellung.typen.skill.zeichen} {p.skillstufe}{/if} · netto {w.netto}</span>
-    {#if w.moeglich}
-      <span class="ziel"><span class="hinweis">Zielwert</span> <strong>{w.zielwert}</strong> <span class="hinweis">Krit ≤</span> <strong>{w.krit_schwelle}</strong></span>
-    {:else}
-      <strong class="fehler">keine Probe möglich</strong>
-    {/if}
-  </button>
-  {#if aufgeklappt}
-    <table class="rechnung">
-      <tbody>
-        <tr><td><Begriff art="stat" name={statName(anfrage.stat, d)} darstellung={d.darstellung} /></td><td>{p.statwert}</td></tr>
-        {#if anfrage.skill}
-          <tr><td><Begriff art="skill" name={skillName(anfrage.skill, d)} darstellung={d.darstellung} /> {p.skillstufe}</td>
-            <td>{p.skillstufe === 0 ? `▼${d.regeln.steps.skill_null_malsteps} (Stufe 0)` : `gleicht ${p.skillstufe} aus`}</td></tr>
-        {/if}
-        {#each p.quellen as q (q.id)}
-          {@const h = zeichen(q.herkunft)}
-          <tr><td>{#if h}<span style:color={h.farbe}>{h.zeichen}</span> {/if}{q.name}</td><td>{stepsText(q)}</td></tr>
-        {/each}
-        <tr class="summe"><td>netto {malstepsText(w.netto)}{w.uebrig ? `, ${w.uebrig} übrig für die Krit-Schwelle` : ''}</td>
-          <td>{w.moeglich ? `${w.zielwert} · Krit ≤ ${w.krit_schwelle}` : 'keine Probe'}</td></tr>
-      </tbody>
-    </table>
-  {/if}
-  </div>
-{/if}
+{#if !imDialog}{@render kopf()}{/if}
 
 {#if p.automatisch.length}
   <div class="gruppe">
@@ -215,10 +194,44 @@
 
 </div>
 
+{#snippet kopf()}
+{#if p.statwert === null}
+  <p class="fehler">{mitZeichen('stat', anfrage.stat, d)} hat noch keinen Wert.</p>
+{:else if w}
+  <div class="gruppe">
+  <button class="kopfzeile flach" aria-expanded={aufgeklappt} onclick={() => (aufgeklappt = !aufgeklappt)}>
+    <span class="steps">▼ {w.malsteps} · ▲ {w.abzug - (p.skillstufe ?? 0)}{#if p.skillstufe}{' · '}{d.darstellung.typen.skill.zeichen} {p.skillstufe}{/if} · netto {w.netto}</span>
+    {#if w.moeglich}
+      <span class="ziel"><span class="hinweis">Zielwert</span> <strong>{w.zielwert}</strong> <span class="hinweis">Krit ≤</span> <strong>{w.krit_schwelle}</strong></span>
+    {:else}
+      <strong class="fehler">keine Probe möglich</strong>
+    {/if}
+  </button>
+  {#if aufgeklappt}
+    <table class="rechnung">
+      <tbody>
+        <tr><td><Begriff art="stat" name={statName(anfrage.stat, d)} darstellung={d.darstellung} /></td><td>{p.statwert}</td></tr>
+        {#if anfrage.skill}
+          <tr><td><Begriff art="skill" name={skillName(anfrage.skill, d)} darstellung={d.darstellung} /> {p.skillstufe}</td>
+            <td>{p.skillstufe === 0 ? `▼${d.regeln.steps.skill_null_malsteps} (Stufe 0)` : `gleicht ${p.skillstufe} aus`}</td></tr>
+        {/if}
+        {#each p.quellen as q (q.id)}
+          {@const h = zeichen(q.herkunft)}
+          <tr><td>{#if h}<span style:color={h.farbe}>{h.zeichen}</span> {/if}{q.name}</td><td>{stepsText(q)}</td></tr>
+        {/each}
+        <tr class="summe"><td>netto {malstepsText(w.netto)}{w.uebrig ? `, ${w.uebrig} übrig für die Krit-Schwelle` : ''}</td>
+          <td>{w.moeglich ? `${w.zielwert} · Krit ≤ ${w.krit_schwelle}` : 'keine Probe'}</td></tr>
+      </tbody>
+    </table>
+  {/if}
+  </div>
+{/if}
+{/snippet}
+
 <style>
   .probe { display: flex; flex-direction: column; gap: var(--abstand-3); }
   .kopfzeile { width: 100%; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--abstand-1) var(--abstand-3);
-    padding: var(--abstand-2) var(--abstand-3); background: var(--flaeche-2); border-radius: var(--radius); text-align: left; position: sticky; top: 0; z-index: 1; }
+    padding: var(--abstand-2) var(--abstand-3); background: var(--flaeche-2); border-radius: var(--radius); text-align: left; }
   .steps { font-variant-numeric: tabular-nums; }
   .ziel strong { font-size: 1.4rem; }
   .chips { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--abstand-2); }

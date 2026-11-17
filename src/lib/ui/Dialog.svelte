@@ -1,13 +1,17 @@
 <script lang="ts">
   // Dialog über dem aktuellen Reiter; auf dem Handy bildschirmfüllend, Knöpfe unten im Daumenbereich.
   import type { Snippet } from 'svelte';
+  import { dialogKopfAnbieten } from './dialogkopf';
   interface Props { titel: string; children: Snippet; knoepfe: Snippet }
   let { titel, children, knoepfe }: Props = $props();
+  let kopf = $state<Snippet | null>(null);
+  dialogKopfAnbieten({ setzen: (s) => { kopf = s; } });
 </script>
 
 <div class="schleier" role="presentation"></div>
 <div class="dialog" role="dialog" aria-modal="true" aria-label={titel}>
   <h2>{titel}</h2>
+  {#if kopf}<div class="kopf">{@render kopf()}</div>{/if}
   <div class="inhalt">{@render children()}</div>
   <div class="knoepfe">{@render knoepfe()}</div>
 </div>
@@ -19,6 +23,8 @@
   @media (min-width: 640px) { .dialog { left: 50%; width: 560px; transform: translateX(-50%); bottom: 24px; border-radius: var(--radius); border: 1px solid var(--linie); } }
   h2 { margin: 0; padding: var(--abstand-3) var(--abstand-3) var(--abstand-2); font-size: 1.2rem; }
   /* Einheitliche Abstände in allen Dialogen: Abstand am Behälter, keine eigenen Ränder der Kinder. */
+  /* Fester Kopf unter dem Titel (z. B. Zielwert): scrollt nicht mit; aufgeklappt höchstens knapp halbe Höhe. */
+  .kopf { flex-shrink: 0; max-height: 45vh; overflow-y: auto; padding: 0 var(--abstand-3) var(--abstand-2); border-bottom: 1px solid var(--linie); }
   .inhalt { overflow-y: auto; padding: var(--abstand-2) var(--abstand-3) var(--abstand-3); display: flex; flex-direction: column; gap: var(--abstand-3); }
   .inhalt > :global(*) { margin: 0; flex-shrink: 0; }
   .knoepfe { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: var(--abstand-3);

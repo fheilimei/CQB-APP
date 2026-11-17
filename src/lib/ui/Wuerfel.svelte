@@ -94,7 +94,7 @@
       {uebernommen ? '✓ Übernommen' : 'Übernehmen'}</button>
   {/if}
 
-  {#if mitAusgang && onausgang}
+  {#if mitAusgang && onausgang && aktiv === 'hand'}
     <div class="ausgang-gruppe">
       <span class="hinweis">Oder nur den Ausgang eintragen:</span>
       <div class="ausgang" role="group" aria-label="Ausgang">

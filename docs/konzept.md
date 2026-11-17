@@ -298,14 +298,14 @@ Ausgabe: **Zielwert**, **Krit-Schwelle**, oder „keine Probe möglich“ ([§ 4
 
 **Aufbau** (Dialog, erreichbar über den Knopf **Probe** auf dem Reiter Figur, über einen Skill und über das Detail eines Stats):
 - Oben neun Stat-Knöpfe mit Statwert (drei Spalten), darunter die Auswahl **Skill**: zuerst die eigenen Skills mit Stufe, dann die übrigen mit Stufe 0. Wird ein Skill gewählt, bevor ein Stat gewählt ist, übernimmt die App dessen Stat. Gehört der Skill zu einem anderen Stat, steht der Hinweis „Skill ausgetauscht … Das muss die SL erlauben.“
-- Kopfzeile „▼ Malsteps · ▲ Stepshields · ⬢ Skillstufe · netto n“ mit **Zielwert** und **Krit ≤**; Antippen klappt die Rechnung auf (Stat, Skill, jede Quelle, Ergebnis).
+- Kopfzeile „▼ Malsteps · ▲ Stepshields · ⬢ Skillstufe · netto n“ mit **Zielwert** und **Krit ≤**; Antippen klappt die Rechnung auf (Stat, Skill, jede Quelle, Ergebnis). Die Kopfzeile steht in jedem Dialog mit Probe (auch Schießen) fest oben unter dem Titel und scrollt nicht mit.
 - **Automatisch** (Lage-Block 1): Chips mit Herkunftszeichen, je mit × bzw. ↺; Steps der SL für das ganze Gefecht zusätzlich mit „löschen“.
 - Schalter **braucht Sicht**, darunter die Sichtstufe als Satz („Sicht: klar · eingeschränkt …“); im Gefecht gilt und speichert die Sichtstufe des Gefechts.
 - **SL** (Lage-Block 3): Zähler + Malstep, + Stepshield, Feld Grund, zuletzt verwendete Gründe; im Gefecht der Knopf **Für das ganze Gefecht merken**.
 - Würfel (Würfelstelle „Proben“) und groß die **Ansage**: „Krit · 07“, „Erfolg · 54“, „Misserfolg“. Ändert der Spieler danach Steps, wertet die App den Wurf neu aus.
 - Der Probenrechner ändert am Charakter nur die Steps der SL für das Gefecht, die Sichtstufe des Gefechts und die zuletzt verwendeten Gründe.
 
-Dieselbe Probe (ohne Stat- und Skill-Auswahl, mit den drei Knöpfen Krit · gelungen · misslungen) steckt in allen Abläufen mit Probe: Gefecht starten, Rundenende, Senken, Verbündete verschieben, Initiative.
+Dieselbe Probe (ohne Stat- und Skill-Auswahl, mit den drei Knöpfen Krit · gelungen · misslungen; die Knöpfe erscheinen nur bei Eingabe von Hand, nicht wenn die App würfelt) steckt in allen Abläufen mit Probe: Gefecht starten, Rundenende, Senken, Verbündete verschieben, Initiative.
 
 ### 3.7 Leiter (M, R)
 Regeln: [§ 4.4](#44-die-leiter). Ziel: höchstens zwei Handgriffe pro Runde; alles Weitere rechnet die App.
