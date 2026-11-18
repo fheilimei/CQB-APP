@@ -284,10 +284,13 @@ export function schussAuswerten(c: Charakter, d: Spieldaten, v: Schussvorschau, 
   const verteilen = (zone: string, kugeln: number, krit: boolean, ft: boolean) => {
     if (!schrot) { zeilen.push({ zone, kugeln, krit, folgetreffer: ft }); return; }
     // Schrot: jede Kugel eine Zonennummer tiefer; nur die erste Kugel des ersten Schusses kann ein Krit sein.
+    // Jede Kugel einer Garbe bringt die volle Schrotzahl noch einmal, in dieselben Zonen (Kampfsystem, Schrotflinten).
     let erst = krit;
-    for (const [z, n] of zonenFolge(zone, v.kugeln * kugeln, d)) {
-      if (erst) { zeilen.push({ zone: z, kugeln: 1, krit: true, folgetreffer: ft }); if (n > 1) zeilen.push({ zone: z, kugeln: n - 1, krit: false, folgetreffer: ft }); erst = false; }
-      else zeilen.push({ zone: z, kugeln: n, krit: false, folgetreffer: ft });
+    for (let k = 0; k < kugeln; k++) {
+      for (const [z, n] of zonenFolge(zone, v.kugeln, d)) {
+        if (erst) { zeilen.push({ zone: z, kugeln: 1, krit: true, folgetreffer: ft }); if (n > 1) zeilen.push({ zone: z, kugeln: n - 1, krit: false, folgetreffer: ft }); erst = false; }
+        else zeilen.push({ zone: z, kugeln: n, krit: false, folgetreffer: ft });
+      }
     }
   };
   verteilen(erste, 1, !fehl && stufe === 'krit', false);

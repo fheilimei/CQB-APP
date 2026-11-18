@@ -4,7 +4,10 @@ import { deckungSetzen, deckungZonen, gefechtBeenden, gefechtStarten, leiterSetz
 import { hpAktuell } from '../src/lib/regeln/modifikatoren';
 import { gefechtVon, lebenslageDes } from '../src/lib/regeln/probenrechner';
 import { bewegen, hechten } from '../src/lib/regeln/aktionen';
-import { ausgang, ausloeserVon, deckungFuer, folgeSaetze, schadenDirekt, staggerRegel, trefferUebernehmen, vorschau, type Eingang } from '../src/lib/regeln/wunden';
+import {
+  ausgang, ausloeserSetzen, ausloeserVon, deckungFuer, druckwelle, folgeSaetze, mehrereUebernehmen, rumpfZone, schadenDirekt, splitterFuer,
+  staggerRegel, standNachDruckwelle, trefferUebernehmen, verteilteTreffer, vorschau, type Eingang
+} from '../src/lib/regeln/wunden';
 import { neuerCharakter, type Charakter, type Gefecht, type Trefferereignis } from '../src/lib/speicher/charakter';
 import { ladeTestdaten } from './hilfen';
 
@@ -258,5 +261,82 @@ describe('Deckung auf der Figur (konzept.md § 3.9)', () => {
   });
   it('R30: dünne Holztür hat Schutz 1 (entschieden)', () => {
     expect(d.schutz.deckung.find((x) => x.id === 'holztuer_duenn')!.wert).toBe(1);
+  });
+});
+
+describe('Schrot und Splitter eingehend', () => {
+  it('Schrot: 4 Kugeln ab Kopf treffen Kopf, Brust, Bauch, Unterleib; nur die erste kann critten', () => {
+    expect(verteilteTreffer('kopf', 4, 1, true, d)).toEqual([
+      { zone: 'kopf', kugeln: 1, krit: true, folgetreffer: false },
+      { zone: 'brust', kugeln: 1, krit: false, folgetreffer: false },
+      { zone: 'bauch', kugeln: 1, krit: false, folgetreffer: false },
+      { zone: 'unterleib', kugeln: 1, krit: false, folgetreffer: false }
+    ]);
+  });
+
+  it('Ansage Rumpf: Zählung beginnt bei der Brust; nach Zone 1 folgt wieder 8', () => {
+    expect(verteilteTreffer('rumpf', 2, 1, false, d).map((t) => t.zone)).toEqual(['brust', 'bauch']);
+    expect(verteilteTreffer('bein_l', 2, 1, false, d).map((t) => t.zone)).toEqual(['bein_l', 'kopf']);
+  });
+
+  it('Folgetreffer bringen die volle Schrotzahl noch einmal in dieselben Zonen, zusammengefasst je Zone', () => {
+    const t = verteilteTreffer('arm_r', 3, 3, false, d);
+    expect(t.filter((x) => !x.folgetreffer).map((x) => [x.zone, x.kugeln])).toEqual([['arm_r', 1], ['arm_l', 1], ['bein_r', 1]]);
+    expect(t.filter((x) => x.folgetreffer).map((x) => [x.zone, x.kugeln])).toEqual([['arm_r', 2], ['arm_l', 2], ['bein_r', 2]]);
+  });
+
+  it('Krit bei 1 Kugel ohne weitere bleibt eine Zeile; 0 Kugeln ergeben keinen Treffer', () => {
+    expect(verteilteTreffer('bauch', 1, 1, true, d)).toEqual([{ zone: 'bauch', kugeln: 1, krit: true, folgetreffer: false }]);
+    expect(verteilteTreffer('bauch', 0, 1, false, d)).toEqual([]);
+  });
+
+  it('Splitter: im Liegen die halbe Splitterzahl (abgerundet), in der Hocke unverändert', () => {
+    expect(splitterFuer(4, 'liegen', d)).toBe(2);
+    expect(splitterFuer(1, 'liegen', d)).toBe(0);
+    expect(splitterFuer(3, 'hocke', d)).toBe(3);
+  });
+
+  it('mehrere Treffer nacheinander: HP sinken Schritt für Schritt, je Zone eine Wunde', () => {
+    const c = fertig();
+    const eingaenge = verteilteTreffer('brust', 2, 1, false, d).map((t) => ({ zone: t.zone, dk: 0, mw: 1, kugeln: t.kugeln, krit: t.krit, deckung: null }));
+    const { teile, nach } = mehrereUebernehmen(c, eingaenge, { quelle: 'Splitter', schuss: true }, d);
+    expect(teile.map((t) => [t.ausgang.hp_vorher, t.ausgang.hp_nachher])).toEqual([[8, 6], [6, 4]]);
+    expect(nach.spielstand.wunden.map((w) => w.zone)).toEqual(['brust', 'bauch']);
+  });
+
+  it('Splitter in verdeckter Zone werden von der Deckung gestoppt (DK 0 < Deckung 2)', () => {
+    const c = fertig();
+    const a = ausgang(c, { zone: 'kopf', dk: 0, mw: 1, kugeln: 1, krit: false, deckung: 2 }, d);
+    expect(a.art).toBe('gestoppt');
+  });
+
+  it('Druckwelle: stumpf auf den Rumpf, Rüstung am Rumpf zählt voll; verdeckter Rumpf → kein Schaden', () => {
+    const c = fertig(['weste_einfach']);
+    const frei = ausgang(c, druckwelle(2, null, d), d);
+    expect(frei.zone).toBe(rumpfZone(d));
+    expect(frei).toMatchObject({ art: 'wucht', schaden: 1, folge: null });
+    expect(ausgang(c, druckwelle(2, 2, d), d).art).toBe('gestoppt');
+  });
+
+  it('Druckwelle wirft Stehende und Hockende mit freiem Rumpf um; wer liegt oder verdeckt ist, bleibt', () => {
+    expect(standNachDruckwelle('stehen', false, d)).toBe('liegen');
+    expect(standNachDruckwelle('hocke', false, d)).toBe('liegen');
+    expect(standNachDruckwelle('stehen', true, d)).toBe('stehen');
+    expect(standNachDruckwelle('liegen', false, d)).toBe('liegen');
+  });
+
+  it('im Gefecht: die Druckwelle setzt den Stand auf Liegen und trägt den Wechsel ins Protokoll ein', () => {
+    const c = imGefecht(fertig());
+    const { nach } = mehrereUebernehmen(c, [druckwelle(1, null, d)], { quelle: 'Druckwelle', schuss: true, stand_danach: 'liegen' }, d);
+    expect(g(nach).stand).toBe('liegen');
+    expect((g(nach).protokoll.at(-1) as Trefferereignis).aenderungen.stand).toEqual(['stehen', 'liegen']);
+    expect(g(nach).ausloeser_diese_runde).toContain('beschossen');
+  });
+
+  it('Explosion ohne Treffer setzt nur „beschossen“; außerhalb des Gefechts ändert sich nichts', () => {
+    const c = imGefecht(fertig());
+    expect(g(ausloeserSetzen(c, ['beschossen'])).ausloeser_diese_runde).toEqual([...g(c).ausloeser_diese_runde, 'beschossen']);
+    const r = fertig();
+    expect(ausloeserSetzen(r, ['beschossen'])).toBe(r);
   });
 });

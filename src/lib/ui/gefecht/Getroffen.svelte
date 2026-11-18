@@ -1,7 +1,8 @@
 <script lang="ts">
   // Getroffen (konzept.md § 3.7c eingehend, § 3.10): Art · Geschoss · Zone mit Vorschau auf der Silhouette · Bericht.
-  // Arten Schuss, Nahkampf (§ 3.8b eingehend: Verteidigung, Ausgang, Kampfkunst) und Sonstiges; Splitter folgt. Im Gefecht und in Ruhe.
-  import type { Spieldaten } from '../../daten/typen';
+  // Arten Schuss (mit Schrot: Kugeln über mehrere Zonen), Nahkampf (§ 3.8b eingehend: Verteidigung, Ausgang, Kampfkunst),
+  // Explosion (Splitter und Druckwelle, § 3.8a eingehend) und Sonstiges. Im Gefecht und in Ruhe.
+  import type { BandId, Spieldaten } from '../../daten/typen';
   import { eigenerStand } from '../../regeln/aktionen';
   import {
     angriffEintragen, eigeneKampfkunst, gegnerKampfkunst, gegnerWirkungAnwenden, malstepsDesGegners, nahkampfTreffer,
@@ -9,14 +10,17 @@
   } from '../../regeln/nahkampf';
   import { gefechtVon, lebenslageDes } from '../../regeln/probenrechner';
   import { ruestungswert } from '../../regeln/schaden';
-  import { ausgang, deckungFuer, folgeSaetze, schadenDirekt, trefferUebernehmen, vorschau, type Ausgang, type Eingang } from '../../regeln/wunden';
+  import {
+    ausgang, ausloeserSetzen, deckungFuer, druckwelle, folgeSaetze, mehrereUebernehmen, rumpfZone, schadenDirekt, splitterFuer,
+    standNachDruckwelle, trefferUebernehmen, verteilteTreffer, vorschau, type Ausgang, type Eingang, type Teilausgang
+  } from '../../regeln/wunden';
   import type { Charakter, Quelle } from '../../speicher/charakter';
   import type { Wurf } from '../../wuerfel/wuerfel';
   import Bericht from '../Bericht.svelte';
   import Dialog from '../Dialog.svelte';
   import ProbeKern, { type ProbenErgebnis } from '../probe/ProbeKern.svelte';
   import Silhouette, { ZEICHEN, type Zonenfarbe } from '../Silhouette.svelte';
-  import { ERGEBNIS_SATZ, malstepsText, mitZeichen, standAdjektiv, standVerb, wurfZahl, type Zeile } from '../texte';
+  import { bandName, ERGEBNIS_SATZ, malstepsText, mitZeichen, standAdjektiv, standVerb, wurfZahl, type Zeile } from '../texte';
   import Wuerfel from '../Wuerfel.svelte';
 
   interface Props {
@@ -30,7 +34,7 @@
   }
   let { c, d, zonenModus, wuerfelModus, onaendern, onfertig, onabbrechen }: Props = $props();
 
-  type Art = 'schuss' | 'nahkampf' | 'sonstiges';
+  type Art = 'schuss' | 'nahkampf' | 'explosion' | 'sonstiges';
   let art = $state<Art>('schuss');
   let eingabe = $state<'kaliber' | 'direkt'>('kaliber');
   let kaliber = $state('');
@@ -45,6 +49,23 @@
   let direktSchaden = $state(1);
   let direktArt = $state<'wunde' | 'prellung'>('wunde');
   let bericht = $state<{ zeilen: Zeile[]; nach: Charakter } | null>(null);
+
+  // Schrot (Kampfsystem, Schrotflinten): Band des Schützen bestimmt die Schrotzahl; Treffer = 1 + Folgetreffer.
+  let schrotBand = $state<BandId | ''>('');
+  let trefferZahl = $state(1);
+
+  // Explosion (Sprengwirkung, Splitter und Druckwelle)
+  const sprengListe = $derived(d.wurf_und_sprengwaffen.eintraege.filter((w) => w.splitter?.mw != null || w.druckwelle?.mw != null));
+  let exEingabe = $state<'waffe' | 'direkt'>('waffe');
+  let exWaffe = $state('');
+  $effect.pre(() => { if (!exWaffe) exWaffe = sprengListe[0]?.id ?? ''; });
+  let exBand = $state<BandId | ''>('');
+  let exDk = $state(0);
+  let exMw = $state(1);
+  let exZahl = $state(1);
+  let exDruck = $state(0);
+  /** Deckung zählt vom Explosionspunkt aus; der Spieler sagt, ob sie dazwischen liegt. */
+  let exHinterDeckung = $state(true);
 
   // Nahkampf (konzept.md § 3.8b, eingehend)
   const waffenListe = $derived(nahkampfwaffenWahl(d));
@@ -74,16 +95,42 @@
   const eigeneWirkungen = $derived(eigeneKampfkunst(c, meinStand, gegnerStand, d));
   const gegnerWirkungen = $derived(gegnerKampfkunst(nkLage, d));
   const wirkungVon = (id: string | null): Wirkung | undefined => d.regeln.nahkampf.wirkungen.find((w) => w.id === id);
-  /** Treffer, die eine Zone brauchen: Schuss, Sonstiges, Nahkampf nur bei „getroffen“. */
-  const mitZone = $derived(art !== 'nahkampf' || nkAusgang === 'getroffen');
-  const mitVorschau = $derived(art === 'schuss' || (art === 'nahkampf' && nkAusgang === 'getroffen'));
-  const kannWeiter = $derived(art === 'nahkampf' ? !!nkAusgang && (nkAusgang !== 'getroffen' || !!zone) : !!zone);
+
 
   const kal = $derived(d.munition.eintraege.find((m) => m.id === kaliber));
   const typen = $derived(Object.keys(kal?.typen ?? {}));
   $effect.pre(() => { if (!typen.includes(typ)) typ = typen[0] ?? ''; });
   const munTyp = $derived(kal?.typen[typ]);
-  /** Es gilt die Deckung auf der Figur (konzept.md § 3.9), im Gefecht und in Ruhe. */
+  /** Bänder mit Schrotzahl, in der Reihenfolge der Reichweitenbänder; leer = kein Schrot. */
+  const schrotBaender = $derived(
+    eingabe === 'kaliber' && munTyp?.schrotzahl ? d.regeln.schiessen.reichweitenbaender.filter((b) => munTyp.schrotzahl![b.id]).map((b) => b.id) : []
+  );
+  const schrot = $derived(art === 'schuss' && schrotBaender.length > 0);
+  $effect.pre(() => { if (schrotBaender.length && !schrotBaender.includes(schrotBand as BandId)) schrotBand = schrotBaender[0]!; });
+  const schrotJeTreffer = $derived(schrot && schrotBand ? (munTyp!.schrotzahl![schrotBand] ?? 0) : 0);
+
+  const spreng = $derived(sprengListe.find((w) => w.id === exWaffe));
+  const exBaender = $derived(
+    spreng?.bereiche ? d.regeln.schiessen.reichweitenbaender.filter((b) => spreng.bereiche![b.id] != null).map((b) => b.id) : []
+  );
+  $effect.pre(() => { if (exBaender.length && !exBaender.includes(exBand as BandId)) exBand = exBaender[0]!; });
+  const exWerte = $derived(
+    exEingabe === 'waffe'
+      ? { dk: spreng?.splitter?.dk ?? 0, mw: spreng?.splitter?.mw ?? 0, zahl: exBand ? (spreng?.bereiche?.[exBand] ?? 0) : 0,
+          druck: exBand && spreng?.kern?.includes(exBand) ? (spreng.druckwelle?.mw ?? 0) : 0 }
+      : { dk: exDk, mw: exMw, zahl: exZahl, druck: exDruck }
+  );
+  const liegend = $derived(d.regeln.staende.find((s) => s.id === meinStand)?.liegend === true);
+  /** Splitter, die dich treffen (im Liegen halbiert). */
+  const exSplitter = $derived(exWerte.mw > 0 || exWerte.dk > 0 ? splitterFuer(exWerte.zahl, meinStand, d) : 0);
+  /** Treffer, die eine Zone brauchen: Schuss, Sonstiges, Nahkampf nur bei „getroffen“, Explosion nur mit Splittern. */
+  const mitZone = $derived(art === 'nahkampf' ? nkAusgang === 'getroffen' : art === 'explosion' ? exSplitter > 0 : true);
+  const mitVorschau = $derived(art === 'schuss' || art === 'explosion' || (art === 'nahkampf' && nkAusgang === 'getroffen'));
+  const kannWeiter = $derived(
+    art === 'nahkampf' ? !!nkAusgang && (nkAusgang !== 'getroffen' || !!zone)
+      : art === 'explosion' ? (exSplitter === 0 || !!zone) && (exEingabe === 'direkt' || !!exBand)
+        : !!zone
+  );  /** Es gilt die Deckung auf der Figur (konzept.md § 3.9), im Gefecht und in Ruhe. */
   const deckungAufFigur = $derived(c.spielstand.deckung ?? null);
 
   const geschoss = $derived(
@@ -93,14 +140,58 @@
         ? { dk: munTyp.stumpf ? null : munTyp.dk, mw: munTyp.mw }
         : { dk: stumpf ? null : dk, mw }
   );
-  const anzahl = $derived(art === 'nahkampf' ? 1 : kugeln);
-  const deckungJeZone = (z: string) => deckungFuer(z, c, d);
-  const vor = $derived(vorschau(c, { ...geschoss, kugeln: anzahl, krit, deckung: null }, d, deckungJeZone));
-  const farben = $derived(mitVorschau ? Object.fromEntries(Object.entries(vor).map(([z, a]) => [z, a.art as Zonenfarbe])) : {});
-  const zeichen = $derived(mitVorschau ? Object.fromEntries(Object.entries(vor).map(([z, a]) => [z, zeichenFuer(a)]).filter(([, t]) => t)) : {});
+  /** Kugeln je Treffer im einfachen Ablauf; Schrot und Splitter verteilen sich über mehrere Zonen (unten). */
+  const anzahl = $derived(art === 'nahkampf' || art === 'explosion' || schrot ? 1 : kugeln);
+  const mitDeckung = $derived(art !== 'explosion' || exHinterDeckung);
+  const deckungJeZone = (z: string) => (mitDeckung ? deckungFuer(z, c, d) : null);
+  const vorGeschoss = $derived(art === 'explosion' ? { dk: exWerte.dk, mw: exWerte.mw } : geschoss);
+  const vor = $derived(vorschau(c, { ...vorGeschoss, kugeln: anzahl, krit: art === 'explosion' ? false : krit, deckung: null }, d, deckungJeZone));
+
+  const SCHWERE = { gestoppt: 0, wucht: 1, durchschlag: 2 } as const;
+  /** Mehrere Treffer: Schrot (Schrotzahl × Treffer) oder Explosion (Splitter, dann Druckwelle). */
+  const mehrfach = $derived(schrot || art === 'explosion');
+  const teilEingaenge = $derived.by<Eingang[]>(() => {
+    if (!mehrfach) return [];
+    const liste: Eingang[] = [];
+    if (zone && (schrot ? schrotJeTreffer > 0 : exSplitter > 0)) {
+      const g = art === 'explosion' ? { dk: exWerte.dk, mw: exWerte.mw } : geschoss;
+      const t = schrot ? verteilteTreffer(zone, schrotJeTreffer, trefferZahl, krit, d) : verteilteTreffer(zone, exSplitter, 1, false, d);
+      for (const x of t) liste.push({ ...g, zone: x.zone, kugeln: x.kugeln, krit: x.krit, deckung: deckungJeZone(x.zone) });
+    }
+    if (art === 'explosion' && exWerte.druck > 0) liste.push(druckwelle(exWerte.druck, deckungJeZone(rumpfZone(d)), d));
+    return liste;
+  });
+  const druckEingang = $derived(art === 'explosion' && exWerte.druck > 0 ? teilEingaenge.at(-1)! : null);
+  const standDanach = $derived(druckEingang ? standNachDruckwelle(meinStand, druckEingang.deckung !== null, d) : meinStand);
+  const mehrfachErgebnis = $derived(mehrfach ? mehrereUebernehmen(c, teilEingaenge, { quelle: '', schuss: true }, d) : null);
+  /** Ausgänge je Zone (ohne Druckwelle) für die Figur: Zahl der Kugeln bzw. Splitter und der schwerste Ausgang. */
+  const jeZone = $derived.by(() => {
+    const m = new Map<string, { kugeln: number; a: Ausgang }>();
+    const teile = mehrfachErgebnis?.teile ?? [];
+    for (const t of druckEingang ? teile.slice(0, -1) : teile) {
+      const da = m.get(t.eingang.zone);
+      if (!da) m.set(t.eingang.zone, { kugeln: t.eingang.kugeln, a: t.ausgang });
+      else m.set(t.eingang.zone, { kugeln: da.kugeln + t.eingang.kugeln, a: SCHWERE[t.ausgang.art] > SCHWERE[da.a.art] || t.ausgang.tot || t.ausgang.kampfunfaehig ? t.ausgang : da.a });
+    }
+    return m;
+  });
+  const farben = $derived.by<Record<string, Zonenfarbe>>(() => {
+    if (!mitVorschau) return {};
+    if (jeZone.size) return Object.fromEntries([...jeZone].map(([z, v]) => [z, v.a.art as Zonenfarbe]));
+    return Object.fromEntries(Object.entries(vor).map(([z, a]) => [z, a.art as Zonenfarbe]));
+  });
+  const zeichen = $derived.by<Record<string, string>>(() => {
+    if (!mitVorschau) return {};
+    if (jeZone.size) return Object.fromEntries([...jeZone].map(([z, v]) => [z, `${v.kugeln}×${zeichenFuer(v.a) ? ` ${zeichenFuer(v.a)}` : ''}`]));
+    return Object.fromEntries(Object.entries(vor).map(([z, a]) => [z, zeichenFuer(a)]).filter(([, t]) => t));
+  });
   const ruestung = $derived(Object.fromEntries(d.koerperzonen.eintraege.map((z) => [z.id, ruestungswert(z.id, c.ausruestung.ruestung, d)])));
   const eingang = $derived<Eingang | null>(zone ? { ...geschoss, kugeln: anzahl, krit, zone, deckung: deckungJeZone(zone) } : null);
-  const gewaehlt = $derived<Ausgang | null>(eingang && mitVorschau ? ausgang(c, eingang, d) : null);
+  const gewaehlt = $derived<Ausgang | null>(eingang && mitVorschau && !mehrfach ? ausgang(c, eingang, d) : null);
+  /** HP vor und nach allen Treffern zusammen (Schrot, Explosion). */
+  const hpGesamt = $derived(mehrfachErgebnis?.teile.length
+    ? { vorher: mehrfachErgebnis.teile[0]!.ausgang.hp_vorher, nachher: mehrfachErgebnis.teile.at(-1)!.ausgang.hp_nachher }
+    : null);
   const zonenName = (id: string) => d.koerperzonen.eintraege.find((z) => z.id === id)?.name ?? id;
   const rumpf = $derived(d.koerperzonen.eintraege.find((z) => z.w8 === null));
 
@@ -126,7 +217,7 @@
   const ortVon = (id: string) => d.koerperzonen.eintraege.find((z) => z.id === id)?.ort ?? `an der Zone ${zonenName(id)}`;
 
   /** Ausgang des Schadensablaufs als Sätze (Schuss und Nahkampf); `er` ist das Fürwort für das, was trifft. */
-  function schadenSaetze(e: Eingang, a: Ausgang, zeilen: Zeile[]) {
+  function schadenSaetze(e: Eingang, a: Ausgang, zeilen: Zeile[], nomen = 'Kugeln') {
     const mehrere = e.kugeln > 1;
     const er = mehrere ? 'Sie' : 'Er';
     if (a.art === 'gestoppt') {
@@ -141,7 +232,7 @@
       const durch = a.ruestung > 0
         ? `${er} ${mehrere ? 'durchschlagen' : 'durchschlägt'} deine Rüstung (Schutz ${a.ruestung})`
         : `Keine Rüstung hält ${mehrere ? 'sie' : 'ihn'} auf`;
-      const rechnung = `Mannstoppwirkung ${e.mw} × ${mult}${mehrere ? ` × ${e.kugeln} Kugeln` : ''}`;
+      const rechnung = `Mannstoppwirkung ${e.mw} × ${mult}${mehrere ? ` × ${e.kugeln} ${nomen}` : ''}`;
       if (a.schaden > 0) {
         zeilen.push({ text: `${durch}: Du erleidest eine${a.folge === 'krit' ? ' kritische' : ''} Wunde mit ${a.schaden} Schaden (${rechnung}).` });
         for (const satz of folgeSaetze(a, c, d)) zeilen.push({ text: satz, fett: a.folge === 'krit' });
@@ -233,12 +324,81 @@
     return { zeilen, nach };
   }
 
+  /** „eine Kugel“, „3 Kugeln“; „ein Splitter“, „2 Splitter“. */
+  const stueck = (n: number, eins: string, viele: string) => (n === 1 ? eins : `${n} ${viele}`);
+
+  /** Einzelne Treffer aus Schrot oder Splittern als Sätze (je Zone ein Treffer). */
+  function teilSaetze(teile: Teilausgang[], einzahl: string, mehrzahl: string, zeilen: Zeile[]) {
+    for (const { eingang: e, ausgang: a } of teile) {
+      const n = e.kugeln;
+      zeilen.push({ text: `${stueck(n, einzahl, mehrzahl)} ${n === 1 ? 'trifft' : 'treffen'} dich ${ortVon(e.zone)}${e.krit ? ', mit Krit' : ''}.`, fett: true });
+      schadenSaetze(e, a, zeilen, mehrzahl);
+    }
+  }
+
+  /** Bericht für Schrot und Explosion: mehrere Treffer nacheinander, dann HP, Stagger, Stand. */
+  function mehrfachBericht(): { zeilen: Zeile[]; nach: Charakter } {
+    const zeilen: Zeile[] = [];
+    const st = d.regeln.eingehend.ausloeser.beschossen;
+    const erg = mehrereUebernehmen(c, teilEingaenge,
+      { quelle: art === 'explosion' ? 'Explosion' : 'Schuss', schuss: true, stand_danach: standDanach !== meinStand ? standDanach : undefined }, d);
+    const teile = erg.teile;
+    let nach = erg.nach;
+    if (art === 'schuss') {
+      const was = `${kal!.name}, ${typ}`;
+      const gesamt = schrotJeTreffer * trefferZahl;
+      zeilen.push({ text: trefferZahl === 1
+        ? `${stueck(gesamt, 'Eine Schrotkugel', 'Schrotkugeln')} (${was}) aus dem Band ${bandName(schrotBand, d)} ${gesamt === 1 ? 'trifft' : 'treffen'} dich.`
+        : `${trefferZahl} Treffer mit je ${stueck(schrotJeTreffer, 'einer Schrotkugel', 'Schrotkugeln')} (${was}) aus dem Band ${bandName(schrotBand, d)} treffen dich, zusammen ${gesamt} Kugeln.` });
+      zeilen.push({ text: `Die erste Kugel trifft ${ortVon(zone!)}${gesamt > 1 ? ', jede weitere die Zone mit der nächstniedrigeren Zahl' : ''}.${krit ? ' Die SL sagt einen Krit an; er gilt nur für die erste Kugel.' : ''}` });
+      teilSaetze(teile, 'Eine Kugel', 'Kugeln', zeilen);
+    } else {
+      zeilen.push({ text: exEingabe === 'waffe' && spreng
+        ? `${spreng.name}: Die Explosion erreicht dich im Band ${bandName(exBand, d)}.`
+        : 'Eine Explosion erreicht dich.', fett: true });
+      if (deckungAufFigur && !exHinterDeckung) zeilen.push({ text: 'Deine Deckung liegt nicht zwischen dir und der Explosion.' });
+      const voll = exWerte.zahl;
+      if (exSplitter > 0) {
+        zeilen.push({ text: `${stueck(exSplitter, 'Ein Splitter', 'Splitter')} (Durchschlagskraft ${exWerte.dk}, Mannstoppwirkung ${exWerte.mw}) ${exSplitter === 1 ? 'trifft' : 'treffen'} dich${liegend && voll !== exSplitter ? `; weil du liegst, nur ${exSplitter} statt ${voll}` : ''}. Der erste trifft ${ortVon(zone!)}${exSplitter > 1 ? ', jeder weitere die Zone mit der nächstniedrigeren Zahl' : ''}. Splitter können nicht critten.` });
+      } else if (voll > 0 && liegend) {
+        zeilen.push({ text: 'Weil du liegst, trifft dich kein Splitter.' });
+      } else if (exWerte.druck === 0) {
+        zeilen.push({ text: 'Kein Splitter trifft dich.' });
+      }
+      const splitterTeile = druckEingang ? teile.slice(0, -1) : teile;
+      teilSaetze(splitterTeile, 'Ein Splitter', 'Splitter', zeilen);
+      if (druckEingang) {
+        const a = teile.at(-1)!.ausgang;
+        zeilen.push({ text: `Die Druckwelle trifft deinen Rumpf (Mannstoppwirkung ${druckEingang.mw}).`, fett: true });
+        if (a.art === 'gestoppt') zeilen.push({ text: 'Deine Deckung schützt deinen Rumpf; die Druckwelle richtet nichts aus.' });
+        else schadenSaetze(druckEingang, a, zeilen);
+        if (standDanach !== meinStand) zeilen.push({ text: `Die Druckwelle wirft dich um: Du ${standVerb(standDanach, 'du', d)}.`, fett: true });
+      }
+      if (spreng?.sonderwirkung && exEingabe === 'waffe') zeilen.push({ text: `Für die SL: ${spreng.sonderwirkung.text} Das trägt die App noch nicht ein.` });
+      // Wer sich bei der Detonation in einem Bereich befindet, ist beschossen, auch ohne Treffer (Sprengwirkung, Adrenalin).
+      if (!teile.length) nach = ausloeserSetzen(nach, [st]);
+    }
+    if (teile.length) {
+      const v = teile[0]!.ausgang.hp_vorher;
+      const n = teile.at(-1)!.ausgang.hp_nachher;
+      if (n < v) zeilen.push({ text: `Deine HP sinken von ${v} auf ${n}.` });
+      else zeilen.push({ text: 'Du verlierst keine HP.' });
+    }
+    if (teile.some((t) => t.ausgang.stagger)) zeilen.push({ text: STAGGER_SATZ(!!gef), fett: true });
+    const r = rundenendeSatz(c, nach);
+    if (r) zeilen.push(r);
+    return { zeilen, nach };
+  }
+
   /** Bericht als kleine Erzählung (wie beim Schießen): was trifft, was hält, was bleibt. */
   function weiter() {
     let zeilen: Zeile[] = [];
     let nach: Charakter;
     if (art === 'nahkampf') {
       ({ zeilen, nach } = nahkampfBericht());
+    } else if (mehrfach) {
+      if (!kannWeiter) return;
+      ({ zeilen, nach } = mehrfachBericht());
     } else if (!zone) {
       return;
     } else if (art === 'sonstiges') {
@@ -289,10 +449,10 @@
         <h3 class="abschnitt-titel">Was trifft dich?</h3>
         <div class="auswahlreihe gleich" role="group" aria-label="Art des Treffers">
           <button aria-pressed={art === 'schuss'} onclick={() => (art = 'schuss')}>Schuss</button>
-          <button aria-pressed={art === 'nahkampf'} onclick={() => (art = 'nahkampf')}>Nahkampf</button>
-          <button aria-pressed={art === 'sonstiges'} onclick={() => (art = 'sonstiges')}>Sonstiges</button>
+          <button aria-pressed={art === 'nahkampf'} onclick={() => (art = 'nahkampf')}>Nah&shy;kampf</button>
+          <button aria-pressed={art === 'explosion'} onclick={() => (art = 'explosion')}>Explo&shy;sion</button>
+          <button aria-pressed={art === 'sonstiges'} onclick={() => (art = 'sonstiges')}>Sons&shy;tiges</button>
         </div>
-        <p class="hinweis">Splitter und Explosion folgen in einer der nächsten Versionen.</p>
 
         {#if art === 'schuss'}
           <div class="gruppe">
@@ -339,17 +499,40 @@
             </div>
             <label class="schalter"><input type="checkbox" bind:checked={stumpf} /> stumpf (Gummigeschoss, Druckwelle): keine DK</label>
           {/if}
-          <div class="zwei">
+          {#if schrot}
             <div class="gruppe">
-              <span class="gruppe-titel">Kugeln</span>
-              <span class="stepper">
-                <button aria-label="eine Kugel weniger" disabled={kugeln <= 1} onclick={() => (kugeln -= 1)}>−</button>
-                <strong>{kugeln}</strong>
-                <button aria-label="eine Kugel mehr" onclick={() => (kugeln += 1)}>+</button>
-              </span>
+              <span class="gruppe-titel">Entfernung zum Schützen:</span>
+              <div class="auswahlreihe gleich" role="group" aria-label="Entfernung zum Schützen">
+                {#each schrotBaender as b (b)}
+                  <button aria-pressed={schrotBand === b} onclick={() => (schrotBand = b)}>{bandName(b, d)}</button>
+                {/each}
+              </div>
             </div>
-            <label class="schalter"><input type="checkbox" bind:checked={krit} /> Krit (sagt die SL an)</label>
-          </div>
+            <div class="zwei">
+              <div class="gruppe">
+                <span class="gruppe-titel">Treffer (mit Folgetreffern)</span>
+                <span class="stepper">
+                  <button aria-label="ein Treffer weniger" disabled={trefferZahl <= 1} onclick={() => (trefferZahl -= 1)}>−</button>
+                  <strong>{trefferZahl}</strong>
+                  <button aria-label="ein Treffer mehr" onclick={() => (trefferZahl += 1)}>+</button>
+                </span>
+              </div>
+              <label class="schalter"><input type="checkbox" bind:checked={krit} /> Krit (sagt die SL an)</label>
+            </div>
+            <p class="hinweis">Je Treffer {schrotJeTreffer} {schrotJeTreffer === 1 ? 'Kugel' : 'Kugeln'}: Die erste trifft die gewählte Zone, jede weitere die Zone mit der nächstniedrigeren Zahl. Nur die erste Kugel kann critten.</p>
+          {:else}
+            <div class="zwei">
+              <div class="gruppe">
+                <span class="gruppe-titel">Kugeln</span>
+                <span class="stepper">
+                  <button aria-label="eine Kugel weniger" disabled={kugeln <= 1} onclick={() => (kugeln -= 1)}>−</button>
+                  <strong>{kugeln}</strong>
+                  <button aria-label="eine Kugel mehr" onclick={() => (kugeln += 1)}>+</button>
+                </span>
+              </div>
+              <label class="schalter"><input type="checkbox" bind:checked={krit} /> Krit (sagt die SL an)</label>
+            </div>
+          {/if}
           <p class="hinweis">{deckungAufFigur ? `Deckung Schutz ${deckungAufFigur.wert} vor den schraffierten Zonen` : 'Keine Deckung eingetragen'}; ändern über den Knopf Deckung auf der Figur.</p>
         {:else if art === 'nahkampf'}
           <div class="gruppe">
@@ -398,6 +581,72 @@
             <label class="schalter"><input type="checkbox" bind:checked={stumpf} /> stumpf (Knüppel, Kolben, Faust): keine DK</label>
             <p class="hinweis">MW mit dem Nahkampfschaden des Angreifers.</p>
           {/if}
+        {:else if art === 'explosion'}
+          <div class="gruppe">
+            <span class="gruppe-titel">Explosion angeben als</span>
+            <div class="umschalter" role="group" aria-label="Explosion angeben als">
+              <button aria-pressed={exEingabe === 'waffe'} onclick={() => (exEingabe = 'waffe')}>Sprengwaffe</button>
+              <button aria-pressed={exEingabe === 'direkt'} onclick={() => (exEingabe = 'direkt')}>Werte</button>
+            </div>
+          </div>
+          {#if exEingabe === 'waffe'}
+            <label class="feld">Sprengwaffe
+              <select bind:value={exWaffe}>
+                {#each sprengListe as w (w.id)}<option value={w.id}>{w.name}</option>{/each}
+              </select>
+            </label>
+            {#if exBaender.length}
+              <div class="gruppe">
+                <span class="gruppe-titel">Abstand zur Explosion:</span>
+                <div class="auswahlreihe gleich" role="group" aria-label="Abstand zur Explosion">
+                  {#each exBaender as b (b)}
+                    <button aria-pressed={exBand === b} onclick={() => (exBand = b)}>{bandName(b, d)}</button>
+                  {/each}
+                </div>
+              </div>
+            {/if}
+            <p class="hinweis">
+              {#if exWerte.zahl > 0}{stueck(exWerte.zahl, 'ein Splitter', 'Splitter')} (DK {exWerte.dk} · MW {exWerte.mw}){:else}keine Splitter{/if}{#if exWerte.druck > 0} · Druckwelle MW {exWerte.druck}{/if}
+            </p>
+            {#if spreng?.sonderwirkung}<p class="hinweis">{spreng.sonderwirkung.text} Das trägt die App noch nicht ein.</p>{/if}
+            {#if spreng?.strahl}<p class="hinweis">Trifft dich der Strahl, trag ihn als Schuss mit DK {spreng.strahl.dk} und MW {spreng.strahl.mw} ein.</p>{/if}
+          {:else}
+            <div class="zwei">
+              <div class="gruppe">
+                <span class="gruppe-titel">Splitter-DK</span>
+                <span class="stepper">
+                  <button aria-label="DK eins weniger" disabled={exDk <= 0} onclick={() => (exDk -= 1)}>−</button>
+                  <strong>{exDk}</strong>
+                  <button aria-label="DK eins mehr" onclick={() => (exDk += 1)}>+</button>
+                </span>
+              </div>
+              <div class="gruppe">
+                <span class="gruppe-titel">Splitter-MW</span>
+                <span class="stepper">
+                  <button aria-label="MW eins weniger" disabled={exMw <= 0} onclick={() => (exMw -= 1)}>−</button>
+                  <strong>{exMw}</strong>
+                  <button aria-label="MW eins mehr" onclick={() => (exMw += 1)}>+</button>
+                </span>
+              </div>
+              <div class="gruppe">
+                <span class="gruppe-titel">Splitterzahl</span>
+                <span class="stepper">
+                  <button aria-label="ein Splitter weniger" disabled={exZahl <= 0} onclick={() => (exZahl -= 1)}>−</button>
+                  <strong>{exZahl}</strong>
+                  <button aria-label="ein Splitter mehr" onclick={() => (exZahl += 1)}>+</button>
+                </span>
+              </div>
+              <div class="gruppe">
+                <span class="gruppe-titel">Druckwelle-MW</span>
+                <span class="stepper">
+                  <button aria-label="Druckwelle eins weniger" disabled={exDruck <= 0} onclick={() => (exDruck -= 1)}>−</button>
+                  <strong>{exDruck}</strong>
+                  <button aria-label="Druckwelle eins mehr" onclick={() => (exDruck += 1)}>+</button>
+                </span>
+              </div>
+            </div>
+            <p class="hinweis">Splitterzahl deines Bands, wie die SL sie ansagt. Druckwelle nur im Kern (bedrängt), sonst 0.</p>
+          {/if}
         {:else}
           <div class="zwei">
             <div class="gruppe">
@@ -419,6 +668,33 @@
           <p class="hinweis">Für Sturz, Falle und Ähnliches: ohne Deckung, Rüstung und Folgen der Zone.</p>
         {/if}
       </section>
+
+      {#if art === 'explosion'}
+        <section class="abschnitt">
+          <h3 class="abschnitt-titel">Wie stehst du?</h3>
+          {#if gef}
+            <p>Dein Stand: {standAdjektiv(meinStand, d)}</p>
+          {:else}
+            <div class="gruppe">
+              <span class="gruppe-titel">Dein Stand:</span>
+              <div class="auswahlreihe gleich" role="group" aria-label="Dein Stand">
+                {#each d.regeln.staende as st (st.id)}
+                  <button aria-pressed={meinStand === st.id} onclick={() => (standRuhe = st.id)}>{st.adjektiv}</button>
+                {/each}
+              </div>
+            </div>
+          {/if}
+          {#if liegend && exWerte.zahl > 0}<p class="hinweis">Im Liegen trifft dich die halbe Splitterzahl: {exSplitter} statt {exWerte.zahl}.</p>{/if}
+          {#if deckungAufFigur}
+            <label class="schalter"><input type="checkbox" bind:checked={exHinterDeckung} /> Deine Deckung liegt zwischen dir und der Explosion</label>
+          {:else}
+            <p class="hinweis">Keine Deckung eingetragen; ändern über den Knopf Deckung auf der Figur.</p>
+          {/if}
+          {#if druckEingang}
+            <p class="hinweis">{druckEingang.deckung !== null ? 'Dein Rumpf ist verdeckt: Die Druckwelle richtet nichts aus.' : standDanach !== meinStand ? 'Die Druckwelle wirft dich um; danach liegst du.' : 'Die Druckwelle trifft deinen Rumpf.'}</p>
+          {/if}
+        </section>
+      {/if}
 
       {#if art === 'nahkampf'}
         <section class="abschnitt">
@@ -516,7 +792,7 @@
 
       {#if mitZone}
       <section class="abschnitt">
-        <h3 class="abschnitt-titel">Wo trifft es dich?</h3>
+        <h3 class="abschnitt-titel">{art === 'explosion' ? 'Wo trifft der erste Splitter?' : schrot ? 'Wo trifft die erste Kugel?' : 'Wo trifft es dich?'}</h3>
         <Silhouette {d} verdeckt={deckungAufFigur?.zonen ?? []} deckungswert={deckungAufFigur?.wert ?? null} {farben} {zeichen} {ruestung} gewaehlt={zone} onwahl={(z) => (zone = z)} beschriftung="Getroffene Zone wählen" />
         {#if mitVorschau}
           <p class="legende">
@@ -526,12 +802,15 @@
             <span>{ZEICHEN.stagger} Stagger · {ZEICHEN.kampfunfaehig} kampfunfähig · {ZEICHEN.tot} tödlich</span>
           </p>
         {/if}
-        {#if rumpf}
+        {#if rumpf && art !== 'explosion'}
           <div class="auswahlreihe">
             <button aria-pressed={zone === rumpf.id} onclick={() => (zone = rumpf.id)}>{rumpf.name} (Ansage)</button>
           </div>
         {/if}
-        {#if zone}
+        {#if zone && mehrfach}
+          <p class="ergebnis" aria-live="polite"><strong>ab {zonenName(zone)}</strong>: {jeZone.size} {jeZone.size === 1 ? 'Zone' : 'Zonen'}{#if hpGesamt && hpGesamt.nachher < hpGesamt.vorher}, HP {hpGesamt.vorher} → {hpGesamt.nachher}{:else}, kein Schaden{/if}</p>
+          <p class="hinweis">Die Zahl auf jeder Zone sagt, wie viele {art === 'explosion' ? 'Splitter' : 'Kugeln'} sie treffen{druckEingang ? '; die Druckwelle ist eingerechnet' : ''}.</p>
+        {:else if zone}
           <p class="ergebnis" aria-live="polite"><strong>{zonenName(zone)}</strong>
             {#if gewaehlt}: {artText(gewaehlt)}{#if gewaehlt.schaden > 0}, HP {gewaehlt.hp_vorher} → {gewaehlt.hp_nachher}{/if}{/if}</p>
         {:else}
@@ -539,7 +818,7 @@
         {/if}
       </section>
 
-      <Wuerfel art="W8" modus={zonenModus} titel="Trefferzone (W8)" onwurf={zoneAusWurf}>
+      <Wuerfel art="W8" modus={zonenModus} titel={art === 'explosion' ? 'Erster Splitter (W8)' : 'Trefferzone (W8)'} onwurf={zoneAusWurf}>
         {#if zone}<p class="ansage">{zonenName(zone)}</p>{/if}
       </Wuerfel>
       {/if}

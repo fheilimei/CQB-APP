@@ -8,6 +8,7 @@ import { hatWirkung } from './leiter';
 import { grundwerte } from './modifikatoren';
 import { gefechtVon } from './probenrechner';
 import { ruestungswert, treffer, verdeckteZonen, type StaggerRegel, type Trefferfolge } from './schaden';
+import { splitterzahl, zonenFolge } from './schiessen';
 
 /** Was die SL ansagt bzw. der Spieler einträgt, bevor eine Zone gewählt ist. */
 export interface Geschoss {
@@ -106,12 +107,14 @@ export interface Uebernahme {
   quelle: string;
   /** Setzt den Auslöser „beschossen“. */
   schuss: boolean;
+  /** Stand nach dem Treffer (Druckwelle wirft um); nur im Gefecht gespeichert. */
+  stand_danach?: string;
 }
 
 /** Treffer übernehmen: Wunde (Durchschlag) oder Prellung (Wuchttreffer), HP, Tod, Stagger und Auslöser. */
 export function trefferUebernehmen(c: Charakter, e: Eingang, u: Uebernahme, d: Spieldaten): Charakter {
   const a = ausgang(c, e, d);
-  return anwenden(c, a, { eingabe: { ...e }, quelle: u.quelle, schuss: u.schuss }, d);
+  return anwenden(c, a, { eingabe: { ...e }, quelle: u.quelle, schuss: u.schuss, stand_danach: u.stand_danach }, d);
 }
 
 /** Schaden direkt (Sturz, Falle …): ohne Schadensablauf, als Wunde oder Prellung, ohne Zonenfolgen und ohne Stagger. */
@@ -135,6 +138,7 @@ interface Herkunft {
   direkt?: { zone: string; schaden: number; art: 'wunde' | 'prellung' };
   quelle: string;
   schuss: boolean;
+  stand_danach?: string;
 }
 
 function anwenden(c: Charakter, a: Ausgang, h: Herkunft, d: Spieldaten): Charakter {
@@ -165,7 +169,7 @@ function anwenden(c: Charakter, a: Ausgang, h: Herkunft, d: Spieldaten): Charakt
     const breakWeg = a.stagger && !g.break_verloren;
     // Folge der Zone, die den Stand ändert (Sturz im Lauf → liegen), ohne Aktion.
     const standVorher = eigenerStand(g, d);
-    const standNeu = h.direkt ? null : geltendeFolgen(a, c, d).find((f) => f.stand_danach)?.stand_danach ?? null;
+    const standNeu = h.direkt ? null : geltendeFolgen(a, c, d).find((f) => f.stand_danach)?.stand_danach ?? h.stand_danach ?? null;
     const standWechsel = standNeu && standNeu !== standVorher ? standNeu : null;
     const ereignis: Trefferereignis = {
       runde: g.runde,
@@ -249,4 +253,96 @@ export function wundenText(w: Wunde, d: Spieldaten): string {
   const z = d.koerperzonen.eintraege.find((x) => x.id === w.zone);
   const name = z?.name ?? w.zone;
   return `${name}: ${w.schaden} Schaden${w.kritisch ? ', kritisch' : ''}`;
+}
+
+// ---------- Schrot und Splitter (Kampfsystem, Schrotflinten; Sprengwirkung, Splitter)
+
+/** Ein Treffer aus Schrot oder Splittern: alle Kugeln bzw. Splitter, die dieselbe Zone treffen. */
+export interface Teiltreffer {
+  zone: string;
+  kugeln: number;
+  krit: boolean;
+  /** Aus einem Folgetreffer (nicht der erste Schuss). */
+  folgetreffer: boolean;
+}
+
+/**
+ * Verteilt Schrotkugeln oder Splitter auf Zonen. Die erste trifft `ersteZone` (W8, angetippt oder Ansage „Rumpf“:
+ * Zählung ab schrot_rumpf_start), jede weitere die nächstniedrigere Zonennummer. `treffer` = 1 + Folgetreffer; jeder
+ * Folgetreffer bringt `jeTreffer` noch einmal in dieselben Zonen. Kugeln derselben Zone sind ein Treffer (Folgetreffer
+ * zusammen, wie beim eigenen Schuss). Nur die erste Kugel des ersten Treffers kann ein Krit sein.
+ */
+export function verteilteTreffer(ersteZone: string, jeTreffer: number, treffer: number, krit: boolean, d: Spieldaten): Teiltreffer[] {
+  const aus: Teiltreffer[] = [];
+  const dazu = (t: Teiltreffer) => {
+    const da = aus.find((x) => x.zone === t.zone && x.krit === t.krit && x.folgetreffer === t.folgetreffer);
+    if (da) da.kugeln += t.kugeln;
+    else aus.push(t);
+  };
+  for (let i = 0; i < Math.max(0, treffer); i++) {
+    let erst = krit && i === 0;
+    for (const [zone, n] of zonenFolge(ersteZone, jeTreffer, d)) {
+      if (erst) {
+        dazu({ zone, kugeln: 1, krit: true, folgetreffer: false });
+        if (n > 1) dazu({ zone, kugeln: n - 1, krit: false, folgetreffer: false });
+        erst = false;
+      } else dazu({ zone, kugeln: n, krit: false, folgetreffer: i > 0 });
+    }
+  }
+  return aus;
+}
+
+/** Splitter, die den Charakter treffen: Splitterzahl des Bereichs, im Liegen der Anteil aus regeln.json. */
+export function splitterFuer(zahlImBereich: number, stand: string, d: Spieldaten): number {
+  const liegend = d.regeln.staende.find((s) => s.id === stand)?.liegend === true;
+  return splitterzahl(zahlImBereich, liegend, d.regeln);
+}
+
+/** Zone der Druckwelle: der Rumpf als Ganzes (Zone ohne Nummer im Bereich Rumpf). */
+export function rumpfZone(d: Spieldaten): string {
+  return d.koerperzonen.eintraege.find((z) => z.w8 === null && z.bereich === 'rumpf')?.id ?? d.regeln.schiessen.schrot_rumpf_start;
+}
+
+/**
+ * Druckwelle (Sprengwirkung, Druckwelle): stumpfer Treffer auf den Rumpf, kein Krit. Ist der Rumpf vom Explosionspunkt
+ * aus verdeckt (`rumpfVerdeckt`), entsteht kein Schaden.
+ */
+export function druckwelle(mw: number, rumpfVerdeckt: number | null, d: Spieldaten): Eingang {
+  return { zone: rumpfZone(d), dk: null, mw, kugeln: 1, krit: false, deckung: rumpfVerdeckt };
+}
+
+/** Stand nach der Druckwelle: Wer steht oder hockt und dessen Rumpf frei ist, liegt danach; sonst bleibt der Stand. */
+export function standNachDruckwelle(stand: string, rumpfVerdeckt: boolean, d: Spieldaten): string {
+  const liegen = d.regeln.staende.find((s) => s.liegend)?.id;
+  if (!liegen || rumpfVerdeckt) return stand;
+  return d.regeln.staende.find((s) => s.id === stand)?.liegend ? stand : liegen;
+}
+
+export interface Teilausgang {
+  eingang: Eingang;
+  ausgang: Ausgang;
+}
+
+/**
+ * Mehrere Treffer nacheinander übernehmen (Schrot, Splitter, Druckwelle). Jeder Treffer rechnet mit den HP nach dem
+ * vorigen; Stagger gilt je Treffer. Gibt die Ausgänge in derselben Reihenfolge und den Charakter danach zurück.
+ */
+export function mehrereUebernehmen(c: Charakter, eingaenge: Eingang[], u: Uebernahme, d: Spieldaten): { teile: Teilausgang[]; nach: Charakter } {
+  const teile: Teilausgang[] = [];
+  let nach = c;
+  eingaenge.forEach((e, i) => {
+    teile.push({ eingang: e, ausgang: ausgang(nach, e, d) });
+    // Den Stand nach einer Druckwelle setzt nur der letzte Treffer (die Druckwelle steht am Schluss).
+    nach = trefferUebernehmen(nach, e, { ...u, stand_danach: i === eingaenge.length - 1 ? u.stand_danach : undefined }, d);
+  });
+  return { teile, nach };
+}
+
+/** Auslöser ohne Treffer setzen (z. B. „beschossen“ durch eine Explosion, die nicht trifft); außerhalb des Gefechts nichts. */
+export function ausloeserSetzen(c: Charakter, ids: string[]): Charakter {
+  const g = gefechtVon(c);
+  if (!g) return c;
+  const neu = ids.filter((x) => !g.ausloeser_diese_runde.includes(x));
+  if (!neu.length) return c;
+  return { ...c, geaendert: new Date().toISOString(), spielstand: { ...c.spielstand, gefecht: { ...g, ausloeser_diese_runde: [...g.ausloeser_diese_runde, ...neu] } } };
 }
