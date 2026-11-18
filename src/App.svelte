@@ -351,7 +351,7 @@
       {/if}
     </header>
 
-    <main class="bogen" class:mit-leiste={!einstellungen.reiterEingeklappt}>
+    <main class="bogen">
       {#if reiter === 'figur'}
         <section class="karte">
           <h2>{aktiv.name}</h2>
@@ -454,8 +454,6 @@
   .status { font-size: 0.8rem; padding: 2px 8px; border-radius: 999px; background: var(--flaeche-2); color: var(--text-2); }
   .bogen { flex: 1; padding: var(--abstand-3); display: flex; flex-direction: column; gap: var(--abstand-3); }
   .unten { position: sticky; bottom: 0; z-index: 5; }
-  /* Platz rechts für die senkrechte Reiterleiste. */
-  .bogen.mit-leiste { padding-right: calc(var(--tipp) + var(--abstand-2)); }
   /* Gefecht: Kopfzeile und untere Leisten tragen einen Akzentrand statt eines Schriftzugs „Gefecht“. */
   .kopfzeile.im-gefecht { border-bottom: 2px solid var(--akzent); }
   .unten.im-gefecht { border-top: 2px solid var(--akzent); }

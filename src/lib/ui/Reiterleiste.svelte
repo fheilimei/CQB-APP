@@ -1,8 +1,8 @@
 <script lang="ts">
   /**
    * Senkrechte Reiterleiste am rechten Bildschirmrand (Daumenbereich unten rechts).
-   * Bildzeichen statt Text: Figur (Silhouette), Werte (Tabelle), Ausrüstung (Rucksack), Verlauf (Uhr mit Pfeil zurück).
-   * Lässt sich einklappen; dann bleibt eine schmale Lasche am Rand.
+   * Bildzeichen statt Text: Figur (Silhouette), Werte (Tabelle), Ausrüstung (Rucksack), Verlauf (aufgeschlagenes Buch).
+   * Schwebt über dem Inhalt (der Inhalt läuft darunter durch). Lässt sich einklappen; dann bleibt eine schmale Lasche am Rand.
    */
   type Reiter = 'figur' | 'werte' | 'ausruestung' | 'verlauf';
   let { reiter, eingeklappt, onwahl, onklappen }: {
@@ -36,9 +36,8 @@
             <rect x="5" y="6" width="14" height="15" rx="3" />
             <path d="M8.5 13h7v4h-7z M5 11h14" />
           {:else}
-            <path d="M4 12a8 8 0 1 0 2.4-5.7" />
-            <path d="M4 4v4h4" />
-            <path d="M12 8v4.5l3 2" />
+            <path d="M12 6.5C10 5 7 4.5 3 5v13.5c4-.5 7 0 9 1.5 2-1.5 5-2 9-1.5V5c-4-.5-7 0-9 1.5z" />
+            <path d="M12 6.5V20" />
           {/if}
         </svg>
       </button>
