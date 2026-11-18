@@ -14,7 +14,7 @@
   import Bericht from '../Bericht.svelte';
   import Dialog from '../Dialog.svelte';
   import ProbeKern, { type ProbenErgebnis } from '../probe/ProbeKern.svelte';
-  import { AKTION_NAME, ERGEBNIS_SATZ, malstepsText, mitZeichen, standAdjektiv, wurfZahl, zoneName, type Zeile } from '../texte';
+  import { AKTION_NAME, ERGEBNIS_SATZ, malstepsText, mitZeichen, standAdjektiv, standVerb, wurfZahl, zoneName, type Zeile } from '../texte';
   import Wuerfel from '../Wuerfel.svelte';
 
   interface Props {
@@ -59,7 +59,11 @@
   const rumpf = $derived(d.koerperzonen.eintraege.find((z) => z.w8 === null));
   /** Krit: vorbelegt aus dem eigenen Wurf, von Hand änderbar. */
   const krit = $derived(kritHand ?? probe?.stufe === 'krit');
-  const kampfkunst = $derived(eigeneKampfkunst(c, meinStand, gegnerStand, d));
+  // R35 (entschieden): Kampfkunst-Wirkungen nur beim Angriff mit einer Kampfkunst, und nur deren Wirkungen.
+  const kampfkunst = $derived(waffe?.kampfkunst ? eigeneKampfkunst(c, meinStand, gegnerStand, d, waffe.kampfkunst) : []);
+  /** Hättest du mit einer deiner Kampfkünste hier eine Wirkung? Dann ein Hinweis, wenn eine andere Waffe gewählt ist. */
+  const kunstMoeglich = $derived(!waffe?.kampfkunst && eigeneKampfkunst(c, meinStand, gegnerStand, d).length > 0);
+  $effect.pre(() => { if (wirkung && !kampfkunst.some((k) => k.wirkung.id === wirkung)) wirkung = null; });
   const zone = $derived(ansage === 'zone' ? ansageZone : ansage === 'rumpf' ? (rumpf?.id ?? null) : w8Zone);
   const treffer = $derived(waffe && zone ? angriffsTreffer(c, waffe, zone, d) : null);
   const kannWeiter = $derived(!!waffe && !!ausgang && (ausgang === 'daneben' || !!zone) && (ansage !== 'zone' || !!ansageZone));
@@ -73,7 +77,7 @@
     const zeilen: Zeile[] = [];
     const bedingung = als === 'break' ? alsBreak(waffe.laenge, d) : null;
     zeilen.push({ text: `Du greifst im Nahkampf an, mit ${waffe.name} (${waffe.art}, ${waffe.laenge})${bedingung ? `, als Breakaction ${bedingung}` : ''}.`, fett: true });
-    zeilen.push({ text: `Du stehst ${standAdjektiv(meinStand, d)}, der Gegner ${standAdjektiv(gegnerStand, d)}.` });
+    zeilen.push({ text: `Du ${standVerb(meinStand, 'du', d)}, der Gegner ${standVerb(gegnerStand, 'er', d)}.` });
     if (ueber === 'a') zeilen.push({ text: `Du hast den überlegenen Stand: Der Gegner hat ${malstepsText(r.nahkampf.ueberlegener_stand_malsteps)}.` });
     else if (ueber === 'b') zeilen.push({ text: `Der Gegner hat den überlegenen Stand: ${malstepsText(r.nahkampf.ueberlegener_stand_malsteps)} für dich.` });
     if (lage.langeWaffeInArmeslaenge) zeilen.push({ text: `Der Gegner steht in Armeslänge: Deine lange Waffe bringt dir ${malstepsText(r.nahkampf.lange_waffe_in_armeslaenge)}.` });
@@ -195,6 +199,9 @@
         </div>
         {#if ausgang === 'getroffen'}
           <label class="schalter"><input type="checkbox" checked={krit} onchange={(ev) => (kritHand = (ev.target as HTMLInputElement).checked)} /> Krit (dein Wurf)</label>
+          {#if kunstMoeglich}
+            <p class="hinweis">Kampfkunst-Wirkungen gibt es nur, wenn du oben statt einer Waffe deine Kampfkunst wählst.</p>
+          {/if}
           {#if kampfkunst.length}
             <div class="gruppe">
               <span class="gruppe-titel">Deine Kampfkunst-Wirkung:</span>

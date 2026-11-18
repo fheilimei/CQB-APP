@@ -608,6 +608,7 @@
       "lang": "Abfangen: gegen ein Ziel, das in die Reichweite deiner Waffe eintritt"
     },
     "krit_stumpf": "Das Ziel erleidet einen Stagger.",
+    "kampfkunst_waffe": "koerper",
     "wirkungen": [
       {
         "id": "umreissen",
@@ -991,17 +992,23 @@
     {
       "id": "stehen",
       "name": "Stehen",
-      "adjektiv": "stehend"
+      "adjektiv": "stehend",
+      "du": "stehst",
+      "er": "steht"
     },
     {
       "id": "hocke",
       "name": "Hocke",
-      "adjektiv": "hockend"
+      "adjektiv": "hockend",
+      "du": "hockst",
+      "er": "hockt"
     },
     {
       "id": "liegen",
       "name": "Liegen",
       "adjektiv": "liegend",
+      "du": "liegst",
+      "er": "liegt",
       "liegend": true,
       "kein_hechten": true
     }

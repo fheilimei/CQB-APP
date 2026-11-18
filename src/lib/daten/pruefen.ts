@@ -174,6 +174,9 @@ export function pruefeDaten(d: Spieldaten): string[] {
   for (const l of Object.keys(nk.als_break ?? {}))
     if (!['kurz', 'mittel', 'lang'].includes(l)) f('regeln.json', `nahkampf.als_break: unbekannte Länge „${l}“`);
   if (!nk.krit_stumpf) f('regeln.json', 'nahkampf.krit_stumpf fehlt');
+  if (!d.nahkampfwaffen.eintraege.some((w) => w.id === nk.kampfkunst_waffe && !w.varianten))
+    f('regeln.json', `nahkampf.kampfkunst_waffe: unbekannte Nahkampfwaffe „${nk.kampfkunst_waffe}“`);
+  for (const st of r.staende) if (!st.du || !st.er) f('regeln.json', `staende.${st.id}: „du“ oder „er“ fehlt`);
   for (const w of nk.wirkungen ?? []) {
     for (const feld of ['folge', 'folge_du', 'tat_du', 'tat_gegner'] as const)
       if (!w[feld]) f('regeln.json', `nahkampf.wirkungen.${w.id}: „${feld}“ fehlt`);

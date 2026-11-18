@@ -30,6 +30,8 @@ export interface NahkampfwaffenWahl {
   mw: number;
   /** null = stumpf (keine DK). */
   dk: number | null;
+  /** Angriff mit dieser Kampfkunst (Perk-ID); nur dann gibt es Kampfkunst-Wirkungen (R35). */
+  kampfkunst?: string;
 }
 
 export function nahkampfwaffenWahl(d: Spieldaten, nur?: (w: Spieldaten['nahkampfwaffen']['eintraege'][number]) => boolean): NahkampfwaffenWahl[] {
@@ -95,14 +97,15 @@ export type Wirkung = Spieldaten['regeln']['nahkampf']['wirkungen'][number];
 
 /**
  * Kampfkunst-Wirkungen aus den eigenen Perks für einen Sieg mit überlegenem Stand (Stand im Nahkampf). Leer, wenn
- * du nicht überlegen warst oder kein Perk den Fall abdeckt. Mehrere Perks mit derselben Wirkung zählen einmal.
+ * du nicht überlegen warst oder kein Perk den Fall abdeckt. Mehrere Perks mit derselben Wirkung zählen einmal. Mit
+ * `nurPerk` zählt nur diese Kampfkunst (Angriff mit einer Kampfkunst, R35).
  */
-export function eigeneKampfkunst(c: Charakter, sieger: string, verlierer: string, d: Spieldaten): { wirkung: Wirkung; perks: string[] }[] {
+export function eigeneKampfkunst(c: Charakter, sieger: string, verlierer: string, d: Spieldaten, nurPerk?: string): { wirkung: Wirkung; perks: string[] }[] {
   if (ueberlegen(sieger, verlierer, d) !== 'a') return [];
   const paar = `${sieger}_ueber_${verlierer}`;
   const aus: { wirkung: Wirkung; perks: string[] }[] = [];
   for (const p of d.perks.eintraege) {
-    if (!c.perks.includes(p.id)) continue;
+    if (!c.perks.includes(p.id) || (nurPerk && p.id !== nurPerk)) continue;
     const name = p.kampfkunst?.[paar];
     const w = name ? d.regeln.nahkampf.wirkungen.find((x) => x.name === name) : undefined;
     if (!w) continue;
@@ -184,8 +187,17 @@ export function angriffsWaffen(c: Charakter, d: Spieldaten): NahkampfwaffenWahl[
   const e = aktiverEintrag(c);
   const kategorie = e ? waffeVon(e, d).kategorie : null;
   const eigene = new Set(c.ausruestung.nahkampfwaffen.filter((x) => (x.anzahl ?? 1) > 0).map((x) => x.waffe));
-  return nahkampfwaffenWahl(d, (w) =>
+  const liste = nahkampfwaffenWahl(d, (w) =>
     !!w.immer_verfuegbar || (w.mit_waffe ? !!kategorie && w.mit_waffe.includes(kategorie) : eigene.has(w.id)));
+  // Regelfrage R35 (entschieden): Kampfkunst nur ohne Nahkampfwaffe. Jede eigene Kampfkunst ist eine eigene Wahl mit
+  // den Werten von nahkampf.kampfkunst_waffe (Faust usw.); direkt hinter dieser eingereiht.
+  const basis = nahkampfwaffenWahl(d, (w) => w.id === d.regeln.nahkampf.kampfkunst_waffe)[0];
+  if (!basis) return liste;
+  const kuenste = d.perks.eintraege
+    .filter((p) => p.kampfkunst && c.perks.includes(p.id))
+    .map((p): NahkampfwaffenWahl => ({ ...basis, id: `kampfkunst:${p.id}`, name: `${p.name} (Kampfkunst)`, kampfkunst: p.id }));
+  const i = liste.findIndex((w) => w.id === basis.id);
+  return i < 0 ? [...kuenste, ...liste] : [...liste.slice(0, i + 1), ...kuenste, ...liste.slice(i + 1)];
 }
 
 /** Bedingung, unter der ein Angriff mit dieser Länge als Breakaction geht; null = nur als Mainaction. */

@@ -16,7 +16,7 @@
   import Dialog from '../Dialog.svelte';
   import ProbeKern, { type ProbenErgebnis } from '../probe/ProbeKern.svelte';
   import Silhouette, { ZEICHEN, type Zonenfarbe } from '../Silhouette.svelte';
-  import { ERGEBNIS_SATZ, malstepsText, mitZeichen, standAdjektiv, wurfZahl, type Zeile } from '../texte';
+  import { ERGEBNIS_SATZ, malstepsText, mitZeichen, standAdjektiv, standVerb, wurfZahl, type Zeile } from '../texte';
   import Wuerfel from '../Wuerfel.svelte';
 
   interface Props {
@@ -185,7 +185,7 @@
     const waffeText = nkEingabe === 'waffe' && nkWahl
       ? `${nkWahl.name}, ${nkWahl.art}`
       : geschoss.dk === null ? 'stumpf' : `Durchschlagskraft ${geschoss.dk}`;
-    zeilen.push({ text: `Ein Gegner greift dich im Nahkampf an (${waffeText}). Er steht ${standAdjektiv(gegnerStand, d)}, du ${standAdjektiv(meinStand, d)}.`, fett: true });
+    zeilen.push({ text: `Ein Gegner greift dich im Nahkampf an (${waffeText}). Er ${standVerb(gegnerStand, 'er', d)}, du ${standVerb(meinStand, 'du', d)}.`, fett: true });
     if (ueber === 'b') zeilen.push({ text: `Er hat den überlegenen Stand: ${malstepsText(d.regeln.nahkampf.ueberlegener_stand_malsteps)} für dich.` });
     else if (ueber === 'a') zeilen.push({ text: `Du hast den überlegenen Stand: Der Gegner hat ${malstepsText(d.regeln.nahkampf.ueberlegener_stand_malsteps)}.` });
 
@@ -487,6 +487,7 @@
             {#if eigeneWirkungen.length}
               <div class="gruppe">
                 <span class="gruppe-titel">Deine Kampfkunst-Wirkung:</span>
+                <p class="hinweis">Nur wenn du ohne Nahkampfwaffe gekämpft hast.</p>
                 <div class="auswahlreihe" role="group" aria-label="Deine Kampfkunst-Wirkung">
                   <button aria-pressed={eigeneWirkung === null} onclick={() => (eigeneWirkung = null)}>keine</button>
                   {#each eigeneWirkungen as w (w.wirkung.id)}

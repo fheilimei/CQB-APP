@@ -205,6 +205,22 @@ describe('Nahkampfangriff: Waffen', () => {
     expect(angriffsWaffen(mitSchusswaffe(fertig(), 'makarov'), d).map((w) => w.id)).toEqual(['koerper', 'pistolengriff']);
   });
 
+  it('R35: jede eigene Kampfkunst ist eine eigene Wahl mit den Werten der Körperwaffen, direkt dahinter', () => {
+    const c = mitNahkampf(fertig(['judo', 'boxen']), 'kampfmesser');
+    const w = angriffsWaffen(c, d);
+    expect(w.map((x) => x.id)).toEqual(['koerper', 'kampfkunst:boxen', 'kampfkunst:judo', 'kampfmesser']);
+    const koerper = w[0]!;
+    expect(w[2]).toMatchObject({ art: koerper.art, laenge: koerper.laenge, mw: koerper.mw, dk: koerper.dk, kampfkunst: 'judo' });
+    expect(koerper.kampfkunst).toBeUndefined();
+  });
+
+  it('R35: Wirkungen nur der gewählten Kampfkunst', () => {
+    const c = fertig(['judo', 'boxen']);
+    expect(eigeneKampfkunst(c, 'stehen', 'hocke', d).map((x) => x.wirkung.id).sort()).toEqual(['erschuettern', 'umreissen']);
+    expect(eigeneKampfkunst(c, 'stehen', 'hocke', d, 'judo').map((x) => x.wirkung.id)).toEqual(['umreissen']);
+    expect(eigeneKampfkunst(c, 'liegen', 'stehen', d, 'boxen')).toEqual([]);
+  });
+
   it('als Breakaction nur mit kurzer (Armeslänge) oder langer Waffe (Abfangen), nicht mit mittlerer', () => {
     expect(alsBreak('kurz', d)).toMatch(/Armeslänge/);
     expect(alsBreak('lang', d)).toMatch(/Abfangen/);

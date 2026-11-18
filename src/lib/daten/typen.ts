@@ -165,6 +165,8 @@ export interface Regeln {
     als_break: Partial<Record<'kurz' | 'mittel' | 'lang', string>>;
     /** Krit-Folge eines stumpfen Treffers beim Ziel (Kampfsystem, Trefferzone, Schaden und Krit). */
     krit_stumpf: string;
+    /** Nahkampfwaffe, deren Werte ein Angriff mit einer Kampfkunst hat (R35: Kampfkunst nur ohne Nahkampfwaffe). */
+    kampfkunst_waffe: string;
     /** Kampfkunst-Wirkungen; `name` wie in perks.json `kampfkunst`. */
     wirkungen: { id: string; name: string; folge: string; folge_du: string; tat_du: string; tat_gegner: string; stand_danach?: string; stagger?: boolean }[];
   };
@@ -172,7 +174,7 @@ export interface Regeln {
   eingehend: { ausloeser: { beschossen: string; getroffen: string; verletzt: string; stagger: string } };
   zielen: { stepshields: number };
   /** Eigener Stand; der erste ist der Start eines Gefechts. Schlüssel von schiessen.rueckstoss_stepshields sind Stand-IDs. */
-  staende: { id: string; name: string; adjektiv: string; liegend?: boolean; kein_hechten?: boolean }[];
+  staende: { id: string; name: string; adjektiv: string; /** Verb nach „du“ bzw. „er“ („stehst“, „steht“). */ du: string; er: string; liegend?: boolean; kein_hechten?: boolean }[];
   /** Stände, in die gehechtet werden kann. */
   hechten: { staende: string[] };
   nachladen: { einzeln_patronen: number };

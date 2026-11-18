@@ -156,6 +156,8 @@ export const zoneName = (id: string, d: Spieldaten) => d.koerperzonen.eintraege.
 export const trageortName = (id: string, d: Spieldaten) => d.darstellung.trageorte[id] ?? id;
 export const bewegungName = (id: string, d: Spieldaten) => d.darstellung.bewegungen[id] ?? id;
 export const standAdjektiv = (id: string, d: Spieldaten) => d.regeln.staende.find((s) => s.id === id)?.adjektiv ?? id;
+/** Stand als Verb: „du stehst“, „der Gegner hockt“. */
+export const standVerb = (id: string, wer: 'du' | 'er', d: Spieldaten) => d.regeln.staende.find((s) => s.id === id)?.[wer] ?? id;
 export const zustandName = (z: string, d: Spieldaten) => `${z} (${d.regeln.waffenzustand.namen[z] ?? ''})`;
 export const waffenName = (id: string, d: Spieldaten) => d.waffen.eintraege.find((w) => w.id === id)?.name ?? id;
 export const kugelnText = (n: number) => `${n} ${n === 1 ? 'Kugel' : 'Kugeln'}`;

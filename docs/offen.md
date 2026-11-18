@@ -125,6 +125,13 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 
 ### Erledigt
 
+### R35. Kampfkunst nur ohne Nahkampfwaffe (18.11.2026)
+**Entschieden (18.11.2026):** Kampfkunst-Wirkungen gibt es nur, wenn man ohne Nahkampfwaffe kämpft. Im Fenster Nahkampfangriff ist jede eigene Kampfkunst eine eigene Wahl unter „Womit greifst du an?“; sie hat die Werte von Faust und Tritt, und nur mit ihr erscheinen ihre Wirkungen. Bei der Verteidigung (Getroffen → Nahkampf) weist die App darauf hin.
+- **Frage:** Darf man eine Kampfkunst-Wirkung auch mit Messer, Knüppel oder Gewehrkolben auslösen?
+- **Stellen:** (Kampfsystem, Stand im Nahkampf); (Stats, Skills und Perks, Kampfkunst-Perks)
+- **Ändern:** eine Zeile in regeln.json (nahkampf.kampfkunst_waffe); Regelkern, Nahkampf (angriffsWaffen)
+- **Im Regelwerk klarstellen:** ja
+
 ### R33. Erst rennen, dann Hocke oder Liegen (18.11.2026)
 - **Entschieden (18.11.2026):** Wer sich bewegt und danach in die Hocke geht oder sich hinlegt (auch durch Hechten), verlangsamt auf das, was der neue Stand erlaubt: in der Hocke Gehen, im Liegen Kriechen. Für die Lage zählt dann diese langsamere Bewegung. Steht man danach wieder auf, wird die Bewegung nicht wieder schneller.
 - **Frage:** Das Regelwerk sagt, dass in der Hocke nur Gehen und im Liegen nur Kriechen möglich ist, und dass eine Bewegung bis zum Ende der Runde zählt. Offen war, was mit einer schnelleren Bewegung geschieht, wenn danach der Stand wechselt.
