@@ -190,7 +190,7 @@ export function hechtenSperre(c: Charakter, d: Spieldaten): 'stand' | 'symptom' 
   return null;
 }
 
-/** Hechten (Main oder Break): in Hocke oder Liegen; zählt bis Rundenende bzw. bis zur nächsten Bewegung als eigene Bewegung für die Lage (R9). */
+/** Hechten (Main oder Break): in einen Stand aus regeln.json hechten.staende (R27: nur Liegen); zählt bis Rundenende bzw. bis zur nächsten Bewegung als eigene Bewegung für die Lage (R9). */
 export function hechten(c: Charakter, zielstand: string, als: 'main' | 'break'): Charakter {
   const g = laufend(c);
   return mit(c, { ...g, stand: zielstand, gehechtet: true, verbraucht: { ...g.verbraucht, [als]: g.verbraucht[als] + 1 } });

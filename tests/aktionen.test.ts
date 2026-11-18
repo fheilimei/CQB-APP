@@ -114,8 +114,9 @@ describe('Bewegung, Stand, Hechten', () => {
   it('Hechten: gesperrt im Liegen und mit Ruhepuls 2; setzt Stand und zählt als Bewegung für die Lage', () => {
     expect(hechtenSperre(standWechseln(imGefecht(), 'liegen', 'stand'), d)).toBe('stand');
     expect(hechtenSperre(imGefecht(-2), d)).toBe('symptom');
-    const c = hechten(imGefecht(), 'hocke', 'main');
-    expect(g(c)).toMatchObject({ stand: 'hocke', gehechtet: true });
+    expect(d.regeln.hechten.staende).toEqual(['liegen']); // R27: Hechten nur ins Liegen
+    const c = hechten(imGefecht(), 'liegen', 'main');
+    expect(g(c)).toMatchObject({ stand: 'liegen', gehechtet: true });
     expect(verfuegbar(c, 'main', d)).toBe(0);
   });
 

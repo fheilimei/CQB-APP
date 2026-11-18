@@ -93,6 +93,13 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 
 ### Erledigt
 
+### R27. Hechten nur ins Liegen (18.11.2026)
+- **Entschieden (18.11.2026):** Man hechtet nur ins Liegen, nicht in die Hocke. Die App fragt nicht mehr nach dem Stand; nach dem Hechten bist du liegend.
+- **Frage:** Das Regelwerk erlaubt Hechten in die Hocke oder ins Liegen.
+- **Stellen:** (Kampfsystem, Mainaction)
+- **Ändern:** eine Zeile in regeln.json (hechten.staende)
+- **Im Regelwerk klarstellen:** ja, **noch offen**: Bei Hechten „in die Hocke oder“ streichen.
+
 ### R26. „Sturz, falls im Lauf“ am Bein (18.11.2026)
 - **Entschieden (18.11.2026):** Im Lauf heißt laufend oder rennend. Der Sturz legt dich ohne Aktion hin (Stand Liegen); Rückgängig nach dem Treffer nimmt das mit zurück.
 - **Frage:** Welche Bewegungen zählen als „im Lauf“? Und was folgt aus dem Sturz: Liegt man danach (Stand Liegen)?

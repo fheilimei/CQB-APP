@@ -366,7 +366,7 @@ Ein **langer Druck** auf einen Knopf erlaubt ±1 von Hand (Sonderregeln, Fehltip
 | | Wunde versorgen | Probe mit voller Konzentration; Wundliste ([§ 3.10](#310-treffer-wunden-und-blutung-m-r)) |
 | | Wurfaktion | Werfen ([§ 3.8a](#38a-werfen-a-m-r)) |
 | | Nahkampfangriff | Vergleichsprobe ([§ 3.8b](#38b-nahkampf-m-r)) |
-| | Hechten | bis 2 m in Hocke oder Liegen; setzt den Stand und „gehechtet“ für die Lage; gesperrt im Liegen und ab Ruhepuls 2 |
+| | Hechten | bis 2 m, danach liegend (R27, 18.11.2026); setzt den Stand und „gehechtet“ für die Lage; gesperrt im Liegen und ab Ruhepuls 2 |
 | | Zielen | nur mit Symptom „Ruhige Hand“: Stepshield schon für den nächsten Schuss dieser Runde |
 | | Skill/Probe, Sonderfähigkeit | Konzentration wählt der Spieler (keine, leicht, voll); gesperrt, wenn die Breakaction schon eingesetzt ist |
 | | Wachsamkeit, Ballistik | Probenrechner; Ballistik: Erfolg/Krit merkt 1/2 Malsteps weniger Reichweite für den nächsten Schuss auf das Ziel |

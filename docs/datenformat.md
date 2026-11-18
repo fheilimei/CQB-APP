@@ -130,7 +130,7 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
     { "id": "hocke", "name": "Hocke", "adjektiv": "hockend" },
     { "id": "liegen", "name": "Liegen", "adjektiv": "liegend", "liegend": true, "kein_hechten": true }
   ],
-  "hechten": { "staende": ["hocke", "liegen"] },
+  "hechten": { "staende": ["liegen"] },
   "perk_wirkungen": {
     "cqb": [ { "art": "reichweite_frei", "baender": ["bedraengt"] } ],
     "feuer_in_bewegung": [ { "art": "eigene_bewegung_weniger", "malsteps": 1 } ],
@@ -302,7 +302,7 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
 - **`schiessen.stat`**: Stat der Trefferprobe; der Skill ist der Waffenskill, dessen `waffenkategorien` (skills.json) die Kategorie der Waffe enthält. **`schiessen.haltezahl`**: Stat und Skill der Haltezahl. **`schiessen.ausloeser`**: Auslöser aus `leiter.ausloeser`, den ein abgegebener Schuss setzt.
 - **`eingehend.ausloeser`**: Auslöser aus `leiter.ausloeser`, die ein eingehender Treffer im Gefecht setzt: `beschossen` (jeder Schuss), `getroffen` (der Treffer bleibt nicht in der Deckung stecken, auch bei 0 Schaden; Regelfrage R25), `verletzt` (Schaden > 0), `stagger`. Schaden direkt (Sonstiges) setzt nur `verletzt`.
 - **`ladehemmung.beheben`**: Stat der Probe für eine einfache Ladehemmung (Skill: Waffenskill). **`ladehemmung.schwer_beheben`**: Probe, Dauer und Zustandsverlust bei einer schweren Ladehemmung (nur außerhalb des Gefechts).
-- **`staende`**: eigener Stand in der Aktionsleiste; der erste ist der Start eines Gefechts. `name` für Knöpfe („Liegen“), `adjektiv` für Sätze („Dein Stand: liegend“). `kein_hechten`: aus diesem Stand ist Hechten gesperrt. `liegend`: zählt als liegend (Atemkontrolle). **`hechten.staende`**: Stände, in die gehechtet wird.
+- **`staende`**: eigener Stand in der Aktionsleiste; der erste ist der Start eines Gefechts. `name` für Knöpfe („Liegen“), `adjektiv` für Sätze („Dein Stand: liegend“). `kein_hechten`: aus diesem Stand ist Hechten gesperrt. `liegend`: zählt als liegend (Atemkontrolle). **`hechten.staende`**: Stände, in die gehechtet wird (entschieden 18.11.2026, R27: nur Liegen). Steht nur einer da, entfällt die Auswahl im Dialog.
 - **`bewegung.reihenfolge`**: Bewegungsarten von langsam nach schnell, für „höchstens Gehen“ (Konzentration, Schutzanzug, Schild) und für Sprint (die schnellere zählt).
 - **`waffe_wechseln.trageorte`**: Kosten je Trageort: `ohne`, `main` oder `{ aktion, konzentration, runden }`. Ein Wechsel kostet den teureren der beiden Trageorte (alte und neue Waffe). Namen der Trageorte in `darstellung.json` (`trageorte`).
 - **`zielen.stepshields`**: Stepshield des Zielens für den nächsten Schuss in der nächsten Runde.

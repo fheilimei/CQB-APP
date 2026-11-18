@@ -86,7 +86,7 @@
         los: () => { ansicht = { art: 'aufsatz' }; } },
       { text: 'Adrenalin senken', info: 'Nerve-Probe', los: () => onablauf({ art: 'senken' }) },
       { text: 'Verbündete verschieben', info: 'Empathy-Probe mit Führung', los: () => onablauf({ art: 'verschieben' }) },
-      { text: 'Hechten', info: `bis ${r.bewegung.hechten.meter} m in Hocke oder Liegen`, sperre: hechtSperreText(), los: () => { wahl = null; ansicht = { art: 'hechten', als: 'main' }; } }
+      { text: 'Hechten', info: hechtInfo(), sperre: hechtSperreText(), los: () => hechtOeffnen('main') }
     ];
     if (zielenAlsMain(c, d)) liste.push({ text: 'Zielen', info: 'Ruhige Hand: schon für den nächsten Schuss dieser Runde', los: () => { ansicht = { art: 'zielen', als: 'main' }; } });
     liste.push(
@@ -102,7 +102,7 @@
     const liste: Option[] = [
       { text: 'Schießen', sperre: waffeSperre, los: () => onablauf({ art: 'schiessen' }) },
       { text: 'Zielen', info: 'Stepshield für den nächsten Schuss in der nächsten Runde', los: () => { liegendAufgelegt = eigenerStand(g, d) === r.staende.find((s) => s.liegend)?.id; ansicht = { art: 'zielen', als: 'break' }; } },
-      { text: 'Hechten', sperre: hechtSperreText(), los: () => { wahl = null; ansicht = { art: 'hechten', als: 'break' }; } },
+      { text: 'Hechten', info: hechtInfo(), sperre: hechtSperreText(), los: () => hechtOeffnen('break') },
       { text: 'Standwechsel', los: () => { wahl = null; ansicht = { art: 'stand' }; } },
       { text: 'Nahkampfangriff, Abfangen', sperre: kommt, los: () => {} }
     ];
@@ -115,6 +115,10 @@
     return liste;
   });
 
+  const hechtZiele = $derived(r.hechten.staende);
+  const hechtZielText = () => hechtZiele.map((s) => standAdjektiv(s, d)).join(' oder ');
+  function hechtInfo(): string { return `bis ${r.bewegung.hechten.meter} m, danach ${hechtZielText()}`; }
+  function hechtOeffnen(als: 'main' | 'break') { wahl = hechtZiele.length === 1 ? hechtZiele[0]! : null; ansicht = { art: 'hechten', als }; }
   function hechtSperreText(): string | null {
     const s = hechtenSperre(c, d);
     return s === 'stand' ? 'nicht aus dem Liegen' : s === 'symptom' ? 'Ruhepuls 2: kein Hechten' : null;
@@ -240,13 +244,15 @@
     <p class="hinweis">Ausführen: {AKTION_NAME[ansicht.als]} −1.</p>
 
   {:else if ansicht.art === 'hechten'}
-    <p>Du springst bis zu {r.bewegung.hechten.meter} m weit (hörbar bis {d.regeln.schiessen.reichweitenbaender.find((x) => x.id === r.bewegung.hechten.hoerbar)?.name}).
+    <p>Du springst bis zu {r.bewegung.hechten.meter} m weit und bist danach {hechtZielText()} (hörbar bis {d.regeln.schiessen.reichweitenbaender.find((x) => x.id === r.bewegung.hechten.hoerbar)?.name}).
       Bis Rundenende bist du schwerer zu treffen, und eigene Schüsse haben die Malsteps fürs Hechten. Hechten ist keine Bewegung.</p>
-    <div class="auswahlreihe gleich" role="group" aria-label="Zielstand">
-      {#each r.hechten.staende as s (s)}
-        <button aria-pressed={wahl === s} onclick={() => (wahl = s)}>{r.staende.find((x) => x.id === s)?.name ?? s}</button>
-      {/each}
-    </div>
+    {#if hechtZiele.length > 1}
+      <div class="auswahlreihe gleich" role="group" aria-label="Zielstand">
+        {#each hechtZiele as s (s)}
+          <button aria-pressed={wahl === s} onclick={() => (wahl = s)}>{r.staende.find((x) => x.id === s)?.name ?? s}</button>
+        {/each}
+      </div>
+    {/if}
     <p class="hinweis">Ausführen: {AKTION_NAME[ansicht.als]} −1.</p>
 
   {:else if ansicht.art === 'zielen'}
