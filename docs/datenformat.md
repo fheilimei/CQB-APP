@@ -1060,7 +1060,7 @@ Speicherformat eines Charakters, lokal und als Exportdatei (`<name>.cqb.json`). 
 
 ### Speicher auf dem Gerät
 
-IndexedDB-Datenbank `cqb` mit zwei Speichern: `charaktere` (ein Datensatz je Charakter, Schlüssel `id`) und `meta` mit `zuletzt_geoeffnet` (ID) und `einstellungen` (`darstellung`: `system`, `hell`, `dunkel`; `wuerfeln`: je Würfelstelle `app` oder `hand`, fehlende Stellen haben ihren Standard; `reiterEingeklappt`: Reiterleiste eingeklappt, fehlt der Wert, gilt `false`). Jeder Charakter ist ein eigener Datensatz und wird einzeln exportiert.
+IndexedDB-Datenbank `cqb` mit zwei Speichern: `charaktere` (ein Datensatz je Charakter, Schlüssel `id`) und `meta` mit `zuletzt_geoeffnet` (ID) und `einstellungen` (`darstellung`: `system`, `hell`, `dunkel`; `wuerfeln`: je Würfelstelle `app` oder `hand`, fehlende Stellen haben ihren Standard; `reiterEingeklappt`: Reiterleiste eingeklappt, fehlt der Wert, gilt `false`; `laschenHoehe`: Stelle der eingeklappten Lasche am rechten Rand, 0 = ganz unten, 1 = ganz oben, fehlt der Wert, gilt 0). Jeder Charakter ist ein eigener Datensatz und wird einzeln exportiert.
 
 ### Felder außerhalb des Spielstands
 

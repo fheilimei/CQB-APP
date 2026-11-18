@@ -10,9 +10,11 @@ export interface Einstellungen {
   wuerfeln: Record<string, 'app' | 'hand'>;
   /** Reiterleiste am rechten Rand eingeklappt (mehr Platz für den Inhalt). */
   reiterEingeklappt: boolean;
+  /** Stelle der eingeklappten Lasche am rechten Rand: 0 = ganz unten, 1 = ganz oben. */
+  laschenHoehe: number;
 }
 
-export const STANDARD_EINSTELLUNGEN: Einstellungen = { darstellung: 'system', wuerfeln: {}, reiterEingeklappt: false };
+export const STANDARD_EINSTELLUNGEN: Einstellungen = { darstellung: 'system', wuerfeln: {}, reiterEingeklappt: false, laschenHoehe: 0 };
 
 interface CqbDb extends DBSchema {
   charaktere: { key: string; value: Charakter };

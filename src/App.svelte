@@ -286,6 +286,8 @@
   function reiterKlappen(zu: boolean) {
     void einstellungenSetzen({ ...einstellungen, reiterEingeklappt: zu });
   }
+  /** Höhe der Kopfzeile: bis dorthin darf die Lasche der Reiterleiste nach oben gezogen werden. */
+  let kopfHoehe = $state(0);
 
   async function einstellungenSetzen(e: Einstellungen) {
     einstellungen = e;
@@ -314,7 +316,7 @@
   {:else if !aktiv}
     <Start onerstellen={erstellen} onimportieren={importieren} meldung={meldung} {entwuerfe} onfortsetzen={oeffne} />
   {:else}
-    <header class="kopfzeile" class:im-gefecht={!!gefecht}>
+    <header class="kopfzeile" class:im-gefecht={!!gefecht} bind:offsetHeight={kopfHoehe}>
       <button class="flach" aria-label="Menü öffnen" onclick={() => (menueOffen = true)}>☰</button>
       <div class="titel">
         <strong>{aktiv.name || 'ohne Namen'}</strong>
@@ -384,7 +386,8 @@
       <Adrenalinrad stand={gefecht.leiter} d={daten} onsetzen={leiterDrehen} ondetail={() => (dialog = { art: 'detail' })} />
       <Aktionsleiste c={aktiv} d={daten} {kampfunfaehig} onaendern={aendern} onoeffnen={(a) => (dialog = { art: 'aktion', aktion: a })} />
     {/if}
-    <Reiterleiste {reiter} eingeklappt={einstellungen.reiterEingeklappt} onwahl={(r) => (reiter = r)} onklappen={reiterKlappen} />
+    <Reiterleiste {reiter} eingeklappt={einstellungen.reiterEingeklappt} onwahl={(r) => (reiter = r)} onklappen={reiterKlappen}
+      laschenHoehe={einstellungen.laschenHoehe} {kopfHoehe} onlasche={(h) => void einstellungenSetzen({ ...einstellungen, laschenHoehe: h })} />
     </div>
   {/if}
 

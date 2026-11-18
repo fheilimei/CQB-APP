@@ -15,8 +15,6 @@
   const anzeige = $derived(vorschau ?? stand);
   const name = (s: number) => r.stufen[String(s)]?.name ?? null;
   const farbe = $derived(d.darstellung.leiter_farben[String(anzeige)] ?? '#9e9e9e');
-  /** Sehr dunkle Stufenfarbe (Over the Edge): Rahmen in der Gefahrfarbe, sonst verschwindet er im dunklen Modus. */
-  const dunkel = $derived(helligkeit(farbe) < 0.2);
   /** Alle Stufen von unten nach oben, für die Skala über dem Rad. */
   const stufen = $derived(Array.from({ length: r.max - r.min + 1 }, (_, i) => r.min + i));
   const lage = $derived(symptome(anzeige, d.regeln));
@@ -28,12 +26,6 @@
     const ohneGewinn = seite === 'gewinn' && lage.gewinne.length === 0;
     if (ohneGewinn) return [];
     return lage.symptome.map((id) => symptomKurz(d.regeln.symptome[id]![seite]));
-  }
-
-  /** Relative Helligkeit einer Hex-Farbe (0–1). */
-  function helligkeit(hex: string): number {
-    const n = parseInt(hex.slice(1), 16);
-    return (0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255;
   }
 
   function drehen(schritt: 1 | -1) {
@@ -116,7 +108,7 @@
   function tipp(aktion: () => void) { if (gewischt) { gewischt = false; return; } aktion(); }
 </script>
 
-<div class="zeile" style:--farbe={farbe} class:dunkel>
+<div class="zeile" style:--farbe={farbe}>
   <!-- Skala: alle Stufen als schmale Farbstreifen; die aktuelle leuchtet und ist höher. Zeigt auf einen Blick, wo man steht. -->
   <div class="skala" aria-hidden="true">
     {#each stufen as s (s)}<span class:an={s === anzeige} style:--stufe={d.darstellung.leiter_farben[String(s)] ?? '#9e9e9e'}></span>{/each}
@@ -148,9 +140,8 @@
 <style>
   /* Neutral wie die übrigen Leisten (Wunsch 18.11.2026: keine Vollfarbe). Die Stufenfarbe steht nur in der Skala
      und im Rahmen des Fensters in der Mitte. Flach gehalten: wenig Rand über und unter den Stufennamen. */
-  .zeile { --auf: 40px; --rand: var(--farbe); position: relative; z-index: 1; background: var(--flaeche); color: var(--text);
+  .zeile { --auf: 40px; position: relative; z-index: 1; background: var(--flaeche); color: var(--text);
     padding: var(--abstand-1) var(--abstand-2) var(--abstand-1); display: flex; flex-direction: column; gap: var(--abstand-1); }
-  .zeile.dunkel { --rand: var(--gefahr); }
   /* 8 Streifen, Lücke 2 px (Rahmenstärke, kein Abstand aus dem Raster). */
   .skala { display: flex; gap: 2px; align-items: flex-end; height: 6px; padding: 0 calc(100% / 3.6 / 2); }
   .skala span { flex: 1; height: 3px; border-radius: 2px; background: var(--stufe); opacity: 0.3; transition: height 0.15s, opacity 0.15s; }
@@ -162,7 +153,7 @@
      die Namen stehen oben, der Daumen liegt im unteren, leeren Teil. */
   .rad.offen { margin-top: calc(-1 * var(--auf)); padding-bottom: var(--auf); box-shadow: 0 -4px 12px rgb(0 0 0 / 0.25); }
   .rad::before { content: ''; position: absolute; top: 0; bottom: 0; left: calc(100% / 3.6); width: calc(100% * 1.6 / 3.6);
-    background: color-mix(in srgb, var(--farbe) 16%, transparent); border: 2px solid var(--rand); border-radius: var(--radius);
+    background: color-mix(in srgb, var(--farbe) 16%, transparent); border: 2px solid var(--farbe); border-radius: var(--radius);
     box-sizing: border-box; pointer-events: none; transition: border-color 0.2s, background 0.2s; }
   /* Fünf Spalten 1 : 1 : 1.6 : 1 : 1; die äußeren liegen links und rechts außerhalb des Fensters. */
   .band { display: grid; grid-template-columns: 1fr 1fr 1.6fr 1fr 1fr; align-items: center; width: calc(100% * 5.6 / 3.6);
