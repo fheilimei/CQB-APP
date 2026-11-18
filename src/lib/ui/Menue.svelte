@@ -69,43 +69,44 @@
     {#if ansicht === 'haupt'}
       <div class="kopf"><h2>Menü</h2><button class="flach" aria-label="Menü schließen" onclick={p.onschliessen}>✕</button></div>
 
-      <h3>Charaktere</h3>
+      <div class="titelzeile">
+        <h3>Charaktere</h3>
+        <div class="knoepfe">
+          <button class="klein" onclick={p.onneu}>+ Neu</button>
+          <button class="klein" onclick={p.onimportieren}>Importieren</button>
+        </div>
+      </div>
       <ul class="liste">
         {#each p.charaktere as c (c.id)}
+          {@const offen = aktionenFuer === c.id}
           <li class:aktiv={c.id === p.aktiveId}>
             <button class="flach zeile" onclick={() => p.onwechseln(c.id)}>
               <span class="name">{c.name || 'ohne Namen'}</span>
               <span class="hinweis">{klassenname(c)}</span>
             </button>
-            <button class="flach" aria-label="Aktionen für {c.name}" aria-expanded={aktionenFuer === c.id}
-              onclick={() => (aktionenFuer = aktionenFuer === c.id ? null : c.id)}>⋯</button>
+            <button class="flach pfeil" class:offen aria-label="Aktionen für {c.name}" aria-expanded={offen}
+              onclick={() => (aktionenFuer = offen ? null : c.id)}><span aria-hidden="true">›</span></button>
           </li>
-          {#if aktionenFuer === c.id}
+          {#if offen}
             <li class="aktionen">
-              <button onclick={() => p.onexportieren(c)}>Exportieren</button>
-              <button onclick={() => p.onduplizieren(c)}>Duplizieren</button>
-              <button class="gefahr" onclick={() => { loeschKandidat = c; loeschEingabe = ''; }}>Löschen</button>
+              <button class="klein" onclick={() => p.onexportieren(c)}>Exportieren</button>
+              <button class="klein" onclick={() => p.onduplizieren(c)}>Duplizieren</button>
+              <button class="klein gefahr" onclick={() => { loeschKandidat = c; loeschEingabe = ''; }}>Löschen</button>
             </li>
           {/if}
         {/each}
       </ul>
-      <div class="zwei">
-        <button onclick={p.onneu}>Neu erstellen</button>
-        <button onclick={p.onimportieren}>Importieren</button>
-      </div>
 
       {#if p.modus}
         <h3>Modus</h3>
-        <div class="zwei">
-          <button aria-pressed={p.modus === 'aufstieg'} disabled={p.imGefecht}
+        <div class="knoepfe">
+          <button class="klein" aria-pressed={p.modus === 'aufstieg'} disabled={p.imGefecht}
             onclick={() => p.onmodus(p.modus === 'aufstieg' ? 'lesen' : 'aufstieg')}>Aufstieg</button>
-          <button aria-pressed={p.modus === 'schreiben'}
+          <button class="klein" aria-pressed={p.modus === 'schreiben'}
             onclick={() => p.onmodus(p.modus === 'schreiben' ? 'lesen' : 'schreiben')}>Schreibmodus</button>
+          <button class="klein" onclick={p.onsession}>Session abschließen</button>
         </div>
         {#if p.imGefecht}<p class="hinweis">Im Gefecht ist der Aufstieg gesperrt.</p>{/if}
-
-        <h3>Abschließen</h3>
-        <button class="flach eintrag" onclick={p.onsession}>Session abschließen</button>
       {/if}
 
       <h3>Weiteres</h3>
@@ -134,7 +135,7 @@
       <p>App-Version {p.appVersion}<br />Datenstand {p.datenstand}</p>
       <p class="hinweis">Neue Versionen lädt die App beim nächsten Start mit Netz. Steht ein Update bereit, erscheint unten ein Hinweis; ein Tipp darauf lädt es.</p>
       <h3>Sicherung</h3>
-      <p class="hinweis">Charaktere liegen nur auf diesem Gerät. Wird der Browser-Speicher gelöscht, sind sie weg. Exportiere deshalb regelmäßig: Menü → ⋯ neben dem Charakter → Exportieren. Die Datei lässt sich auf jedem Gerät mit „Importieren“ wieder öffnen.</p>
+      <p class="hinweis">Charaktere liegen nur auf diesem Gerät. Wird der Browser-Speicher gelöscht, sind sie weg. Exportiere deshalb regelmäßig: Menü → Pfeil › neben dem Charakter → Exportieren. Die Datei lässt sich auf jedem Gerät mit „Importieren“ wieder öffnen.</p>
     {/if}
   </nav>
 {/if}
@@ -167,7 +168,18 @@
   .liste li.aktiv { background: var(--flaeche-2); }
   .zeile { flex: 1; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; text-align: left; padding: 6px 12px; }
   .name { font-weight: 600; }
-  .aktionen { gap: 8px; padding: 4px 0 8px; flex-wrap: wrap; }
+  /* Pfeil wie bei einem Ordner: zeigt nach rechts, aufgeklappt nach unten. */
+  .pfeil span { display: inline-block; font-size: 1.5rem; line-height: 1; color: var(--text-2); transition: transform 150ms ease-out; }
+  .pfeil.offen span { transform: rotate(90deg); color: var(--akzent); }
+  @media (prefers-reduced-motion: reduce) { .pfeil span { transition: none; } }
+  /* Aufgeklappte Aktionen: eingerückt, mit Linie links, damit sie sichtbar zum Charakter darüber gehören. */
+  .aktionen { gap: var(--abstand-2); flex-wrap: wrap; margin: var(--abstand-1) 0 var(--abstand-2) var(--abstand-3);
+    padding-left: var(--abstand-2); border-left: 2px solid var(--akzent); border-radius: 0; }
+  .titelzeile { display: flex; align-items: center; justify-content: space-between; gap: var(--abstand-2); margin: 20px 0 8px; }
+  .titelzeile h3 { margin: 0; }
+  .knoepfe { display: flex; flex-wrap: wrap; gap: var(--abstand-2); }
+  /* Kleine Knöpfe: schmaler und kleinere Schrift, Tippfläche bleibt 44 px hoch. */
+  button.klein { padding: 0 var(--abstand-2); font-size: 0.85rem; }
   .zwei { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
   .eintrag { width: 100%; text-align: left; }
   .stelle { margin: 12px 0 6px; }
