@@ -184,3 +184,16 @@ h1, h2, h3:not(.gruppe-titel), .abschnitt-titel, .ansage, button.haupt, button.b
 /* Was in einer Überschrift steht, aber keine ist (kleine Knöpfe, Hinweise), bleibt in der Textschrift. */
 :is(h1, h2, h3, .abschnitt-titel) :is(button:not(.haupt):not(.betont), .hinweis, small) {
   font-family: var(--schrift-text); text-transform: none; letter-spacing: normal; }
+
+/* Abschnitt einer Begriffsart (Stats, Skills, Perks im Reiter Werte, Wunsch 18.11.2026): Zeichen nur in der Überschrift,
+   der Rahmen des Abschnitts in derselben Farbe. Die Farbe kommt aus darstellung.json als --typfarbe.
+   Im Dunkeln aufgehellt, damit dunkle Farben (Stat-Grün) auf dunklem Grund sichtbar bleiben. */
+.karte.typrahmen { --typ-sichtbar: var(--typfarbe); border: 2px solid var(--typ-sichtbar); }
+.typzeichen { color: var(--typ-sichtbar, var(--typfarbe)); margin-right: 0.3em; }
+/* Pfeile ▲ ▼ aus Adrenalin (rot) und Ruhepuls (blau); Farbe aus darstellung.json, im Dunkeln etwas heller. */
+:root[data-theme='dunkel'] :is(.karte.typrahmen) { --typ-sichtbar: color-mix(in oklab, var(--typfarbe) 60%, white); }
+:root[data-theme='dunkel'] .leiterpfeil { filter: brightness(1.35); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='hell']) .karte.typrahmen { --typ-sichtbar: color-mix(in oklab, var(--typfarbe) 60%, white); }
+  :root:not([data-theme='hell']) .leiterpfeil { filter: brightness(1.35); }
+}

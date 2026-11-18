@@ -98,6 +98,7 @@ export function pruefeDaten(d: Spieldaten): string[] {
     else for (const sy of stufe.symptome) if (!r.symptome[sy]) f('regeln.json', `Leiterstufe ${s}: unbekanntes Symptom „${sy}“`);
     if (!d.darstellung.leiter_farben[String(s)]) f('darstellung.json', `Farbe für Leiterstufe ${s} fehlt`);
   }
+  for (const k of ['adrenalin', 'ruhepuls'] as const) if (!d.darstellung.leiter_pfeile?.[k]) f('darstellung.json', `leiter_pfeile.${k} fehlt`);
   if (!baender.has(r.grundwerte.wurfweite_band)) f('regeln.json', 'grundwerte.wurfweite_band ist kein Band');
   const lageGruppen = new Set(r.lage.gruppen.map((g) => g.id));
   for (const u of r.lage.umstaende) {

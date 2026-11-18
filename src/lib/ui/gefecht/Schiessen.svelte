@@ -16,6 +16,7 @@
   import { modusFuer } from '../../wuerfel/wuerfel';
   import Bericht from '../Bericht.svelte';
   import Dialog from '../Dialog.svelte';
+  import Steps from '../Steps.svelte';
   import ProbeKern from '../probe/ProbeKern.svelte';
   import Wuerfelbereich, { type Wurfstelle } from '../Wuerfelbereich.svelte';
   import type { Wurf } from '../../wuerfel/wuerfel';
@@ -261,7 +262,7 @@
               <span>Haltezahl (Rückstoß {v.modus.rueckstoss})</span><strong>{v.haltezahl.wert}</strong><span class="klapppfeil" aria-hidden="true">›</span></button>
             {#if haltezahlAuf}
               <ul class="haltezahl">
-                {#each v.haltezahl.quellen as q, i (i)}<li>{q.name} <strong>{stepsText(q)}</strong></li>{/each}
+                {#each v.haltezahl.quellen as q, i (i)}<li>{q.name} <strong><Steps {q} darstellung={d.darstellung} /></strong></li>{/each}
                 {#if !v.haltezahl.quellen.length}<li class="hinweis">nur Rückstoß und Skill Rückstoßkontrolle</li>{/if}
               </ul>
             {/if}

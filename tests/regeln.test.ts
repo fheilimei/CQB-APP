@@ -188,10 +188,10 @@ describe('Adrenalin und Ruhepuls', () => {
   });
 
   it('Steps: Gruppe A und B gegenläufig, Over the Edge beide Malsteps, Nerve nie', () => {
-    expect(leiterSteps(2, 'control', d)).toEqual([{ herkunft: 'leiter', name: 'Adrenalin 2', malsteps: 1 }]);
-    expect(leiterSteps(3, 'brawn', d)).toEqual([{ herkunft: 'leiter', name: 'Adrenalin 3', stepshields: 2 }]);
-    expect(leiterSteps(-3, 'control', d)).toEqual([{ herkunft: 'leiter', name: 'Ruhepuls 3', stepshields: 2 }]);
-    expect(leiterSteps(-2, 'agility', d)).toEqual([{ herkunft: 'leiter', name: 'Ruhepuls 2', malsteps: 1 }]);
+    expect(leiterSteps(2, 'control', d)).toEqual([{ herkunft: 'leiter', name: 'Adrenalin 2', richtung: 'adrenalin', malsteps: 1 }]);
+    expect(leiterSteps(3, 'brawn', d)).toEqual([{ herkunft: 'leiter', name: 'Adrenalin 3', richtung: 'adrenalin', stepshields: 2 }]);
+    expect(leiterSteps(-3, 'control', d)).toEqual([{ herkunft: 'leiter', name: 'Ruhepuls 3', richtung: 'ruhepuls', stepshields: 2 }]);
+    expect(leiterSteps(-2, 'agility', d)).toEqual([{ herkunft: 'leiter', name: 'Ruhepuls 2', richtung: 'ruhepuls', malsteps: 1 }]);
     expect(leiterSteps(4, 'twitch', d)[0]?.malsteps).toBe(2);
     expect(leiterSteps(4, 'intellect', d)[0]?.malsteps).toBe(2);
     expect(leiterSteps(1, 'control', d)).toEqual([]);

@@ -14,9 +14,10 @@
   import { gefechtVon, perkHinweise, probeStellen, type ProbenAnfrage, type SlSteps } from '../../regeln/probenrechner';
   import type { Charakter, Quelle } from '../../speicher/charakter';
   import Begriff from '../Begriff.svelte';
+  import Steps from '../Steps.svelte';
   import { dialogKopf } from '../dialogkopf';
   import Wuerfel, { type Ausgang } from '../Wuerfel.svelte';
-  import { ansage, malstepsText, mitZeichen, skillName, statName, stepsText } from '../texte';
+  import { ansage, malstepsText, mitZeichen, skillName, statName } from '../texte';
 
   interface Props {
     c: Charakter;
@@ -116,7 +117,7 @@
       {@const aus = ausgeschaltet.includes(q.id!)}
       {@const h = zeichen(q.herkunft)}
       <li class="chip" class:aus>
-        <span>{#if h}<span style:color={h.farbe} aria-hidden="true">{h.zeichen}</span> {/if}{q.name} <strong>{stepsText(q)}</strong></span>
+        <span>{#if h && !q.richtung}<span style:color={h.farbe} aria-hidden="true">{h.zeichen}</span> {/if}{q.name} <strong><Steps {q} darstellung={d.darstellung} /></strong></span>
         <button class="flach klein" aria-label={aus ? `${q.name} wieder einschalten` : `${q.name} für diese Probe ausschalten`}
           onclick={() => umschalten(q.id!)}>{aus ? '↺' : '×'}</button>
         {#if q.id?.startsWith('sl_gefecht:')}
@@ -218,7 +219,7 @@
         {/if}
         {#each p.quellen as q (q.id)}
           {@const h = zeichen(q.herkunft)}
-          <tr><td>{#if h}<span style:color={h.farbe}>{h.zeichen}</span> {/if}{q.name}</td><td>{stepsText(q)}</td></tr>
+          <tr><td>{#if h && !q.richtung}<span style:color={h.farbe}>{h.zeichen}</span> {/if}{q.name}</td><td><Steps {q} darstellung={d.darstellung} /></td></tr>
         {/each}
         <tr class="summe"><td>netto {malstepsText(w.netto)}{w.uebrig ? `, ${w.uebrig} übrig für die Krit-Schwelle` : ''}</td>
           <td>{w.moeglich ? `${w.zielwert} · Krit ≤ ${w.krit_schwelle}` : 'keine Probe'}</td></tr>

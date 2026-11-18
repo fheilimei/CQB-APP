@@ -40,7 +40,7 @@ describe('Probe zusammenstellen', () => {
     expect(leiterStand(c)).toBe(2);
     expect(probeStellen(c, d, { stat: 'control', skill: null }).wert).toMatchObject({ netto: 1, zielwert: 51 });
     const twitch = probeStellen(c, d, { stat: 'twitch', skill: null });
-    expect(twitch.automatisch).toEqual([{ id: 'leiter', herkunft: 'leiter', name: 'Adrenalin 2', stepshields: 1 }]);
+    expect(twitch.automatisch).toEqual([{ id: 'leiter', herkunft: 'leiter', name: 'Adrenalin 2', richtung: 'adrenalin', stepshields: 1 }]);
     expect(twitch.wert).toMatchObject({ zielwert: 60, krit_schwelle: 7 });
     expect(probeStellen(c, d, { stat: 'nerve', skill: null }).automatisch).toEqual([]);
     expect(leiterStand(gefechtBeenden(c))).toBe(0);

@@ -15,7 +15,6 @@
   import { rangfolge, statwert, summe } from '../regeln/probe';
   import { leiterStand } from '../regeln/probenrechner';
   import type { Charakter, Quelle } from '../speicher/charakter';
-  import Begriff from './Begriff.svelte';
   import Bericht from './Bericht.svelte';
   import Herkunft from './Herkunft.svelte';
   import Kaufliste from './Kaufliste.svelte';
@@ -46,12 +45,21 @@
   const markiert = (pfad: string) => c.ueberschrieben.includes(pfad);
   const schreiben = $derived(modus === 'schreiben');
   const gruppen = $derived([...new Set(d.stats.eintraege.map((s) => s.gruppe))]);
-  /** Überschrift einer Statgruppe: wie Adrenalin und Ruhepuls wirken, sonst Text aus darstellung.json. */
-  function gruppenTitel(gruppe: string): string {
+  /** Überschrift einer Statgruppe: wie Adrenalin und Ruhepuls wirken („▲ Adrenalin · ▼ Ruhepuls“, Pfeile rot bzw. blau),
+   *  sonst Text aus darstellung.json. */
+  function gruppenTitel(gruppe: string): { text: string } | { teile: { pfeil: string; farbe: string; name: string }[] } {
     const r = gruppenRichtung(gruppe, d.regeln);
-    if (!r) return d.darstellung.statgruppen?.[gruppe] ?? `Gruppe ${gruppe}`;
-    const z = (n: number) => (n > 0 ? '+' : n < 0 ? '−' : '±0');
-    return `${z(r.adrenalin)} bei Adrenalin · ${z(r.ruhepuls)} bei Ruhepuls`;
+    if (!r) return { text: d.darstellung.statgruppen?.[gruppe] ?? `Gruppe ${gruppe}` };
+    const teile = [];
+    if (r.adrenalin) teile.push({ pfeil: r.adrenalin > 0 ? '▲' : '▼', farbe: d.darstellung.leiter_pfeile.adrenalin, name: 'Adrenalin' });
+    if (r.ruhepuls) teile.push({ pfeil: r.ruhepuls > 0 ? '▲' : '▼', farbe: d.darstellung.leiter_pfeile.ruhepuls, name: 'Ruhepuls' });
+    return { teile };
+  }
+  /** Pfeil und Farbe, wenn Adrenalin bzw. Ruhepuls gerade auf diesen Stat wirkt. */
+  function leiterPfeil(statId: string): { pfeil: string; farbe: string } | null {
+    const q = leiterSteps(stand, statId, d)[0];
+    if (!q?.richtung) return null;
+    return { pfeil: q.stepshields ? '▲' : '▼', farbe: d.darstellung.leiter_pfeile[q.richtung] };
   }
   const malstepSpalten = $derived(Array.from({ length: d.regeln.steps.keine_probe_ab - 1 }, (_, i) => i + 1));
 
@@ -216,16 +224,22 @@
   <section class="karte"><Kaufliste {c} {d} {liste} onkaufen={kaufen} /></section>
 {/if}
 
-<section class="karte">
+{#snippet typTitel(art: 'stat' | 'skill' | 'perk', titel: string)}
+  <h2><span class="typzeichen" aria-hidden="true">{d.darstellung.typen[art].zeichen}</span>{titel}</h2>
+{/snippet}
+
+<!-- Stats, Skills und Perks: Zeichen nur in der Überschrift, Rahmen des Abschnitts in der Farbe des Zeichens (Wunsch 18.11.2026). -->
+<section class="karte typrahmen" style:--typfarbe={d.darstellung.typen.stat.farbe}>
   <!-- Überschrift und Spaltennenner in einer Zeile, damit keine Lücke vor dem Strich entsteht. -->
   <div class="statgitter kopfreihe" style:--spalten={malstepSpalten.length}>
-    <h2>Stats</h2><span aria-hidden="true">Wert</span>
+    {@render typTitel('stat', 'Stats')}<span aria-hidden="true">Wert</span>
     {#each malstepSpalten as n (n)}<span aria-hidden="true">▼{n}</span>{/each}
     <span></span>
   </div>
   {#each gruppen as gruppe (gruppe)}
+    {@const gt = gruppenTitel(gruppe)}
     <div class="gruppe">
-    <h3 class="gruppe-titel">{gruppenTitel(gruppe)}</h3>
+    <h3 class="gruppe-titel">{#if 'text' in gt}{gt.text}{:else}{#each gt.teile as t, i (t.name)}{#if i > 0}{' · '}{/if}<span class="leiterpfeil" style:color={t.farbe}>{t.pfeil}</span>{' '}{t.name}{/each}{/if}</h3>
     <ul class="zeilen">
       {#each d.stats.eintraege.filter((s) => s.gruppe === gruppe) as s (s.id)}
         {@const e = c.stats[s.id]!}
@@ -233,15 +247,14 @@
         {@const mods = modifikatorenAn(c, d, 'stat', s.id)}
         {@const offen = offenStat === s.id}
         {@const lt = leiterSpalte(s.id)}
+        {@const lp = leiterPfeil(s.id)}
         <li id="stat-{s.id}">
           <!-- Eine Zeile: Name, groß der Statwert, dann die Zielwerte bei 1 bis 5 Malsteps absteigend. Der Rang steht nur aufgeklappt. -->
           <button class="zeile flach stat statgitter" style:--spalten={malstepSpalten.length} aria-expanded={offen} onclick={() => (offenStat = offen ? null : s.id)}>
-            <span class="statname">
-              <Begriff art="stat" name={s.name} darstellung={d.darstellung} />
-            </span>
-            <strong class="statwert" class:hand={markiert(`stats.${s.id}`)} class:gilt={lt.wirkt && lt.spalte === 0}>{sw ?? '–'}<Herkunft quellen={[...quellenVon(mods, `stats.${s.id}`), ...(lt.wirkt ? ['leiter'] : [])]} darstellung={d.darstellung} /></strong>
+            <span class="statname">{s.name}{#if lp}<sup class="leiterpfeil" style:color={lp.farbe} title={stand > 0 ? 'Adrenalin' : 'Ruhepuls'}>{lp.pfeil}</sup>{/if}</span>
+            <strong class="statwert" class:hand={markiert(`stats.${s.id}`)} class:gilt={lt.wirkt && lt.spalte === 0} style:--gilt-farbe={lp?.farbe}>{sw ?? '–'}<Herkunft quellen={quellenVon(mods, `stats.${s.id}`)} darstellung={d.darstellung} /></strong>
             {#if sw !== null}
-              {#each stepReihe(sw, d.regeln).slice(1) as z, i (i)}<span class="step" class:gilt={lt.wirkt && lt.spalte === i + 1}
+              {#each stepReihe(sw, d.regeln).slice(1) as z, i (i)}<span class="step" class:gilt={lt.wirkt && lt.spalte === i + 1} style:--gilt-farbe={lp?.farbe}
                 aria-label="bei {i + 1} {i === 0 ? 'Malstep' : 'Malsteps'}: {z}">{z}</span>{/each}
             {:else}
               {#each malstepSpalten as n (n)}<span></span>{/each}
@@ -264,7 +277,7 @@
               {:else}
                 <p>Rang {e.rang} ({e.rang ? d.regeln.raenge[e.rang] : '–'}) · Abweichung {e.wurf ? vorzeichen(e.wurf.positiv - e.wurf.negativ) : '–'}
                   {#if e.wurf}<span class="hinweis">({wurfText(e.wurf)}, {e.wurf.quelle === 'app' ? 'von der App gewürfelt' : 'von Hand'})</span>{/if}</p>
-                {#if lt.wirkt}<p class="hinweis">{d.darstellung.herkunft.leiter?.zeichen} {stand > 0 ? 'Adrenalin' : 'Ruhepuls'} wirkt: hervorgehoben ist der Zielwert, der jetzt gilt.</p>{/if}
+                {#if lt.wirkt && lp}<p class="hinweis"><span class="leiterpfeil" style:color={lp.farbe}>{lp.pfeil}</span> {stand > 0 ? 'Adrenalin' : 'Ruhepuls'} wirkt: umrandet ist der Zielwert, der jetzt gilt.</p>{/if}
                 {#if modus === 'lesen'}<button class="betont" onclick={() => onprobe(s.id, null)}>Probe auf {mitZeichen('stat', s.id, d)}</button>{/if}
                 {#if modus === 'aufstieg' && statrankUpSperre(c, s.id, d) === null}
                   <button class="betont" onclick={() => (rankUp = s.id)}>Statrank-Up ({punkte(d.regeln.aufstieg.statrank_up_kosten)})</button>
@@ -280,9 +293,15 @@
   {/each}
 </section>
 
-<section class="karte">
-  <div class="kopf">
-    <h2>Skills</h2>
+<section class="karte typrahmen" style:--typfarbe={d.darstellung.typen.skill.farbe}>
+  <!-- Über der Spalte der Stufen ein Gürtel als Zeichen für den Grad, daneben die Überschrift. -->
+  <div class="kopf skillkopf">
+    <span class="guertel" title="Stufe" aria-hidden="true">
+      <svg viewBox="0 0 24 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M1 5h9M14 5h9M1 10h9M14 10h9" /><rect x="10" y="3.5" width="4" height="8" rx="1" /><path d="M11 11.5L8.5 15.2M13 11.5L15.5 15.2" />
+      </svg>
+    </span>
+    {@render typTitel('skill', 'Skills')}
     <label class="schalter"><input type="checkbox" bind:checked={alleSkills} /> Alle Skills</label>
   </div>
   <ul class="zeilen">
@@ -295,11 +314,14 @@
         <div class="skill">
           <button class="zeile flach name" aria-expanded={modus === 'lesen' ? undefined : offen}
             onclick={() => (modus === 'lesen' ? onprobe(s.stat, s.id) : (offenSkill = offen ? null : s.id))}>
-            <span class="skillname"><Begriff art="skill" name={s.name} darstellung={d.darstellung} />
-              {#if kalt}<span class="schloss" title="eingefroren">🔒</span>{/if}</span>
-            {#if modus !== 'schreiben'}
-              <strong class="wert" class:hand={markiert(`skills.${s.id}`)}>{stufe}<Herkunft quellen={quellenVon(mods, `skills.${s.id}`)} darstellung={d.darstellung} /></strong>
-            {/if}
+            <!-- Stufe ganz links, nach einem Abstand der Name (Wunsch 18.11.2026). -->
+            <span class="skillzeile">
+              {#if modus !== 'schreiben'}
+                <strong class="wert" class:hand={markiert(`skills.${s.id}`)}>{stufe}<Herkunft quellen={quellenVon(mods, `skills.${s.id}`)} darstellung={d.darstellung} /></strong>
+              {/if}
+              <span class="skillname">{s.name}
+                {#if kalt}<span class="schloss" title="eingefroren">🔒</span>{/if}</span>
+            </span>
             {#if modus !== 'lesen'}<span class="klapppfeil" aria-hidden="true">›</span>{/if}
           </button>
           {#if schreiben}
@@ -328,8 +350,8 @@
   </ul>
 </section>
 
-<section class="karte">
-  <h2>Perks</h2>
+<section class="karte typrahmen" style:--typfarbe={d.darstellung.typen.perk.farbe}>
+  {@render typTitel('perk', 'Perks')}
   <ul class="zeilen">
     {#each c.perks as id (id)}
       {@const p = d.perks.eintraege.find((x) => x.id === id)}
@@ -337,7 +359,7 @@
       {@const wirkt = perkModifikatoren(id, d)}
       <li id="perk-{id}">
         <button class="zeile flach perk" aria-expanded={offen} onclick={() => (offenPerk = offen ? null : id)}>
-          <span><Begriff art="perk" name={perkName(id, d)} darstellung={d.darstellung} />
+          <span>{perkName(id, d)}
             <span class="hinweis kurz">{p?.kurz}</span></span>
           {#if modus === 'aufstieg'}<span class="hinweis">Rang {p?.rang}</span>{/if}
           <span class="klapppfeil" aria-hidden="true">›</span>
@@ -408,14 +430,22 @@
   .statname { display: flex; align-items: center; flex-wrap: wrap; gap: var(--abstand-1) var(--abstand-2); min-width: 0; hyphens: auto; overflow-wrap: anywhere; }
   .statwert { font-size: 1.35rem; text-align: right; white-space: nowrap; }
   .step { text-align: right; font-size: 0.85rem; color: var(--text-2); }
-  .gilt { outline: 2px solid var(--akzent); outline-offset: 1px; border-radius: 4px; color: var(--text); font-weight: 400; }
+  .gilt { outline: 2px solid var(--gilt-farbe, var(--akzent)); outline-offset: 1px; border-radius: 4px; color: var(--text); font-weight: 400; }
   .kopfreihe { font-size: 0.75rem; color: var(--text-2); border-bottom: 1px solid var(--linie); padding-bottom: 2px; }
   .kopfreihe > span { text-align: right; align-self: end; }
   .kopfreihe h2 { margin: 0; font-size: 1.1rem; color: var(--text); text-align: left; }
 
   .skill { display: flex; align-items: center; gap: 8px; }
   .skill .name { flex: 1; min-width: 0; }
-  .skillname { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; }
+  /* Stufe links in fester Breite, damit die Namen untereinander stehen; die Gürtel-Spalte im Kopf ist gleich breit. */
+  .skillzeile { display: flex; align-items: center; gap: var(--abstand-3); min-width: 0; }
+  .skillzeile .wert { width: 1.6rem; flex: none; text-align: right; font-size: 1.35rem; white-space: nowrap; }
+  .skillname { display: flex; flex-wrap: wrap; align-items: center; gap: var(--abstand-1) var(--abstand-2); min-width: 0; }
+  .skillkopf { gap: var(--abstand-3); }
+  .skillkopf h2 { margin-right: auto; }
+  .guertel { width: 1.6rem; flex: none; display: flex; justify-content: flex-end; color: var(--text-2); }
+  .guertel svg { width: 1.6rem; height: auto; }
+  .statname sup { font-size: 0.7em; margin-left: 2px; }
   .klein { font-size: 0.8rem; margin: 0 0 var(--abstand-2); }
   .plus { padding: 0; width: 44px; font-size: 1.2rem; }
   .perk { align-items: flex-start; }

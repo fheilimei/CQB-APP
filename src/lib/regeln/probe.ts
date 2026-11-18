@@ -41,6 +41,8 @@ export interface StepQuelle {
   name: string;
   malsteps?: number;
   stepshields?: number;
+  /** Nur bei Steps aus Adrenalin oder Ruhepuls: woher sie kommen, für die Farbe der Pfeile. */
+  richtung?: 'adrenalin' | 'ruhepuls';
   /** Änderung der Krit-Schwelle (z. B. Perk Kernschuss). */
   krit_schwelle?: number;
 }

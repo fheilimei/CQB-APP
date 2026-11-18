@@ -26,7 +26,8 @@ export function leiterSteps(stand: number, statId: string, d: Spieldaten): StepQ
   const s = stufe(stand, d.regeln);
   const wert = gruppe === 'A' ? s.gruppe_a : s.gruppe_b;
   if (wert === 0 || !s.name) return [];
-  return [wert > 0 ? { herkunft: 'leiter', name: s.name, stepshields: wert } : { herkunft: 'leiter', name: s.name, malsteps: -wert }];
+  const richtung = stand > 0 ? 'adrenalin' as const : 'ruhepuls' as const;
+  return [wert > 0 ? { herkunft: 'leiter', name: s.name, richtung, stepshields: wert } : { herkunft: 'leiter', name: s.name, richtung, malsteps: -wert }];
 }
 
 /** Richtung der Wirkung auf eine Statgruppe bei Adrenalin und bei Ruhepuls: +1 Stepshields, −1 Malsteps, 0 nichts.

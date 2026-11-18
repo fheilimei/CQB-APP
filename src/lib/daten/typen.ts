@@ -496,6 +496,8 @@ export interface Darstellung {
   herkunft: Record<string, { zeichen: string; farbe?: string; rahmen?: string; name: string }>;
   typen: Record<'stat' | 'skill' | 'perk', { zeichen: string; farbe: string; name: string }>;
   leiter_farben: Record<string, string>;
+  /** Farbe der Pfeile ▲ ▼, wenn Adrenalin bzw. Ruhepuls Steps bringt. */
+  leiter_pfeile: { adrenalin: string; ruhepuls: string };
   /** Anzeigenamen der Grundwerte (Schlüssel wie in regeln.json `grundwerte`). */
   grundwerte: Record<string, string>;
   /** Anzeigenamen der Probenarten, auf die Modifikatoren zielen können (`ziel.art` = `probe`). */

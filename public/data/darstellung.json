@@ -69,6 +69,10 @@
     "3": "#c0392b",
     "4": "#a0146a"
   },
+  "leiter_pfeile": {
+    "adrenalin": "#d9362b",
+    "ruhepuls": "#2b7fd4"
+  },
   "grundwerte": {
     "hp": "HP",
     "schmerzresistenz": "Schmerzresistenz",

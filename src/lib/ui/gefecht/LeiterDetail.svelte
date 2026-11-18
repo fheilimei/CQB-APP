@@ -24,7 +24,9 @@
       return { g, stats: d.stats.eintraege.filter((s) => s.gruppe === g).map((s) => s.name), wert };
     })
   );
-  const steps = (w: number) => (w > 0 ? `▲${w} (${w === 1 ? 'Stepshield' : 'Stepshields'})` : w < 0 ? `▼${-w} (${w === -1 ? 'Malstep' : 'Malsteps'})` : 'keine Steps');
+  /** Pfeil rot bei Adrenalin, blau bei Ruhepuls (darstellung.json `leiter_pfeile`). */
+  const farbe = $derived(stand > 0 ? d.darstellung.leiter_pfeile.adrenalin : d.darstellung.leiter_pfeile.ruhepuls);
+  const stepsName = (w: number) => (w > 0 ? (w === 1 ? 'Stepshield' : 'Stepshields') : w < 0 ? (w === -1 ? 'Malstep' : 'Malsteps') : '');
 </script>
 
 <Dialog titel={stufe.name ?? 'Adrenalin'}>
@@ -33,7 +35,7 @@
   {/if}
   <ul class="gruppen">
     {#each gruppen as x (x.g)}
-      <li><span><strong>Gruppe {x.g}</strong> <span class="hinweis">{x.stats.join(', ')}</span></span><span>{steps(x.wert)}</span></li>
+      <li><span><strong>Gruppe {x.g}</strong> <span class="hinweis">{x.stats.join(', ')}</span></span><span>{#if x.wert}<span class="leiterpfeil" style:color={farbe}>{x.wert > 0 ? '▲' : '▼'}</span>{Math.abs(x.wert)} ({stepsName(x.wert)}){:else}keine Steps{/if}</span></li>
     {/each}
   </ul>
   {#if stufe.symptome.length}
