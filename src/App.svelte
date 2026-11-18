@@ -37,6 +37,8 @@
   import WaffeWechseln from './lib/ui/gefecht/WaffeWechseln.svelte';
   import Deckung from './lib/ui/gefecht/Deckung.svelte';
   import Ereignis from './lib/ui/gefecht/Ereignis.svelte';
+  import Nachsorge from './lib/ui/Nachsorge.svelte';
+  import Ruhe from './lib/ui/Ruhe.svelte';
   import Reizgas from './lib/ui/gefecht/Reizgas.svelte';
   import Getroffen from './lib/ui/gefecht/Getroffen.svelte';
   import Nahkampfangriff from './lib/ui/gefecht/Nahkampfangriff.svelte';
@@ -73,6 +75,8 @@
     | { art: 'nachladen'; id: string; als: 'main' | 'break' | null }
     | { art: 'ladehemmung'; id: string }
     | { art: 'versorgen'; wundId: string | null }
+    | { art: 'nachsorge'; wundId: string }
+    | { art: 'ruhe' }
     | { art: 'nahkampf'; als: 'main' | 'break' }
     | { art: 'werfen'; als: 'main' | 'break' };
   let dialog = $state<Spieldialog | null>(null);
@@ -430,6 +434,7 @@
         <Figur c={aktiv} d={daten} ongetroffen={() => (dialog = { art: 'getroffen' })} ondeckung={() => (dialog = { art: 'deckung' })}
           onereignis={() => (dialog = { art: 'ereignis' })}
           onversorgen={(id) => (dialog = { art: 'versorgen', wundId: id })} onfrist={fristFrage}
+          onnachsorge={(id) => (dialog = { art: 'nachsorge', wundId: id })} onruhe={() => (dialog = { art: 'ruhe' })}
           {kampfunfaehig} ongefechtstart={gefechtStarten} onnaechsteRunde={() => (dialog = { art: 'runde' })} ongefechtende={gefechtEndeFrage} />
       {:else if reiter === 'werte'}
         <Werte c={aktiv} d={daten} {modus} {abweichungModus} onaendern={aendern}
@@ -484,6 +489,11 @@
     {:else if dialog.art === 'versorgen'}
       <Versorgen c={aktiv} d={daten} wundId={dialog.wundId} wuerfelModus={probeModus} onaendern={aendern}
         onfertig={(c) => nachAblauf(c)} onabbrechen={() => (dialog = null)} />
+    {:else if dialog.art === 'nachsorge' && !gefecht}
+      <Nachsorge c={aktiv} d={daten} wundId={dialog.wundId} wuerfelModus={probeModus} onaendern={aendern}
+        onfertig={(c) => nachAblauf(c)} onabbrechen={() => (dialog = null)} />
+    {:else if dialog.art === 'ruhe' && !gefecht}
+      <Ruhe c={aktiv} d={daten} wuerfelModus={probeModus} onfertig={(c) => nachAblauf(c)} onabbrechen={() => (dialog = null)} />
     {:else if dialog.art === 'nahkampf' && gefecht}
       <Nahkampfangriff c={aktiv} d={daten} als={dialog.als} {zonenModus} wuerfelModus={probeModus} onaendern={aendern}
         onfertig={(c) => nachAblauf(c)} onabbrechen={() => (dialog = null)} />

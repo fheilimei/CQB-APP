@@ -206,6 +206,19 @@ export interface Regeln {
   blutung: Record<string, Blutungsart>;
   /** Maßnahmen zum Versorgen: Skill der Probe, Konzentration (Schlüssel in konzentration.aktionen). */
   versorgen: Record<string, Massnahme>;
+  /** Heilung an Ruhetagen (Schaden, Blutung und Verletzungen, Heilung). */
+  heilung: {
+    erholungsprobe: { stat: string; krit: number; gelungen: number; misslungen: number };
+    malsteps_je_unversorgte_wunde: number;
+    pflege_stepshields: { krit: number; gelungen: number };
+    /** Ruhetage je Schadenspunkt: normal Tage, kritisch Wochen aus Ruhetagen (7). */
+    heildauer_tage_je_schaden: { normal: number; kritisch: number };
+    /** Skill der Nachsorge-Probe je Art der Wunde. */
+    nachsorge_skill: { normal: string; kritisch: string };
+    /** Skill des Betreuers bei der Pflege; bei einer offenen kritischen Wunde der zweite. */
+    pflege_skill: { normal: string; offene_kritische_wunde: string };
+    nachsorge_faktor: { krit: number; gelungen: number; misslungen: number; keine: number };
+  };
   geld: {
     ersparnisse: number;
     schulden: { klein: number; mittel: number; gross: number; rueckzahlung_faktor: number };

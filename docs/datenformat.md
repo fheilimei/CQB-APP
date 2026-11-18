@@ -278,6 +278,8 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
     "malsteps_je_unversorgte_wunde": 1,
     "pflege_stepshields": { "krit": 2, "gelungen": 1 },
     "heildauer_tage_je_schaden": { "normal": 1, "kritisch": 7 },
+    "nachsorge_skill": { "normal": "erste_hilfe", "kritisch": "operation" },
+    "pflege_skill": { "normal": "erste_hilfe", "offene_kritische_wunde": "operation" },
     "nachsorge_faktor": { "krit": 0.5, "gelungen": 1, "misslungen": 2, "keine": 2 }
   },
   "grundwerte": {

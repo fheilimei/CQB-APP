@@ -263,6 +263,9 @@ export function pruefeDaten(d: Spieldaten): string[] {
     if (!d.skills.eintraege.some((s) => s.id === m.skill)) f('regeln.json', `versorgen.${id}: unbekannter Skill „${m.skill}“`);
     if (!r.konzentration.aktionen[m.konzentration]) f('regeln.json', `versorgen.${id}: unbekannte Konzentration „${m.konzentration}“`);
   }
+  for (const [wo, sk] of [['nachsorge_skill', r.heilung?.nachsorge_skill], ['pflege_skill', r.heilung?.pflege_skill]] as const)
+    for (const id of Object.values(sk ?? {}))
+      if (!d.skills.eintraege.some((s) => s.id === id)) f('regeln.json', `heilung.${wo}: unbekannter Skill „${id}“`);
 
   // ---------- koerperzonen.json
   const w8 = d.koerperzonen.eintraege.map((z) => z.w8).filter((x): x is number => x !== null);

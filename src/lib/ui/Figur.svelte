@@ -8,6 +8,7 @@
   import { ruestungswert } from '../regeln/schaden';
   import { deckungFuer, gehaltenerSchild } from '../regeln/wunden';
   import { blutet, fristMinuten, fristVerlaengert, massnahmenFuer } from '../regeln/blutung';
+  import { heilt, nachsorgeMoeglich, restHeildauer } from '../regeln/heilung';
   import type { Charakter, Wunde } from '../speicher/charakter';
   import Haltungsanzeige from './Haltungsanzeige.svelte';
   import Silhouette from './Silhouette.svelte';
@@ -20,12 +21,16 @@
     onereignis: () => void;
     onversorgen: (wundId: string) => void;
     onfrist: (wundId: string) => void;
+    /** Nachsorge einer versorgten Wunde (nur in Ruhe). */
+    onnachsorge: (wundId: string) => void;
+    /** Ruhe: Nacht oder Ruhetag (nur in Ruhe). */
+    onruhe: () => void;
     kampfunfaehig: boolean;
     ongefechtstart: () => void;
     onnaechsteRunde: () => void;
     ongefechtende: () => void;
   }
-  let { c, d, ongetroffen, ondeckung, onereignis, onversorgen, onfrist, kampfunfaehig, ongefechtstart, onnaechsteRunde, ongefechtende }: Props = $props();
+  let { c, d, ongetroffen, ondeckung, onereignis, onversorgen, onfrist, onnachsorge, onruhe, kampfunfaehig, ongefechtstart, onnaechsteRunde, ongefechtende }: Props = $props();
 
   let zone = $state<string | null>(null);
   /** Bildzeichen Mauer (Deckung), auf dem Knopf Deckung und in der Übersicht der Zone. */
@@ -59,10 +64,11 @@
       const fristText = frist === null ? '' : `, Frist ${frist} ${frist === 1 ? 'Minute' : 'Minuten'}${imGefecht ? ' ab Gefechtsende' : ''}`;
       return `blutet${fristText}${fristVerlaengert(w, d) ? ` (${mit})` : ''}`;
     }
-    if (w.versorgt) return `versorgt (${mit})`;
+    if (w.versorgt) return `versorgt (${mit})${heilt(w, d) ? `, heilt: noch ${tage(restHeildauer(w, d))}${w.nachsorge === null ? ' ohne Nachsorge' : ''}` : ''}`;
     if (w.blutung.status === 'gestoppt') return 'Blutung gestoppt';
     return 'ausgeblutet, unversorgt';
   }
+  const tage = (n: number) => `${n} ${n === 1 ? 'Ruhetag' : 'Ruhetage'}`;
   function folge(w: Wunde): string {
     const z = d.koerperzonen.eintraege.find((x) => x.id === w.zone);
     return (w.kritisch ? z?.krit.text : z?.normal.text) ?? '';
@@ -146,10 +152,11 @@
               </span>
               <span class="wert">{w.schaden}</span>
             </li>
-            {#if massnahmenFuer(w, d).length || (!imGefecht && blutet(w))}
+            {#if massnahmenFuer(w, d).length || (!imGefecht && (blutet(w) || nachsorgeMoeglich(w, d)))}
               <li class="wundknoepfe">
                 {#if massnahmenFuer(w, d).length}<button class="betont" onclick={() => onversorgen(w.id)}>Versorgen</button>{/if}
                 {#if !imGefecht && blutet(w)}<button onclick={() => onfrist(w.id)}>Frist abgelaufen</button>{/if}
+                {#if !imGefecht && nachsorgeMoeglich(w, d)}<button onclick={() => onnachsorge(w.id)}>Nachsorge</button>{/if}
               </li>
             {/if}
           {/each}
@@ -180,6 +187,10 @@
       <button class="betont" class:warnung={kampfunfaehig} onclick={ongefechtstart}>
         {#if kampfunfaehig}⚠{:else}<svg class="zeichen" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5l9 5.5-9 5.5z" /></svg>{/if}
         Gefecht starten</button>
+      <!-- Ruhe (Nacht, Ruhetag) nur außerhalb des Gefechts, neben Gefecht starten. Zeichen: Mondsichel. -->
+      <button onclick={onruhe}>
+        <svg class="zeichen" viewBox="0 0 16 16" aria-hidden="true"><path d="M10.5 1.5A6.5 6.5 0 1 0 14.5 11 5.5 5.5 0 0 1 10.5 1.5z" /></svg>
+        Ruhe</button>
     {/if}
   </div>
 

@@ -842,6 +842,14 @@
       "normal": 1,
       "kritisch": 7
     },
+    "nachsorge_skill": {
+      "normal": "erste_hilfe",
+      "kritisch": "operation"
+    },
+    "pflege_skill": {
+      "normal": "erste_hilfe",
+      "offene_kritische_wunde": "operation"
+    },
     "nachsorge_faktor": {
       "krit": 0.5,
       "gelungen": 1,

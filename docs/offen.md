@@ -4,6 +4,22 @@
 
 Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. Die App arbeitet bis zur Entscheidung mit der genannten vorläufigen Lösung. Neue Einträge kommen beim Programmieren hinzu (Skill „regelfrage“). Die Regelpunkte aus den Schritten 1 bis 6 sind hierher übertragen (18.11.2026).
 
+### R39. Heildauer einer kritischen Wunde halbieren: in Wochen oder in Tagen? (18.11.2026)
+- **Frage:** Eine kritische Wunde heilt in Wochen aus Ruhetagen. Ein Krit bei der Nachsorge halbiert die Heildauer „aufgerundet“. Wird in Wochen aufgerundet (3 Wochen → 2 Wochen) oder in Ruhetagen (21 → 11)?
+- **Stellen:** (Schaden, Blutung und Verletzungen, Wunden heilen)
+- **Vorläufig:** in Ruhetagen (3 Schaden kritisch, Krit: 11 Ruhetage).
+- **Andere Möglichkeit:** in Wochen (14 Ruhetage).
+- **Ändern:** Regelkern, Heilung (Heildauer).
+- **Im Regelwerk klarstellen:** ja
+
+### R40. Wunden ohne Blutung heilen (18.11.2026)
+- **Frage:** „Nur versorgte Wunden heilen.“ Eine Wunde an einer Zone ohne Blutung (z. B. ein Krit an Kopf oder Brust, falls er nicht tödlich ist) lässt sich nicht versorgen. Heilt sie trotzdem?
+- **Stellen:** (Schaden, Blutung und Verletzungen, Wunden heilen); (Körperzonen)
+- **Vorläufig:** Ja; sie braucht keine Versorgung, heilt ab dem ersten Ruhetag und bringt keinen Malstep auf die Erholungsprobe.
+- **Andere Möglichkeit:** Sie heilt erst nach einer eigenen Versorgung (die es noch nicht gibt).
+- **Ändern:** Regelkern, Heilung (heilt).
+- **Im Regelwerk klarstellen:** ja
+
 ### R37. Deckung und Schild auf derselben Zone (18.11.2026)
 - **Frage:** Wer hinter einer Deckung steht und zusätzlich den ballistischen Schild hält, hat auf manchen Zonen zwei Deckungen. Zählen beide nacheinander, oder nur eine?
 - **Stellen:** (Deckung und Rüstung, Ballistischer Schild); (Schaden, Blutung und Verletzungen, 1. Schutz prüfen)
@@ -378,3 +394,11 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 20. **Bereit machen vor dem Wurf.** Die App führt nicht, ob Wurfwaffe oder Granate gezogen sind (wie bei Nahkampfwaffen, Punkt 13). Das Fenster nennt den Trageort; das Ziehen trägt der Spieler vorher selbst ein.
 21. **Sonstiger Gegenstand.** Wurf mit dem Skill Wurfwaffen, nur mit Wurfweite (keine Wurf-Reichweite), Treffer und Zone wie bei einer Wurfwaffe; den Schaden legt die SL fest.
 14. **Eigener Angriff und „im Nahkampf“.** Nach einem eigenen Nahkampfangriff ist der Charakter für Schützen ein Ziel im Nahkampf; die App merkt sich das nicht, weil es nur andere betrifft.
+
+## Offen aus Schritt 8 (Heilung, 18.11.2026)
+
+1. **Wo man ruht.** *Vorläufig:* Knopf **Ruhe** (Mondsichel) im Reiter Figur neben „Gefecht starten“, nur außerhalb des Gefechts. Lässt sich leicht ins Menü verschieben.
+2. **Ruhetag mit Nacht.** *Vorläufig:* Ein Ruhetag schließt die Nacht davor ein (Prellungen zurück, Adrenalinschock vorbei); die Erholungsprobe rechnet deshalb schon ohne Adrenalinschock. Wer nur eine Nacht ruht und am Tag weiterzieht, wählt „eine Nacht“.
+3. **Pflege.** Der Betreuer würfelt selbst; der Spieler tippt sein Ergebnis (keine · misslungen · gelungen · Krit). Ob man sich selbst pflegen kann, sagt das Regelwerk nicht; die App fragt nicht danach.
+4. **Nachsorge** steht als Knopf bei der versorgten Wunde in der Übersicht der Zone (nur außerhalb des Gefechts), solange sie noch nicht gemacht ist. Ohne Nachsorge rechnet die App die Heildauer wie „keine Nachsorge“ (×2) und schreibt dazu „ohne Nachsorge“.
+5. **Kein Protokoll** für Ruhe und Nachsorge; sie gehören zum Spielstand wie Treffer außerhalb des Gefechts.

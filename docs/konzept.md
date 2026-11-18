@@ -606,6 +606,12 @@ Umsetzung (18.11.2026): Aktive Zustände stehen als Chips in der Kopfzeile, Gebl
 - **Nacht Ruhe:** Prellungen zurück.
 - **Ruhetag:** Erholungsprobe vorbereiten (Zielwert auf Grit mit Malsteps je unversorgter Wunde + Umstände, Stepshields aus Pflege), Ergebnis eintragen → HP. Alle versorgten Wunden zählen einen Tag herunter ([§ 4.9](#49-heilung)).
 
+Umsetzung (18.11.2026): Knopf **Ruhe** (Mondsichel) im Reiter Figur neben „Gefecht starten“, nur außerhalb des Gefechts. Fenster mit **Du ruhst: eine Nacht · einen Ruhetag**.
+- **Eine Nacht:** Prellungen zurück, Adrenalinschock vorbei.
+- **Ein Ruhetag** schließt die Nacht davor ein. Abschnitt **Pflege durch einen Betreuer** (keine · misslungen · gelungen · Krit; der Betreuer würfelt auf ⬢ Erste Hilfe, bei einer offenen kritischen Wunde ⬢ Operation). Abschnitt **Erholungsprobe** auf ■ Grit mit 1 Malstep je unversorgter Wunde und den Stepshields der Pflege; schlechte Umstände als Steps der SL. Kampfunfähigkeit zählt nicht.
+- **Bericht** vor dem Übernehmen: Prellungen, Schock, Probe, gewonnene HP (höchstens bis zum Grundwert), je Wunde „heilt einen Tag: noch n Ruhetage“, „verheilt und wird gestrichen“ oder „nicht versorgt, heilt nicht“, HP vorher → nachher.
+- **Nachsorge:** Knopf bei der versorgten Wunde in der Übersicht der Zone (außerhalb des Gefechts, einmal je Wunde). Du selbst (Probe auf ⬢ Erste Hilfe, kritisch ⬢ Operation) oder jemand anders (Ausgang tippen). Bericht mit der neuen Heildauer. Die Übersicht der Zone zeigt bei jeder heilenden Wunde „heilt: noch n Ruhetage“.
+
 ### 3.13 Geld und Aufträge (M, R)
 Regeln: Schulden, Coups und Verträge; Klassen (Gehalt).
 
