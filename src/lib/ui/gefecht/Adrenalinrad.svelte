@@ -1,6 +1,6 @@
 <script lang="ts">
-  // Wählrad „Adrenalin“ (konzept.md § 3.7): nur im Gefecht, unten im Daumenbereich. Waagerechtes Wischen dreht um
-  // eine Stufe (nach links wischen: höher), die Nachbarstufen lassen sich auch antippen. Mitte antippen: Detail.
+  // Wählrad „Adrenalin“ (konzept.md § 3.7): nur im Gefecht, unten im Daumenbereich. Waagerechtes Ziehen dreht das Rad
+  // unter dem Finger, rastet je Stufe ein (nach links: höher), die Nachbarstufen lassen sich auch antippen. Mitte: Detail.
   // Senkrechtes Scrollen dreht das Rad nie.
   import type { Spieldaten } from '../../daten/typen';
   import { symptome } from '../../regeln/leiter';
@@ -10,10 +10,13 @@
   let { stand, d, onsetzen, ondetail }: Props = $props();
 
   const r = $derived(d.regeln.leiter);
+  /** Stufe, die das Rad gerade zeigt: beim Ziehen die eingerastete Vorschau, sonst der Stand. */
+  let vorschau = $state<number | null>(null);
+  const anzeige = $derived(vorschau ?? stand);
   const name = (s: number) => r.stufen[String(s)]?.name ?? null;
-  const farbe = $derived(d.darstellung.leiter_farben[String(stand)] ?? '#9e9e9e');
+  const farbe = $derived(d.darstellung.leiter_farben[String(anzeige)] ?? '#9e9e9e');
   const hell = $derived(helligkeit(farbe) > 0.55);
-  const lage = $derived(symptome(stand, d.regeln));
+  const lage = $derived(symptome(anzeige, d.regeln));
   const plus = $derived(zusammenfassung('gewinn'));
   const minus = $derived(zusammenfassung('verlust'));
 
@@ -37,32 +40,81 @@
     onsetzen(neu);
   }
 
-  // Wischen: Start merken, erst ab deutlicher waagerechter Bewegung als Drehung werten.
-  let start: { x: number; y: number } | null = null;
+  // Ziehen: Die Stufen laufen unter dem Finger mit. Erreicht der Finger die nächste Stufe, rastet sie ein (Anzeige,
+  // Farbe, kurzes Vibrieren). Hinter dem Ende geht das Rad gebremst mit und federt beim Loslassen zurück.
+  // Übernommen wird beim Loslassen, als eine Änderung. Erst eine deutlich waagerechte Bewegung zählt als Ziehen.
+  let radEl: HTMLDivElement | undefined = $state();
+  let breite = $state(0);
+  let start: { x: number; y: number; ziehen: boolean } | null = null;
   let gewischt = false;
   let federn = $state(0);
-  function runter(e: PointerEvent) { start = { x: e.clientX, y: e.clientY }; gewischt = false; }
-  function hoch(e: PointerEvent) {
+  let versatz = $state(0);
+  let zieht = $state(false);
+  /** Abstand zwischen der Mitte und einer Nachbarstufe in Pixeln (Spalten 1 : 1.6 : 1). */
+  const schrittweite = $derived(Math.max(40, (breite / 3.6) * 1.3));
+
+  // Nach dem Übernehmen die Vorschau halten, bis der neue Stand gespeichert angekommen ist (kein Zurückspringen).
+  $effect(() => {
+    if (!zieht && vorschau !== null && stand === vorschau) vorschau = null;
+  });
+
+  function runter(e: PointerEvent) { start = { x: e.clientX, y: e.clientY, ziehen: false }; gewischt = false; }
+  function bewegen(e: PointerEvent) {
     if (!start) return;
     const dx = e.clientX - start.x;
     const dy = e.clientY - start.y;
-    start = null;
-    if (Math.abs(dx) >= 40 && Math.abs(dx) > 1.5 * Math.abs(dy)) { gewischt = true; drehen(dx < 0 ? 1 : -1); }
+    if (!start.ziehen) {
+      if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) { start = null; return; }
+      if (Math.abs(dx) < 10 || Math.abs(dx) < 1.5 * Math.abs(dy)) return;
+      start.ziehen = true;
+      zieht = true;
+      gewischt = true;
+      radEl?.setPointerCapture(e.pointerId);
+    }
+    const roh = stand + Math.round(-dx / schrittweite);
+    const ziel = Math.min(r.max, Math.max(r.min, roh));
+    if (ziel !== anzeige) navigator.vibrate?.(8);
+    vorschau = ziel;
+    let rest = dx + (ziel - stand) * schrittweite;
+    if (roh !== ziel) rest = (dx + (ziel - stand) * schrittweite) * 0.25; // hinter dem Ende: gebremst
+    versatz = rest;
   }
-  /** Nach einem Wischen keinen Tipp auslösen. */
+  function hoch() {
+    if (!start) return;
+    const warZiehen = start.ziehen;
+    start = null;
+    if (!warZiehen) return;
+    zieht = false;
+    versatz = 0;
+    if (vorschau !== null && vorschau !== stand) onsetzen(vorschau);
+    else vorschau = null;
+    setTimeout(() => { if (!zieht) vorschau = null; }, 1500);
+  }
+  function abbrechen() {
+    start = null;
+    zieht = false;
+    versatz = 0;
+    vorschau = null;
+  }
+  /** Nach einem Ziehen keinen Tipp auslösen. */
   function tipp(aktion: () => void) { if (gewischt) { gewischt = false; return; } aktion(); }
 </script>
 
 <div class="zeile" style:--farbe={farbe} class:hell>
-  <div class="rad" class:federn-l={federn < 0} class:federn-r={federn > 0} role="group" aria-label="Adrenalin"
-    onpointerdown={runter} onpointerup={hoch} onpointercancel={() => (start = null)}>
-    <button class="nachbar" disabled={stand <= r.min} aria-label={stand > r.min ? `eine Stufe tiefer: ${name(stand - 1) ?? '0'}` : 'tiefste Stufe'}
-      onclick={() => tipp(() => drehen(-1))}>{stand > r.min ? (name(stand - 1) ?? '0') : ''}</button>
-    <button class="mitte" aria-label="{name(stand) ?? 'Adrenalin 0'}: Details" onclick={() => tipp(ondetail)}>
-      {#if name(stand)}<strong>{name(stand)}</strong>{:else}<span class="strich" aria-hidden="true">—</span>{/if}
-    </button>
-    <button class="nachbar" disabled={stand >= r.max} aria-label={stand < r.max ? `eine Stufe höher: ${name(stand + 1) ?? '0'}` : 'höchste Stufe'}
-      onclick={() => tipp(() => drehen(1))}>{stand < r.max ? (name(stand + 1) ?? '0') : ''}</button>
+  <div class="rad" bind:this={radEl} bind:clientWidth={breite} class:federn-l={federn < 0} class:federn-r={federn > 0} role="group" aria-label="Adrenalin"
+    onpointerdown={runter} onpointermove={bewegen} onpointerup={hoch} onpointercancel={abbrechen}>
+    <!-- Band aus fünf Stufen (zwei außerhalb des Sichtbereichs), verschoben um den Versatz unter dem Finger. -->
+    <div class="band" class:zieht style:transform="translateX({versatz}px)">
+      <span class="aussen" aria-hidden="true">{anzeige - 2 >= r.min ? (name(anzeige - 2) ?? '0') : ''}</span>
+      <button class="nachbar" disabled={anzeige <= r.min} aria-label={anzeige > r.min ? `eine Stufe tiefer: ${name(anzeige - 1) ?? '0'}` : 'tiefste Stufe'}
+        onclick={() => tipp(() => drehen(-1))}>{anzeige > r.min ? (name(anzeige - 1) ?? '0') : ''}</button>
+      <button class="mitte" aria-label="{name(anzeige) ?? 'Adrenalin 0'}: Details" onclick={() => tipp(ondetail)}>
+        {#key anzeige}<span class="einrasten">{#if name(anzeige)}<strong>{name(anzeige)}</strong>{:else}<span class="strich" aria-hidden="true">—</span>{/if}</span>{/key}
+      </button>
+      <button class="nachbar" disabled={anzeige >= r.max} aria-label={anzeige < r.max ? `eine Stufe höher: ${name(anzeige + 1) ?? '0'}` : 'höchste Stufe'}
+        onclick={() => tipp(() => drehen(1))}>{anzeige < r.max ? (name(anzeige + 1) ?? '0') : ''}</button>
+      <span class="aussen" aria-hidden="true">{anzeige + 2 <= r.max ? (name(anzeige + 2) ?? '0') : ''}</span>
+    </div>
   </div>
   {#if plus.length || minus.length}
     <p class="symptome">
@@ -74,17 +126,29 @@
 </div>
 
 <style>
-  .zeile { background: var(--farbe); color: #fff; padding: 4px 8px 6px; transition: background 0.2s; }
+  .zeile { background: var(--farbe); color: #fff; padding: var(--abstand-1) var(--abstand-2) 6px; transition: background 0.2s; }
   .zeile.hell { color: #1b1d22; }
-  .rad { display: grid; grid-template-columns: 1fr 1.6fr 1fr; align-items: center; gap: 4px; touch-action: pan-y; user-select: none; }
-  .rad button { color: inherit; background: transparent; border: none; min-height: 48px; padding: 0 4px; }
-  .nachbar { font-size: 0.8rem; opacity: 0.75; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  /* Fenster des Rads: fester heller Rahmen in der Mitte, darunter läuft das Band. */
+  .rad { position: relative; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+  .rad::before { content: ''; position: absolute; top: 0; bottom: 0; left: calc(100% / 3.6); width: calc(100% * 1.6 / 3.6);
+    background: rgb(255 255 255 / 0.15); border-radius: var(--radius); pointer-events: none; }
+  /* Fünf Spalten 1 : 1 : 1.6 : 1 : 1; die äußeren liegen links und rechts außerhalb des Fensters. */
+  .band { display: grid; grid-template-columns: 1fr 1fr 1.6fr 1fr 1fr; align-items: center; width: calc(100% * 5.6 / 3.6);
+    margin-left: calc(-100% / 3.6); transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); will-change: transform; }
+  .band.zieht { transition: none; }
+  .rad button { color: inherit; background: transparent; border: none; min-height: 48px; padding: 0 var(--abstand-1); min-width: 0; }
+  .rad button:active { transform: none; }
+  .nachbar, .aussen { font-size: 0.8rem; opacity: 0.75; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
+  .aussen { opacity: 0.4; }
   .nachbar:disabled { opacity: 0; }
-  .mitte { font-size: 1.15rem; background: rgb(255 255 255 / 0.15) !important; border-radius: var(--radius); }
+  .mitte { font-size: 1.15rem; }
+  .einrasten { display: inline-block; animation: einrasten 0.18s ease-out; }
+  @keyframes einrasten { from { transform: scale(0.85); opacity: 0.6; } }
   .strich { font-size: 1.4rem; }
   .symptome { margin: 2px 0 0; font-size: 0.8rem; text-align: center; line-height: 1.3; }
   .federn-l { animation: federn-l 0.2s; }
   .federn-r { animation: federn-r 0.2s; }
   @keyframes federn-l { 50% { transform: translateX(10px); } }
   @keyframes federn-r { 50% { transform: translateX(-10px); } }
+  @media (prefers-reduced-motion: reduce) { .band { transition: none; } .einrasten { animation: none; } }
 </style>
