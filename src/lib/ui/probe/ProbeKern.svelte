@@ -15,6 +15,7 @@
   import type { Charakter, Quelle } from '../../speicher/charakter';
   import Begriff from '../Begriff.svelte';
   import Steps from '../Steps.svelte';
+  import Farbtext from '../Farbtext.svelte';
   import { dialogKopf } from '../dialogkopf';
   import Wuerfel, { type Ausgang } from '../Wuerfel.svelte';
   import { ansage, malstepsText, mitZeichen, skillName, statName } from '../texte';
@@ -197,11 +198,11 @@
 
 {#snippet kopf()}
 {#if p.statwert === null}
-  <p class="fehler">{mitZeichen('stat', anfrage.stat, d)} hat noch keinen Wert.</p>
+  <p class="fehler"><Farbtext text={mitZeichen('stat', anfrage.stat, d)} /> hat noch keinen Wert.</p>
 {:else if w}
   <div class="gruppe">
   <button class="kopfzeile flach" aria-expanded={aufgeklappt} onclick={() => (aufgeklappt = !aufgeklappt)}>
-    <span class="steps">▼ {w.malsteps} · ▲ {w.abzug - (p.skillstufe ?? 0)}{#if p.skillstufe}{' · '}{d.darstellung.typen.skill.zeichen} {p.skillstufe}{/if} · netto {w.netto}</span>
+    <span class="steps">▼ {w.malsteps} · ▲ {w.abzug - (p.skillstufe ?? 0)}{#if p.skillstufe}{' · '}<span style:color={d.darstellung.typen.skill.farbe}>{d.darstellung.typen.skill.zeichen}</span> {p.skillstufe}{/if} · netto {w.netto}</span>
     {#if w.moeglich}
       <span class="ziel"><span class="hinweis">Zielwert</span> <strong>{w.zielwert}</strong> <span class="hinweis">Krit ≤</span> <strong>{w.krit_schwelle}</strong></span>
     {:else}

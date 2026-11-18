@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Farbtext from '../Farbtext.svelte';
   // Gefecht starten (konzept.md § 3.7, Abläufe): normal oder überrascht → Nerve-Probe → Bericht → Startstufe.
   import type { Spieldaten } from '../../daten/typen';
   import { gefechtStarten } from '../../regeln/gefecht';
@@ -64,7 +65,7 @@
         <button aria-pressed={!ueberrascht} onclick={() => (ueberrascht = false)}>normal</button>
         <button aria-pressed={ueberrascht} onclick={() => (ueberrascht = true)}>überrascht</button>
       </div>
-      <p class="hinweis">Nerve-Probe vor dem Gefecht mit {mitZeichen('skill', probe.skill ?? '', d)}. Umstände trägt die SL als Malsteps ein.
+      <p class="hinweis">Nerve-Probe vor dem Gefecht mit <Farbtext text={mitZeichen('skill', probe.skill ?? '', d)} />. Umstände trägt die SL als Malsteps ein.
       Krit, gelungen, misslungen: {['krit', 'gelungen', 'misslungen'].map((k) => standText(d.regeln.leiter.start[ueberrascht ? 'ueberrascht' : 'normal']![k as 'krit'], d)).join(' · ')}.</p>
     </div>
     <ProbeKern {c} {d} anfrage={{ stat: probe.stat, skill: probe.skill, probe: 'nerve_start' }} hinweise={['leiter']} {wuerfelModus}

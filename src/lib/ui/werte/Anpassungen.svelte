@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Farbtext from '../Farbtext.svelte';
   // Dauerhafte Anpassungen der SL (konzept.md § 3.0a, Schreibmodus; § 3.0b, Zeichen ★).
   // Anlegen, ab- und anschalten, löschen nur im Schreibmodus; sonst nur Anzeige, wenn es welche gibt.
   import type { Modifikator, Spieldaten } from '../../daten/typen';
@@ -49,8 +50,8 @@
             <strong><span style:color={stern.farbe}>{stern.zeichen}</span> {a.grund}</strong>
             <span class="hinweis">
               {#if a.ziel.art === 'grundwert' || a.ziel.art === 'stat' || a.ziel.art === 'skill'}
-                <button class="link flach" onclick={() => onspringe(a.ziel.art, a.ziel.id!)}>{zielText(a, d)}</button>
-              {:else}{zielText(a, d)}{/if}
+                <button class="link flach" onclick={() => onspringe(a.ziel.art, a.ziel.id!)}><Farbtext text={zielText(a, d)} /></button>
+              {:else}<Farbtext text={zielText(a, d)} />{/if}
               {wirkungText(a)}{a.aktiv ? '' : ' · abgeschaltet'}
             </span>
           </div>

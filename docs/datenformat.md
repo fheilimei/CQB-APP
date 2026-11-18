@@ -914,7 +914,7 @@ Zeichen und Farben der Herkunftsmarkierung ([konzept.md § 3.0b](konzept.md#30b-
 {
   "version": "2026-11-13",
   "herkunft": {
-    "perk":       { "zeichen": "◆", "farbe": "#2f6fd6", "name": "Perk" },
+    "perk":       { "zeichen": "◆", "farbe": "#e0479e", "name": "Perk" },
     "anpassung":  { "zeichen": "★", "farbe": "#e07b00", "name": "Anpassung der SL" },
     "manuell":    { "zeichen": "✎", "rahmen": "gestrichelt", "name": "von Hand überschrieben" },
     "leiter":     { "zeichen": "♥", "farbe": "#c0392b", "name": "Adrenalin/Ruhepuls" },
@@ -925,8 +925,8 @@ Zeichen und Farben der Herkunftsmarkierung ([konzept.md § 3.0b](konzept.md#30b-
   },
   "typen": {
     "stat":  { "zeichen": "■", "farbe": "#0f6e56", "name": "Stat" },
-    "skill": { "zeichen": "⬢", "farbe": "#534ab7", "name": "Skill" },
-    "perk":  { "zeichen": "◆", "farbe": "#2f6fd6", "name": "Perk" }
+    "skill": { "zeichen": "⬢", "farbe": "#7c3aed", "name": "Skill" },
+    "perk":  { "zeichen": "◆", "farbe": "#e0479e", "name": "Perk" }
   },
   "leiter_farben": {
     "-3": "#1f4e8c", "-2": "#3a6fb5", "-1": "#7fa7d9",

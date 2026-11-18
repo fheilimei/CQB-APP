@@ -3,7 +3,7 @@
   "herkunft": {
     "perk": {
       "zeichen": "◆",
-      "farbe": "#2f6fd6",
+      "farbe": "#e0479e",
       "name": "Perk"
     },
     "anpassung": {
@@ -50,12 +50,12 @@
     },
     "skill": {
       "zeichen": "⬢",
-      "farbe": "#534ab7",
+      "farbe": "#7c3aed",
       "name": "Skill"
     },
     "perk": {
       "zeichen": "◆",
-      "farbe": "#2f6fd6",
+      "farbe": "#e0479e",
       "name": "Perk"
     }
   },

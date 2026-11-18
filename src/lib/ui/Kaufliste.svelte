@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Farbtext from './Farbtext.svelte';
   // „Jetzt möglich“ (konzept.md § 3.0a): alles, was bezahlbar ist und dessen Voraussetzungen erfüllt sind.
   // Gemeinsam für den Aufstiegsmodus und Schritt 5 der Erstellung.
   import type { Spieldaten } from '../daten/typen';
@@ -51,7 +52,7 @@
             <button class="zeile" disabled={m.sperre !== null} onclick={() => onkaufen(m)}>
               <span class="links">
                 <Begriff art={typ(m)} name={name(m)} darstellung={d.darstellung} />
-                <span class="hinweis">{m.sperre ? hinweis(m) : was(m)}</span>
+                <span class="hinweis"><Farbtext text={m.sperre ? hinweis(m) : was(m)} /></span>
               </span>
               <span class="kosten">{punkte(m.kosten)}</span>
             </button>

@@ -192,8 +192,8 @@ h1, h2, h3:not(.gruppe-titel), .abschnitt-titel, .ansage, button.haupt, button.b
 .typzeichen { color: var(--typ-sichtbar, var(--typfarbe)); margin-right: 0.3em; }
 /* Pfeile ▲ ▼ aus Adrenalin (rot) und Ruhepuls (blau); Farbe aus darstellung.json, im Dunkeln etwas heller. */
 :root[data-theme='dunkel'] :is(.karte.typrahmen) { --typ-sichtbar: color-mix(in oklab, var(--typfarbe) 60%, white); }
-:root[data-theme='dunkel'] .leiterpfeil { filter: brightness(1.35); }
+:root[data-theme='dunkel'] :is(.leiterpfeil, .typzeichen-text) { filter: brightness(1.35); }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='hell']) .karte.typrahmen { --typ-sichtbar: color-mix(in oklab, var(--typfarbe) 60%, white); }
-  :root:not([data-theme='hell']) .leiterpfeil { filter: brightness(1.35); }
+  :root:not([data-theme='hell']) :is(.leiterpfeil, .typzeichen-text) { filter: brightness(1.35); }
 }

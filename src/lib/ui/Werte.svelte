@@ -16,6 +16,8 @@
   import { leiterStand } from '../regeln/probenrechner';
   import type { Charakter, Quelle } from '../speicher/charakter';
   import Bericht from './Bericht.svelte';
+  import Farbtext from './Farbtext.svelte';
+  import Guertel from './Guertel.svelte';
   import Herkunft from './Herkunft.svelte';
   import Kaufliste from './Kaufliste.svelte';
   import StatrankUp from './StatrankUp.svelte';
@@ -135,7 +137,7 @@
       {#each mods as m, i (i)}
         {@const h = d.darstellung.herkunft[m.herkunft]!}
         <li><button class="link flach" onclick={() => springe(m.herkunft, m.quelle)}><span style:color={h.farbe}>{h.zeichen}</span> {m.name}</button>
-          <span>{wirkungText(m)}{bedingungText(m, d) ? ` (${bedingungText(m, d)})` : ''}</span></li>
+          <span><Farbtext text={`${wirkungText(m)}${bedingungText(m, d) ? ` (${bedingungText(m, d)})` : ''}`} /></span></li>
       {/each}
     </ul>
   {/if}
@@ -278,7 +280,7 @@
                 <p>Rang {e.rang} ({e.rang ? d.regeln.raenge[e.rang] : '–'}) · Abweichung {e.wurf ? vorzeichen(e.wurf.positiv - e.wurf.negativ) : '–'}
                   {#if e.wurf}<span class="hinweis">({wurfText(e.wurf)}, {e.wurf.quelle === 'app' ? 'von der App gewürfelt' : 'von Hand'})</span>{/if}</p>
                 {#if lt.wirkt && lp}<p class="hinweis"><span class="leiterpfeil" style:color={lp.farbe}>{lp.pfeil}</span> {stand > 0 ? 'Adrenalin' : 'Ruhepuls'} wirkt: umrandet ist der Zielwert, der jetzt gilt.</p>{/if}
-                {#if modus === 'lesen'}<button class="betont" onclick={() => onprobe(s.id, null)}>Probe auf {mitZeichen('stat', s.id, d)}</button>{/if}
+                {#if modus === 'lesen'}<button class="betont" onclick={() => onprobe(s.id, null)}><Farbtext text={`Probe auf ${mitZeichen('stat', s.id, d)}`} /></button>{/if}
                 {#if modus === 'aufstieg' && statrankUpSperre(c, s.id, d) === null}
                   <button class="betont" onclick={() => (rankUp = s.id)}>Statrank-Up ({punkte(d.regeln.aufstieg.statrank_up_kosten)})</button>
                 {/if}
@@ -294,13 +296,7 @@
 </section>
 
 <section class="karte typrahmen" style:--typfarbe={d.darstellung.typen.skill.farbe}>
-  <!-- Über der Spalte der Stufen ein Gürtel als Zeichen für den Grad, daneben die Überschrift. -->
   <div class="kopf skillkopf">
-    <span class="guertel" title="Stufe" aria-hidden="true">
-      <svg viewBox="0 0 24 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round">
-        <path d="M1 5h9M14 5h9M1 10h9M14 10h9" /><rect x="10" y="3.5" width="4" height="8" rx="1" /><path d="M11 11.5L8.5 15.2M13 11.5L15.5 15.2" />
-      </svg>
-    </span>
     {@render typTitel('skill', 'Skills')}
     <label class="schalter"><input type="checkbox" bind:checked={alleSkills} /> Alle Skills</label>
   </div>
@@ -314,11 +310,14 @@
         <div class="skill">
           <button class="zeile flach name" aria-expanded={modus === 'lesen' ? undefined : offen}
             onclick={() => (modus === 'lesen' ? onprobe(s.stat, s.id) : (offenSkill = offen ? null : s.id))}>
-            <!-- Stufe ganz links, nach einem Abstand der Name (Wunsch 18.11.2026). -->
+            <!-- Stufe ganz links, dahinter der Gürtelgrad, nach einem Abstand der Name (Wunsch 18.11.2026). -->
             <span class="skillzeile">
-              {#if modus !== 'schreiben'}
-                <strong class="wert" class:hand={markiert(`skills.${s.id}`)}>{stufe}<Herkunft quellen={quellenVon(mods, `skills.${s.id}`)} darstellung={d.darstellung} /></strong>
-              {/if}
+              <span class="grad">
+                {#if modus !== 'schreiben'}
+                  <strong class="wert" class:hand={markiert(`skills.${s.id}`)}>{stufe}<Herkunft quellen={quellenVon(mods, `skills.${s.id}`)} darstellung={d.darstellung} /></strong>
+                {/if}
+                <Guertel {stufe} max={d.regeln.aufstieg.skill_max} />
+              </span>
               <span class="skillname">{s.name}
                 {#if kalt}<span class="schloss" title="eingefroren">🔒</span>{/if}</span>
             </span>
@@ -338,7 +337,7 @@
         {#if offen}
           {@const sw = statwert(c.stats[s.stat], d.regeln)}
           <div class="detail">
-            <p>Probe auf {mitZeichen('stat', s.stat, d)}{sw !== null ? ` (${sw})` : ''}{stufe === 0 ? '; mit Stufe 0 kommt 1 Malstep dazu' : `; Stufe ${stufe} gleicht ${stufe === 1 ? '1 Malstep' : `${stufe} Malsteps`} aus`}.</p>
+            <p>Probe auf <Farbtext text={mitZeichen('stat', s.stat, d)} />{sw !== null ? ` (${sw})` : ''}{stufe === 0 ? '; mit Stufe 0 kommt 1 Malstep dazu' : `; Stufe ${stufe} gleicht ${stufe === 1 ? '1 Malstep' : `${stufe} Malsteps`} aus`}.</p>
             {#if kalt}<p class="hinweis">Eingefroren: wirkt normal, lässt sich mit {klasse?.name ?? 'dieser Klasse'} aber nicht steigern.</p>{/if}
             {@render modZeilen(mods)}
           </div>
@@ -367,12 +366,12 @@
         {#if offen && p}
           <div class="detail">
             <p>{p.wirkung}</p>
-            <p class="hinweis">Rang {p.rang} (= Kosten){#if perkVoraussetzungen(c, id, d).length} · Voraussetzung: {perkVoraussetzungen(c, id, d).map((v) => v.art === 'stat' ? `${mitZeichen('stat', v.id, d)} ${v.min}` : mitZeichen('perk', v.id, d)).join(', ')}{/if}</p>
+            <p class="hinweis">Rang {p.rang} (= Kosten){#if perkVoraussetzungen(c, id, d).length} · Voraussetzung: <Farbtext text={perkVoraussetzungen(c, id, d).map((v) => v.art === 'stat' ? `${mitZeichen('stat', v.id, d)} ${v.min}` : mitZeichen('perk', v.id, d)).join(', ')} />{/if}</p>
             {#if wirkt.length}
               <p class="wirkt">Wirkt auf:
                 {#each wirkt as m, i (i)}
-                  {#if springbar(m)}<button class="link flach" onclick={() => springe(m.ziel.art, m.ziel.id!)}>{zielText(m, d)} {wirkungText(m)}</button>
-                  {:else}<span>{zielText(m, d)} {wirkungText(m)}</span>{/if}
+                  {#if springbar(m)}<button class="link flach" onclick={() => springe(m.ziel.art, m.ziel.id!)}><Farbtext text={`${zielText(m, d)} ${wirkungText(m)}`} /></button>
+                  {:else}<span><Farbtext text={`${zielText(m, d)} ${wirkungText(m)}`} /></span>{/if}
                 {/each}
               </p>
             {/if}
@@ -439,12 +438,11 @@
   .skill .name { flex: 1; min-width: 0; }
   /* Stufe links in fester Breite, damit die Namen untereinander stehen; die Gürtel-Spalte im Kopf ist gleich breit. */
   .skillzeile { display: flex; align-items: center; gap: var(--abstand-3); min-width: 0; }
+  .grad { display: flex; align-items: center; gap: var(--abstand-2); flex: none; }
   .skillzeile .wert { width: 1.6rem; flex: none; text-align: right; font-size: 1.35rem; white-space: nowrap; }
   .skillname { display: flex; flex-wrap: wrap; align-items: center; gap: var(--abstand-1) var(--abstand-2); min-width: 0; }
   .skillkopf { gap: var(--abstand-3); }
   .skillkopf h2 { margin-right: auto; }
-  .guertel { width: 1.6rem; flex: none; display: flex; justify-content: flex-end; color: var(--text-2); }
-  .guertel svg { width: 1.6rem; height: auto; }
   .statname sup { font-size: 0.7em; margin-left: 2px; }
   .klein { font-size: 0.8rem; margin: 0 0 var(--abstand-2); }
   .plus { padding: 0; width: 44px; font-size: 1.2rem; }

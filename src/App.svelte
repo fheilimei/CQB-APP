@@ -3,6 +3,7 @@
   import { useRegisterSW } from 'virtual:pwa-register/svelte';
   import { datenstand, ladeSpieldaten } from './lib/daten/laden';
   import type { Spieldaten } from './lib/daten/typen';
+  import { anzeige } from './lib/ui/darstellung.svelte';
   import { Ablage, STANDARD_EINSTELLUNGEN, type Einstellungen } from './lib/speicher/ablage';
   import Reiterleiste from './lib/ui/Reiterleiste.svelte';
   import { dateiname, exportiereText, importiereText } from './lib/speicher/austausch';
@@ -94,6 +95,7 @@
     try {
       const geladen = await ladeSpieldaten();
       daten = geladen.daten;
+      anzeige.darstellung = geladen.daten.darstellung;
       datenFehler = geladen.fehler;
       ablage = await Ablage.oeffnen();
       einstellungen = await ablage.einstellungen();

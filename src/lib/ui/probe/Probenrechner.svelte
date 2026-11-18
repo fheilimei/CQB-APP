@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Farbtext from '../Farbtext.svelte';
   // Probenrechner (konzept.md § 3.6): Stat (Pflicht), Skill (optional, austauschbar), Lage ohne Entfernung, Wurf.
   // Er ändert nichts am Charakter außer den Steps der SL für das ganze Gefecht und der Sichtstufe des Gefechts.
   import type { Spieldaten } from '../../daten/typen';
@@ -77,7 +78,7 @@
   {#if skill && stat}
     {@const eigener = d.skills.eintraege.find((s) => s.id === skill)?.stat}
     {#if eigener && eigener !== stat}
-      <p class="hinweis">Skill ausgetauscht: Er gehört sonst zu {mitZeichen('stat', eigener, d)}. Das muss die SL erlauben.</p>
+      <p class="hinweis">Skill ausgetauscht: Er gehört sonst zu <Farbtext text={mitZeichen('stat', eigener, d)} />. Das muss die SL erlauben.</p>
     {/if}
   {/if}
 
