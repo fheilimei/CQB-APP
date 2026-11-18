@@ -19,6 +19,14 @@ Die App wird erst entwickelt, wenn die Regeln weitgehend stehen ([[App/docs/konz
     Perk-IDs nach Umbenennung: Schutzreflex, Kernschuss ([[Stats, Skills und Perks#Kampfperks]]).
 
 
+## Regelfragen
+
+Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. Die App arbeitet bis zur Entscheidung mit der genannten vorläufigen Lösung. Neue Einträge kommen beim Programmieren hinzu (Skill „regelfrage“). Ältere Regelpunkte stehen noch unten bei den einzelnen Schritten.
+
+Noch keine Einträge.
+
+### Erledigt
+
 ## Offen aus Schritt 1 (Grundgerüst, 16.11.2026)
 
 Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorläufigen Lösung, mit der die App arbeitet.

@@ -82,6 +82,7 @@ Keine Skill-, Perk-, Waffen- oder Klassen-ID fest im Code. Neue Einträge in den
 - **Reihenfolge** nach `docs/konzept.md` § 5. Arbeite in kleinen Schritten; jeder Schritt endet mit grünen Tests und einem Commit.
 - **Commits** auf `main`, Nachricht auf Deutsch, die sagt, was sich für den Spieler ändert. Vorher den aktuellen Stand holen (`git pull --rebase`).
 - **Dokumente mitführen:** Ändert sich eine Entscheidung zu Bedienung, Daten oder Ablauf, wird `docs/konzept.md` bzw. `docs/datenformat.md` im selben Commit angepasst.
+- **Regelfragen:** Vor jeder Arbeit an Regelkern, Spieldaten oder Abläufen mit Regelbezug den Skill `regelfrage` laden. Lücken im Regelwerk bekommen eine vorläufige Lösung und einen Eintrag unter „Regelfragen“ in `docs/offen.md`.
 - **Offene Punkte:** Stößt du auf eine offene Frage (Regel unklar, Bedienung nicht festgelegt, Widerspruch), trage sie in `docs/offen.md` ein, ohne zu fragen, und arbeite mit der nächstliegenden Lösung weiter, wenn sie sich leicht ändern lässt. Sonst frag.
 - **Offline prüfen:** Nach Änderungen am Service Worker oder an den Daten prüfen, ob die App nach dem ersten Laden ohne Netz startet und die Daten hat.
 
