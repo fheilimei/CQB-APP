@@ -688,7 +688,7 @@ Malsteps aus Zuständen gelten für alle Proben; Skill und Stepshields helfen da
 | --- | --- | --- | --- |
 | Adrenalin/Ruhepuls | Leiter ≠ 0 | [§ 4.4](#44-die-leiter) | Gefechtsende |
 | Adrenalinschock | Adrenalin 4 im Gefecht erreicht; ab Gefechtsende | 3 Malsteps *(v)* auf alle Proben | 4 h ununterbrochene Ruhe |
-| Kampfunfähigkeit | HP = 0 oder offene kritische Wunde | im Gefecht: keine Aktionen; sonst: nur kriechend/gestützt, keine körperliche Anstrengung, übrige Proben 3 Malsteps *(v)*, mit Perk Durchbeißen 2; **nicht** auf die Erholungsprobe | HP ≥ 1 und keine kritische Wunde offen |
+| Kampfunfähigkeit | HP = 0 oder offene kritische Wunde mit Folge „kampfunfähig“ (bis sie geheilt ist, unabhängig von der Blutung) | im Gefecht: keine Aktionen; sonst: nur kriechend/gestützt, keine körperliche Anstrengung, übrige Proben 3 Malsteps *(v)*, mit Perk Durchbeißen 2; **nicht** auf die Erholungsprobe | HP ≥ 1 und keine kritische Wunde offen |
 | Geblendet | Blendgranate (bedrängt 2 Runden, nah 1 Runde bei freiem Kopf; nicht bei gelungener Reaktion) | Sichtstufe keine; Antizipation nur über Gehör | Ende der letzten Runde |
 | Gereizt | in der Reizgaswolke, Grit-Probe zu Beginn des Zuges misslungen (Gasmaske: keine Probe) | 2 Malsteps auf alle Proben | Ende der Runde nach Verlassen der Wolke |
 

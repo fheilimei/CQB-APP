@@ -20,15 +20,18 @@ export function leiterStand(c: Charakter): number {
 }
 
 /**
- * Offene kritische Wunde: kritisch und Blutung nicht gestoppt.
- * Regelfrage R6 (docs/offen.md): vorläufig, bis Wunden in Schritt 7 eingetragen werden.
+ * Offene kritische Wunde, die kampfunfähig macht: kritisch, und ihre Zone nennt als Krit-Folge „kampfunfähig“
+ * (koerperzonen.json, krit.kampfunfaehig). Die Blutung spielt keine Rolle; offen ist die Wunde, bis sie geheilt
+ * ist (dann steht sie nicht mehr in der Liste). Regelfrage R6 (docs/offen.md): entschieden.
  */
-export function offeneKritischeWunde(c: Charakter): boolean {
-  return c.spielstand.wunden.some((w) => w.kritisch === true && (w.blutung as { status?: string } | undefined)?.status !== 'gestoppt');
+export function offeneKritischeWunde(c: Charakter, d: Spieldaten): boolean {
+  return c.spielstand.wunden.some(
+    (w) => w.kritisch === true && d.koerperzonen.eintraege.find((z) => z.id === w.zone)?.krit.kampfunfaehig === true
+  );
 }
 
 export function lebenslageDes(c: Charakter, d: Spieldaten): Lebenslage {
-  return lebenslage(hpAktuell(c, d), offeneKritischeWunde(c), d.regeln);
+  return lebenslage(hpAktuell(c, d), offeneKritischeWunde(c, d), d.regeln);
 }
 
 export interface SlSteps {

@@ -5,7 +5,7 @@ import {
   naechsteRunde, rueckgaengig, senkenEintragen, sichtstufeSetzen, slGefechtHinzu, slGefechtLoeschen, standNachRundenende
 } from '../src/lib/regeln/gefecht';
 import { anstiegMalsteps } from '../src/lib/regeln/leiter';
-import { gefechtVon, initiativeZusatz, leiterStand, perkHinweise, probeStellen } from '../src/lib/regeln/probenrechner';
+import { gefechtVon, initiativeZusatz, lebenslageDes, leiterStand, offeneKritischeWunde, perkHinweise, probeStellen } from '../src/lib/regeln/probenrechner';
 import { neuerCharakter, type Charakter, type Gefecht } from '../src/lib/speicher/charakter';
 import { ladeTestdaten } from './hilfen';
 
@@ -202,5 +202,24 @@ describe('Gefecht', () => {
     expect(g(c).lage.letzte_gruende).toEqual(['Regen', 'Nebel']);
     const ruhe = fertig();
     expect(grundMerken(ruhe, 'Regen')).toBe(ruhe);
+  });
+});
+
+describe('R6: Kampfunfähig durch kritische Wunde', () => {
+  const mitWunde = (zone: string, kritisch: boolean, status: string) => {
+    const c = fertig();
+    c.spielstand.wunden = [{ id: 'w1', zone, schaden: 0, kritisch, blutung: { status, frist_ende: null } }];
+    return c;
+  };
+  it('R6: kritische Wunde mit Folge „kampfunfähig“ macht kampfunfähig, auch wenn die Blutung gestoppt ist', () => {
+    for (const status of ['offen', 'gestoppt', 'abgelaufen']) {
+      expect(offeneKritischeWunde(mitWunde('bein_r', true, status), d)).toBe(true);
+      expect(lebenslageDes(mitWunde('bauch', true, status), d)).toBe('kampfunfaehig');
+    }
+  });
+  it('R6: normale Wunde und kritische Wunde ohne Folge „kampfunfähig“ (Kopf: sofort tot) zählen nicht', () => {
+    expect(offeneKritischeWunde(mitWunde('bein_r', false, 'offen'), d)).toBe(false);
+    expect(offeneKritischeWunde(mitWunde('kopf', true, 'offen'), d)).toBe(false);
+    expect(lebenslageDes(fertig(), d)).toBe('einsatzfaehig');
   });
 });

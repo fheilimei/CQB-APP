@@ -1,35 +1,8 @@
-App (zurückgestellt)
-
-Die App wird erst entwickelt, wenn die Regeln weitgehend stehen ([[App/docs/konzept]]).
-
-    Festgelegt (16.11.2026): Klassen-Datenmodell. Skills und Perks gehören dem Charakter; Zugang aus der aktuellen Klasse (wie, Gruppen, exklusiv, laufbahn_gesamt); Klassenweg statt Einzelklasse; eingefrorene Skills; Dialog Klassenwechsel ([[App/docs/datenformat#klassen.json]], [[App/docs/konzept#3.0d Klassenwechsel (M)]], [[Charakteraufstieg#Klassenwechsel]]).
-    Festgelegt (16.11.2026): Lage-Auswahl mit drei Blöcken: automatisch (abschaltbar per ×), Ziel und Schütze mit Entfernung zum Ziel (aus regeln.json, gemerkt bis Rundenende bzw. neues Ziel), SL-Malsteps und -Stepshields mit Grund, für einen Schuss oder das ganze Gefecht ([[App/docs/konzept#3.8c Lage-Auswahl (R)]]). Automatische Steps per × abschaltbar. Oberflächentexte: kein Wort „Leiter“, keine Kürzel A1/R2, sondern „Adrenalin 2“, „Ruhepuls 1“, „Over the Edge“, bei 0 keine Anzeige; Knöpfe als Adjektiv („Stand des Ziels: stehend“) ([[App/docs/konzept#Texte in der Oberfläche]]).
-    Festgelegt (16.11.2026): Übergabe an Claude Code. Arbeitsregeln fürs App-Repo in [[App/docs/CLAUDE-app-repo]] (wird dort zur CLAUDE.md), Anleitung mit erstem Auftrag in [[App/docs/uebergabe]]. Quelle der Spieldaten ist das Regelwerk; die JSON-Dateien erstellt Claude Code im ersten Schritt.
-    Festgelegt (16.11.2026): Konzept und Datenformat mit dem Regelwerk abgeglichen. Neu: nahkampfwaffen.json; in regeln.json Initiative, Breakaction, Konzentration, Waffe wechseln, Bewegung, Lage, Sicht, Lautstärke, Ladehemmung, Nahkampf, Werfen, Krit-Folgen, Geblendet, Gereizt; Ladeart, Zubehör, Betriebsarten und Trageort; Schrotzahl, Gummi und Unterschall in munition.json; Helme, Schutzanzug und Schild in schutz.json; Abschnitte Initiative/Breakaction und Nahkampf im Konzept (Ablauf noch offen). Grundsatz: Bei Widerspruch gilt das Regelwerk.
-    Festgelegt (16.11.2026): Initiative und Breakaction. „Nächste Runde“ (Knopf) → Rundenende → Zähler zurück → Initiative. Keine Zugverfolgung; Aktionen stehen die Runde über bereit. Break: ohne Probe, Reaktion oder Antizipation; Hinweis auf benötigte Information, Malsteps der Information über SL-Block; App zeigt Stufe und Wurf zum Ansagen, die SL ordnet ([[App/docs/konzept#3.7b Initiative und Breakaction (M, R)]]). Tisch-Modus mit verbundenen Geräten später.
-    Festgelegt (16.11.2026): Gefecht und Ruhe als eigene Zustände des Bogens. Aktionsleiste nur im Gefecht; Aufstieg im Gefecht gesperrt; bei Kampfunfähigkeit nichts gesperrt (SL geht vor), aber „Gefecht starten“ und Aktionsknöpfe mit Warnmarkierung, Aktion nur nach Bestätigung ([[App/docs/konzept#3.0e Gefecht und Ruhe (M)]]).
-    Festgelegt (16.11.2026): Treffer-Dialog in zwei Richtungen mit gleicher Gliederung (Was, Probe, Wo, Ausgang, Bericht). Ausgehend über die Aktionsknöpfe, eingehend über den Knopf „Getroffen“ (auch in Ruhe). Nahkampf in beiden Richtungen; Ausgang tippt der Spieler nach Ansage der SL ([[App/docs/konzept#3.7c Treffer: ausgehend und eingehend (M, R)]], [[App/docs/konzept#3.8b Nahkampf (M, R)]]).
-    Festgelegt (16.11.2026): Silhouette als zentraler Baustein (Körperbild) mit Schichten (Stand, Rüstung, Deckung, Wunden, Folgen, Waffe, Vorschau, Splitter, Ausrüstung). Startbildschirm „Figur“ mit Silhouette in der Mitte; Reiter Figur · Werte · Ausrüstung · Verlauf; Vorschau des Trefferausgangs je Zone beim eingehenden Treffer; Trageorte an der Figur im Reiter Ausrüstung ([[App/docs/konzept#3.0f Körperbild (Silhouette) (A, R)]], [[App/docs/konzept#Aufbau der App]]).
-    Festgelegt (16.11.2026): Adrenalin als horizontales Wählrad, nur im Gefecht, zwischen Aktionsleiste und Reiterleiste; Wischen um je eine Stufe, an den Enden Anschlag; Mitte antippen öffnet Detail (Symptome, Senken, Verbündete verschieben, Rückgängig); Nächste Runde und Gefecht beenden in der Kopfzeile ([[App/docs/konzept#3.7 Leiter (M, R)]]).
-    Festgelegt (16.11.2026): Hintergrund mit Schulden, Coup, Vertrag nur bei der Erstellung, Startgeld live; Kassenbuch; Einnahmen über „Auftrag abschließen“ (Gehalt, weitere Einnahmen, Schuldenfrist); erster Start mit Erstellen oder Importieren; mehrere Charaktere; Menü ☰ mit Charakteren, Modi, Abschlüssen, Einstellungen ([[App/docs/konzept#3.0g Start, Charaktere und Menü (M)]], [[App/docs/konzept#3.13 Geld und Aufträge (M, R)]]).
-    Festgelegt (16.11.2026): Laden für Kauf und Verkauf (Reiter nach Warengruppen, Zustand → Preisviertel, Preis nach SL, Verhandeln optional, Korb, Beschaffen über dem Vorratslevel); Begriffsarten mit Zeichen und Farbe (■ Stat, ⬢ Skill, ◆ Perk); ♥ für Adrenalin/Ruhepuls, ▲▼ nur für Steps ([[App/docs/konzept#3.14 Laden: Kaufen und Verkaufen (M, R)]], [[App/docs/konzept#Texte in der Oberfläche]]).
-    Festgelegt (16.11.2026): Erstellung ein Bildschirm pro Schritt mit Fortschrittsleiste, Name und Aussehen (Freitext) im ersten Schritt; Aufstieg mit Leiste der freien Punkte und Abschnitt „Jetzt möglich“ ([[App/docs/konzept#3.0 Charaktererstellung (M, R)]], [[App/docs/konzept#3.0a Modi: Lesen, Aufstieg, Schreiben (M)]]).
-    klassen.json vollständig befüllen (alle 33 Klassen, 5 Stufen, 3 Laufbahnen) und gruppe/exklusiv in skills.json und perks.json nachtragen.
-    Festgelegt (16.11.2026): Technik Svelte 5 mit Vite und TypeScript, Tests mit Vitest, Build und Veröffentlichung per GitHub Action; drei Schichten Daten / Regelkern / Oberfläche ([[App/docs/konzept#2. Plattform und Rahmen]]).
-    Perk-IDs nach Umbenennung: Schutzreflex, Kernschuss ([[Stats, Skills und Perks#Kampfperks]]).
-
+# Offene Punkte
 
 ## Regelfragen
 
 Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. Die App arbeitet bis zur Entscheidung mit der genannten vorläufigen Lösung. Neue Einträge kommen beim Programmieren hinzu (Skill „regelfrage“). Die Regelpunkte aus den Schritten 1 bis 6 sind hierher übertragen (18.11.2026).
-
-### R6. Offene kritische Wunde und Kampfunfähigkeit (17.11.2026)
-- **Frage:** Welche kritische Wunde macht kampfunfähig: jede oder nur eine, deren Blutung nicht gestoppt ist?
-- **Stellen:** (Schaden, Blutung und Verletzungen, Kampfunfähigkeit); (Schaden, Blutung und Verletzungen, Kritische Blutung); (Würfelmechanik, Zustände)
-- **Vorläufig:** Jede kritische Wunde, deren Blutung nicht gestoppt ist. Wird mit den Wunden (Schritt 7) überprüft.
-- **Andere Möglichkeit:** jede kritische Wunde, bis sie geheilt ist.
-- **Ändern:** Regelkern, Zustände
-- **Im Regelwerk klarstellen:** offen, Prüfung mit Schritt 7
 
 ### R7. Kosten des Waffenwechsels (18.11.2026)
 - **Frage:** Ein Wechsel umfasst Wegstecken der alten und Bereitmachen der neuen Waffe. Was kostet er, wenn die beiden Trageorte verschieden viel kosten?
@@ -111,6 +84,15 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 - **Im Regelwerk klarstellen:** ja (Werte ergänzen)
 
 ### Erledigt
+
+### R6. Offene kritische Wunde und Kampfunfähigkeit (17.11.2026)
+- **Entschieden (18.11.2026):** Jede kritische Wunde, bei der in den Körperzonen als Folge „kampfunfähig“ steht (Bauch, Unterleib, Rumpf, Arme, Beine), macht kampfunfähig, unabhängig von der Blutung, bis sie geheilt ist. So steht es auch im Regelwerk (Schaden, Blutung und Verletzungen, Kampfunfähigkeit und Wunden heilen). Umgesetzt: Gestoppte Blutung beendet die Kampfunfähigkeit nicht mehr.
+- **Frage:** Welche kritische Wunde macht kampfunfähig: jede oder nur eine, deren Blutung nicht gestoppt ist?
+- **Stellen:** (Schaden, Blutung und Verletzungen, Kampfunfähigkeit); (Schaden, Blutung und Verletzungen, Kritische Blutung); (Würfelmechanik, Zustände)
+- **Vorläufig:** Jede kritische Wunde, deren Blutung nicht gestoppt ist. Wird mit den Wunden (Schritt 7) überprüft.
+- **Andere Möglichkeit:** jede kritische Wunde, bis sie geheilt ist.
+- **Ändern:** Regelkern, Zustände
+- **Im Regelwerk klarstellen:** nein, steht dort schon so
 
 ### R9. Bewegung und Hechten in derselben Runde (18.11.2026)
 - **Entschieden (18.11.2026):** Es zählt das zuletzt Gewählte. Man rennt gerade oder man hechtet, nicht beides; genauso wie ein Ziel entweder rennt oder hechtet. Umgesetzt: Rennen, dann Hechten → Hechten zählt; Hechten, dann Gehen → Gehen zählt. Mehrere Bewegungen untereinander (Sprint) zählen weiter mit der schnelleren.
@@ -235,7 +217,7 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 
 ## Offen aus Schritt 5 (Probenrechner und Adrenalin, 17.11.2026)
 
-1. **Offene kritische Wunde.** → Regelfragen R6.
+1. **Offene kritische Wunde.** → Regelfragen R6 (entschieden).
 2. **Steps der SL für das ganze Gefecht** gelten vorläufig für **alle** Proben. Die Auswahl, für welche Proben sie gelten (Schießen, Werfen, alle; `gilt_fuer`), kommt mit dem Schussrechner (Schritt 6); das Datenformat kennt sie schon.
 3. **Senken und Verbündete verschieben** sind Mainactions. Erledigt (Schritt 6): Sie ziehen die Main ab.
 4. **Rückhalt und Einsamer Wolf** (Stepshield gegen den Anstieg bzw. beim Senken, wenn Verbündete in Hörweite sind bzw. nicht) erscheinen als Hinweis; den Stepshield trägt der Spieler im Block SL ein, weil die App nicht weiß, wer in Hörweite ist.
