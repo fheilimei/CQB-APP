@@ -3,6 +3,7 @@
 
 import type { Spieldaten } from '../daten/typen';
 import type { Charakter, Gefecht, Trefferereignis, Wunde } from '../speicher/charakter';
+import { eigeneBewegungFuerLage } from './aktionen';
 import { hatWirkung } from './leiter';
 import { grundwerte } from './modifikatoren';
 import { gefechtVon } from './probenrechner';
@@ -209,6 +210,24 @@ export function vorschau(c: Charakter, g: Geschoss, d: Spieldaten, deckungJeZone
   for (const z of d.koerperzonen.eintraege) {
     if (z.w8 === null) continue;
     aus[z.id] = ausgang(c, { ...g, zone: z.id, deckung: deckungJeZone ? deckungJeZone(z.id) : g.deckung }, d);
+  }
+  return aus;
+}
+
+/**
+ * Folgen der Zone als ganze Sätze für den Bericht (koerperzonen.json `saetze`). Im Gefecht entscheidet die eigene
+ * Bewegung dieser Runde über bedingte Sätze (Sturz im Lauf); außerhalb gilt der Ersatz `ohne_gefecht`.
+ */
+export function folgeSaetze(a: Pick<Ausgang, 'zone' | 'folge'>, c: Charakter, d: Spieldaten): string[] {
+  const z = d.koerperzonen.eintraege.find((x) => x.id === a.zone);
+  if (!z || !a.folge) return [];
+  const g = gefechtVon(c);
+  const bewegung = g ? eigeneBewegungFuerLage(g) : null;
+  const aus: string[] = [];
+  for (const s of (a.folge === 'krit' ? z.krit : z.normal).saetze) {
+    if (!s.nur_bei_bewegung) aus.push(s.text);
+    else if (g) { if (bewegung && s.nur_bei_bewegung.includes(bewegung)) aus.push(s.text); }
+    else if (s.ohne_gefecht) aus.push(s.ohne_gefecht);
   }
   return aus;
 }

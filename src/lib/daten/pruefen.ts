@@ -225,6 +225,13 @@ export function pruefeDaten(d: Spieldaten): string[] {
     pflicht(ort, z, ['id', 'name', 'ort', 'multiplikator', 'bereich', 'normal', 'krit']);
     if (z.w8 === null && !z.nur_ansage) f(ort, 'ohne W8-Nummer muss „nur_ansage“ gesetzt sein');
     for (const b of [z.normal.blutung, z.krit.blutung]) if (b && !(r.blutung as Record<string, unknown>)?.[b]) f(ort, `unbekannte Blutung „${b}“`);
+    for (const spalte of [z.normal, z.krit]) {
+      if (!Array.isArray(spalte?.saetze) || spalte.saetze.length === 0) { f(ort, 'Folge ohne „saetze“'); continue; }
+      for (const satz of spalte.saetze) {
+        if (!satz.text) f(ort, 'Satz ohne Text');
+        for (const b of satz.nur_bei_bewegung ?? []) if (!r.bewegung.reihenfolge.includes(b)) f(ort, `unbekannte Bewegung „${b}“`);
+      }
+    }
   }
 
   // ---------- munition.json

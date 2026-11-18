@@ -471,8 +471,13 @@ Die **Quelle** steht nicht im Modifikator; sie ergibt sich aus dem Ort (Perk, An
       "normal": { "text": "Blutung", "dauerhaft": [] },
       "krit": { "text": "Kampfunfähig; verbluten innerhalb einer Minute", "blutung": "kritisch_rumpf" } },
     { "id": "bein_r", "name": "R. Bein", "ort": "am rechten Bein", "w8": 2, "multiplikator": 1, "bereich": "glied",
-      "normal": { "text": "Blutung; Sturz, falls im Lauf; humpeln", "dauerhaft": ["humpeln"] },
-      "krit": { "text": "Kampfunfähig; verbluten innerhalb fünf Minuten", "blutung": "kritisch_glied" } }
+      "normal": { "text": "Blutung; Sturz, falls im Lauf; humpeln", "dauerhaft": ["humpeln"],
+        "saetze": [
+          { "text": "Die Wunde blutet." },
+          { "text": "Du stürzt, weil du im Lauf getroffen wurdest.", "nur_bei_bewegung": ["laufen", "rennen"], "ohne_gefecht": "Warst du im Lauf, stürzt du." },
+          { "text": "Du kannst nur noch humpeln." } ] },
+      "krit": { "text": "Kampfunfähig; verbluten innerhalb fünf Minuten", "blutung": "kritisch_glied",
+        "saetze": [ { "text": "Die Wunde blutet so stark, dass du innerhalb von fünf Minuten verblutest." } ] } }
   ]
 }
 ```
@@ -481,6 +486,7 @@ Die **Quelle** steht nicht im Modifikator; sie ergibt sich aus dem Ort (Perk, An
 - `bereich` bestimmt, welche Rüstung schützt (Westen: `rumpf`) und welche Blutungsregel gilt.
 - `normal.blutung` und `krit.blutung` verweisen auf `regeln.json` (`blutung`). `krit.tot`: sofort tot; `krit.kampfunfaehig`: kampfunfähig ab dem Treffer.
 - `dauerhaft` sind Folgen, die bestehen bleiben, solange die Wunde offen ist.
+- `saetze` (Pflicht, in `normal` und `krit`): die Folgen als ganze Sätze für den Bericht nach einem Treffer. `nur_bei_bewegung`: der Satz gilt nur, wenn die eigene Bewegung dieser Runde eine dieser Arten ist (`regeln.json` `bewegung.reihenfolge`; Hechten zählt nicht). Außerhalb des Gefechts ist die Bewegung unbekannt; dann steht `ohne_gefecht` da, fehlt er, entfällt der Satz. „Kampfunfähig“ und „tot“ sagt der Bericht selbst.
 - Brust, Bauch und Unterleib zählen für Rüstung zum Rumpf.
 
 ---

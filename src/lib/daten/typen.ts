@@ -228,8 +228,17 @@ export interface Koerperzone {
   nur_ansage?: boolean;
   multiplikator: number;
   bereich: 'kopf' | 'rumpf' | 'glied';
-  normal: { text: string; blutung?: string; dauerhaft: string[] };
-  krit: { text: string; tot?: boolean; kampfunfaehig?: boolean; blutung?: string };
+  normal: { text: string; saetze: Folgesatz[]; blutung?: string; dauerhaft: string[] };
+  krit: { text: string; saetze: Folgesatz[]; tot?: boolean; kampfunfaehig?: boolean; blutung?: string };
+}
+
+/** Ein Satz im Bericht nach einem Treffer, der eine Folge der Zone erzählt („Die Wunde blutet.“). */
+export interface Folgesatz {
+  text: string;
+  /** Nur, wenn die eigene Bewegung dieser Runde eine dieser Arten ist (regeln.json bewegung.reihenfolge). */
+  nur_bei_bewegung?: string[];
+  /** Ersatz außerhalb des Gefechts, wenn die Bewegung unbekannt ist; fehlt er, entfällt der Satz. */
+  ohne_gefecht?: string;
 }
 
 export interface Munitionstyp {

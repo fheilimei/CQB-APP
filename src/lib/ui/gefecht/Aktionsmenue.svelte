@@ -248,7 +248,7 @@
       {#if aktion === 'bewegung'}
         <button class="haupt" disabled={!wahl || verfuegbar(c, 'bewegung', d) <= 0} onclick={() => wahl && onfertig(protokolliere(bewegen(c, wahl, d), `Bewegung: ${bewegungName(wahl, d)}`))}>Ausführen</button>
       {:else if aktion === 'stand'}
-        <button class="haupt" disabled={!wahl || !standAls} onclick={() => wahl && standAls && onfertig(protokolliere(standWechseln(c, wahl, standAls), `Standwechsel: ${standAdjektiv(wahl, d)}`))}>Ausführen</button>
+        <button class="haupt" disabled={!wahl || !standAls} onclick={() => wahl && standAls && onfertig(protokolliere(standWechseln(c, wahl, standAls), `Standwechsel${standAls === 'break' ? ' (Break)' : ''}: ${standAdjektiv(wahl, d)}`))}>{standAls === 'break' ? 'Ausführen (Break −1)' : 'Ausführen'}</button>
       {/if}
     {:else}
       <button onclick={() => (ansicht = { art: 'liste' })}>Zurück</button>
@@ -271,8 +271,12 @@
 </Dialog>
 
 {#snippet standWahl()}
-  <p class="hinweis">Dein Stand: {standAdjektiv(eigenerStand(g, d), d)}.
-    {#if aktion === 'stand'}{standAls === 'break' ? 'Der Standwechsel dieser Runde ist verbraucht; ein weiterer kostet die Breakaction.' : standAls === null ? 'Kein Standwechsel mehr möglich.' : ''}{/if}</p>
+  <p class="hinweis">Dein Stand: {standAdjektiv(eigenerStand(g, d), d)}.</p>
+  {#if aktion === 'stand' && standAls === 'break'}
+    <p class="warnung">Dein Standwechsel dieser Runde ist verbraucht. Ein zweiter kostet deine Breakaction; mehr als zwei gibt es nicht.</p>
+  {:else if aktion === 'stand' && standAls === null}
+    <p class="warnung">Kein Standwechsel mehr in dieser Runde.</p>
+  {/if}
   <div class="auswahlreihe gleich" role="group" aria-label="Neuer Stand">
     {#each r.staende as s (s.id)}
       <button aria-pressed={wahl === s.id} disabled={s.id === eigenerStand(g, d)} onclick={() => (wahl = s.id)}>{s.name}</button>

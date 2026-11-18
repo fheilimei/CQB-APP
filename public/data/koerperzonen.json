@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-16",
+  "version": "2026-11-18",
   "eintraege": [
     {
       "id": "kopf",
@@ -11,11 +11,21 @@
       "normal": {
         "text": "Blutung",
         "blutung": "normal",
-        "dauerhaft": []
+        "dauerhaft": [],
+        "saetze": [
+          {
+            "text": "Die Wunde blutet."
+          }
+        ]
       },
       "krit": {
         "text": "Sofort Tod",
-        "tot": true
+        "tot": true,
+        "saetze": [
+          {
+            "text": "Der Treffer ist sofort tödlich."
+          }
+        ]
       }
     },
     {
@@ -28,11 +38,21 @@
       "normal": {
         "text": "Blutung",
         "blutung": "normal",
-        "dauerhaft": []
+        "dauerhaft": [],
+        "saetze": [
+          {
+            "text": "Die Wunde blutet."
+          }
+        ]
       },
       "krit": {
         "text": "Sofort Tod",
-        "tot": true
+        "tot": true,
+        "saetze": [
+          {
+            "text": "Der Treffer ist sofort tödlich."
+          }
+        ]
       }
     },
     {
@@ -45,12 +65,22 @@
       "normal": {
         "text": "Blutung",
         "blutung": "normal",
-        "dauerhaft": []
+        "dauerhaft": [],
+        "saetze": [
+          {
+            "text": "Die Wunde blutet."
+          }
+        ]
       },
       "krit": {
         "text": "Kampfunfähig; verbluten innerhalb einer Minute",
         "kampfunfaehig": true,
-        "blutung": "kritisch_rumpf"
+        "blutung": "kritisch_rumpf",
+        "saetze": [
+          {
+            "text": "Die Wunde blutet so stark, dass du innerhalb einer Minute verblutest."
+          }
+        ]
       }
     },
     {
@@ -63,12 +93,22 @@
       "normal": {
         "text": "Blutung",
         "blutung": "normal",
-        "dauerhaft": []
+        "dauerhaft": [],
+        "saetze": [
+          {
+            "text": "Die Wunde blutet."
+          }
+        ]
       },
       "krit": {
         "text": "Kampfunfähig; verbluten innerhalb einer Minute",
         "kampfunfaehig": true,
-        "blutung": "kritisch_rumpf"
+        "blutung": "kritisch_rumpf",
+        "saetze": [
+          {
+            "text": "Die Wunde blutet so stark, dass du innerhalb einer Minute verblutest."
+          }
+        ]
       }
     },
     {
@@ -81,12 +121,22 @@
       "normal": {
         "text": "Blutung",
         "blutung": "normal",
-        "dauerhaft": []
+        "dauerhaft": [],
+        "saetze": [
+          {
+            "text": "Die Wunde blutet."
+          }
+        ]
       },
       "krit": {
         "text": "Kampfunfähig; verbluten innerhalb einer Minute",
         "kampfunfaehig": true,
-        "blutung": "kritisch_rumpf"
+        "blutung": "kritisch_rumpf",
+        "saetze": [
+          {
+            "text": "Die Wunde blutet so stark, dass du innerhalb einer Minute verblutest."
+          }
+        ]
       },
       "nur_ansage": true
     },
@@ -100,12 +150,25 @@
       "normal": {
         "text": "Blutung; Gegenstand fallen lassen",
         "blutung": "normal",
-        "dauerhaft": []
+        "dauerhaft": [],
+        "saetze": [
+          {
+            "text": "Die Wunde blutet."
+          },
+          {
+            "text": "Du lässt fallen, was du in dieser Hand hältst."
+          }
+        ]
       },
       "krit": {
         "text": "Kampfunfähig; verbluten innerhalb fünf Minuten",
         "kampfunfaehig": true,
-        "blutung": "kritisch_glied"
+        "blutung": "kritisch_glied",
+        "saetze": [
+          {
+            "text": "Die Wunde blutet so stark, dass du innerhalb von fünf Minuten verblutest."
+          }
+        ]
       }
     },
     {
@@ -118,12 +181,25 @@
       "normal": {
         "text": "Blutung; Gegenstand fallen lassen",
         "blutung": "normal",
-        "dauerhaft": []
+        "dauerhaft": [],
+        "saetze": [
+          {
+            "text": "Die Wunde blutet."
+          },
+          {
+            "text": "Du lässt fallen, was du in dieser Hand hältst."
+          }
+        ]
       },
       "krit": {
         "text": "Kampfunfähig; verbluten innerhalb fünf Minuten",
         "kampfunfaehig": true,
-        "blutung": "kritisch_glied"
+        "blutung": "kritisch_glied",
+        "saetze": [
+          {
+            "text": "Die Wunde blutet so stark, dass du innerhalb von fünf Minuten verblutest."
+          }
+        ]
       }
     },
     {
@@ -138,12 +214,33 @@
         "blutung": "normal",
         "dauerhaft": [
           "humpeln"
+        ],
+        "saetze": [
+          {
+            "text": "Die Wunde blutet."
+          },
+          {
+            "text": "Du stürzt, weil du im Lauf getroffen wurdest.",
+            "nur_bei_bewegung": [
+              "laufen",
+              "rennen"
+            ],
+            "ohne_gefecht": "Warst du im Lauf, stürzt du."
+          },
+          {
+            "text": "Du kannst nur noch humpeln."
+          }
         ]
       },
       "krit": {
         "text": "Kampfunfähig; verbluten innerhalb fünf Minuten",
         "kampfunfaehig": true,
-        "blutung": "kritisch_glied"
+        "blutung": "kritisch_glied",
+        "saetze": [
+          {
+            "text": "Die Wunde blutet so stark, dass du innerhalb von fünf Minuten verblutest."
+          }
+        ]
       }
     },
     {
@@ -158,12 +255,33 @@
         "blutung": "normal",
         "dauerhaft": [
           "humpeln"
+        ],
+        "saetze": [
+          {
+            "text": "Die Wunde blutet."
+          },
+          {
+            "text": "Du stürzt, weil du im Lauf getroffen wurdest.",
+            "nur_bei_bewegung": [
+              "laufen",
+              "rennen"
+            ],
+            "ohne_gefecht": "Warst du im Lauf, stürzt du."
+          },
+          {
+            "text": "Du kannst nur noch humpeln."
+          }
         ]
       },
       "krit": {
         "text": "Kampfunfähig; verbluten innerhalb fünf Minuten",
         "kampfunfaehig": true,
-        "blutung": "kritisch_glied"
+        "blutung": "kritisch_glied",
+        "saetze": [
+          {
+            "text": "Die Wunde blutet so stark, dass du innerhalb von fünf Minuten verblutest."
+          }
+        ]
       }
     }
   ]

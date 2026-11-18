@@ -4,7 +4,7 @@
   import type { Spieldaten } from '../../daten/typen';
   import { gefechtVon, lebenslageDes } from '../../regeln/probenrechner';
   import { ruestungswert } from '../../regeln/schaden';
-  import { ausgang, ausloeserVon, deckungFuer, schadenDirekt, trefferUebernehmen, vorschau, type Ausgang, type Eingang } from '../../regeln/wunden';
+  import { ausgang, ausloeserVon, deckungFuer, folgeSaetze, schadenDirekt, trefferUebernehmen, vorschau, type Ausgang, type Eingang } from '../../regeln/wunden';
   import type { Charakter, Quelle } from '../../speicher/charakter';
   import type { Wurf } from '../../wuerfel/wuerfel';
   import Bericht from '../Bericht.svelte';
@@ -80,6 +80,9 @@
     if (z) zone = z.id;
   }
 
+  /** „beschossen und getroffen“, „beschossen, getroffen und verletzt“. */
+  const aufzaehlung = (t: string[]) => (t.length < 2 ? t.join('') : `${t.slice(0, -1).join(', ')} und ${t.at(-1)}`);
+
   /** Ortsangabe der Zone im Satz („am Kopf“). */
   const ortVon = (id: string) => d.koerperzonen.eintraege.find((z) => z.id === id)?.ort ?? `an der Zone ${zonenName(id)}`;
 
@@ -104,7 +107,7 @@
         zeilen.push({ text: 'Sie kommt nach einer Nacht Ruhe als HP zurück.' });
       }
       if (direktSchaden > 0) zeilen.push({ text: `Deine HP sinken von ${hpVorher} auf ${hpNachher}.` });
-      if (imGefecht && direktSchaden > 0) zeilen.push({ text: 'Für das Rundenende ist angehakt: verletzt.' });
+      if (imGefecht && direktSchaden > 0) zeilen.push({ text: 'Für das Rundenende: Du wurdest verletzt.' });
     } else {
       const e = eingang!;
       const a = gewaehlt!;
@@ -130,7 +133,7 @@
           const rechnung = `Mannstoppwirkung ${e.mw} × ${mult}${mehrere ? ` × ${e.kugeln} Kugeln` : ''}`;
           if (a.schaden > 0) {
             zeilen.push({ text: `${durch}: Du erleidest eine${a.folge === 'krit' ? ' kritische' : ''} Wunde mit ${a.schaden} Schaden (${rechnung}).` });
-            if (a.folge_text) zeilen.push({ text: `Folge: ${a.folge_text}.`, fett: a.folge === 'krit' });
+            for (const satz of folgeSaetze(a, c, d)) zeilen.push({ text: satz, fett: a.folge === 'krit' });
           } else {
             zeilen.push({ text: `${durch}, ${mehrere ? 'richten' : 'richtet'} aber keinen Schaden an.` });
           }
@@ -157,7 +160,11 @@
         const g = gefechtVon(c)!;
         const neu = ausloeserVon(a, true, d).filter((x) => !g.ausloeser_diese_runde.includes(x));
         const name = (id: string) => d.regeln.leiter.ausloeser.find((x) => x.id === id)?.name ?? id;
-        if (neu.length) zeilen.push({ text: `Für das Rundenende ist angehakt: ${neu.map(name).join(', ')}.` });
+        // Stagger passt nicht in „Du wurdest …“ und hängt als eigener Satzteil an.
+        const st = d.regeln.eingehend.ausloeser.stagger;
+        const teile = neu.filter((x) => x !== st).map(name);
+        const satz = [teile.length ? `wurdest ${aufzaehlung(teile)}` : '', neu.includes(st) ? 'hast Stagger erlitten' : ''].filter(Boolean).join(' und ');
+        if (satz) zeilen.push({ text: `Für das Rundenende: Du ${satz}.` });
       }
     }
     const vorher = lebenslageDes(c, d);

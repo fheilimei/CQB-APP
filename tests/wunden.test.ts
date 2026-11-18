@@ -3,7 +3,8 @@ import { describe, expect, it } from 'vitest';
 import { gefechtStarten, leiterSetzen } from '../src/lib/regeln/gefecht';
 import { hpAktuell } from '../src/lib/regeln/modifikatoren';
 import { gefechtVon, lebenslageDes } from '../src/lib/regeln/probenrechner';
-import { ausgang, ausloeserVon, schadenDirekt, staggerRegel, trefferUebernehmen, vorschau, type Eingang } from '../src/lib/regeln/wunden';
+import { bewegen, hechten } from '../src/lib/regeln/aktionen';
+import { ausgang, ausloeserVon, folgeSaetze, schadenDirekt, staggerRegel, trefferUebernehmen, vorschau, type Eingang } from '../src/lib/regeln/wunden';
 import { neuerCharakter, type Charakter, type Gefecht, type Trefferereignis } from '../src/lib/speicher/charakter';
 import { ladeTestdaten } from './hilfen';
 
@@ -152,6 +153,32 @@ describe('Stagger und Auslöser im Gefecht', () => {
     const c1 = trefferUebernehmen(imGefecht(fertig()), schuss('bein_l', 1, 1), U, d);
     const c2 = trefferUebernehmen(c1, schuss('bein_r', 1, 1), U, d);
     expect(g(c2).ausloeser_diese_runde).toEqual(['beschossen', 'getroffen', 'verletzt']);
+  });
+});
+
+describe('Folgen als Sätze im Bericht', () => {
+  const bein = (krit = false) => ({ zone: 'bein_l', folge: krit ? ('krit' as const) : ('normal' as const) });
+  it('Arm: blutet und Gegenstand fallen lassen', () => {
+    expect(folgeSaetze({ zone: 'arm_r', folge: 'normal' }, fertig(), d)).toEqual(['Die Wunde blutet.', 'Du lässt fallen, was du in dieser Hand hältst.']);
+  });
+  it('Bein im Gefecht ohne Bewegung: kein Sturz, aber humpeln', () => {
+    expect(folgeSaetze(bein(), imGefecht(fertig()), d)).toEqual(['Die Wunde blutet.', 'Du kannst nur noch humpeln.']);
+  });
+  it('Bein im Gefecht nach Laufen: Sturz', () => {
+    const c = bewegen(imGefecht(fertig()), 'laufen', d);
+    expect(folgeSaetze(bein(), c, d)).toContain('Du stürzt, weil du im Lauf getroffen wurdest.');
+  });
+  it('Bein nach Gehen oder nach Laufen und dann Hechten: kein Sturz', () => {
+    expect(folgeSaetze(bein(), bewegen(imGefecht(fertig()), 'gehen', d), d).some((s) => s.includes('stürzt'))).toBe(false);
+    const gehechtet = hechten(bewegen(imGefecht(fertig()), 'laufen', d), 'liegen', 'break');
+    expect(folgeSaetze(bein(), gehechtet, d).some((s) => s.includes('stürzt'))).toBe(false);
+  });
+  it('Bein außerhalb des Gefechts: Sturz als Bedingung', () => {
+    expect(folgeSaetze(bein(), fertig(), d)).toContain('Warst du im Lauf, stürzt du.');
+  });
+  it('Krit am Bein: Verbluten in fünf Minuten; ohne Folge keine Sätze', () => {
+    expect(folgeSaetze(bein(true), fertig(), d)).toEqual(['Die Wunde blutet so stark, dass du innerhalb von fünf Minuten verblutest.']);
+    expect(folgeSaetze({ zone: 'bein_l', folge: null }, fertig(), d)).toEqual([]);
   });
 });
 

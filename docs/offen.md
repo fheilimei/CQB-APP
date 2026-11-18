@@ -91,6 +91,14 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 - **Ändern:** Regelkern, Wunden (Auslöser eines Treffers)
 - **Im Regelwerk klarstellen:** ja
 
+### R26. „Sturz, falls im Lauf“ am Bein (18.11.2026)
+- **Frage:** Welche Bewegungen zählen als „im Lauf“? Und was folgt aus dem Sturz: Liegt man danach (Stand Liegen)?
+- **Stellen:** (Körperzonen, Tabelle); (Kampfsystem, Bewegung)
+- **Vorläufig:** Im Lauf ist, wer sich in dieser Runde mit Laufen oder Rennen bewegt hat (nicht Gehen, Kriechen, nicht nach Hechten). Der Bericht sagt „Du stürzt, weil du im Lauf getroffen wurdest.“ Den Stand ändert die App nicht; das macht der Spieler.
+- **Andere Möglichkeit:** Nur Rennen zählt; der Sturz setzt den Stand selbst auf Liegen, ohne Aktion.
+- **Ändern:** eine Zeile in koerperzonen.json (`nur_bei_bewegung` bei den Beinen); für Liegen nach dem Sturz der Regelkern, Wunden
+- **Im Regelwerk klarstellen:** ja
+
 ### Erledigt
 
 ### R6. Offene kritische Wunde und Kampfunfähigkeit (17.11.2026)

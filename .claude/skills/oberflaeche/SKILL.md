@@ -32,7 +32,8 @@ Rückmeldung des Nutzers vom 17.11.2026:
 - **Gleicher Knopf, gleiche Stelle** (18.11.2026, Getroffen): Ein Knopf, den es im Gefecht und in Ruhe gibt, steht in beiden an derselben Stelle (Getroffen unter der Figur, nicht in der Aktionsleiste).
 - **Einzelheiten beim Antippen statt eigener Liste** (18.11.2026, Wunden): Was zu einer Stelle der Figur gehört, erscheint beim Antippen dieser Stelle, nicht in einer zusätzlichen Liste darunter.
 - **Berichte als kleine Erzählung** (18.11.2026): Der Bericht nach einem Ablauf erzählt in ganzen Sätzen, was passiert ist („Ein Schuss trifft dich an der Brust. Er durchschlägt deine Rüstung …“), nicht als Stichpunkte mit Doppelpunkt.
-- **Bildzeichen statt Text für Zustände an der Figur** (18.11.2026): Stand und Bewegung als Piktogramme oben rechts neben der Silhouette, wenig Text.
+- **Bildzeichen statt Text für Zustände an der Figur** (18.11.2026): Stand und Bewegung als Piktogramme oben rechts neben der Silhouette, wenig Text. Kein Bodenstrich unter den Strichmännchen (unnötige Linie).
+- **Berichte ohne Formularsprache** (18.11.2026, Getroffen): nicht „Für das Rundenende ist angehakt: …“, sondern „Für das Rundenende: Du wurdest beschossen und getroffen.“ Folgen als Sätze („Die Wunde blutet.“, „Du kannst nur noch humpeln.“), nicht „Folge: …“. Was die App weiß (z. B. eigene Bewegung), steht als Tatsache im Satz („Du stürzt, weil du im Lauf getroffen wurdest.“).
 - Besonders aufgefallen: **Waffe wechseln** (`gefecht/WaffeWechseln.svelte`) und **Schießen** (`gefecht/Schiessen.svelte`).
 
 Jede Arbeit an der Oberfläche muss diese Punkte verbessern oder darf sie zumindest nicht verschlimmern.
