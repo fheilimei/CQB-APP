@@ -129,13 +129,13 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 ### Erledigt
 
 ### R5. Treffer mit 0 Schaden (17.11.2026)
-- **Entschieden (18.11.2026):** Ein Treffer mit 0 Schaden verursacht nichts: keine Prellung, keine Verletzung (Wunde, Blutung, Folge der Zone) und keinen Abzug von Lebenspunkten. Das gilt für jeden Treffer, nicht nur für Wuchttreffer. Umgesetzt: Auch ein Durchschlag mit 0 Schaden erzeugt keine Wunde und keine Folge.
+- **Entschieden (18.11.2026):** Ein Treffer mit 0 Schaden verursacht nichts: keine Prellung, keine Verletzung (Wunde, Blutung, Folge der Zone) keinen Abzug von Lebenspunkten und keinen Stagger (auch nicht durch einen stumpfen Krit). Das gilt für jeden Treffer, nicht nur für Wuchttreffer. Umgesetzt: Auch ein Durchschlag mit 0 Schaden erzeugt keine Wunde und keine Folge.
 - **Frage:** Ein Wuchttreffer erzeugt eine Prellung. Gilt das auch, wenn er 0 Schaden macht?
 - **Stellen:** (Schaden, Blutung und Verletzungen, Wuchttreffer); (Schaden, Blutung und Verletzungen, Prellungen)
 - **Vorläufig:** keine Prellung, weil nichts zu heilen ist.
 - **Andere Möglichkeit:** Prellung mit 0 Schaden (wichtig nur, wenn eine Prellung außer dem Schaden noch etwas bewirkt).
 - **Ändern:** Regelkern, Schaden
-- **Im Regelwerk klarstellen:** ja, **noch offen**: In Schaden, Blutung und Verletzungen festhalten, dass ein Treffer mit 0 Schaden weder Prellung noch Verletzung noch HP-Abzug verursacht.
+- **Im Regelwerk klarstellen:** ja, **noch offen**: In Schaden, Blutung und Verletzungen festhalten, dass ein Treffer mit 0 Schaden weder Prellung noch Verletzung noch HP-Abzug noch Stagger verursacht (auch nicht beim stumpfen Krit).
 
 ### R4. Stumpfer Krit gegen „Schmerz ignorieren“ (17.11.2026)
 - **Entschieden (18.11.2026):** Schmerz ignorieren gewinnt: auch ein stumpfer Krit löst dann keinen Stagger aus. So rechnete die App schon.

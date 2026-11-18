@@ -384,13 +384,15 @@ describe('Schadensablauf', () => {
     expect(treffer({ ...stumpf, stagger_regel: 'nie' }, d).stagger).toBe(false);
   });
 
-  it('R5: Bei 0 Schaden keine Prellung, keine Wunde, keine Zonenfolge', () => {
+  it('R5: Bei 0 Schaden keine Prellung, keine Wunde, keine Zonenfolge, kein Stagger', () => {
     const wucht = treffer({ ...basis, dk: 1, mw: 2, ruestung: 3 }, d);
     expect(wucht).toMatchObject({ art: 'wucht', schaden: 0, prellung: false, wunde: false });
     const stumpf = treffer({ ...basis, dk: null, mw: 1, ruestung: 1 }, d);
     expect(stumpf).toMatchObject({ art: 'wucht', schaden: 0, prellung: false });
     const durch = treffer({ ...basis, mw: 0, krit: true }, d);
     expect(durch).toMatchObject({ art: 'durchschlag', schaden: 0, wunde: false, folge: null });
+    // stumpfer Krit mit 0 Schaden: kein Stagger
+    expect(treffer({ ...basis, dk: null, mw: 1, ruestung: 1, krit: true }, d).stagger).toBe(false);
   });
 
   it('Stagger: größer als Schmerzresistenz; empfindlich ab gleich; Schmerz ignorieren nie', () => {

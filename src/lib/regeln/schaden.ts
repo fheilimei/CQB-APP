@@ -66,6 +66,8 @@ export interface Trefferfolge {
 function stagger(schaden: number, e: Treffereingabe, kritStumpf: boolean): boolean {
   // Regelfrage R4 (docs/offen.md), entschieden: Schmerz ignorieren gewinnt gegen den stumpfen Krit, kein Stagger.
   if (e.stagger_regel === 'nie') return false;
+  // Regelfrage R5, entschieden: 0 Schaden löst auch keinen Stagger aus (betrifft nur den stumpfen Krit).
+  if (schaden <= 0) return false;
   if (kritStumpf) return true;
   return e.stagger_regel === 'empfindlich' ? schaden >= e.schmerzresistenz : schaden > e.schmerzresistenz;
 }
