@@ -176,7 +176,7 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
       { "id": "ziel_kopfgross", "gruppe": "ziel_groesse", "name": "kopfgroß", "malsteps": 2 },
       { "id": "ziel_handgross", "gruppe": "ziel_groesse", "name": "handgroß", "malsteps": 3 },
       { "id": "ziel_gross", "gruppe": "ziel_groesse", "name": "groß, Gegenstand (Fahrzeug, Tür)", "stepshields": 1 },
-      { "id": "aufgelegt", "gruppe": "schuetze", "name": "Waffe aufgelegt", "stepshields": 1, "nur_ohne_eigene_bewegung": true, "nicht_fuer": ["werfen"] }
+      { "id": "aufgelegt", "gruppe": "schuetze", "name": "Waffe aufgelegt", "stepshields": 1, "nur_ohne_eigene_bewegung": true, "nicht_fuer": ["werfen", "sprengwaffe"] }
     ],
     "vorlaeufig": true
   },
@@ -222,7 +222,7 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
       { "id": "entwaffnen", "name": "Entwaffnen", "folge": "lässt einen Gegenstand fallen …" }
     ]
   },
-  "werfen": { "stat": "agility", "ueber_wurfweite_malsteps": 2, "kochen_malsteps": 1 },
+  "werfen": { "stat": "agility", "ueber_wurfweite_malsteps": 2, "kochen_malsteps": 1, "skill_wurfwaffe": "wurfwaffen", "skill_sprengwaffe": "granaten" },
   "krit_folgen": [
     { "probe": "schiessen", "text": "Spalte „Krit“ der getroffenen Zone; nur der erste Schuss" },
     { "probe": "initiative", "text": "eine zusätzliche Breakaction in dieser Runde", "vorlaeufig": true },
@@ -328,13 +328,14 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
 - **`blutung`**: Blutungsarten, auf die `koerperzonen.json` verweist. `frist_minuten` ab Gefechtsende; `bei_ablauf`: `schaden` (noch einmal `schaden_anteil` des Schadens der Wunde, gerundet nach `runden`, dann Ende) oder `tod`. `versorgung`: Maßnahme → `stoppt` oder `{ "frist_faktor": n }` (verlängert die Frist einmal, die Wunde blutet weiter). Die App zählt keine Zeit; der Spieler trägt „Frist abgelaufen“ ein, wenn die SL es sagt.
 - **`versorgen`**: Maßnahmen. `skill`: Skill der Probe (Stat aus `skills.json`); `konzentration`: Schlüssel in `konzentration.aktionen`; `trivial_nach_gefecht_ab`: nach dem Gefecht ohne Probe ab dieser Skillstufe; `mehrere_runden`: Dauer legt die SL fest. Die Probe hat die Probenart `versorgen` (Name in `darstellung.json` `proben`).
 - **`perk_wirkungen`**: Perks, deren Wirkung der Regelkern selbst ausführt, Perk-ID → Liste von Wirkungen. Erlaubte `art`: `reichweite_frei` (`baender`: keine Malsteps der Reichweite), `eigene_bewegung_weniger` (`malsteps`), `zielen_stepshields` (`stepshields`, `bedingung`: `liegend_oder_aufgelegt`), `zielen_ohne_reichweite` (`bedingung`: `ohne_bewegung`), `folgetreffer_zonen` (`ansage`: Zone, `zonen`: Zonen der Folgetreffer der Reihe nach, die letzte wiederholt sich), `einzeln_patronen` (`patronen`), `nachladen_als_break`, `ziehen_ohne_aktion` (`trageorte`), `werfen_als_break`, `eingreifen_als_break`, `konzentration_statt` (`aktion`: Schlüssel in `konzentration.aktionen`, `konzentration`: Stufe, die stattdessen gilt; z. B. Feldversorgung). Ein neuer Perk mit bekannter Wirkung braucht keine Codeänderung.
+- **`werfen`**: Wurfaktion (Kampfsystem, Werfen). `stat`: Stat der Probe. `ueber_wurfweite_malsteps`: Malsteps ein Band über der genauen Wurfweite (weiter geht nicht). `kochen_malsteps`: Malsteps für „Kochen lassen“ (Granate mit Zeitzünder, Verzögerung −1). `skill_wurfwaffe` und `skill_sprengwaffe`: vorgewählter Skill für Wurfwaffen (auch sonstige Gegenstände) bzw. Granaten.
 - **`sprengwirkung.landepunkt`**: Landepunkt eines Werfergeschosses bzw. einer Wurfladung je Ergebnis; **`richtungen`**: Richtung bei Misserfolg, Index = W8 − 1 (Sprengwirkung, Landepunkt).
 - **Bänder** in `bewegung`, `sicht` und `lautstaerke` sind IDs aus `schiessen.reichweitenbaender`. `"keins"`: man erkennt niemanden.
 - **Lage:** Die App baut die Lage-Auswahl allein aus `lage.gruppen` und `lage.umstaende` ([konzept.md § 3.8c](konzept.md#38c-lage-auswahl-r)). Ein neuer Umstand ist ein neuer Eintrag, ohne Codeänderung.
 	- `auswahl`: `eins` (genau ein Umstand der Gruppe; `standard` ist vorgewählt) oder `schalter` (jeder einzeln an/aus).
 	- `zuruecksetzen`: wann die Auswahl auf den Standard zurückfällt: `rundenende`, `neues_ziel` oder `gefechtsende`.
 	- `fehlschuss_trifft_beteiligten`: Bei Misserfolg trifft der Schuss einen anderen Beteiligten (Zone aus W8, nie Krit); Ansage gilt nicht.
-	- `malsteps` bzw. `stepshields`: Wirkung. `nicht_in_baendern`: wirkt in diesen Bändern nicht (ausgegraut mit Hinweis). `nur_ohne_eigene_bewegung`: gesperrt, wenn der Charakter sich in dieser Runde bewegt hat. `nicht_fuer`: Abläufe, in denen der Umstand fehlt (`werfen`, `werfer`, `sprengwaffe`). `hinweis`: Text, der bei Auswahl erscheint.
+	- `malsteps` bzw. `stepshields`: Wirkung. `nicht_in_baendern`: wirkt in diesen Bändern nicht (ausgegraut mit Hinweis). `nur_ohne_eigene_bewegung`: gesperrt, wenn der Charakter sich in dieser Runde bewegt hat. `nicht_fuer`: Abläufe, in denen der Umstand fehlt (`werfen`: jede Wurfaktion, `sprengwaffe`: Granate werfen, `werfer`: Werfer abfeuern; eine Granate zu werfen zählt als `werfen` und `sprengwaffe`). `hinweis`: Text, der bei Auswahl erscheint.
 	- **Eigene Bewegung** steht nicht in der Auswahl; die App kennt sie aus der Aktionsleiste (`eigene_bewegung`).
 	- `quelle: reichweite`: Die Gruppe hat keine Einträge in `umstaende`. Ihre Knöpfe sind die Reichweitenbänder (`schiessen.reichweitenbaender`); die Malsteps kommen beim Schießen aus der `reichweite` der aktiven Waffe (`null` = Knopf gesperrt), beim Werfen aus der Wurfweite. Kein Standard: Vor dem ersten Schuss auf ein Ziel muss ein Band gewählt werden.
 

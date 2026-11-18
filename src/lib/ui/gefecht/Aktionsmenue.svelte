@@ -9,7 +9,8 @@
     | { art: 'senken' }
     | { art: 'verschieben' }
     | { art: 'versorgen' }
-    | { art: 'nahkampf'; als: 'main' | 'break' };
+    | { art: 'nahkampf'; als: 'main' | 'break' }
+    | { art: 'werfen'; als: 'main' | 'break' };
 </script>
 
 <script lang="ts">
@@ -62,7 +63,6 @@
 
   const g = $derived(gefechtVon(c)!);
   const e = $derived(aktiverEintrag(c));
-  const kommt = 'folgt in einer der nächsten Versionen';
   const r = $derived(d.regeln);
 
   interface Option { text: string; info?: string; sperre?: string | null; los: () => void }
@@ -95,7 +95,7 @@
     liste.push(
       { text: 'Wunde versorgen', info: 'Druckverband, Tourniquet oder Operation; mit Konzentration', sperre: !konzentrationMoeglich(c) ? 'schon Breakaction eingesetzt' : null,
         los: () => onablauf({ art: 'versorgen' }) },
-      { text: 'Wurfaktion', sperre: kommt, los: () => {} },
+      { text: 'Wurfaktion', info: 'Wurfwaffe, Granate oder sonstiger Gegenstand', los: () => onablauf({ art: 'werfen', als: 'main' }) },
       { text: 'Nahkampfangriff', info: 'Vergleichsprobe, die SL sagt den Ausgang', los: () => onablauf({ art: 'nahkampf', als: 'main' }) },
       { text: 'Sonderfähigkeit', info: 'z. B. Offangle, Overwatch, eine Aktion über mehrere Runden', los: textOption('Sonderfähigkeit', 'Beschreibe kurz, was du tust. Braucht die Aktion Konzentration, wähle die Stufe.', 'main', { konzentration: true, freitext: true }) }
     );
@@ -113,7 +113,7 @@
         los: () => onablauf({ art: 'nahkampf', als: 'break' }) }
     ];
     if (e && nachladearten(c, e, d).some((a) => nachladenAlsBreak(c, a.art, d))) liste.push({ text: 'Nachladen', info: 'mit Magazin, Schnelllader oder Ladestreifen', los: () => onablauf({ art: 'nachladen', als: 'break' }) });
-    if (perkWirkungen(c, d, 'werfen_als_break').length) liste.push({ text: 'Werfen', sperre: kommt, los: () => {} });
+    if (perkWirkungen(c, d, 'werfen_als_break').length) liste.push({ text: 'Werfen', info: 'Wurfaktion als Breakaction, z. B. Granate zurückwerfen', los: () => onablauf({ art: 'werfen', als: 'break' }) });
     if (perkWirkungen(c, d, 'eingreifen_als_break').length) {
       const perk = c.perks.find((p) => (r.perk_wirkungen[p] ?? []).some((w) => w.art === 'eingreifen_als_break'))!;
       liste.push({ text: 'Eingreifen', los: textOption('Eingreifen', d.perks.eintraege.find((p) => p.id === perk)?.wirkung ?? '', 'break') });

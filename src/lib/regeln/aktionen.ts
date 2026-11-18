@@ -16,7 +16,7 @@ function laufend(c: Charakter): Gefecht {
   return g;
 }
 
-function mit(c: Charakter, g: Gefecht): Charakter {
+export function mit(c: Charakter, g: Gefecht): Charakter {
   return { ...c, geaendert: new Date().toISOString(), spielstand: { ...c.spielstand, gefecht: g } };
 }
 

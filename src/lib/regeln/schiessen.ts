@@ -34,8 +34,8 @@ export interface LageAuswahl {
   band: BandId | null;
   /** Art der eigenen Bewegung in dieser Runde, null = keine. */
   eigene_bewegung: string | null;
-  /** Ablauf: schiessen, werfen, werfer, sprengwaffe (für nicht_fuer). */
-  ablauf: string;
+  /** Ablauf: schiessen, werfen, werfer, sprengwaffe (für nicht_fuer); eine Granate werfen ist werfen und sprengwaffe. */
+  ablauf: string | string[];
 }
 
 /** Steps aus der Lage-Auswahl (konzept.md § 3.8c), allein aus regeln.json gebaut. */
@@ -45,10 +45,11 @@ export function lageSteps(l: LageAuswahl, r: Regeln): StepQuelle[] {
     const m = r.lage.eigene_bewegung[l.eigene_bewegung];
     if (m) quellen.push({ id: 'eigene_bewegung', herkunft: 'lage', name: `eigene Bewegung: ${l.eigene_bewegung}`, malsteps: m });
   }
+  const ablaeufe = [l.ablauf].flat();
   const gewaehlt = new Set(Object.values(l.auswahl).flatMap((v) => (v == null ? [] : Array.isArray(v) ? v : [v])));
   for (const u of r.lage.umstaende) {
     if (!gewaehlt.has(u.id)) continue;
-    if (u.nicht_fuer?.includes(l.ablauf)) continue;
+    if (u.nicht_fuer?.some((a) => ablaeufe.includes(a))) continue;
     if (l.band && u.nicht_in_baendern?.includes(l.band)) continue;
     if (u.nur_ohne_eigene_bewegung && l.eigene_bewegung) continue;
     if (!u.malsteps && !u.stepshields) continue;

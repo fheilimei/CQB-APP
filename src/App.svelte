@@ -38,6 +38,7 @@
   import Ereignis from './lib/ui/gefecht/Ereignis.svelte';
   import Getroffen from './lib/ui/gefecht/Getroffen.svelte';
   import Nahkampfangriff from './lib/ui/gefecht/Nahkampfangriff.svelte';
+  import Werfen from './lib/ui/gefecht/Werfen.svelte';
   import Versorgen from './lib/ui/gefecht/Versorgen.svelte';
   import GefechtBeenden from './lib/ui/gefecht/GefechtBeenden.svelte';
   import { blutungsart, fristAblaufen, fristablauf } from './lib/regeln/blutung';
@@ -70,7 +71,8 @@
     | { art: 'nachladen'; id: string; als: 'main' | 'break' | null }
     | { art: 'ladehemmung'; id: string }
     | { art: 'versorgen'; wundId: string | null }
-    | { art: 'nahkampf'; als: 'main' | 'break' };
+    | { art: 'nahkampf'; als: 'main' | 'break' }
+    | { art: 'werfen'; als: 'main' | 'break' };
   let dialog = $state<Spieldialog | null>(null);
   /** Kurze Meldung mit „Rückgängig“ nach einer Aktion der Aktionsleiste oder einem Treffer (konzept.md § 3.7a). */
   let rueckgaengigText = $state('');
@@ -247,6 +249,7 @@
       case 'verschieben': dialog = { art: 'verschieben' }; break;
       case 'versorgen': dialog = { art: 'versorgen', wundId: null }; break;
       case 'nahkampf': dialog = { art: 'nahkampf', als: a.als }; break;
+      case 'werfen': dialog = { art: 'werfen', als: a.als }; break;
     }
   }
 
@@ -458,6 +461,9 @@
         onfertig={(c) => nachAblauf(c)} onabbrechen={() => (dialog = null)} />
     {:else if dialog.art === 'nahkampf' && gefecht}
       <Nahkampfangriff c={aktiv} d={daten} als={dialog.als} {zonenModus} wuerfelModus={probeModus} onaendern={aendern}
+        onfertig={(c) => nachAblauf(c)} onabbrechen={() => (dialog = null)} />
+    {:else if dialog.art === 'werfen' && gefecht}
+      <Werfen c={aktiv} d={daten} als={dialog.als} wuerfelModus={probeModus} onaendern={aendern}
         onfertig={(c) => nachAblauf(c)} onabbrechen={() => (dialog = null)} />
     {:else if dialog.art === 'deckung'}
       <Deckung c={aktiv} d={daten} onfertig={(c) => nachAblauf(c)} onabbrechen={() => (dialog = null)} />

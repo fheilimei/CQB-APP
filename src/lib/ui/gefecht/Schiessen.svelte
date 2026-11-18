@@ -17,6 +17,7 @@
   import Bericht from '../Bericht.svelte';
   import Dialog from '../Dialog.svelte';
   import Steps from '../Steps.svelte';
+  import LageUmstaende from './LageUmstaende.svelte';
   import ProbeKern from '../probe/ProbeKern.svelte';
   import Wuerfelbereich, { type Wurfstelle } from '../Wuerfelbereich.svelte';
   import type { Wurf } from '../../wuerfel/wuerfel';
@@ -76,13 +77,7 @@
   const gruppen = $derived(d.regeln.lage.gruppen);
   const ablauf = $derived(v.werfer ? 'werfer' : 'schiessen');
 
-  function umstandWahl(gruppe: string, id: string, art: 'eins' | 'schalter') {
-    if (art === 'eins') onaendern(lageWaehlen(c, gruppe, id));
-    else {
-      const liste = (auswahl[gruppe] as string[]) ?? [];
-      onaendern(lageWaehlen(c, gruppe, liste.includes(id) ? liste.filter((x) => x !== id) : [...liste, id]));
-    }
-  }
+  function bandWahl(gruppe: string, id: string) { onaendern(lageWaehlen(c, gruppe, id)); }
   function schalterUm(id: string) {
     schalter = schalter.includes(id) ? schalter.filter((x) => x !== id) : [...schalter, id];
   }
@@ -207,36 +202,15 @@
                 {#each d.regeln.schiessen.reichweitenbaender as b (b.id)}
                   {@const st = bandSteps(b.id)}
                   <button aria-pressed={auswahl[gr.id] === b.id} disabled={st === null}
-                    onclick={() => umstandWahl(gr.id, b.id, 'eins')}>{b.name}<small>{st === null ? 'n/A' : st.length ? stepsText(st[0]!) : '±0'}</small></button>
+                    onclick={() => bandWahl(gr.id, b.id)}>{b.name}<small>{st === null ? 'n/A' : st.length ? stepsText(st[0]!) : '±0'}</small></button>
                 {/each}
               </div>
               {#if v.sperre === 'entfernung'}<p class="fehler">Wähle die Entfernung zum Ziel.</p>
               {:else if v.sperre === 'band'}<p class="fehler">Die Waffe reicht nicht bis {bandName(v.band!, d)}.</p>{/if}
             </div>
-          {:else}
-            {@const umst = d.regeln.lage.umstaende.filter((u) => u.gruppe === gr.id && !u.nicht_fuer?.includes(ablauf))}
-            {#if umst.length}
-              <div class="gruppe" role="group" aria-label={gr.name}>
-                <span class="gruppe-titel">{gr.name}:</span>
-                <div class="auswahlreihe">
-                  {#each umst as u (u.id)}
-                    {@const an = gr.auswahl === 'eins' ? auswahl[gr.id] === u.id : ((auswahl[gr.id] as string[]) ?? []).includes(u.id)}
-                    {@const gesperrt = !!u.nur_ohne_eigene_bewegung && (!!g.bewegt || g.gehechtet)}
-                    {@const wirktNicht = !!v.band && !!u.nicht_in_baendern?.includes(v.band)}
-                    <button class:wirkungslos={wirktNicht} aria-pressed={an} disabled={gesperrt} onclick={() => umstandWahl(gr.id, u.id, gr.auswahl)}>
-                      {u.name}<small>{stepsText(u) || '±0'}</small></button>
-                  {/each}
-                </div>
-                {#each umst as u (u.id)}
-                  {@const an = gr.auswahl === 'eins' ? auswahl[gr.id] === u.id : ((auswahl[gr.id] as string[]) ?? []).includes(u.id)}
-                  {#if an && u.hinweis}<p class="hinweis">{u.name}: {u.hinweis}.</p>{/if}
-                  {#if an && v.band && u.nicht_in_baendern?.includes(v.band)}<p class="hinweis">{u.name}: wirkt nicht im Band {bandName(v.band, d)}.</p>{/if}
-                  {#if u.nur_ohne_eigene_bewegung && (g.bewegt || g.gehechtet)}<p class="hinweis">{u.name}: gesperrt, du hast dich in dieser Runde bewegt.</p>{/if}
-                {/each}
-              </div>
-            {/if}
           {/if}
         {/each}
+        <LageUmstaende {c} {d} ablauf={[ablauf]} band={v.band} {onaendern} />
       </section>
 
       {#if schalterAufsaetze.length}
@@ -295,7 +269,6 @@
 
 <style>
   .waffe { display: flex; flex-direction: column; gap: var(--abstand-1); margin: 0; }
-  .klein-link { font-size: 0.9rem; font-weight: 400; color: var(--akzent); }
   .zaehler { display: flex; justify-content: space-between; align-items: center; }
   .zeile-knopf { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0 var(--abstand-3);
     background: var(--flaeche-2); border-radius: var(--radius); }

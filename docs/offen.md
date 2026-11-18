@@ -4,6 +4,14 @@
 
 Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. Die App arbeitet bis zur Entscheidung mit der genannten vorläufigen Lösung. Neue Einträge kommen beim Programmieren hinzu (Skill „regelfrage“). Die Regelpunkte aus den Schritten 1 bis 6 sind hierher übertragen (18.11.2026).
 
+### R36. Wurfaktion als Auslöser (18.11.2026)
+- **Frage:** Das Regelwerk nennt als Auslöser „Du schießt auf jemanden“. Zählt auch eine Wurfaktion (Messer, Granate) als Auslöser?
+- **Stellen:** (Adrenalin, Anstieg, Auslöser); (Kampfsystem, Werfen: „Der Wurf wird ausgewertet wie ein Schuss“)
+- **Vorläufig:** Ja. Jede Wurfaktion hakt für das Rundenende „selbst auf jemanden geschossen“ an. Du kannst es am Rundenende abhaken, wenn die SL es anders sieht.
+- **Andere Möglichkeit:** Werfen ist kein Auslöser, oder nur ein Wurf auf eine Person.
+- **Ändern:** Regelkern, Werfen (eine Stelle)
+- **Im Regelwerk klarstellen:** ja
+
 ### R32. Deckung bei der Ansage „Rumpf“ (18.11.2026)
 - **Frage:** Seit jede Rumpfzone für sich verdeckt wird (R31), steht nicht fest, ob die Deckung bei einem Treffer nach der Ansage „Rumpf“ zählt, wenn nur ein Teil des Rumpfs verdeckt ist.
 - **Stellen:** (Deckung und Rüstung, Deckung); (Kampfsystem, Treffen)
@@ -318,7 +326,7 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 6. **Schnelllader und Ladestreifen.** → Regelfragen R11.
 7. **Magazine nach dem Gefecht füllen.** Entschieden (18.11.2026): Knopf „Magazine füllen“ außerhalb des Gefechts; leere Magazine werden gezählt statt verworfen. Dauer und Reihenfolge → Regelfragen R12.
 8. **Ausrüstung ohne Laden.** Im Schreibmodus frei eintragbar, ohne Kassenbuch und ohne Eintrag im Protokoll. Mit dem Laden (§ 3.14) ändert sich das.
-9. **Noch nicht da:** Knöpfe Getroffen und Ereignis (erledigt 18.11.2026), Wurfaktion, Nahkampf (erledigt 18.11.2026), Wunde versorgen (im Menü ausgegraut), Schaden beim Ziel vorrechnen im Schussbericht, Malstep und Waffen-Einschränkung des ballistischen Schilds beim Schießen. Kommen mit Schritt 7 (Treffer, Wunden, Schutz).
+9. **Noch nicht da:** Knöpfe Getroffen und Ereignis (erledigt 18.11.2026), Wurfaktion (erledigt 18.11.2026), Nahkampf (erledigt 18.11.2026), Wunde versorgen (im Menü ausgegraut), Schaden beim Ziel vorrechnen im Schussbericht, Malstep und Waffen-Einschränkung des ballistischen Schilds beim Schießen. Kommen mit Schritt 7 (Treffer, Wunden, Schutz).
 10. **Skill austauschen beim Schießen** (Konzept § 3.6) fehlt noch; der Schussrechner nimmt immer den Waffenskill der Waffe.
 
 ## Offen aus Schritt 7 (Treffer, Wunden, 18.11.2026)
@@ -340,4 +348,7 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 9. **Deckungskante ziehen.** Entfallen (18.11.2026): Es gibt keine Deckungskante mehr, Deckung nur durch Antippen der Zonen. Der Dialog öffnet sich nur über den Knopf Deckung.
 10. **Ballistischer Schild** als mitgeführte Deckung fehlt noch (Schalter „Schild gehalten“).
 13. **Nahkampfwaffe in der Hand.** Die App führt nicht, ob eine Nahkampfwaffe gezogen ist; im Fenster Nahkampfangriff stehen alle eigenen Nahkampfwaffen zur Wahl. *Vorläufig:* Das Ziehen (Kosten nach Trageort) trägt der Spieler selbst ein, z. B. über Main → Sonderfähigkeit. Das Bajonett „aufgepflanzt“ erscheint auch ohne Gewehr in der Hand.
+19. **Geworfene Gegenstände.** Nach der Wurfaktion zählt die App das Messer bzw. die Granate um 1 herunter. Der Eintrag bleibt mit Anzahl 0 in der Ausrüstung stehen (mit Trageort), damit man ein aufgehobenes Messer im Schreibmodus wieder auf 1 setzen kann. Einen eigenen Knopf „aufheben“ gibt es nicht.
+20. **Bereit machen vor dem Wurf.** Die App führt nicht, ob Wurfwaffe oder Granate gezogen sind (wie bei Nahkampfwaffen, Punkt 13). Das Fenster nennt den Trageort; das Ziehen trägt der Spieler vorher selbst ein.
+21. **Sonstiger Gegenstand.** Wurf mit dem Skill Wurfwaffen, nur mit Wurfweite (keine Wurf-Reichweite), Treffer und Zone wie bei einer Wurfwaffe; den Schaden legt die SL fest.
 14. **Eigener Angriff und „im Nahkampf“.** Nach einem eigenen Nahkampfangriff ist der Charakter für Schützen ein Ziel im Nahkampf; die App merkt sich das nicht, weil es nur andere betrifft.

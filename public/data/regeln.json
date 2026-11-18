@@ -502,7 +502,8 @@
         "stepshields": 1,
         "nur_ohne_eigene_bewegung": true,
         "nicht_fuer": [
-          "werfen"
+          "werfen",
+          "sprengwaffe"
         ]
       }
     ],
@@ -649,7 +650,9 @@
   "werfen": {
     "stat": "agility",
     "ueber_wurfweite_malsteps": 2,
-    "kochen_malsteps": 1
+    "kochen_malsteps": 1,
+    "skill_wurfwaffe": "wurfwaffen",
+    "skill_sprengwaffe": "granaten"
   },
   "krit_folgen": [
     {

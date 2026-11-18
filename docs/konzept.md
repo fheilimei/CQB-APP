@@ -468,7 +468,7 @@ Alles, was Schaden austeilt oder einsteckt, läuft über **einen Dialog in zwei 
 **Ladehemmung beheben** (Main): einfache Ladehemmung per Probe auf Control mit Waffenskill, Malsteps LH-Behebenmod. + Sichtstufe + Leiter (Krit: Main nicht verbraucht); schwere Ladehemmung ist im Gefecht nicht behebbar (nur Hinweis; außerhalb: Intellect-Probe, Zustand −1).
 
 ### 3.8a Werfen (A, M, R)
-Main → Wurfaktion (Break nur mit Perk Quickthrow). Regeln: Kampfsystem (Werfen), Sprengwirkung.
+Main → Wurfaktion (Break → Werfen nur mit Perk Quickthrow; umgesetzt 18.11.2026). Regeln: Kampfsystem (Werfen), Sprengwirkung.
 
 **Ausgehend (Main → Werfen):**
 1. **Gegenstand:** eigene Nahkampfwaffen (jede ist werfbar, soweit ihre Wurf-Reichweite es zulässt; Wurfmesser und Wurfaxt sind dafür gebaut) und Granaten aus dem Vorrat, jeweils mit Anzahl, oder „sonstiger Gegenstand“.
@@ -476,7 +476,9 @@ Main → Wurfaktion (Break nur mit Perk Quickthrow). Regeln: Kampfsystem (Werfen
 3. **Vor dem Wurf:** Zielwert und Krit-Schwelle auf Agility mit Herkunft der Steps. Skill: Wurfwaffen oder Granaten, je nach Gegenstand vorgewählt (austauschbar, [§ 3.6](#36-probenrechner-r)).
 4. **Würfe eintragen:** W100; Wurfwaffe: W8 für die Zone (ohne Ansage); Sprengwaffe: W8 für die Richtung bei Misserfolg.
 5. **Bericht:** Wurfwaffe: Treffer, Zone, Krit, DK/MW (Schadensablauf wie beim Schießen). Sprengwaffe: Landepunkt (Krit genau, Erfolg bedrängt, Misserfolg nah + Richtung), Zünder und Verzögerung, Splitterzahlen je Band. Vorrat −1; Block **„Für die SL“**.
-6. **Weiter:** Main −1; Eintrag im Gefechtsprotokoll.
+6. **Weiter:** Main −1 (bzw. Break −1); geworfener Gegenstand −1 (der Eintrag bleibt mit Anzahl 0); Auslöser „selbst auf jemanden geschossen“ (Regelfrage R36, vorläufig); Eintrag im Gefechtsprotokoll.
+
+*Stand 18.11.2026:* Ein Fenster mit den Abschnitten **Was wirfst du?** (Gegenstand mit Anzahl, Werte bzw. Zünder und Splitterzahlen, Trageort; Schalter Kochen lassen), **Wohin wirfst du?** (Entfernung mit Malsteps aus Wurfweite und Wurf-Reichweite, „n/A“ gesperrt; Hinweis auf die genaue Wurfweite; Ansage nur bei Wurfwaffen und sonstigen Gegenständen, bei Granaten der Hinweis auf den Zielpunkt), **Ziel und Werfer** (Lage wie beim Schießen, ohne „Waffe aufgelegt“; „Ziel im Nahkampf“ nur bei Wurfwaffen), **Wurfprobe** und Würfelbereich (W100, W8 nur wenn nötig: Zone ohne Ansage, Fehlwurf in den Nahkampf, Richtung der Granate bei Misserfolg). Lage und Entfernung teilt sich das Fenster mit Schießen. Ein sonstiger Gegenstand zählt nur die Wurfweite; den Schaden legt die SL fest.
 
 **Eingehend (Explosion in der Nähe)** (18.11.2026; kein eigener Ablauf, drei bestehende Wege):
 1. **Reaktion:** eine Breakaction über Break ([§ 3.7b](#37b-initiative-und-breakaction-m-r)), nach den üblichen Regeln: Hechten oder Standwechsel (in Deckung gehen ist ein Standwechsel). Zurückwerfen ist eine Wurfaktion: im eigenen Zug über Main → Werfen, als Breakaction nur mit dem Perk Quickthrow (Break → Werfen). Im Moment der Detonation einfache Probe auf Reaktion oder Antizipation (Sprengwirkung, Zündung).

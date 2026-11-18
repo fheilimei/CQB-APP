@@ -147,6 +147,8 @@ table.rechnung tr.summe td { border-top: 1px solid var(--linie); font-weight: 40
 .auswahlreihe button { padding: var(--abstand-1) var(--abstand-3); display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.2; }
 .auswahlreihe button small { font-size: 0.75rem; color: var(--text-2); font-weight: 400; }
 .auswahlreihe button.wirkungslos { opacity: 0.6; }
+/* Kleiner Textknopf in einer Abschnittsüberschrift (z. B. „Neues Ziel“ bei Schießen und Werfen). */
+.klein-link { font-size: 0.9rem; font-weight: 400; color: var(--akzent); }
 
 /* Würfelbereich: abgesetzter Kasten, immer zuletzt; bündelt alle Würfe eines Ablaufs und das Ergebnis. */
 .wuerfelbereich { display: flex; flex-direction: column; gap: var(--abstand-3); padding: var(--abstand-3);

@@ -168,6 +168,10 @@ export function pruefeDaten(d: Spieldaten): string[] {
   if (new Set((r.ereignis ?? []).map((e) => e.id)).size !== (r.ereignis ?? []).length) f('regeln.json', 'ereignis: doppelte ID');
   for (const e of r.ereignis ?? [])
     if (!r.leiter.ausloeser.some((a) => a.id === e.ausloeser)) f('regeln.json', `ereignis: unbekannter Auslöser „${e.ausloeser}“`);
+  // Werfen
+  if (!statIds.has(r.werfen?.stat)) f('regeln.json', `werfen.stat: unbekannter Stat „${r.werfen?.stat}“`);
+  for (const k of ['skill_wurfwaffe', 'skill_sprengwaffe'] as const)
+    if (!skillIds.has(r.werfen?.[k])) f('regeln.json', `werfen.${k}: unbekannter Skill „${r.werfen?.[k]}“`);
   // Nahkampf (Schritt 7)
   const nk = r.nahkampf;
   if (!statIds.has(nk.stat)) f('regeln.json', `nahkampf.stat: unbekannter Stat „${nk.stat}“`);

@@ -150,6 +150,8 @@ export interface Regeln {
     stat: string;
     haltezahl: { stat: string; skill: string };
   };
+  /** Wurfaktion (Kampfsystem, Werfen; konzept.md § 3.8a). */
+  werfen: { stat: string; ueber_wurfweite_malsteps: number; kochen_malsteps: number; skill_wurfwaffe: string; skill_sprengwaffe: string };
   /** Nahkampf (Kampfsystem, Nahkampf; konzept.md § 3.8b). */
   nahkampf: {
     stat: string;
