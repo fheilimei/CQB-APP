@@ -333,8 +333,14 @@ export function pruefeDaten(d: Spieldaten): string[] {
   void sprengIds;
 
   // ---------- schutz.json
-  for (const ru of d.schutz.ruestung)
+  for (const ru of d.schutz.ruestung) {
     for (const z of Object.keys(ru.zonen)) if (!zonenIds.has(z)) f(`schutz.json ${ru.id}`, `unbekannte Zone „${z}“`);
+    // Regelfrage R2 (entschieden): Rüstung am Rumpf deckt alle Rumpfzonen mit demselben Wert.
+    const rumpf = d.koerperzonen.eintraege.filter((z) => z.bereich === 'rumpf' && z.w8 !== null).map((z) => z.id);
+    const werte = rumpf.map((z) => ru.zonen[z]);
+    if (werte.some((w) => w !== undefined) && werte.some((w) => w !== werte[0]))
+      f(`schutz.json ${ru.id}`, 'Rüstung am Rumpf muss Brust, Bauch und Unterleib mit demselben Wert abdecken');
+  }
   for (const sc of d.schutz.schilde) {
     for (const z of sc.zonen) if (!zonenIds.has(z)) f(`schutz.json ${sc.id}`, `unbekannte Zone „${z}“`);
   }

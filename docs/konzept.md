@@ -739,7 +739,7 @@ Bänder: bedrängt (bis 2 m, Armeslänge), nah (3–15 m), mittel (16–30 m), w
 
 ### 4.7 Schadensablauf
 1. **Deckung** (nur wenn die getroffene Zone verdeckt ist): DK < Deckungswert → gestoppt, kein Schaden. Sonst Rest-DK = DK − Deckungswert. Ist eine Rumpfzone verdeckt, gilt der ganze Rumpf als verdeckt. Deckung von unten bis zur Brust verdeckt auch beide Arme; bis Bauch oder Unterleib nicht.
-2. **Rüstung** der getroffenen Zone: Rest-DK ≥ Rüstung → **Durchschlag**, sonst **Wuchttreffer**.
+2. **Rüstung** der getroffenen Zone: Rest-DK ≥ Rüstung → **Durchschlag**, sonst **Wuchttreffer**. Nach der Ansage „Rumpf“ zählt die Rüstung am Rumpf; sie schützt Brust, Bauch und Unterleib immer gleich (R2).
 3. **Durchschlag:** Schaden = MW × Multiplikator (× Kugeln). Folgen der Zone; bei Krit Spalte „Krit“. Erzeugt eine Wunde.
 4. **Wuchttreffer:** Schaden = max(0, MW − (Rüstung − Rest-DK)) (× Kugeln). Keine Zonenfolgen, kein Krit. Erzeugt eine **Prellung**, keine Wunde.
 5. **Stagger:** Schaden des Treffers > Schmerzresistenz (bei Symptom „Empfindlich“: ≥; bei „Schmerz ignorieren“: nie). Gilt für Durchschlag und Wuchttreffer. Wirkung: Konzentration unterbrochen, Breakaction dieser Runde verfällt.

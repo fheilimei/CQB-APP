@@ -23,14 +23,6 @@ Die App wird erst entwickelt, wenn die Regeln weitgehend stehen ([[App/docs/konz
 
 Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. Die App arbeitet bis zur Entscheidung mit der genannten vorläufigen Lösung. Neue Einträge kommen beim Programmieren hinzu (Skill „regelfrage“). Die Regelpunkte aus den Schritten 1 bis 6 sind hierher übertragen (18.11.2026).
 
-### R2. Rüstung bei der Ansage „Rumpf“ (17.11.2026)
-- **Frage:** Bei der Ansage „Rumpf“ steht nicht fest, welche Rumpfzone für die Rüstung zählt.
-- **Stellen:** (Deckung und Rüstung, Rüstung); (Kampfsystem, Treffen)
-- **Vorläufig:** Es zählt der niedrigste Rüstungswert von Brust, Bauch und Unterleib. Bei allen heutigen Westen sind die drei gleich.
-- **Andere Möglichkeit:** Der Treffer wird mit dem W8 einer Rumpfzone zugeordnet, und deren Rüstung zählt.
-- **Ändern:** Regelkern, Schaden (Rüstungswert)
-- **Im Regelwerk klarstellen:** ja
-
 ### R3. Arme hinter Deckung (17.11.2026)
 - **Frage:** Regelwerk: „Verdeckt eine Deckung **von unten** die Brust, gelten auch beide Arme als verdeckt.“ Die App weiß nicht, von welcher Seite die Deckung verdeckt.
 - **Stellen:** (Deckung und Rüstung, Deckung)
@@ -160,6 +152,15 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 
 ### Erledigt
 
+### R2. Rüstung bei der Ansage „Rumpf“ (17.11.2026)
+- **Entschieden (18.11.2026):** Rüstung gibt es am Rumpf nur so, dass sie Brust, Bauch und Unterleib mit demselben Wert abdeckt. Bei der Ansage „Rumpf“ zählt deshalb einfach der Schutz der Weste bzw. der Rüstung am Oberkörper. Die Verletzung richtet sich weiter nach der Zeile „Rumpf“ der Körperzonen (Blutung; bei Krit kampfunfähig, verbluten in einer Minute), wie im Regelwerk. Umgesetzt: Die Datenprüfung meldet eine Rüstung, die die drei Rumpfzonen verschieden schützt.
+- **Frage:** Bei der Ansage „Rumpf“ steht nicht fest, welche Rumpfzone für die Rüstung zählt.
+- **Stellen:** (Deckung und Rüstung, Rüstung); (Kampfsystem, Treffen)
+- **Vorläufig:** Es zählt der niedrigste Rüstungswert von Brust, Bauch und Unterleib. Bei allen heutigen Westen sind die drei gleich.
+- **Andere Möglichkeit:** Der Treffer wird mit dem W8 einer Rumpfzone zugeordnet, und deren Rüstung zählt.
+- **Ändern:** Regelkern, Schaden (Rüstungswert)
+- **Im Regelwerk klarstellen:** ja, **noch offen**: In Deckung und Rüstung (Rüstung) festhalten, dass Rüstung am Rumpf immer alle drei Rumpfzonen mit demselben Wert abdeckt.
+
 ### R1. Step-Faktoren gerundet oder genau (17.11.2026)
 - **Entschieden (18.11.2026):** Gerundet wird immer zugunsten des Spielers. Umgesetzt: Die Faktoren sind auf drei Stellen aufgerundet (0,85 · 0,638 · 0,415 · 0,228 · 0,103, regeln.json, steps.faktoren); der Zielwert selbst wird weiter kaufmännisch gerundet, wie das Regelwerk es verlangt. Alle Beispiele des Regelwerks stimmen. Gegenüber vorher steigen 10 Zielwerte um 1 (Statwert/Malsteps: 29/2, 34/5, 47/3, 68/4, 73/5, 76/3, 87/2, 88/3, 98/2, 100/3); keiner sinkt.
 - **Frage:** Das Regelwerk nennt die Abschläge 15 %, 25 %, 35 %, 45 %, 55 % und dazu gerundete Faktoren (0,638; 0,414; 0,228; 0,103). Mit den gerundeten Faktoren ergibt Statwert 35 bei 3 Malsteps 14; das Beispiel im Regelwerk nennt 15.
@@ -205,7 +206,7 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 ## Offen aus Schritt 2 (Regelkern, 17.11.2026)
 
 1. **Step-Faktoren gerundet oder genau?** → Regelfragen R1.
-2. **Rüstung bei der Ansage „Rumpf“.** → Regelfragen R2.
+2. **Rüstung bei der Ansage „Rumpf“.** → Regelfragen R2 (entschieden).
 3. **Krit eines stumpfen Treffers gegen „Schmerz ignorieren“.** → Regelfragen R4.
 4. **Wuchttreffer mit 0 Schaden.** → Regelfragen R5.
 5. **Perks, deren Wirkung nur als Text vorliegt.** Erledigt für Schritt 6 (18.11.2026): `perk_wirkungen` in `regeln.json` mit festen Wirkungsarten; der Regelkern führt CQB, Feuer in Bewegung, Atemkontrolle, Gezielter Schuss, Triple Tap, Fingerfertig, Schnell nachladen, Schnellzieher, Quickthrow und Schutzreflex selbst aus. Weiter nur als Hinweis: Überfall, Kaltblütig, Geduld, Niederhalten, Lucky Numbers, Korrektur (sie brauchen Wissen, das die App nicht hat, z. B. ob das Ziel dich wahrnimmt).

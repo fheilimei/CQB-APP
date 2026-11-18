@@ -391,10 +391,12 @@ describe('Schadensablauf', () => {
     expect(verdeckteZonen(['brust'], d)).toEqual(['brust', 'bauch', 'unterleib', 'rumpf', 'arm_r', 'arm_l']);
   });
 
-  it('Rüstungswert: höchster Wert zählt; Rumpf nach Ansage', () => {
+  it('R2: Rüstungswert: höchster Wert zählt; Ansage Rumpf nimmt die Rüstung am Rumpf', () => {
     expect(ruestungswert('brust', ['weste_einfach', 'weste_verstaerkt'], d)).toBe(2);
     expect(ruestungswert('kopf', ['weste_schwer'], d)).toBe(0);
     expect(ruestungswert('rumpf', ['weste_schwer'], d)).toBe(3);
+    expect(ruestungswert('rumpf', ['weste_einfach', 'weste_verstaerkt'], d)).toBe(2);
+    expect(ruestungswert('rumpf', [], d)).toBe(0);
   });
 });
 

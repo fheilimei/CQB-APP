@@ -17,8 +17,8 @@ export function verdeckteZonen(zonen: string[], d: Spieldaten): string[] {
 
 /**
  * Rüstungswert einer Zone: höchster Wert aller getragenen Rüstungen (Westen, Helme, Anzug).
- * Zone ohne Nummer (Rumpf nach Ansage): niedrigster Wert der Rumpfzonen.
- * Regelfrage R2 (docs/offen.md): vorläufig.
+ * Zone ohne Nummer (Rumpf nach Ansage): Wert der Rüstung am Rumpf. Regelfrage R2 (docs/offen.md), entschieden:
+ * Rüstung am Rumpf deckt immer alle Rumpfzonen mit demselben Wert ab (Datenprüfung); genommen wird der höchste.
  */
 export function ruestungswert(zone: string, getragen: string[], d: Spieldaten): number {
   const teile = d.schutz.ruestung.filter((r) => getragen.includes(r.id));
@@ -26,7 +26,7 @@ export function ruestungswert(zone: string, getragen: string[], d: Spieldaten): 
   const eintrag = d.koerperzonen.eintraege.find((z) => z.id === zone);
   if (eintrag && eintrag.w8 === null && eintrag.bereich === 'rumpf') {
     const zonen = d.koerperzonen.eintraege.filter((z) => z.bereich === 'rumpf' && z.w8 !== null);
-    return Math.min(...zonen.map((z) => wert(z.id)));
+    return Math.max(0, ...zonen.map((z) => wert(z.id)));
   }
   return wert(zone);
 }

@@ -770,7 +770,7 @@ Granaten und Geschosse für Werfer. Beide sind **Vorratsgegenstände**: Der Char
 }
 ```
 
-- **Rüstung** gilt je Zone; mehrere Rüstungen auf einer Zone zählen nicht zusammen, es gilt der höchste Wert. `einschraenkung` gilt, solange die Rüstung getragen wird; Perks wie Rüstungsträger mildern sie über Modifikatoren.
+- **Rüstung** gilt je Zone; mehrere Rüstungen auf einer Zone zählen nicht zusammen, es gilt der höchste Wert. Deckt eine Rüstung den Rumpf, nennt sie Brust, Bauch und Unterleib mit demselben Wert (Datenprüfung); nach der Ansage „Rumpf“ zählt dieser Wert (R2). `einschraenkung` gilt, solange die Rüstung getragen wird; Perks wie Rüstungsträger mildern sie über Modifikatoren.
 - **Schild** ist mitgeführte Deckung: Die App verdeckt die genannten Zonen mit dem Wert, solange der Schild gehalten wird (Schalter; nur gegen Angriffe von vorn, im Zweifel fragt die App).
 
 ---

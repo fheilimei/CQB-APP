@@ -88,6 +88,13 @@ describe('Datenprüfung erkennt Fehler', () => {
     expect(fehler).toContain('wurf nah: Malsteps');
   });
 
+  it('R2: Rüstung am Rumpf muss alle Rumpfzonen gleich schützen', () => {
+    const d = kopie();
+    const weste = d.schutz.ruestung.find((r) => r.zonen['brust'] !== undefined)!;
+    weste.zonen['bauch'] = (weste.zonen['brust'] ?? 0) + 1;
+    expect(pruefeDaten(d).join('\n')).toContain('Brust, Bauch und Unterleib mit demselben Wert');
+  });
+
   it('Zugang, der im Kreis läuft', () => {
     const d = kopie();
     d.klassen.eintraege.find((k) => k.id === 'soldat')!.zugang.wie = 'kommandosoldat';
