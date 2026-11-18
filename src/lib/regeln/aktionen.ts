@@ -176,14 +176,7 @@ export function bewegen(c: Charakter, art: string, d: Spieldaten): Charakter {
 
 // ---------- Standwechsel und Hechten
 
-/** Standwechsel verbraucht den Stand-Zähler; ist er leer, die Breakaction (höchstens zwei Wechsel pro Runde). */
-export function standwechselAls(c: Charakter, d: Spieldaten): 'stand' | 'break' | null {
-  if (verfuegbar(c, 'stand', d) > 0) return 'stand';
-  const g = laufend(c);
-  if (g.konzentration && !d.regeln.konzentration[g.konzentration].standwechsel) return null;
-  return verfuegbar(c, 'break', d) > 0 ? 'break' : null;
-}
-
+/** Standwechsel über den Knopf Stand verbraucht den Stand-Zähler, als Breakaction (Break-Menü, mit Reaktion oder Antizipation) die Breakaction. */
 export function standWechseln(c: Charakter, stand: string, als: 'stand' | 'break'): Charakter {
   const g = laufend(c);
   return mit(c, { ...g, stand, verbraucht: { ...g.verbraucht, [als]: g.verbraucht[als] + 1 } });

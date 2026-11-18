@@ -16,7 +16,7 @@
   import type { Spieldaten } from '../../daten/typen';
   import {
     bewegen, bewegungsarten, breakZusatz, eigenerStand, hechten, hechtenSperre, konzentrationMoeglich, konzentrationSetzen,
-    perkWirkungen, protokolliere, standWechseln, standwechselAls, verbrauchen, verfuegbar, zielen, zielenAlsMain, zielwirkung
+    perkWirkungen, protokolliere, standWechseln, verbrauchen, verfuegbar, zielen, zielenAlsMain, zielwirkung
   } from '../../regeln/aktionen';
   import { hatWirkung } from '../../regeln/leiter';
   import { gefechtVon } from '../../regeln/probenrechner';
@@ -132,7 +132,6 @@
   }
 
   const titel = $derived(aktion === 'break' ? 'Breakaction' : aktion === 'main' ? 'Mainaction' : aktion === 'bewegung' ? 'Bewegung' : 'Standwechsel');
-  const standAls = $derived(standwechselAls(c, d));
 </script>
 
 <Dialog {titel}>
@@ -248,7 +247,7 @@
       {#if aktion === 'bewegung'}
         <button class="haupt" disabled={!wahl || verfuegbar(c, 'bewegung', d) <= 0} onclick={() => wahl && onfertig(protokolliere(bewegen(c, wahl, d), `Bewegung: ${bewegungName(wahl, d)}`))}>Ausführen</button>
       {:else if aktion === 'stand'}
-        <button class="haupt" disabled={!wahl || !standAls} onclick={() => wahl && standAls && onfertig(protokolliere(standWechseln(c, wahl, standAls), `Standwechsel${standAls === 'break' ? ' (Break)' : ''}: ${standAdjektiv(wahl, d)}`))}>{standAls === 'break' ? 'Ausführen (Break −1)' : 'Ausführen'}</button>
+        <button class="haupt" disabled={!wahl || verfuegbar(c, 'stand', d) <= 0} onclick={() => wahl && onfertig(protokolliere(standWechseln(c, wahl, 'stand'), `Standwechsel: ${standAdjektiv(wahl, d)}`))}>Ausführen</button>
       {/if}
     {:else}
       <button onclick={() => (ansicht = { art: 'liste' })}>Zurück</button>
@@ -272,10 +271,10 @@
 
 {#snippet standWahl()}
   <p class="hinweis">Dein Stand: {standAdjektiv(eigenerStand(g, d), d)}.</p>
-  {#if aktion === 'stand' && standAls === 'break'}
-    <p class="warnung">Dein Standwechsel dieser Runde ist verbraucht. Ein zweiter kostet deine Breakaction; mehr als zwei gibt es nicht.</p>
-  {:else if aktion === 'stand' && standAls === null}
-    <p class="warnung">Kein Standwechsel mehr in dieser Runde.</p>
+  {#if aktion === 'stand' && verfuegbar(c, 'stand', d) <= 0}
+    <p class="warnung">Dein Standwechsel dieser Runde ist verbraucht. Einen zweiten machst du über Break → Standwechsel.</p>
+  {:else if aktion === 'break'}
+    <p class="hinweis">Kostet deine Breakaction.</p>
   {/if}
   <div class="auswahlreihe gleich" role="group" aria-label="Neuer Stand">
     {#each r.staende as s (s.id)}

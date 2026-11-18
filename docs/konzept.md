@@ -346,7 +346,7 @@ Nur im Gefecht ([§ 3.0e](#30e-gefecht-und-ruhe-m)) liegen ganz unten, unter dem
 - **Initiative-Krit:** Break 2 (Kampfsystem, Action Economy).
 - **Stagger:** Break sofort 0.
 - **Konzentration:** Startet eine Mainaction mit Konzentration, wird Break für diese Runde 0.
-- **Standwechsel als Breakaction:** verbraucht Break statt Stand.
+- **Standwechsel als Breakaction:** nur über Break → Standwechsel (mit Probe Reaktion oder Antizipation, wenn es in fremder Runde geschieht); verbraucht Break, nicht Stand. Der Knopf Stand verbraucht nur den eigenen Standwechsel (18.11.2026).
 - **Krit beim Ladehemmung beheben:** Main wird nicht verbraucht.
 - **Kampfunfähig:** Die vier Aktionsknöpfe tragen eine Warnmarkierung; Ausführen nur nach Bestätigung ([§ 3.0e](#30e-gefecht-und-ruhe-m)).
 
@@ -381,7 +381,7 @@ Ein **langer Druck** auf einen Knopf erlaubt ±1 von Hand (Sonderregeln, Fehltip
 | | Nachladen | nur mit Perk Schnell nachladen; nur Magazin, Schnelllader, Ladestreifen |
 | | Eingreifen | nur mit Perk Schutzreflex (Abschirmen: bis 3 m) |
 | Bewegung | Kriechen, Gehen, Laufen, Rennen | merkt die Art für diese Runde (Lage-Malsteps, Hörbarkeit); erlaubt nach Stand (Stehen: alle außer Kriechen; Hocke: Gehen; Liegen: Kriechen) und gesperrt durch Konzentration, Schutzanzug und Schild (höchstens Gehen) |
-| Stand | Stehen, Hocke, Liegen | merkt den Stand; die Silhouette zeigt ihn an. Ist der Standwechsel der Runde verbraucht, kostet ein weiterer die Breakaction. Der Stand fließt in Lage, Splitter und Nahkampf ein (überlegener Stand, Kampfsystem, Stand im Nahkampf). |
+| Stand | Stehen, Hocke, Liegen | merkt den Stand; die Silhouette zeigt ihn an. Ist der Standwechsel der Runde verbraucht, ist der Knopf grau; ein weiterer geht nur über Break → Standwechsel. Der Stand fließt in Lage, Splitter und Nahkampf ein (überlegener Stand, Kampfsystem, Stand im Nahkampf). |
 
 Unter jedem Knopf steht klein, was gerade gilt (Bewegung dieser Runde, eigener Stand, Konzentration).
 

@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   bewegen, bewegungsarten, eigeneBewegungFuerLage, hechten, hechtenSperre, konzentrationSetzen, korrigieren, lageWaehlen, neuesZiel, standWechseln,
-  standwechselAls, verbrauchen, verfuegbar, zaehler, zielen, zielenAktiv, zielwirkung
+  verbrauchen, verfuegbar, zaehler, zielen, zielenAktiv, zielwirkung
 } from '../src/lib/regeln/aktionen';
 import { gefechtStarten, initiativeEintragen, leiterSetzen, naechsteRunde, senkenEintragen } from '../src/lib/regeln/gefecht';
 import { gefechtVon } from '../src/lib/regeln/probenrechner';
@@ -103,10 +103,12 @@ describe('Bewegung, Stand, Hechten', () => {
     expect(g(c)).toMatchObject({ bewegt: 'rennen', bewegungen: 2 });
   });
 
-  it('zweiter Standwechsel verbraucht die Breakaction', () => {
+  it('Standwechsel: über Stand verbraucht den Stand-Zähler, als Breakaction die Breakaction', () => {
     const c = standWechseln(imGefecht(), 'hocke', 'stand');
-    expect(standwechselAls(c, d)).toBe('break');
-    expect(standwechselAls(verbrauchen(c, 'break'), d)).toBeNull();
+    expect(verfuegbar(c, 'stand', d)).toBe(0);
+    const b = standWechseln(c, 'liegen', 'break');
+    expect(verfuegbar(b, 'break', d)).toBe(0);
+    expect(g(b).stand).toBe('liegen');
   });
 
   it('Hechten: gesperrt im Liegen und mit Ruhepuls 2; setzt Stand und zählt als Bewegung für die Lage', () => {
