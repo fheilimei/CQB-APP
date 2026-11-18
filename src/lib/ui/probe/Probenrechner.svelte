@@ -106,7 +106,7 @@
       <button onclick={onschliessen}>Abbrechen</button>
       <button class="haupt" disabled={!stat} onclick={ausgefuehrt}>Ausgeführt (Main −1)</button>
     {:else}
-      <button class="haupt" onclick={onschliessen}>Schließen</button>
+      <button class="betont" onclick={onschliessen}>Schließen</button>
     {/if}
   {/snippet}
 </Dialog>

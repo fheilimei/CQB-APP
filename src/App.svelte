@@ -331,7 +331,7 @@
         {/if}
         {#if modus !== 'lesen'}
           <span class="status an">{MODUS_NAME[modus]}</span>
-          <button class="haupt klein" onclick={() => (modus = 'lesen')}>Fertig</button>
+          <button class="betont klein" onclick={() => (modus = 'lesen')}>Fertig</button>
         {/if}
         {#if !gefecht}
           <button class="betont klein" class:warnung={kampfunfaehig} onclick={gefechtStarten}>
@@ -439,7 +439,7 @@
 {#if $needRefresh}
   <div class="update karte" role="status">
     <span>Eine neue Version ist da.</span>
-    <button class="haupt" onclick={() => updateServiceWorker(true)}>Jetzt laden</button>
+    <button class="betont" onclick={() => updateServiceWorker(true)}>Jetzt laden</button>
   </div>
 {/if}
 
@@ -450,7 +450,7 @@
   .titel { display: flex; align-items: center; gap: 8px; min-width: 0; }
   .titel strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .modus { margin-left: auto; display: flex; align-items: center; gap: 8px; }
-  .status.an { background: var(--akzent); color: var(--akzent-text); font-weight: 600; }
+  .status.an { color: var(--akzent); box-shadow: inset 0 0 0 2px var(--akzent); font-weight: 600; }
   .klein { min-height: 40px; padding: 0 12px; }
   .status { font-size: 0.8rem; padding: 2px 8px; border-radius: 999px; background: var(--flaeche-2); color: var(--text-2); }
   .bogen { flex: 1; padding: var(--abstand-3); display: flex; flex-direction: column; gap: var(--abstand-3); }
@@ -460,7 +460,7 @@
   .unten.im-gefecht { border-top: 2px solid var(--akzent); }
   .toast { position: absolute; left: 16px; right: 16px; bottom: calc(100% + 8px); z-index: 15; }
   .rueck { display: flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 8px; padding: 4px 4px 4px 16px; }
-  .banner { background: #2b0a0a; color: #fff; text-align: center; font-weight: 700; padding: 6px; }
+  .banner { background: var(--flaeche); color: var(--gefahr); border-top: 2px solid var(--gefahr); text-align: center; font-weight: 700; padding: var(--abstand-1); }
   .kopfzeile { flex-wrap: wrap; }
   .titel { flex-wrap: wrap; }
   .chip-klein { font-size: 0.8rem; padding: 2px 8px; border-radius: 999px; color: #fff; white-space: nowrap; min-height: 0; min-width: 0; }

@@ -58,7 +58,7 @@
     </button>
   </div>
   {#snippet knoepfe()}
-    <button class="haupt" onclick={onschliessen}>Schließen</button>
+    <button class="betont" onclick={onschliessen}>Schließen</button>
   {/snippet}
 </Dialog>
 

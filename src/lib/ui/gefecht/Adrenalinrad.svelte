@@ -15,7 +15,10 @@
   const anzeige = $derived(vorschau ?? stand);
   const name = (s: number) => r.stufen[String(s)]?.name ?? null;
   const farbe = $derived(d.darstellung.leiter_farben[String(anzeige)] ?? '#9e9e9e');
-  const hell = $derived(helligkeit(farbe) > 0.55);
+  /** Sehr dunkle Stufenfarbe (Over the Edge): Rahmen in der Gefahrfarbe, sonst verschwindet er im dunklen Modus. */
+  const dunkel = $derived(helligkeit(farbe) < 0.2);
+  /** Alle Stufen von unten nach oben, für die Skala über dem Rad. */
+  const stufen = $derived(Array.from({ length: r.max - r.min + 1 }, (_, i) => r.min + i));
   const lage = $derived(symptome(anzeige, d.regeln));
   const plus = $derived(zusammenfassung('gewinn'));
   const minus = $derived(zusammenfassung('verlust'));
@@ -27,7 +30,7 @@
     return lage.symptome.map((id) => symptomKurz(d.regeln.symptome[id]![seite]));
   }
 
-  /** Relative Helligkeit einer Hex-Farbe (0–1), damit die Schrift lesbar bleibt. */
+  /** Relative Helligkeit einer Hex-Farbe (0–1). */
   function helligkeit(hex: string): number {
     const n = parseInt(hex.slice(1), 16);
     return (0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255;
@@ -113,7 +116,11 @@
   function tipp(aktion: () => void) { if (gewischt) { gewischt = false; return; } aktion(); }
 </script>
 
-<div class="zeile" style:--farbe={farbe} class:hell>
+<div class="zeile" style:--farbe={farbe} class:dunkel>
+  <!-- Skala: alle Stufen als schmale Farbstreifen; die aktuelle leuchtet und ist höher. Zeigt auf einen Blick, wo man steht. -->
+  <div class="skala" aria-hidden="true">
+    {#each stufen as s (s)}<span class:an={s === anzeige} style:--stufe={d.darstellung.leiter_farben[String(s)] ?? '#9e9e9e'}></span>{/each}
+  </div>
   <div class="rad" class:offen bind:this={radEl} bind:clientWidth={breite} class:federn-l={federn < 0} class:federn-r={federn > 0} role="group" aria-label="Adrenalin"
     onpointerdown={runter} onpointermove={bewegen} onpointerup={hoch} onpointercancel={abbrechen}>
     <!-- Band aus fünf Stufen (zwei außerhalb des Sichtbereichs), verschoben um den Versatz unter dem Finger. -->
@@ -139,18 +146,24 @@
 </div>
 
 <style>
-  /* Flach gehalten (Wunsch 18.11.2026): wenig Rand über und unter den Stufennamen. */
-  .zeile { --auf: 40px; position: relative; z-index: 1; background: var(--farbe); color: #fff; padding: 0 var(--abstand-2) var(--abstand-1);
-    transition: background 0.2s; }
-  .zeile.hell { color: #1b1d22; }
-  /* Fenster des Rads: fester heller Rahmen in der Mitte, darunter läuft das Band. */
+  /* Neutral wie die übrigen Leisten (Wunsch 18.11.2026: keine Vollfarbe). Die Stufenfarbe steht nur in der Skala
+     und im Rahmen des Fensters in der Mitte. Flach gehalten: wenig Rand über und unter den Stufennamen. */
+  .zeile { --auf: 40px; --rand: var(--farbe); position: relative; z-index: 1; background: var(--flaeche); color: var(--text);
+    padding: var(--abstand-1) var(--abstand-2) var(--abstand-1); display: flex; flex-direction: column; gap: var(--abstand-1); }
+  .zeile.dunkel { --rand: var(--gefahr); }
+  /* 8 Streifen, Lücke 2 px (Rahmenstärke, kein Abstand aus dem Raster). */
+  .skala { display: flex; gap: 2px; align-items: flex-end; height: 6px; padding: 0 calc(100% / 3.6 / 2); }
+  .skala span { flex: 1; height: 3px; border-radius: 2px; background: var(--stufe); opacity: 0.3; transition: height 0.15s, opacity 0.15s; }
+  .skala span.an { height: 6px; opacity: 1; }
+  /* Fenster des Rads: Rahmen in der Stufenfarbe in der Mitte, darunter läuft das Band. */
   .rad { position: relative; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-select: none;
-    background: var(--farbe); border-radius: var(--radius) var(--radius) 0 0; transition: margin-top 0.15s ease-out, padding-bottom 0.15s ease-out, background 0.2s; }
+    background: var(--flaeche); border-radius: var(--radius); transition: margin-top 0.15s ease-out, padding-bottom 0.15s ease-out; }
   /* Aufgeklappt wächst das Rad nach oben (über den Inhalt), ohne dass sich darunter etwas verschiebt;
      die Namen stehen oben, der Daumen liegt im unteren, leeren Teil. */
   .rad.offen { margin-top: calc(-1 * var(--auf)); padding-bottom: var(--auf); box-shadow: 0 -4px 12px rgb(0 0 0 / 0.25); }
   .rad::before { content: ''; position: absolute; top: 0; bottom: 0; left: calc(100% / 3.6); width: calc(100% * 1.6 / 3.6);
-    background: rgb(255 255 255 / 0.15); border-radius: var(--radius); pointer-events: none; }
+    background: color-mix(in srgb, var(--farbe) 16%, transparent); border: 2px solid var(--rand); border-radius: var(--radius);
+    box-sizing: border-box; pointer-events: none; transition: border-color 0.2s, background 0.2s; }
   /* Fünf Spalten 1 : 1 : 1.6 : 1 : 1; die äußeren liegen links und rechts außerhalb des Fensters. */
   .band { display: grid; grid-template-columns: 1fr 1fr 1.6fr 1fr 1fr; align-items: center; width: calc(100% * 5.6 / 3.6);
     margin-left: calc(-100% / 3.6); transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); will-change: transform; }
@@ -159,17 +172,17 @@
   /* 36 statt 44 Pixel hoch (Ausnahme vom Mindestmaß, Wunsch des Nutzers): das Rad ist breit genug, um sicher getroffen zu werden. */
   .rad button { color: inherit; background: transparent; border: none; min-height: 36px; padding: 0 var(--abstand-1); min-width: 0; }
   .rad button:active { transform: none; }
-  .nachbar, .aussen { font-size: 0.8rem; opacity: 0.75; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
-  .aussen { opacity: 0.4; }
+  .nachbar, .aussen { font-size: 0.8rem; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
+  .aussen { opacity: 0.5; }
   .nachbar:disabled { opacity: 0; }
   .mitte { font-size: 1.15rem; }
   .einrasten { display: inline-block; animation: einrasten 0.18s ease-out; }
   @keyframes einrasten { from { transform: scale(0.85); opacity: 0.6; } }
-  .strich { font-size: 1.4rem; }
-  .symptome { margin: 0; font-size: 0.8rem; text-align: center; line-height: 1.3; }
+  .strich { font-size: 1.4rem; color: var(--text-2); }
+  .symptome { margin: 0; font-size: 0.8rem; color: var(--text-2); text-align: center; line-height: 1.3; }
   .federn-l { animation: federn-l 0.2s; }
   .federn-r { animation: federn-r 0.2s; }
   @keyframes federn-l { 50% { transform: translateX(10px); } }
   @keyframes federn-r { 50% { transform: translateX(-10px); } }
-  @media (prefers-reduced-motion: reduce) { .band, .rad { transition: none; } .einrasten { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .band, .rad, .skala span { transition: none; } .einrasten { animation: none; } }
 </style>

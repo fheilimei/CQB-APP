@@ -22,7 +22,7 @@
     {#each entwuerfe as e (e.id)}
       <button class="gross" onclick={() => onfortsetzen?.(e.id)}>Erstellung fortsetzen: {e.name}</button>
     {/each}
-    <button class="haupt gross" onclick={onerstellen}>Charakter erstellen</button>
+    <button class="betont gross" onclick={onerstellen}>Charakter erstellen</button>
     <button class="gross" onclick={onimportieren}>Charakter importieren</button>
   </div>
 </main>

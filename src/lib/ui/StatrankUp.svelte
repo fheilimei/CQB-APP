@@ -68,7 +68,7 @@
       <span class="hinweis">({wurfText(neu)}, {neu.quelle === 'app' ? 'von der App gewürfelt' : 'von Hand'})</span></p>
     <p>Statwert {vorher ?? '–'} → <strong>{nachher}</strong>{#if vorher !== null && nachher !== null && nachher < vorher} <span class="fehler">(gesunken)</span>{/if}</p>
     {#snippet knoepfe()}
-      <button class="haupt" onclick={onschliessen}>Fertig</button>
+      <button class="betont" onclick={onschliessen}>Fertig</button>
     {/snippet}
   </Dialog>
 {/if}

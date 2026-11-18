@@ -255,9 +255,9 @@
                 <p>Rang {e.rang} ({e.rang ? d.regeln.raenge[e.rang] : '–'}) · Abweichung {e.wurf ? vorzeichen(e.wurf.positiv - e.wurf.negativ) : '–'}
                   {#if e.wurf}<span class="hinweis">({wurfText(e.wurf)}, {e.wurf.quelle === 'app' ? 'von der App gewürfelt' : 'von Hand'})</span>{/if}</p>
                 {#if lt.wirkt}<p class="hinweis">{d.darstellung.herkunft.leiter?.zeichen} {stand > 0 ? 'Adrenalin' : 'Ruhepuls'} wirkt: hervorgehoben ist der Zielwert, der jetzt gilt.</p>{/if}
-                {#if modus === 'lesen'}<button class="haupt" onclick={() => onprobe(s.id, null)}>Probe auf {mitZeichen('stat', s.id, d)}</button>{/if}
+                {#if modus === 'lesen'}<button class="betont" onclick={() => onprobe(s.id, null)}>Probe auf {mitZeichen('stat', s.id, d)}</button>{/if}
                 {#if modus === 'aufstieg' && statrankUpSperre(c, s.id, d) === null}
-                  <button class="haupt" onclick={() => (rankUp = s.id)}>Statrank-Up ({punkte(d.regeln.aufstieg.statrank_up_kosten)})</button>
+                  <button class="betont" onclick={() => (rankUp = s.id)}>Statrank-Up ({punkte(d.regeln.aufstieg.statrank_up_kosten)})</button>
                 {/if}
               {/if}
               {@render modZeilen(mods)}

@@ -62,7 +62,7 @@
       <button aria-label="eins weniger" disabled={z[a] === 0} onclick={() => onaendern(korrigieren(c, a, -1, d))}>−</button>
       <button aria-label="eins mehr" onclick={() => onaendern(korrigieren(c, a, 1, d))}>+</button>
     </span>
-    <button class="haupt" onclick={() => (korrektur = null)}>Fertig</button>
+    <button class="betont" onclick={() => (korrektur = null)}>Fertig</button>
   </div>
 {/if}
 

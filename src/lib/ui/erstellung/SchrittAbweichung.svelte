@@ -23,7 +23,7 @@
 <p class="hinweis">Abweichung = Positivwürfel − Negativwürfel (−9 bis +9). Statwert = Rang + Abweichung. Ein Wurf lässt sich nicht zurücknehmen.</p>
 
 {#if offen.length && abweichungModus === 'app'}
-  <button class="haupt breit" onclick={alleWuerfeln}>Fehlende Abweichungen würfeln ({offen.length})</button>
+  <button class="betont breit" onclick={alleWuerfeln}>Fehlende Abweichungen würfeln ({offen.length})</button>
 {/if}
 
 <ul class="stats">
