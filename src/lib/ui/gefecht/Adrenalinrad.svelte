@@ -50,6 +50,10 @@
   let federn = $state(0);
   let versatz = $state(0);
   let zieht = $state(false);
+  // Beim Halten oder Ziehen klappt das Rad nach oben auf: die Stufennamen stehen dann über dem Daumen.
+  let gehalten = $state(false);
+  let haltZeit: ReturnType<typeof setTimeout> | undefined;
+  const offen = $derived(zieht || gehalten);
   /** Abstand zwischen der Mitte und einer Nachbarstufe in Pixeln (Spalten 1 : 1.6 : 1). */
   const schrittweite = $derived(Math.max(40, (breite / 3.6) * 1.3));
 
@@ -58,13 +62,20 @@
     if (!zieht && vorschau !== null && stand === vorschau) vorschau = null;
   });
 
-  function runter(e: PointerEvent) { start = { x: e.clientX, y: e.clientY, ziehen: false }; gewischt = false; }
+  function runter(e: PointerEvent) {
+    start = { x: e.clientX, y: e.clientY, ziehen: false };
+    gewischt = false;
+    clearTimeout(haltZeit);
+    // Erst nach kurzem Halten aufklappen, damit ein schneller Tipp die Knöpfe nicht unter dem Finger verschiebt.
+    haltZeit = setTimeout(() => { if (start) { gehalten = true; gewischt = true; radEl?.setPointerCapture(e.pointerId); } }, 200);
+  }
+  function zuklappen() { clearTimeout(haltZeit); gehalten = false; }
   function bewegen(e: PointerEvent) {
     if (!start) return;
     const dx = e.clientX - start.x;
     const dy = e.clientY - start.y;
     if (!start.ziehen) {
-      if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) { start = null; return; }
+      if (!gehalten && Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) { start = null; zuklappen(); return; }
       if (Math.abs(dx) < 10 || Math.abs(dx) < 1.5 * Math.abs(dy)) return;
       start.ziehen = true;
       zieht = true;
@@ -80,6 +91,7 @@
     versatz = rest;
   }
   function hoch() {
+    zuklappen();
     if (!start) return;
     const warZiehen = start.ziehen;
     start = null;
@@ -91,6 +103,7 @@
     setTimeout(() => { if (!zieht) vorschau = null; }, 1500);
   }
   function abbrechen() {
+    zuklappen();
     start = null;
     zieht = false;
     versatz = 0;
@@ -101,7 +114,7 @@
 </script>
 
 <div class="zeile" style:--farbe={farbe} class:hell>
-  <div class="rad" bind:this={radEl} bind:clientWidth={breite} class:federn-l={federn < 0} class:federn-r={federn > 0} role="group" aria-label="Adrenalin"
+  <div class="rad" class:offen bind:this={radEl} bind:clientWidth={breite} class:federn-l={federn < 0} class:federn-r={federn > 0} role="group" aria-label="Adrenalin"
     onpointerdown={runter} onpointermove={bewegen} onpointerup={hoch} onpointercancel={abbrechen}>
     <!-- Band aus fünf Stufen (zwei außerhalb des Sichtbereichs), verschoben um den Versatz unter dem Finger. -->
     <div class="band" class:zieht style:transform="translateX({versatz}px)">
@@ -126,17 +139,25 @@
 </div>
 
 <style>
-  .zeile { background: var(--farbe); color: #fff; padding: var(--abstand-1) var(--abstand-2) 6px; transition: background 0.2s; }
+  /* Flach gehalten (Wunsch 18.11.2026): wenig Rand über und unter den Stufennamen. */
+  .zeile { --auf: 40px; position: relative; z-index: 1; background: var(--farbe); color: #fff; padding: 0 var(--abstand-2) var(--abstand-1);
+    transition: background 0.2s; }
   .zeile.hell { color: #1b1d22; }
   /* Fenster des Rads: fester heller Rahmen in der Mitte, darunter läuft das Band. */
-  .rad { position: relative; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+  .rad { position: relative; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-select: none;
+    background: var(--farbe); border-radius: var(--radius) var(--radius) 0 0; transition: margin-top 0.15s ease-out, padding-bottom 0.15s ease-out, background 0.2s; }
+  /* Aufgeklappt wächst das Rad nach oben (über die Aktionsleiste), ohne dass sich darunter etwas verschiebt;
+     die Namen stehen oben, der Daumen liegt im unteren, leeren Teil. */
+  .rad.offen { margin-top: calc(-1 * var(--auf)); padding-bottom: var(--auf); box-shadow: 0 -4px 12px rgb(0 0 0 / 0.25); }
   .rad::before { content: ''; position: absolute; top: 0; bottom: 0; left: calc(100% / 3.6); width: calc(100% * 1.6 / 3.6);
     background: rgb(255 255 255 / 0.15); border-radius: var(--radius); pointer-events: none; }
   /* Fünf Spalten 1 : 1 : 1.6 : 1 : 1; die äußeren liegen links und rechts außerhalb des Fensters. */
   .band { display: grid; grid-template-columns: 1fr 1fr 1.6fr 1fr 1fr; align-items: center; width: calc(100% * 5.6 / 3.6);
     margin-left: calc(-100% / 3.6); transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); will-change: transform; }
   .band.zieht { transition: none; }
-  .rad button { color: inherit; background: transparent; border: none; min-height: 48px; padding: 0 var(--abstand-1); min-width: 0; }
+  .rad.offen::before { bottom: var(--auf); }
+  /* 36 statt 44 Pixel hoch (Ausnahme vom Mindestmaß, Wunsch des Nutzers): das Rad ist breit genug, um sicher getroffen zu werden. */
+  .rad button { color: inherit; background: transparent; border: none; min-height: 36px; padding: 0 var(--abstand-1); min-width: 0; }
   .rad button:active { transform: none; }
   .nachbar, .aussen { font-size: 0.8rem; opacity: 0.75; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
   .aussen { opacity: 0.4; }
@@ -145,10 +166,10 @@
   .einrasten { display: inline-block; animation: einrasten 0.18s ease-out; }
   @keyframes einrasten { from { transform: scale(0.85); opacity: 0.6; } }
   .strich { font-size: 1.4rem; }
-  .symptome { margin: 2px 0 0; font-size: 0.8rem; text-align: center; line-height: 1.3; }
+  .symptome { margin: 0; font-size: 0.8rem; text-align: center; line-height: 1.3; }
   .federn-l { animation: federn-l 0.2s; }
   .federn-r { animation: federn-r 0.2s; }
   @keyframes federn-l { 50% { transform: translateX(10px); } }
   @keyframes federn-r { 50% { transform: translateX(-10px); } }
-  @media (prefers-reduced-motion: reduce) { .band { transition: none; } .einrasten { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .band, .rad { transition: none; } .einrasten { animation: none; } }
 </style>
