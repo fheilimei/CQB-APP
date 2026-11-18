@@ -230,6 +230,7 @@ export function pruefeDaten(d: Spieldaten): string[] {
       for (const satz of spalte.saetze) {
         if (!satz.text) f(ort, 'Satz ohne Text');
         for (const b of satz.nur_bei_bewegung ?? []) if (!r.bewegung.reihenfolge.includes(b)) f(ort, `unbekannte Bewegung „${b}“`);
+        if (satz.stand_danach && !r.staende.some((x) => x.id === satz.stand_danach)) f(ort, `unbekannter Stand „${satz.stand_danach}“`);
       }
     }
   }

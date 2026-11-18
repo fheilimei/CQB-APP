@@ -166,7 +166,21 @@ describe('Folgen als Sätze im Bericht', () => {
   });
   it('Bein im Gefecht nach Laufen: Sturz', () => {
     const c = bewegen(imGefecht(fertig()), 'laufen', d);
-    expect(folgeSaetze(bein(), c, d)).toContain('Du stürzt, weil du im Lauf getroffen wurdest.');
+    expect(folgeSaetze(bein(), c, d)).toContain('Du stürzt, weil du im Lauf getroffen wurdest, und liegst jetzt am Boden.');
+  });
+  it('R26: Treffer am Bein nach Rennen legt dich hin (ohne Aktion), im Protokoll vermerkt', () => {
+    const vorher = bewegen(imGefecht(fertig()), 'rennen', d);
+    const c = trefferUebernehmen(vorher, schuss('bein_r', 1, 1), U, d);
+    expect(g(c).stand).toBe('liegen');
+    expect(g(c).verbraucht).toEqual(g(vorher).verbraucht);
+    expect((g(c).protokoll.at(-1) as Trefferereignis).aenderungen.stand).toEqual(['stehen', 'liegen']);
+  });
+  it('R26: Treffer am Bein ohne Lauf oder am Arm ändert den Stand nicht', () => {
+    const vorher = bewegen(imGefecht(fertig()), 'gehen', d);
+    expect(g(trefferUebernehmen(vorher, schuss('bein_r', 1, 1), U, d)).stand).toBe(g(vorher).stand);
+    const lauf = bewegen(imGefecht(fertig()), 'laufen', d);
+    expect(g(trefferUebernehmen(lauf, schuss('arm_r', 1, 1), U, d)).stand).toBe(g(lauf).stand);
+    expect(g(trefferUebernehmen(lauf, schuss('bein_r', 5, 1), U, d)).stand).toBe('liegen');
   });
   it('Bein nach Gehen oder nach Laufen und dann Hechten: kein Sturz', () => {
     expect(folgeSaetze(bein(), bewegen(imGefecht(fertig()), 'gehen', d), d).some((s) => s.includes('stürzt'))).toBe(false);

@@ -239,6 +239,8 @@ export interface Folgesatz {
   nur_bei_bewegung?: string[];
   /** Ersatz außerhalb des Gefechts, wenn die Bewegung unbekannt ist; fehlt er, entfällt der Satz. */
   ohne_gefecht?: string;
+  /** Gilt der Satz im Gefecht, wechselt der eigene Stand ohne Aktion hierhin (Sturz → liegen; regeln.json staende). */
+  stand_danach?: string;
 }
 
 export interface Munitionstyp {

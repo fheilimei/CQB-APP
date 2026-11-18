@@ -220,12 +220,13 @@
             "text": "Die Wunde blutet."
           },
           {
-            "text": "Du stürzt, weil du im Lauf getroffen wurdest.",
+            "text": "Du stürzt, weil du im Lauf getroffen wurdest, und liegst jetzt am Boden.",
             "nur_bei_bewegung": [
               "laufen",
               "rennen"
             ],
-            "ohne_gefecht": "Warst du im Lauf, stürzt du."
+            "ohne_gefecht": "Warst du im Lauf, stürzt du.",
+            "stand_danach": "liegen"
           },
           {
             "text": "Du kannst nur noch humpeln."
@@ -261,12 +262,13 @@
             "text": "Die Wunde blutet."
           },
           {
-            "text": "Du stürzt, weil du im Lauf getroffen wurdest.",
+            "text": "Du stürzt, weil du im Lauf getroffen wurdest, und liegst jetzt am Boden.",
             "nur_bei_bewegung": [
               "laufen",
               "rennen"
             ],
-            "ohne_gefecht": "Warst du im Lauf, stürzt du."
+            "ohne_gefecht": "Warst du im Lauf, stürzt du.",
+            "stand_danach": "liegen"
           },
           {
             "text": "Du kannst nur noch humpeln."

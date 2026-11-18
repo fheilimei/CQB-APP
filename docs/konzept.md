@@ -720,8 +720,8 @@ Bänder: bedrängt (bis 2 m, Armeslänge), nah (3–15 m), mittel (16–30 m), w
 | – | Rumpf (nur Ansage) | ×2 | Blutung | kampfunfähig; verbluten in 1 min |
 | 4 | R. Arm | ×1 | Blutung; Gegenstand fallen lassen | kampfunfähig; verbluten in 5 min |
 | 3 | L. Arm | ×1 | Blutung; Gegenstand fallen lassen | kampfunfähig; verbluten in 5 min |
-| 2 | R. Bein | ×1 | Blutung; Sturz im Lauf; humpeln | kampfunfähig; verbluten in 5 min |
-| 1 | L. Bein | ×1 | Blutung; Sturz im Lauf; humpeln | kampfunfähig; verbluten in 5 min |
+| 2 | R. Bein | ×1 | Blutung; Sturz im Lauf (laufend oder rennend: Stand Liegen ohne Aktion); humpeln | kampfunfähig; verbluten in 5 min |
+| 1 | L. Bein | ×1 | Blutung; Sturz im Lauf (laufend oder rennend: Stand Liegen ohne Aktion); humpeln | kampfunfähig; verbluten in 5 min |
 
 **Krit:** nur der erste Schuss.
 

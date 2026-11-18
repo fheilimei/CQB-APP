@@ -1,9 +1,9 @@
 // Eingehende Treffer übernehmen (konzept.md § 3.10, § 4.7): Wunde oder Prellung anlegen, HP abziehen,
 // Tod durch Krit-Folge, Stagger und Auslöser im Gefecht. Jede Funktion gibt einen neuen Charakter zurück.
 
-import type { Spieldaten } from '../daten/typen';
+import type { Folgesatz, Spieldaten } from '../daten/typen';
 import type { Charakter, Gefecht, Trefferereignis, Wunde } from '../speicher/charakter';
-import { eigeneBewegungFuerLage } from './aktionen';
+import { eigeneBewegungFuerLage, eigenerStand } from './aktionen';
 import { hatWirkung } from './leiter';
 import { grundwerte } from './modifikatoren';
 import { gefechtVon } from './probenrechner';
@@ -163,6 +163,10 @@ function anwenden(c: Charakter, a: Ausgang, h: Herkunft, d: Spieldaten): Charakt
     const liste = h.direkt ? (a.schaden > 0 ? [d.regeln.eingehend.ausloeser.verletzt] : []) : ausloeserVon(a, h.schuss, d);
     const neu = liste.filter((x) => !g.ausloeser_diese_runde.includes(x));
     const breakWeg = a.stagger && !g.break_verloren;
+    // Folge der Zone, die den Stand ändert (Sturz im Lauf → liegen), ohne Aktion.
+    const standVorher = eigenerStand(g, d);
+    const standNeu = h.direkt ? null : geltendeFolgen(a, c, d).find((f) => f.stand_danach)?.stand_danach ?? null;
+    const standWechsel = standNeu && standNeu !== standVorher ? standNeu : null;
     const ereignis: Trefferereignis = {
       runde: g.runde,
       zeit: new Date().toISOString(),
@@ -177,12 +181,14 @@ function anwenden(c: Charakter, a: Ausgang, h: Herkunft, d: Spieldaten): Charakt
         prellungen: [ss.prellungen, prellungen],
         tot: [ss.tot, tot],
         ausloeser: neu,
-        break_verloren: breakWeg
+        break_verloren: breakWeg,
+        ...(standWechsel ? { stand: [standVorher, standWechsel] as [string, string] } : {})
       }
     };
     const ng: Gefecht = {
       ...g,
       ausloeser_diese_runde: [...g.ausloeser_diese_runde, ...neu],
+      ...(standWechsel ? { stand: standWechsel } : {}),
       break_verloren: g.break_verloren || a.stagger,
       // Stagger unterbricht eine laufende Aktion mit Konzentration.
       konzentration: a.stagger ? null : g.konzentration,
@@ -215,21 +221,27 @@ export function vorschau(c: Charakter, g: Geschoss, d: Spieldaten, deckungJeZone
 }
 
 /**
- * Folgen der Zone als ganze Sätze für den Bericht (koerperzonen.json `saetze`). Im Gefecht entscheidet die eigene
- * Bewegung dieser Runde über bedingte Sätze (Sturz im Lauf); außerhalb gilt der Ersatz `ohne_gefecht`.
+ * Folgen der Zone, die für diesen Treffer gelten (koerperzonen.json `saetze`). Im Gefecht entscheidet die eigene
+ * Bewegung dieser Runde über bedingte Folgen (Sturz im Lauf, R26 entschieden: Laufen oder Rennen); außerhalb gilt der
+ * Ersatz `ohne_gefecht` ohne weitere Wirkung.
  */
-export function folgeSaetze(a: Pick<Ausgang, 'zone' | 'folge'>, c: Charakter, d: Spieldaten): string[] {
+export function geltendeFolgen(a: Pick<Ausgang, 'zone' | 'folge'>, c: Charakter, d: Spieldaten): Folgesatz[] {
   const z = d.koerperzonen.eintraege.find((x) => x.id === a.zone);
   if (!z || !a.folge) return [];
   const g = gefechtVon(c);
   const bewegung = g ? eigeneBewegungFuerLage(g) : null;
-  const aus: string[] = [];
+  const aus: Folgesatz[] = [];
   for (const s of (a.folge === 'krit' ? z.krit : z.normal).saetze) {
-    if (!s.nur_bei_bewegung) aus.push(s.text);
-    else if (g) { if (bewegung && s.nur_bei_bewegung.includes(bewegung)) aus.push(s.text); }
-    else if (s.ohne_gefecht) aus.push(s.ohne_gefecht);
+    if (!s.nur_bei_bewegung) aus.push(s);
+    else if (g) { if (bewegung && s.nur_bei_bewegung.includes(bewegung)) aus.push(s); }
+    else if (s.ohne_gefecht) aus.push({ text: s.ohne_gefecht });
   }
   return aus;
+}
+
+/** Folgen der Zone als ganze Sätze für den Bericht. */
+export function folgeSaetze(a: Pick<Ausgang, 'zone' | 'folge'>, c: Charakter, d: Spieldaten): string[] {
+  return geltendeFolgen(a, c, d).map((s) => s.text);
 }
 
 /** Kurzbeschreibung einer Wunde für Listen und Berichte. */

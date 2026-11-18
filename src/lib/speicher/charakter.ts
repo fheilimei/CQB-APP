@@ -129,6 +129,8 @@ export interface Trefferereignis {
     ausloeser: string[];
     /** Breakaction durch diesen Treffer verloren. */
     break_verloren: boolean;
+    /** Stand vorher und nachher, wenn der Treffer ihn geändert hat (Sturz im Lauf). */
+    stand?: [string, string];
   };
 }
 
