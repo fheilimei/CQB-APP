@@ -124,8 +124,16 @@ describe('Ablage auf dem Gerät', () => {
   it('Einstellungen mit Standard „System“', async () => {
     const ablage = await Ablage.oeffnen('test-ablage-2');
     expect((await ablage.einstellungen()).darstellung).toBe('system');
-    await ablage.speichereEinstellungen({ darstellung: 'dunkel', wuerfeln: { abweichung: 'hand' } });
-    expect(await ablage.einstellungen()).toEqual({ darstellung: 'dunkel', wuerfeln: { abweichung: 'hand' } });
+    expect((await ablage.einstellungen()).reiterEingeklappt).toBe(false);
+    await ablage.speichereEinstellungen({ darstellung: 'dunkel', wuerfeln: { abweichung: 'hand' }, reiterEingeklappt: true });
+    expect(await ablage.einstellungen()).toEqual({ darstellung: 'dunkel', wuerfeln: { abweichung: 'hand' }, reiterEingeklappt: true });
+    ablage.schliessen();
+  });
+
+  it('ältere Einstellungen ohne Reiter-Angabe: Reiter ausgeklappt', async () => {
+    const ablage = await Ablage.oeffnen('test-ablage-3');
+    await ablage.speichereEinstellungen({ darstellung: 'hell', wuerfeln: {} } as unknown as Parameters<typeof ablage.speichereEinstellungen>[0]);
+    expect((await ablage.einstellungen()).reiterEingeklappt).toBe(false);
     ablage.schliessen();
   });
 });

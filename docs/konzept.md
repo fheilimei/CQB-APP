@@ -189,7 +189,7 @@ Unabhängig von den Modi Lesen, Aufstieg und Schreiben ([§ 3.0a](#30a-modi-lese
 - Das Gefecht läuft weiter, auch wenn der Charakter darin kampfunfähig wird; weitere Treffer, Blutungsfristen und Adrenalinschock hängen am Gefechtsende.
 
 ### Aufbau der App
-Die App hat vier Reiter in einer Leiste am unteren Rand: **Figur · Werte · Ausrüstung · Verlauf**. Oben links öffnet **☰** das Menü ([§ 3.0g](#30g-start-charaktere-und-menü-m)).
+Die App hat vier Reiter in einer Leiste am unteren Rand: **Figur · Werte · Ausrüstung · Verlauf**. Ganz rechts in der Leiste klappt ein Pfeil ▾ sie ein; dann bleibt nur ein kleiner Griff unten rechts mit dem Namen des aktuellen Reiters („▴ Werte“), der über dem Inhalt schwebt und die Leiste wieder ausklappt. Die App merkt sich die Wahl (Einstellungen). Oben links öffnet **☰** das Menü ([§ 3.0g](#30g-start-charaktere-und-menü-m)).
 
 **Figur** (Startbildschirm). Die Silhouette ([§ 3.0f](#30f-körperbild-silhouette-a-r)) steht groß in der Mitte, damit der Zustand des Charakters immer vor Augen ist.
 - **Darüber:** Kopfzeile mit Name und Statusfeld ([§ 3.0a](#30a-modi-lesen-aufstieg-schreiben-m), [§ 3.0e](#30e-gefecht-und-ruhe-m)), HP als Balken mit Zahl, Adrenalin bzw. Ruhepuls (nur wenn nicht 0), aktive Zustände als Chips (z. B. Geblendet 1, Adrenalinschock).

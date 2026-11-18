@@ -282,6 +282,11 @@
     zeige(`„${c.name}“ gelöscht.`);
   }
 
+  const REITER_NAMEN = { figur: 'Figur', werte: 'Werte', ausruestung: 'Ausrüstung', verlauf: 'Verlauf' } as const;
+  function reiterKlappen(zu: boolean) {
+    void einstellungenSetzen({ ...einstellungen, reiterEingeklappt: zu });
+  }
+
   async function einstellungenSetzen(e: Einstellungen) {
     einstellungen = e;
     await ablage!.speichereEinstellungen($state.snapshot(e) as Einstellungen);
@@ -349,7 +354,7 @@
       {/if}
     </header>
 
-    <main class="bogen">
+    <main class="bogen" class:ohne-reiter={einstellungen.reiterEingeklappt}>
       {#if reiter === 'figur'}
         <section class="karte">
           <h2>{aktiv.name}</h2>
@@ -381,12 +386,19 @@
       <Aktionsleiste c={aktiv} d={daten} {kampfunfaehig} onaendern={aendern} onoeffnen={(a) => (dialog = { art: 'aktion', aktion: a })} />
       <Adrenalinrad stand={gefecht.leiter} d={daten} onsetzen={leiterDrehen} ondetail={() => (dialog = { art: 'detail' })} />
     {/if}
-    <nav class="reiter" aria-label="Reiter">
-      {#each [['figur', 'Figur'], ['werte', 'Werte'], ['ausruestung', 'Ausrüstung'], ['verlauf', 'Verlauf']] as [id, text] (id)}
-        <button class="flach" class:an={reiter === id} aria-current={reiter === id ? 'page' : undefined}
-          onclick={() => (reiter = id as typeof reiter)}>{text}</button>
-      {/each}
-    </nav>
+    {#if einstellungen.reiterEingeklappt}
+      <button class="reiter-griff" aria-expanded="false" aria-label="Reiter ausklappen (jetzt: {REITER_NAMEN[reiter]})"
+        onclick={() => reiterKlappen(false)}><span aria-hidden="true">▴</span> {REITER_NAMEN[reiter]}</button>
+    {:else}
+      <nav class="reiter" aria-label="Reiter">
+        {#each Object.entries(REITER_NAMEN) as [id, text] (id)}
+          <button class="flach" class:an={reiter === id} aria-current={reiter === id ? 'page' : undefined}
+            onclick={() => (reiter = id as typeof reiter)}>{text}</button>
+        {/each}
+        <button class="flach einklappen" aria-expanded="true" aria-label="Reiter einklappen"
+          onclick={() => reiterKlappen(true)}><span aria-hidden="true">▾</span></button>
+      </nav>
+    {/if}
     </div>
   {/if}
 
@@ -457,9 +469,17 @@
   .status { font-size: 0.8rem; padding: 2px 8px; border-radius: 999px; background: var(--flaeche-2); color: var(--text-2); }
   .bogen { flex: 1; padding: var(--abstand-3); display: flex; flex-direction: column; gap: var(--abstand-3); }
   .unten { position: sticky; bottom: 0; z-index: 5; }
-  .reiter { display: grid; grid-template-columns: repeat(4, 1fr); background: var(--flaeche); border-top: 1px solid var(--linie);
+  .reiter { display: grid; grid-template-columns: repeat(4, 1fr) var(--tipp); background: var(--flaeche); border-top: 1px solid var(--linie);
     padding-bottom: env(safe-area-inset-bottom); }
   .reiter button { border-radius: 0; padding: 0 4px; font-size: 0.9rem; color: var(--text-2); min-height: 56px; }
+  .reiter .einklappen { min-width: 0; font-size: 1.2rem; border-left: 1px solid var(--linie); }
+  /* Eingeklappt: nur ein kleiner Griff unten rechts, der über dem Inhalt schwebt und keinen eigenen Streifen braucht. */
+  .reiter-griff { position: absolute; right: var(--abstand-3); bottom: calc(var(--abstand-2) + env(safe-area-inset-bottom)); z-index: 6;
+    background: var(--flaeche); color: var(--text-2); font-size: 0.85rem; padding: 0 var(--abstand-3); border-radius: 999px;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.25); }
+  .unten:has(> :not(.reiter-griff):not(.toast)) .reiter-griff { bottom: calc(100% + var(--abstand-2)); }
+  /* Platz unter dem letzten Inhalt, damit der Griff nichts verdeckt (Höhe des Griffs + Abstand). */
+  .bogen.ohne-reiter { padding-bottom: calc(var(--tipp) + var(--abstand-4)); }
   .reiter button.an { color: var(--akzent); font-weight: 700; box-shadow: inset 0 3px 0 var(--akzent); }
   .toast { position: absolute; left: 16px; right: 16px; bottom: calc(100% + 8px); z-index: 15; }
   .rueck { display: flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 8px; padding: 4px 4px 4px 16px; }
