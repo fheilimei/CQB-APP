@@ -185,11 +185,11 @@ export function deckungZonen(kante: Deckungskante | null, getippt: string[], d: 
   return d.koerperzonen.eintraege.map((z) => z.id).filter((z) => menge.has(z));
 }
 
-/** Deckung im Gefecht setzen; ohne verdeckte Zone gilt „keine Deckung“. */
+/** Deckung setzen, im Gefecht und in Ruhe; ohne verdeckte Zone gilt „keine Deckung“. */
 export function deckungSetzen(c: Charakter, e: { wert: number; art: string | null; kante: Deckungskante | null; getippt: string[] }, d: Spieldaten): Charakter {
   const zonen = deckungZonen(e.kante, e.getippt, d);
   const deckung: Deckung | null = zonen.length ? { wert: e.wert, zonen, art: e.art, kante: e.kante, getippt: [...e.getippt] } : null;
-  return mitGefecht(c, { ...laufend(c), deckung });
+  return { ...c, geaendert: jetzt(), spielstand: { ...c.spielstand, deckung } };
 }
 
 /** Gefecht beenden: Stand auf 0; wer Over the Edge erreicht hat, erleidet den Adrenalinschock. */

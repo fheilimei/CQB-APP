@@ -1,6 +1,6 @@
 // Tests für eingehende Treffer (konzept.md § 3.10, § 4.7; Regelwerk: Schaden, Blutung und Verletzungen; Körperzonen).
 import { describe, expect, it } from 'vitest';
-import { deckungSetzen, deckungZonen, gefechtStarten, leiterSetzen } from '../src/lib/regeln/gefecht';
+import { deckungSetzen, deckungZonen, gefechtBeenden, gefechtStarten, leiterSetzen } from '../src/lib/regeln/gefecht';
 import { hpAktuell } from '../src/lib/regeln/modifikatoren';
 import { gefechtVon, lebenslageDes } from '../src/lib/regeln/probenrechner';
 import { bewegen, hechten } from '../src/lib/regeln/aktionen';
@@ -249,7 +249,7 @@ describe('Deckung auf der Figur (konzept.md § 3.9)', () => {
   });
   it('setzen, im Treffer anwenden und mit „keine“ wieder löschen', () => {
     let c = deckungSetzen(imGefecht(fertig()), { wert: 2, art: 'autotuer', kante: unten(2), getippt: [] }, d);
-    expect(g(c).deckung).toMatchObject({ wert: 2, art: 'autotuer', kante: unten(2) });
+    expect(c.spielstand.deckung).toMatchObject({ wert: 2, art: 'autotuer', kante: unten(2) });
     expect(deckungFuer('bauch', c, d)).toBe(2);
     expect(deckungFuer('brust', c, d)).toBeNull();
     expect(deckungFuer('rumpf', c, d)).toBeNull(); // R32: Ansage Rumpf nur verdeckt, wenn der ganze Rumpf verdeckt ist
@@ -257,7 +257,14 @@ describe('Deckung auf der Figur (konzept.md § 3.9)', () => {
     expect(deckungFuer('rumpf', c, d)).toBe(2);
     expect(deckungFuer('kopf', c, d)).toBeNull();
     c = deckungSetzen(c, { wert: 2, art: null, kante: null, getippt: [] }, d);
-    expect(g(c).deckung).toBeNull();
+    expect(c.spielstand.deckung).toBeNull();
+  });
+  it('gilt auch in Ruhe und bleibt über das Gefechtsende erhalten', () => {
+    let c = deckungSetzen(fertig(), { wert: 3, art: null, kante: unten(0), getippt: [] }, d);
+    expect(deckungFuer('bein_r', c, d)).toBe(3);
+    expect(deckungFuer('kopf', c, d)).toBeNull();
+    c = gefechtBeenden(imGefecht(c));
+    expect(deckungFuer('bein_l', c, d)).toBe(3);
   });
   it('R30: dünne Holztür hat Schutz 1 (entschieden)', () => {
     expect(d.schutz.deckung.find((x) => x.id === 'holztuer_duenn')!.wert).toBe(1);

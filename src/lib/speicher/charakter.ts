@@ -4,7 +4,7 @@
 import type { Modifikator, Rang } from '../daten/typen';
 
 /** Aktuelle Schemaversion. Bei jeder inkompatiblen Änderung erhöhen und eine Migration ergänzen (migration.ts). */
-export const SCHEMA = 2;
+export const SCHEMA = 3;
 
 export type Quelle = 'app' | 'hand';
 
@@ -181,12 +181,10 @@ export interface Gefecht {
   korrektur: Aktionszahlen;
   /** Break durch Stagger verloren (Schritt 7 setzt das). */
   break_verloren: boolean;
-  /** Aktuelle Deckung: Wert und tatsächlich verdeckte Zonen; fehlt oder null = keine Deckung. */
-  deckung?: Deckung | null;
   protokoll: (Gefechtsereignis | Schussereignis | Aktionsereignis | Trefferereignis)[];
 }
 
-/** Deckung im Gefecht (datenformat.md § gefecht.deckung). */
+/** Aktuelle Deckung, im Gefecht und in Ruhe (datenformat.md § spielstand.deckung). */
 export interface Deckung {
   wert: number;
   /** Tatsächlich verdeckte Zonen nach den Regeln für Rumpf und Arme (daraus rechnet die App). */
@@ -293,6 +291,8 @@ export interface Charakter {
     tot: boolean;
     adrenalinschock: { aktiv: boolean; ruhe_stunden: number };
     wunden: Wunde[];
+    /** Aktuelle Deckung: Wert und tatsächlich verdeckte Zonen; null = keine Deckung. Gilt im Gefecht und in Ruhe. */
+    deckung: Deckung | null;
   };
 }
 
@@ -336,7 +336,8 @@ export function neuerCharakter(statIds: string[], jetzt: Date = new Date()): Cha
       prellungen: 0,
       tot: false,
       adrenalinschock: { aktiv: false, ruhe_stunden: 0 },
-      wunden: []
+      wunden: [],
+      deckung: null
     }
   };
 }

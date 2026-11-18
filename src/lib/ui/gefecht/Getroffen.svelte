@@ -33,8 +33,6 @@
   let stumpf = $state(false);
   let kugeln = $state(1);
   let krit = $state(false);
-  /** ID aus schutz.json (deckung) oder '' = Zone nicht verdeckt; nur wenn das Gefecht keine Deckung kennt. */
-  let deckungId = $state('');
   let zone = $state<string | null>(null);
   let direktSchaden = $state(1);
   let direktArt = $state<'wunde' | 'prellung'>('wunde');
@@ -45,18 +43,15 @@
   const typen = $derived(Object.keys(kal?.typen ?? {}));
   $effect.pre(() => { if (!typen.includes(typ)) typ = typen[0] ?? ''; });
   const munTyp = $derived(kal?.typen[typ]);
-  const deckungen = $derived([...d.schutz.deckung].sort((a, b) => a.wert - b.wert));
-  /** Im Gefecht gilt die Deckung auf der Figur (konzept.md § 3.9); außerhalb die Angabe in diesem Dialog. */
-  const gefechtsDeckung = $derived(imGefecht);
-  const deckungAufFigur = $derived(gefechtVon(c)?.deckung ?? null);
-  const handDeckung = $derived(deckungen.find((x) => x.id === deckungId)?.wert ?? null);
+  /** Es gilt die Deckung auf der Figur (konzept.md § 3.9), im Gefecht und in Ruhe. */
+  const deckungAufFigur = $derived(c.spielstand.deckung ?? null);
 
   const geschoss = $derived(
     eingabe === 'kaliber' && munTyp
       ? { dk: munTyp.stumpf ? null : munTyp.dk, mw: munTyp.mw }
       : { dk: stumpf ? null : dk, mw }
   );
-  const deckungJeZone = (z: string) => (gefechtsDeckung ? deckungFuer(z, c, d) : handDeckung);
+  const deckungJeZone = (z: string) => deckungFuer(z, c, d);
   const vor = $derived(vorschau(c, { ...geschoss, kugeln, krit, deckung: null }, d, deckungJeZone));
   const farben = $derived(art === 'schuss' ? Object.fromEntries(Object.entries(vor).map(([z, a]) => [z, a.art as Zonenfarbe])) : {});
   const zeichen = $derived(art === 'schuss' ? Object.fromEntries(Object.entries(vor).map(([z, a]) => [z, zeichenFuer(a)]).filter(([, t]) => t)) : {});
@@ -245,16 +240,7 @@
             </div>
             <label class="schalter"><input type="checkbox" bind:checked={krit} /> Krit (sagt die SL an)</label>
           </div>
-          {#if gefechtsDeckung}
-            <p class="hinweis">{deckungAufFigur ? `Deckung Schutz ${deckungAufFigur.wert} vor den schraffierten Zonen` : 'Keine Deckung eingetragen'}; ändern über den Knopf Deckung auf der Figur.</p>
-          {:else}
-            <label class="feld">Deckung vor der getroffenen Zone
-              <select bind:value={deckungId}>
-                <option value="">keine</option>
-                {#each deckungen as x (x.id)}<option value={x.id}>{x.name} ({x.wert})</option>{/each}
-              </select>
-            </label>
-          {/if}
+          <p class="hinweis">{deckungAufFigur ? `Deckung Schutz ${deckungAufFigur.wert} vor den schraffierten Zonen` : 'Keine Deckung eingetragen'}; ändern über den Knopf Deckung auf der Figur.</p>
         {:else}
           <div class="zwei">
             <div class="gruppe">

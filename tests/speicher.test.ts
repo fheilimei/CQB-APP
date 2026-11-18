@@ -84,14 +84,27 @@ describe('Migration', () => {
 
   it('Schema 1 → 2: fertiger Charakter bekommt keinen Erstellungsstand, Entwurf einen leeren', () => {
     const { erstellung: _e, vorratslevel_manuell: _v, ...rest } = beispiel();
-    const fertig = migriere({ ...rest, schema: 1 });
+    const fertig = migriere({ ...rest, schema: 1 }, 2);
     expect(fertig.schema).toBe(2);
     expect(fertig.erstellung).toBeNull();
     expect(fertig.vorratslevel_manuell).toBeNull();
     expect(fertig.skills).toEqual(beispiel().skills);
 
-    const entwurf = migriere({ ...rest, status: 'erstellung', schema: 1 });
+    const entwurf = migriere({ ...rest, status: 'erstellung', schema: 1 }, 2);
     expect(entwurf.erstellung).toEqual({ schritt: 1, ohne_klasse: false, klasse: null, stufe4: null, meister_skills: [], freie_punkte_start: 0, kaeufe: [] });
+  });
+
+  it('Schema 2 → 3: Deckung zieht vom Gefecht in den Spielstand', () => {
+    const b = beispiel();
+    const { deckung: _d, ...sp } = b.spielstand;
+    const deckung = { wert: 2, zonen: ['bein_r', 'bein_l'], art: 'autotuer', kante: { richtung: 'unten', stufe: 0 }, getippt: [] };
+    const imGefecht = migriere({ ...b, schema: 2, spielstand: { ...sp, gefecht: { aktiv: true, stand: 'stehen', deckung } } });
+    expect(imGefecht.schema).toBe(3);
+    expect(imGefecht.spielstand.deckung).toEqual(deckung);
+    expect(imGefecht.spielstand.gefecht).toEqual({ aktiv: true, stand: 'stehen' });
+    const inRuhe = migriere({ ...b, schema: 2, spielstand: { ...sp, gefecht: { aktiv: false } } });
+    expect(inRuhe.spielstand.deckung).toBeNull();
+    expect(inRuhe.spielstand.gefecht).toEqual({ aktiv: false });
   });
 
   it('für jede ältere Schemaversion gibt es einen Schritt', async () => {

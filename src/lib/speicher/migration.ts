@@ -13,6 +13,13 @@ export const MIGRATIONEN: Record<number, (c: Roh) => Roh> = {
     erstellung: c.status === 'erstellung' ? neueErstellung() : null,
     vorratslevel_manuell: null
   }),
+  // 2 → 3: Die Deckung gilt auch außerhalb des Gefechts und liegt jetzt im Spielstand statt im Gefecht.
+  2: (c) => {
+    const sp = (c.spielstand ?? {}) as Record<string, unknown>;
+    const g = (sp.gefecht ?? { aktiv: false }) as Record<string, unknown>;
+    const { deckung, ...rest } = g;
+    return { ...c, spielstand: { ...sp, gefecht: rest, deckung: deckung ?? null } };
+  },
 };
 
 export class ImportFehler extends Error {}

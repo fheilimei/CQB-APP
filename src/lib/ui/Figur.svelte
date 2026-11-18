@@ -1,7 +1,7 @@
 <script lang="ts">
   // Reiter Figur (konzept.md § Aufbau der App): HP, Silhouette mit Rüstung und Wunden. Antippen einer Zone zeigt darunter
   // ihre Übersicht (Rüstung, Deckung, Wunden mit Status, Frist und Folge; Versorgen und „Frist abgelaufen“).
-  // Rechts neben der Figur: oben Stand und Bewegung (Gefecht), unten Deckung (Gefecht) über Getroffen. Verdeckte Zonen sind schraffiert.
+  // Rechts neben der Figur: oben Stand und Bewegung (Gefecht), unten Deckung über Getroffen (beide im Gefecht und in Ruhe). Verdeckte Zonen sind schraffiert.
   import type { Spieldaten } from '../daten/typen';
   import { grundwerte, hpAktuell } from '../regeln/modifikatoren';
   import { gefechtVon, lebenslageDes } from '../regeln/probenrechner';
@@ -34,9 +34,9 @@
   const gewaehlt = $derived(d.koerperzonen.eintraege.find((z) => z.id === zone) ?? null);
   /** Wunden der Zone; Wunden am Rumpf (nach Ansage) zeigt die Figur am Bauch, also auch hier. */
   const zonenWunden = $derived(zone ? wunden.filter((w) => w.zone === zone || (w.zone === 'rumpf' && zone === 'bauch')) : []);
-  const deckung = $derived(zone && imGefecht ? deckungFuer(zone, c, d) : null);
-  const gefechtsDeckung = $derived(gefechtVon(c)?.deckung ?? null);
-  const deckungName = $derived(gefechtsDeckung?.art ? [...d.schutz.deckung, ...d.schutz.fahrzeugpanzerung].find((x) => x.id === gefechtsDeckung.art)?.name ?? null : null);
+  const deckung = $derived(zone ? deckungFuer(zone, c, d) : null);
+  const deckungJetzt = $derived(c.spielstand.deckung ?? null);
+  const deckungName = $derived(deckungJetzt?.art ? [...d.schutz.deckung, ...d.schutz.fahrzeugpanzerung].find((x) => x.id === deckungJetzt.art)?.name ?? null : null);
   const zonenName = (id: string) => d.koerperzonen.eintraege.find((z) => z.id === id)?.name ?? id;
   /** Nach dem Gefecht laufen die Fristen der blutenden Wunden. Regelfrage R29 (docs/offen.md): vorläufig auch bei Wunden aus einem Treffer in Ruhe sofort. */
   const blutend = $derived(imGefecht ? 0 : wunden.filter(blutet).length);
@@ -76,7 +76,7 @@
   {/if}
   <div class="figurbox">
     <div class="figurplatz">
-      <Silhouette {d} {ruestung} {wunden} verdeckt={gefechtsDeckung?.zonen ?? []} gewaehlt={zone} onwahl={(z) => (zone = zone === z ? null : z)}
+      <Silhouette {d} {ruestung} {wunden} verdeckt={deckungJetzt?.zonen ?? []} gewaehlt={zone} onwahl={(z) => (zone = zone === z ? null : z)}
         knapp beschriftung="Körperbild mit Rüstung und Wunden; Zone antippen für Einzelheiten" />
     </div>
     <div class="seite">
@@ -84,12 +84,10 @@
         <Haltungsanzeige g={gefechtVon(c)!} {d} />
       {/if}
       <div class="knoepfe">
-        {#if gefechtVon(c)}
-          <button class:betont={!!gefechtsDeckung} onclick={ondeckung}
-            aria-label={gefechtsDeckung ? `Deckung mit Schutz ${gefechtsDeckung.wert} ändern` : 'Deckung eintragen'}>
-            Deckung{#if gefechtsDeckung} {gefechtsDeckung.wert}{/if}
-          </button>
-        {/if}
+        <button class:betont={!!deckungJetzt} onclick={ondeckung}
+          aria-label={deckungJetzt ? `Deckung mit Schutz ${deckungJetzt.wert} ändern` : 'Deckung eintragen'}>
+          Deckung{#if deckungJetzt} {deckungJetzt.wert}{/if}
+        </button>
         <button class="betont" onclick={ongetroffen}>Getroffen</button>
       </div>
     </div>

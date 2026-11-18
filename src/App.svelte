@@ -455,7 +455,7 @@
     {:else if dialog.art === 'versorgen'}
       <Versorgen c={aktiv} d={daten} wundId={dialog.wundId} wuerfelModus={probeModus} onaendern={aendern}
         onfertig={(c) => nachAblauf(c)} onabbrechen={() => (dialog = null)} />
-    {:else if dialog.art === 'deckung' && gefecht}
+    {:else if dialog.art === 'deckung'}
       <Deckung c={aktiv} d={daten} onfertig={(c) => nachAblauf(c)} onabbrechen={() => (dialog = null)} />
     {:else if dialog.art === 'getroffen'}
       <Getroffen c={aktiv} d={daten} {zonenModus} onfertig={trefferFertig} onabbrechen={() => (dialog = null)} />

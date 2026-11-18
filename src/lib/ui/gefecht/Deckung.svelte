@@ -1,12 +1,11 @@
 <script lang="ts">
-  // Deckung auf der Figur (konzept.md § 3.9; Regelwerk: Deckung und Rüstung, Deckung). Nur im Gefecht.
+  // Deckung auf der Figur (konzept.md § 3.9; Regelwerk: Deckung und Rüstung, Deckung). Im Gefecht und in Ruhe.
   // Abschnitte: Figur mit Schraffur (Zonen antippen) · Deckungskante (Richtung und Stufe) · Deckungswert
   // (Zähler mit den passenden Deckungen in Klammern; darunter aufklappbar die Liste der Deckungen, Pfeil wie im Menü).
   // Die Kante wird über Knöpfe gesetzt statt gezogen (docs/offen.md, Schritt 7). Ein Wert ändert sich; kein Bericht nötig.
   import { untrack } from 'svelte';
   import type { Spieldaten } from '../../daten/typen';
   import { deckungSetzen, deckungZonen, kantenstufen } from '../../regeln/gefecht';
-  import { gefechtVon } from '../../regeln/probenrechner';
   import type { Charakter, Deckungskante } from '../../speicher/charakter';
   import Dialog from '../Dialog.svelte';
   import Silhouette from '../Silhouette.svelte';
@@ -19,7 +18,7 @@
   }
   let { c, d, onfertig, onabbrechen }: Props = $props();
 
-  const alt = untrack(() => gefechtVon(c)?.deckung ?? null);
+  const alt = untrack(() => c.spielstand.deckung ?? null);
   // Ältere Einträge ohne Kante und Antippen: die gespeicherten Zonen gelten als angetippt.
   let kante = $state<Deckungskante | null>(alt ? (alt.kante ?? null) : null);
   let getippt = $state<string[]>(alt ? (alt.getippt ?? (alt.kante ? [] : alt.zonen)) : []);
