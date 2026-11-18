@@ -25,6 +25,10 @@
   import { hatWirkung } from '../../regeln/leiter';
   import { alsBreak, angriffsWaffen } from '../../regeln/nahkampf';
   import { gefechtVon } from '../../regeln/probenrechner';
+  import { schildHalten } from '../../regeln/gefecht';
+  import { geblendetRunden } from '../../regeln/zustaende';
+  import { schildBeimSchiessen } from '../../regeln/schuss';
+  import { gehaltenerSchild } from '../../regeln/wunden';
   import { aktiverEintrag, eintragErsetzen, istWerfer, kapazitaet, nachladearten, nachladenAlsBreak, passendeAufsaetze, waffeVon } from '../../regeln/waffen';
   import type { Aktion, Charakter, Quelle } from '../../speicher/charakter';
   import Dialog from '../Dialog.svelte';
@@ -50,7 +54,8 @@
     | { art: 'hechten'; als: 'main' | 'break' }
     | { art: 'zielen'; als: 'main' | 'break' }
     | { art: 'stand' }
-    | { art: 'aufsatz' };
+    | { art: 'aufsatz' }
+    | { art: 'schild' };
   let ansicht = $state<Ansicht>({ art: 'liste' });
   let freitext = $state('');
   let konz = $state<'keine' | 'leicht' | 'voll'>('keine');
@@ -75,8 +80,14 @@
     if (!e) return 'keine Schusswaffe aktiv';
     if (e.ladehemmung) return 'Ladehemmung';
     if (e.im_magazin <= 0) return 'Waffe leer';
+    const sch = schildBeimSchiessen(c, waffeVon(e, d), d);
+    if (sch && !sch.erlaubt) return `mit Schild nur Waffenart ${sch.waffen.join(', ')}`;
     return null;
   });
+
+  /** Ballistischer Schild der Ausrüstung (Deckung und Rüstung, Ballistischer Schild); Aufnehmen und Ablegen ist eine Mainaction. */
+  const schild = $derived(c.ausruestung.schild ? (d.schutz.schilde.find((s) => s.id === c.ausruestung.schild) ?? null) : null);
+  const schildInHand = $derived(!!gehaltenerSchild(c, d));
 
   const mainOptionen = $derived.by<Option[]>(() => {
     const liste: Option[] = [
@@ -91,6 +102,8 @@
       { text: 'Verbündete verschieben', info: 'Empathy-Probe mit Führung', los: () => onablauf({ art: 'verschieben' }) },
       { text: 'Hechten', info: hechtInfo(), sperre: hechtSperreText(), los: () => hechtOeffnen('main') }
     ];
+    if (schild) liste.push({ text: schildInHand ? 'Schild ablegen' : 'Schild aufnehmen', info: schildInHand ? 'oder ohne Aktion fallen lassen' : `${schild.name}, Deckung ${schild.deckung} von vorn`,
+      los: () => { ansicht = { art: 'schild' }; } });
     if (zielenAlsMain(c, d)) liste.push({ text: 'Zielen', info: 'Ruhige Hand: schon für den nächsten Schuss dieser Runde', los: () => { ansicht = { art: 'zielen', als: 'main' }; } });
     liste.push(
       { text: 'Wunde versorgen', info: 'Druckverband, Tourniquet oder Operation; mit Konzentration', sperre: !konzentrationMoeglich(c) ? 'schon Breakaction eingesetzt' : null,
@@ -188,6 +201,7 @@
             <button aria-pressed={breakProbe === 'ohne'} onclick={() => probeWaehlen('ohne')}>ohne Wurf</button>
           </div>
           {#if tunnelblick}<p class="hinweis">Tunnelblick: keine Antizipation.</p>{/if}
+          {#if !tunnelblick && geblendetRunden(g) > 0}<p class="hinweis">Du bist geblendet: Antizipation nur über das Gehör.</p>{/if}
           {#if breakProbe === 'ohne'}<p class="hinweis">Nur wenn die SL die Unterbrechung ohne Wurf zulässt.</p>{/if}
           {#if breakProbe && breakAnfrage}
             <p class="hinweis"><strong>Braucht eine Information über den Akteur.</strong>
@@ -275,6 +289,16 @@
   {:else if ansicht.art === 'stand'}
     {@render standWahl()}
 
+  {:else if ansicht.art === 'schild' && schild}
+    {#if schildInHand}
+      <p>Du legst {schild.name} ab. Danach zählt er nicht mehr als Deckung, und du darfst wieder schneller als gehen und mit jeder Waffe schießen.</p>
+      <p class="hinweis">Ablegen: Main −1. Fallen lassen kostet keine Aktion.</p>
+    {:else}
+      <p>Du nimmst {schild.name} in eine Hand. Er ist Deckung mit Schutz {schild.deckung} für Kopf, Rumpf und Arme, nur gegen Angriffe von vorn.
+        In der freien Hand schießt du nur mit Waffen der Art {(schild.einschraenkung?.waffen as string[] | undefined)?.join(', ') ?? 'Pistole'}{#if schild.einschraenkung?.schiessen_malsteps} und mit {schild.einschraenkung.schiessen_malsteps} Malstep beim Schießen{/if}; Bewegung höchstens Gehen.</p>
+      <p class="hinweis">Ausführen: Main −1.</p>
+    {/if}
+
   {:else if ansicht.art === 'aufsatz' && e}
     {@const w = waffeVon(e, d)}
     <p>Mainaction mit leichter Konzentration. Hake an, was danach an {w.name} angebracht ist. Wähle nur Aufsätze, die du dabeihast.</p>
@@ -312,6 +336,13 @@
         <button class="haupt" disabled={!wahl} onclick={() => wahl && onfertig(protokolliere(standWechseln(c, wahl, 'break', d), `Standwechsel (Break): ${standAdjektiv(wahl, d)}`))}>Ausführen</button>
       {:else if ansicht.art === 'aufsatz'}
         <button class="haupt" onclick={() => ausfuehren(c, 'main', 'Aufsatz angebracht oder abgenommen', 'leicht')}>Ausführen</button>
+      {:else if ansicht.art === 'schild'}
+        {#if schildInHand}
+          <button onclick={() => onfertig(protokolliere(schildHalten(c, false), 'Schild fallen gelassen'))}>Fallen lassen</button>
+          <button class="haupt" onclick={() => ausfuehren(schildHalten(c, false), 'main', 'Schild abgelegt')}>Ablegen</button>
+        {:else}
+          <button class="haupt" onclick={() => ausfuehren(schildHalten(c, true), 'main', 'Schild aufgenommen')}>Ausführen</button>
+        {/if}
       {/if}
     {/if}
   {/snippet}

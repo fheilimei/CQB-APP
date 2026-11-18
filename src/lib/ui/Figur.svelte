@@ -6,7 +6,7 @@
   import { grundwerte, hpAktuell } from '../regeln/modifikatoren';
   import { gefechtVon, lebenslageDes } from '../regeln/probenrechner';
   import { ruestungswert } from '../regeln/schaden';
-  import { deckungFuer } from '../regeln/wunden';
+  import { deckungFuer, gehaltenerSchild } from '../regeln/wunden';
   import { blutet, fristMinuten, fristVerlaengert, massnahmenFuer } from '../regeln/blutung';
   import type { Charakter, Wunde } from '../speicher/charakter';
   import Haltungsanzeige from './Haltungsanzeige.svelte';
@@ -43,6 +43,10 @@
   const zonenWunden = $derived(zone ? wunden.filter((w) => w.zone === zone || (w.zone === 'rumpf' && zone === 'bauch')) : []);
   const deckung = $derived(zone ? deckungFuer(zone, c, d) : null);
   const deckungJetzt = $derived(c.spielstand.deckung ?? null);
+  /** Deckung und Schild in der Hand zusammen, je Zone der höhere Wert (R37). */
+  const schild = $derived(gehaltenerSchild(c, d));
+  const deckungJeZone = $derived(Object.fromEntries(d.koerperzonen.eintraege.flatMap((z) => { const w = deckungFuer(z.id, c, d); return w === null ? [] : [[z.id, w]]; })) as Record<string, number>);
+  const nurSchild = $derived(zone !== null && schild !== null && deckung === schild.deckung && deckungFuer(zone, c, d, { schild: false }) !== deckung);
   const deckungName = $derived(deckungJetzt?.art ? [...d.schutz.deckung, ...d.schutz.fahrzeugpanzerung].find((x) => x.id === deckungJetzt.art)?.name ?? null : null);
   const zonenName = (id: string) => d.koerperzonen.eintraege.find((z) => z.id === id)?.name ?? id;
   /** Nach dem Gefecht laufen die Fristen der blutenden Wunden. Regelfrage R29 (docs/offen.md): vorläufig auch bei Wunden aus einem Treffer in Ruhe sofort. */
@@ -85,12 +89,19 @@
   {/if}
   <div class="figurbox">
     <div class="figurplatz">
-      <Silhouette {d} {ruestung} {wunden} verdeckt={deckungJetzt?.zonen ?? []} deckungswert={deckungJetzt?.wert ?? null} gewaehlt={zone} onwahl={(z) => (zone = zone === z ? null : z)}
+      <Silhouette {d} {ruestung} {wunden} verdeckt={Object.keys(deckungJeZone)} deckungswerte={deckungJeZone} gewaehlt={zone} onwahl={(z) => (zone = zone === z ? null : z)}
         knapp beschriftung="Körperbild mit Rüstung und Wunden; Zone antippen für Einzelheiten" />
     </div>
     <div class="seite">
       {#if gefechtVon(c)}
         <Haltungsanzeige g={gefechtVon(c)!} {d} />
+      {/if}
+      {#if schild}
+        <!-- Schild in der Hand: Zustand als Bildzeichen neben der Figur (Wappenschild, dünne Linie), wenig Text. -->
+        <p class="schildmarke" title="{schild.name} in der Hand, Deckung {schild.deckung} von vorn">
+          <svg class="zeichen" viewBox="0 0 16 16" aria-hidden="true"><path class="linie" d="M8 1.5l5.5 2v4c0 3.6-2.6 6-5.5 7-2.9-1-5.5-3.4-5.5-7v-4z" /></svg>
+          Schild
+        </p>
       {/if}
       <div class="knoepfe">
         <!-- Bildzeichen: Mauer für Deckung, Ausrufezeichen für Ereignis, Einschlag für Getroffen. -->
@@ -122,7 +133,7 @@
       <p class="schutzzeile">
         <span>⛨ Rüstung: {#if ruestung[gewaehlt.id]}Schutz <span class="zahl">{ruestung[gewaehlt.id]}</span>{:else}keine{/if}</span>
         {#if deckung !== null}
-          <span><svg class="zeichen mauer" viewBox="0 0 16 16" aria-hidden="true"><path d={MAUER} /></svg> Deckung: {deckungName ? `${deckungName}, ` : ''}Schutz <span class="zahl">{deckung}</span></span>
+          <span><svg class="zeichen mauer" viewBox="0 0 16 16" aria-hidden="true"><path d={MAUER} /></svg> Deckung: {nurSchild ? `${schild!.name}, nur von vorn, ` : deckungName ? `${deckungName}, ` : ''}Schutz <span class="zahl">{deckung}</span></span>
         {/if}
       </p>
       {#if zonenWunden.length}
@@ -207,4 +218,6 @@
   .wundzeile { display: flex; justify-content: space-between; align-items: center; gap: var(--abstand-2); min-height: 44px; }
   .wundzeile small { display: block; color: var(--text-2); }
   .wundknoepfe { display: flex; gap: var(--abstand-2); justify-content: flex-end; }
+  .schildmarke { display: flex; align-items: center; gap: var(--abstand-1); margin: 0; }
+  .schildmarke .linie { fill: none; stroke: currentColor; stroke-width: 1.5; }
 </style>

@@ -26,6 +26,8 @@
     verdeckt?: string[];
     /** Deckung: Schutzwert, auf jeder verdeckten Zone mit Mauerzeichen angezeigt (null = keine Zahl). */
     deckungswert?: number | null;
+    /** Deckung je Zone (Deckung und Schild zusammen); geht vor deckungswert. */
+    deckungswerte?: Record<string, number>;
     /** Wunden: Punkt je Wunde. */
     wunden?: Wunde[];
     gewaehlt?: string | null;
@@ -35,7 +37,7 @@
     /** Ohne leeren Rand links und rechts, für eine Figur mit Knöpfen daneben (Reiter Figur). Die Breite gibt dann der Behälter vor. */
     knapp?: boolean;
   }
-  let { d, farben = {}, zeichen = {}, ruestung = {}, verdeckt = [], deckungswert = null, wunden = [], gewaehlt = null, onwahl, beschriftung = 'Körperzonen', knapp = false }: Props = $props();
+  let { d, farben = {}, zeichen = {}, ruestung = {}, verdeckt = [], deckungswert = null, deckungswerte = {}, wunden = [], gewaehlt = null, onwahl, beschriftung = 'Körperzonen', knapp = false }: Props = $props();
 
   // Zeichenfläche 200 × 300; dargestellt mit 240 px Breite (Faktor 1,2), damit jede Zone mindestens 44 × 44 px hat.
   const FLAECHEN: Record<string, { x: number; y: number; b: number; h: number; r: number }> = {
@@ -67,7 +69,8 @@
   /** Schutzzeile einer Zone: Rüstung (⛨) und Deckung (Mauer) nebeneinander, zusammen mittig. */
   function schutzzeile(id: string, mitte: number) {
     const r = ruestung[id] ? `⛨${ruestung[id]}` : '';
-    const dk = deckungswert !== null && verdeckt.includes(id) ? String(deckungswert) : '';
+    const wert = deckungswerte[id] ?? deckungswert;
+    const dk = wert !== null && verdeckt.includes(id) ? String(wert) : '';
     const bR = r.length * ZEICHENBREITE;
     const bD = dk ? MAUER + 2 + dk.length * ZEICHENBREITE : 0;
     const luecke = r && dk ? 4 : 0;

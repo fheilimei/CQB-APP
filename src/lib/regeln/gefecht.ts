@@ -2,7 +2,7 @@
 // Initiative, Rückgängig und Gefecht beenden. Jede Funktion gibt einen neuen Charakter zurück; nichts wird gespeichert.
 
 import type { Spieldaten } from '../daten/typen';
-import { KEINE_AKTIONEN, type Charakter, type Deckung, type Gefecht, type Gefechtsereignis, type SlUmstand } from '../speicher/charakter';
+import { KEINE_AKTIONEN, type Charakter, type Deckung, type Gefecht, type Gefechtsereignis, type Reizgas, type SlUmstand } from '../speicher/charakter';
 import { rundeZuruecksetzen } from './aktionen';
 import { begrenzen, gefechtsende, overTheEdge, rundenende, senken, startStand } from './leiter';
 import type { Ergebnisstufe } from './probe';
@@ -109,8 +109,42 @@ export function naechsteRunde(c: Charakter, e: RundenendeEingabe, d: Spieldaten)
     runde: g.runde + 1,
     gesenkt_diese_runde: false,
     ausloeser_diese_runde: [],
-    initiative: null
+    initiative: null,
+    ...zustaendeNachRunde(g)
   });
+}
+
+/**
+ * Zustände am Rundenende: Geblendet endet am Ende seiner letzten Runde; Gereizt (und die Wolke) endet am Ende der Runde,
+ * in der der Charakter die Wolke verlassen hat (Sprengwirkung, Blendung und Reizgas).
+ */
+export function zustaendeNachRunde(g: Gefecht): Pick<Gefecht, 'geblendet_bis' | 'reizgas'> {
+  const geblendet = g.geblendet_bis != null && g.geblendet_bis > g.runde ? g.geblendet_bis : null;
+  return { geblendet_bis: geblendet, reizgas: g.reizgas?.in_wolke ? g.reizgas : null };
+}
+
+/** Geblendet für `runden` Runden ab dieser (die Runde der Detonation zählt mit). Eine längere Blendung bleibt. 0 = nichts. */
+export function geblendetSetzen(c: Charakter, runden: number): Charakter {
+  const g = gefechtVon(c);
+  if (!g || runden <= 0) return c;
+  const bis = g.runde + runden - 1;
+  return mitGefecht(c, { ...g, geblendet_bis: Math.max(bis, g.geblendet_bis ?? 0) });
+}
+
+/** Geblendet von Hand beenden (die SL sagt es an). */
+export function geblendetBeenden(c: Charakter): Charakter {
+  return mitGefecht(c, { ...laufend(c), geblendet_bis: null });
+}
+
+/** Reizgas setzen: in der Wolke, Gereizt, Gasmaske. Weder in der Wolke noch gereizt = nichts mehr davon. */
+export function reizgasSetzen(c: Charakter, r: Reizgas): Charakter {
+  const g = laufend(c);
+  return mitGefecht(c, { ...g, reizgas: r.in_wolke || r.gereizt ? { ...r } : null });
+}
+
+/** Schild aufnehmen bzw. ablegen oder fallen lassen (Deckung und Rüstung, Ballistischer Schild). Die Kosten zieht der Ablauf ab. */
+export function schildHalten(c: Charakter, gehalten: boolean): Charakter {
+  return { ...c, geaendert: jetzt(), spielstand: { ...c.spielstand, schild_gehalten: gehalten } };
 }
 
 /** Ergebnis der Initiative eintragen; es bleibt bis zur nächsten Runde sichtbar. */

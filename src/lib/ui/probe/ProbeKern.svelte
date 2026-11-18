@@ -10,6 +10,7 @@
   // automatische Steps als Chips (× schaltet für diese Probe aus), Steps der SL, Hinweise der Perks, Würfel, Ansage.
   import type { Spieldaten } from '../../daten/typen';
   import { grundMerken, sichtstufeSetzen, slGefechtHinzu, slGefechtLoeschen } from '../../regeln/gefecht';
+  import { geblendetRunden } from '../../regeln/zustaende';
   import { auswerten } from '../../regeln/probe';
   import { gefechtVon, perkHinweise, probeStellen, type ProbenAnfrage, type SlSteps } from '../../regeln/probenrechner';
   import type { Charakter, Quelle } from '../../speicher/charakter';
@@ -143,6 +144,7 @@
         <button aria-pressed={sichtstufe === s.id} onclick={() => sichtWaehlen(s.id)}>{s.name}</button>
       {/each}
       </div>
+      {#if geblendetRunden(g) > 0}<p class="hinweis">Du bist geblendet: Für dich gilt die Sichtstufe keine, egal was hier gewählt ist.</p>{/if}
     </div>
   {/if}
 {/if}

@@ -9,6 +9,7 @@
   } from '../../regeln/nahkampf';
   import { gefechtVon, leiterStand } from '../../regeln/probenrechner';
   import { ansageMoeglich, type Ansage } from '../../regeln/schiessen';
+  import { geltendeSicht } from '../../regeln/zustaende';
   import type { Charakter, Quelle } from '../../speicher/charakter';
   import type { Wurf } from '../../wuerfel/wuerfel';
   import Bericht from '../Bericht.svelte';
@@ -53,7 +54,7 @@
   const ueber = $derived(ueberlegen(meinStand, gegnerStand, d));
   const istLang = $derived(waffe?.laenge === 'lang');
   const lage = $derived({ eigenerStand: meinStand, gegnerStand, langeWaffeInArmeslaenge: istLang && langeWaffe, ansage });
-  const ansageGeht = $derived(ansageMoeglich(leiterStand(c), g.sichtstufe, r));
+  const ansageGeht = $derived(ansageMoeglich(leiterStand(c), geltendeSicht(g, r), r));
   $effect.pre(() => { if (!ansageGeht && ansage !== 'keine') ansage = 'keine'; });
   const zonen = $derived(d.koerperzonen.eintraege.filter((z) => z.w8 !== null));
   const rumpf = $derived(d.koerperzonen.eintraege.find((z) => z.w8 === null));

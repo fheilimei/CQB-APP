@@ -14,6 +14,8 @@ import {
   ladehemmungsRate, lageSteps, reichweitenSteps, zoneAusW8, zonenFolge, type Ansage, type Ladehemmung
 } from './schiessen';
 import { auswerten } from './probe';
+import { geltendeSicht } from './zustaende';
+import { gehaltenerSchild } from './wunden';
 import { aufsaetzeVon, istWerfer, kapazitaet, munitionswerte, trommelmagazin, waffenskill, waffeVon } from './waffen';
 
 export type Modus = 'EF' | 'Burst' | 'VA';
@@ -134,6 +136,8 @@ export function schussStellen(c: Charakter, d: Spieldaten, e: WaffenEintrag, s: 
   }
   if (!werfer) zusatz.push(...ansageSteps(s.ansage, r));
   if (zielen?.stepshields) zusatz.push({ id: 'zielen', herkunft: 'lage', name: 'Zielen', stepshields: zielen.stepshields });
+  const schild = schildBeimSchiessen(c, w, d);
+  if (schild?.malsteps) zusatz.push({ id: 'schild', herkunft: 'lage', name: `${schild.name} in der Hand`, malsteps: schild.malsteps });
 
   const kontext: Omit<Probenkontext, 'stat' | 'skill' | 'probe'> = { band, stand, ohne_bewegung: !bewegung, aufgelegt };
   const skill = waffenskill(w, d);
@@ -185,7 +189,7 @@ export function schussStellen(c: Charakter, d: Spieldaten, e: WaffenEintrag, s: 
     lh_rate: ladehemmungsRate(fm.lh_prozent, w, e.zustand, trommelmagazin(e, d), r),
     garbenfaktor: burst ? 1 : garbenfaktor(modus, w),
     kugeln,
-    ansage_moeglich: !werfer && ansageMoeglich(leiter, g?.sichtstufe ?? r.sicht.stufen[0]!.id, r),
+    ansage_moeglich: !werfer && ansageMoeglich(leiter, geltendeSicht(g, r), r),
     sperre,
     nahkampf: umstaende.some((u) => u.fehlschuss_trifft_beteiligten),
     werfer
@@ -333,4 +337,17 @@ export function magazinText(e: WaffenEintrag, d: Spieldaten): string {
   const w = waffeVon(e, d);
   const k = kapazitaet(e, d);
   return w.patrone_im_lauf ? `${e.im_magazin} / ${k - 1}+1` : `${e.im_magazin} / ${k}`;
+}
+
+/**
+ * Schild in der Hand beim Schießen (Deckung und Rüstung, Ballistischer Schild; schutz.json `einschraenkung`): Malsteps
+ * (`schiessen_malsteps`) und ob die Waffe in der freien Hand erlaubt ist (`waffen`: Waffenkategorien). null = kein Schild in der Hand.
+ */
+export function schildBeimSchiessen(c: Charakter, w: Waffe, d: Spieldaten): { name: string; malsteps: number; erlaubt: boolean; waffen: string[] } | null {
+  const s = gehaltenerSchild(c, d);
+  if (!s) return null;
+  const e = s.einschraenkung ?? {};
+  const waffen = Array.isArray(e.waffen) ? (e.waffen as string[]) : [];
+  const malsteps = typeof e.schiessen_malsteps === 'number' ? e.schiessen_malsteps : 0;
+  return { name: s.name, malsteps, erlaubt: !waffen.length || waffen.includes(w.kategorie), waffen };
 }

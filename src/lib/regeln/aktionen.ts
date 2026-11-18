@@ -127,14 +127,17 @@ function tempo(id: string, d: Spieldaten): number {
 /** Schnellste Bewegung, die Rüstung und Schild erlauben (schutz.json `einschraenkung.bewegung_max`), oder null. */
 export function bewegungMaxAusruestung(c: Charakter, d: Spieldaten): string | null {
   const s = d.schutz;
-  const teile = [
-    ...c.ausruestung.ruestung.map((id) => s.ruestung.find((x) => x.id === id)?.einschraenkung),
-    c.ausruestung.schild ? s.schilde.find((x) => x.id === c.ausruestung.schild)?.einschraenkung : undefined
-  ];
+  // Der Schild schränkt nur ein, solange er gehalten wird (Deckung und Rüstung, Ballistischer Schild).
+  const schild = c.ausruestung.schild && c.spielstand.schild_gehalten ? s.schilde.find((x) => x.id === c.ausruestung.schild) : undefined;
+  const teile = [...c.ausruestung.ruestung.map((id) => s.ruestung.find((x) => x.id === id)?.einschraenkung), schild?.einschraenkung];
   let max: string | null = null;
   for (const e of teile) {
     const b = e?.bewegung_max;
     if (typeof b === 'string' && (max === null || tempo(b, d) < tempo(max, d))) max = b;
+  }
+  // Perk wie Rüstungsträger: mit Rüstung oder Schild bis zu dieser Bewegung (perk_wirkungen, ausruestung_bewegung).
+  if (max !== null) {
+    for (const w of perkWirkungen(c, d, 'ausruestung_bewegung')) if (tempo(w.bewegung_max, d) > tempo(max, d)) max = w.bewegung_max;
   }
   return max;
 }

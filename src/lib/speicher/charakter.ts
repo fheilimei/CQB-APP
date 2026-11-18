@@ -183,7 +183,19 @@ export interface Gefecht {
   break_verloren: boolean;
   /** Verteidigungen gegen Nahkampfangriffe in dieser Runde; fehlt = 0. */
   verteidigungen?: number;
+  /** Geblendet bis zum Ende dieser Runde (Sprengwirkung, Blendung); fehlt oder null = nicht geblendet. */
+  geblendet_bis?: number | null;
+  /** Reizgas (Sprengwirkung, Reizgas): in der Wolke, Gereizt, Gasmaske; fehlt oder null = nichts davon. */
+  reizgas?: Reizgas | null;
   protokoll: (Gefechtsereignis | Schussereignis | Aktionsereignis | Trefferereignis)[];
+}
+
+/** Reizgas im Gefecht: Gereizt hält an, solange der Charakter in der Wolke steht, und endet am Ende der Runde, in der er sie verlässt. */
+export interface Reizgas {
+  in_wolke: boolean;
+  gereizt: boolean;
+  /** Mit Gasmaske keine Probe. */
+  gasmaske: boolean;
 }
 
 /** Aktuelle Deckung, im Gefecht und in Ruhe (datenformat.md § spielstand.deckung). */
@@ -291,6 +303,8 @@ export interface Charakter {
     wunden: Wunde[];
     /** Aktuelle Deckung: Wert und tatsächlich verdeckte Zonen; null = keine Deckung. Gilt im Gefecht und in Ruhe. */
     deckung: Deckung | null;
+    /** Ballistischer Schild in der Hand (mitgeführte Deckung); fehlt = nein. Zählt nur, solange ausruestung.schild gesetzt ist. */
+    schild_gehalten?: boolean;
   };
 }
 
@@ -360,6 +374,8 @@ export function gefechtErgaenzt(g: Gefecht): Gefecht {
     verbraucht: g.verbraucht ?? { ...KEINE_AKTIONEN },
     korrektur: g.korrektur ?? { ...KEINE_AKTIONEN },
     break_verloren: g.break_verloren ?? false,
-    verteidigungen: g.verteidigungen ?? 0
+    verteidigungen: g.verteidigungen ?? 0,
+    geblendet_bis: g.geblendet_bis ?? null,
+    reizgas: g.reizgas ?? null
   };
 }

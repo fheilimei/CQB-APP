@@ -11,9 +11,11 @@
   import { gefechtVon, lebenslageDes } from '../../regeln/probenrechner';
   import { ruestungswert } from '../../regeln/schaden';
   import {
-    ausgang, ausloeserSetzen, deckungFuer, druckwelle, folgeSaetze, mehrereUebernehmen, rumpfZone, schadenDirekt, splitterFuer,
-    standNachDruckwelle, trefferUebernehmen, verteilteTreffer, vorschau, type Ausgang, type Eingang, type Teilausgang
+    ausgang, ausloeserSetzen, deckungFuer, druckwelle, folgeSaetze, gehaltenerSchild, mehrereUebernehmen, rumpfZone, schadenDirekt, splitterFuer,
+    staggerOhneTreffer, standNachDruckwelle, trefferUebernehmen, verteilteTreffer, vorschau, type Ausgang, type Eingang, type Teilausgang
   } from '../../regeln/wunden';
+  import { geblendetSetzen } from '../../regeln/gefecht';
+  import { blendung } from '../../regeln/zustaende';
   import type { Charakter, Quelle } from '../../speicher/charakter';
   import type { Wurf } from '../../wuerfel/wuerfel';
   import Bericht from '../Bericht.svelte';
@@ -66,6 +68,10 @@
   let exDruck = $state(0);
   /** Deckung zählt vom Explosionspunkt aus; der Spieler sagt, ob sie dazwischen liegt. */
   let exHinterDeckung = $state(true);
+  /** Schild in der Hand: nur gegen Angriffe von vorn bzw. wenn er zur Explosion zeigt (Deckung und Rüstung, Ballistischer Schild). */
+  let schildVorn = $state(true);
+  /** Blendgranate: im Moment der Detonation mit Erfolg reagiert (Augen geschlossen, abgewendet). */
+  let abgewendet = $state(false);
 
   // Nahkampf (konzept.md § 3.8b, eingehend)
   const waffenListe = $derived(nahkampfwaffenWahl(d));
@@ -111,7 +117,9 @@
 
   const spreng = $derived(sprengListe.find((w) => w.id === exWaffe));
   const exBaender = $derived(
-    spreng?.bereiche ? d.regeln.schiessen.reichweitenbaender.filter((b) => spreng.bereiche![b.id] != null).map((b) => b.id) : []
+    // Bänder mit Splittern, Kern (Druckwelle) und Bänder einer Sonderwirkung (Blendung je Band).
+    spreng ? d.regeln.schiessen.reichweitenbaender.filter((b) => spreng.bereiche?.[b.id] != null || spreng.kern?.includes(b.id)
+      || (spreng.sonderwirkung?.geblendet_runden as Record<string, number> | undefined)?.[b.id] != null).map((b) => b.id) : []
   );
   $effect.pre(() => { if (exBaender.length && !exBaender.includes(exBand as BandId)) exBand = exBaender[0]!; });
   const exWerte = $derived(
@@ -143,7 +151,13 @@
   /** Kugeln je Treffer im einfachen Ablauf; Schrot und Splitter verteilen sich über mehrere Zonen (unten). */
   const anzahl = $derived(art === 'nahkampf' || art === 'explosion' || schrot ? 1 : kugeln);
   const mitDeckung = $derived(art !== 'explosion' || exHinterDeckung);
-  const deckungJeZone = (z: string) => (mitDeckung ? deckungFuer(z, c, d) : null);
+  const schildInHand = $derived(gehaltenerSchild(c, d));
+  const deckungJeZone = (z: string) => deckungFuer(z, c, d, { deckung: mitDeckung, schild: schildVorn });
+  /** Deckung und Schild je Zone für die Figur. */
+  const deckungFigur = $derived(Object.fromEntries(d.koerperzonen.eintraege.flatMap((z) => { const w = deckungJeZone(z.id); return w === null ? [] : [[z.id, w]]; })) as Record<string, number>);
+  /** Blendgranate: Regelfrage R38 (docs/offen.md): vorläufig verdeckt auch der Schild (Sichtfenster) den Kopf gegen die Blendung. */
+  const blend = $derived(art === 'explosion' && exEingabe === 'waffe' && exBand ? blendung(spreng, exBand, deckungJeZone('kopf') !== null, abgewendet) : null);
+  const istBlend = $derived(art === 'explosion' && exEingabe === 'waffe' && spreng?.sonderwirkung?.art === 'blendung');
   const vorGeschoss = $derived(art === 'explosion' ? { dk: exWerte.dk, mw: exWerte.mw } : geschoss);
   const vor = $derived(vorschau(c, { ...vorGeschoss, kugeln: anzahl, krit: art === 'explosion' ? false : krit, deckung: null }, d, deckungJeZone));
 
@@ -337,6 +351,32 @@
   }
 
   /** Bericht für Schrot und Explosion: mehrere Treffer nacheinander, dann HP, Stagger, Stand. */
+  /** Blendung und Stagger der Blendgranate (Sprengwirkung, Blendung) eintragen und erzählen. */
+  function blendBericht(vorher: Charakter, zeilen: Zeile[], schonStagger: boolean): { nach: Charakter } {
+    let nach = vorher;
+    const b = blend!;
+    if (b.stagger) {
+      const st = staggerOhneTreffer(nach, d);
+      if (st.verhindert) zeilen.push({ text: 'Der Knall bringt dich nicht ins Wanken: Du ignorierst den Schmerz und erleidest keinen Stagger.' });
+      else if (!schonStagger) {
+        nach = st.nach;
+        zeilen.push({ text: gef ? 'Lichtblitz und Knall bringen dich ins Wanken (Stagger): Deine Breakaction dieser Runde verfällt, und eine Aktion mit Konzentration ist unterbrochen.'
+          : 'Lichtblitz und Knall bringen dich ins Wanken (Stagger).', fett: true });
+      }
+    }
+    if (b.runden > 0) {
+      nach = geblendetSetzen(nach, b.runden);
+      const dauer = b.runden === 1 ? 'für diese Runde' : `für ${b.runden} Runden, diese eingeschlossen`;
+      zeilen.push({ text: gef ? `Du bist geblendet ${dauer}: Für dich gilt die Sichtstufe keine, und Antizipation geht nur über das Gehör.`
+        : `Du bist geblendet ${dauer}. Außerhalb des Gefechts trägt die App das nicht ein.`, fett: true });
+    } else if (abgewendet) {
+      zeilen.push({ text: 'Du hast dich rechtzeitig abgewendet und bist nicht geblendet.' });
+    } else if (exBand && (spreng?.sonderwirkung?.geblendet_runden as Record<string, number> | undefined)?.[exBand]) {
+      zeilen.push({ text: 'Dein Kopf ist verdeckt; der Blitz blendet dich nicht.' });
+    }
+    return { nach };
+  }
+
   function mehrfachBericht(): { zeilen: Zeile[]; nach: Charakter } {
     const zeilen: Zeile[] = [];
     const st = d.regeln.eingehend.ausloeser.beschossen;
@@ -374,7 +414,9 @@
         else schadenSaetze(druckEingang, a, zeilen);
         if (standDanach !== meinStand) zeilen.push({ text: `Die Druckwelle wirft dich um: Du ${standVerb(standDanach, 'du', d)}.`, fett: true });
       }
-      if (spreng?.sonderwirkung && exEingabe === 'waffe') zeilen.push({ text: `Für die SL: ${spreng.sonderwirkung.text} Das trägt die App noch nicht ein.` });
+      if (istBlend && blend) {
+        ({ nach } = blendBericht(nach, zeilen, teile.some((t) => t.ausgang.stagger)));
+      } else if (spreng?.sonderwirkung && exEingabe === 'waffe') zeilen.push({ text: `Für die SL: ${spreng.sonderwirkung.text} Das trägt die App noch nicht ein.` });
       // Wer sich bei der Detonation in einem Bereich befindet, ist beschossen, auch ohne Treffer (Sprengwirkung, Adrenalin).
       if (!teile.length) nach = ausloeserSetzen(nach, [st]);
     }
@@ -608,7 +650,10 @@
             <p class="hinweis">
               {#if exWerte.zahl > 0}{stueck(exWerte.zahl, 'ein Splitter', 'Splitter')} (DK {exWerte.dk} · MW {exWerte.mw}){:else}keine Splitter{/if}{#if exWerte.druck > 0} · Druckwelle MW {exWerte.druck}{/if}
             </p>
-            {#if spreng?.sonderwirkung}<p class="hinweis">{spreng.sonderwirkung.text} Das trägt die App noch nicht ein.</p>{/if}
+            {#if istBlend}
+              <label class="schalter"><input type="checkbox" bind:checked={abgewendet} /> Du hast dich abgewendet (Reaktion im Moment der Detonation gelungen)</label>
+              {#if blend}<p class="hinweis">{blend.stagger ? 'Stagger' : 'Kein Stagger'}; {blend.runden ? `Geblendet ${blend.runden === 1 ? 'für 1 Runde' : `für ${blend.runden} Runden`}` : 'nicht geblendet'}.</p>{/if}
+            {:else if spreng?.sonderwirkung}<p class="hinweis">{spreng.sonderwirkung.text} Das trägt die App noch nicht ein.</p>{/if}
             {#if spreng?.strahl}<p class="hinweis">Trifft dich der Strahl, trag ihn als Schuss mit DK {spreng.strahl.dk} und MW {spreng.strahl.mw} ein.</p>{/if}
           {:else}
             <div class="zwei">
@@ -667,6 +712,9 @@
           </div>
           <p class="hinweis">Für Sturz, Falle und Ähnliches: ohne Deckung, Rüstung und Folgen der Zone.</p>
         {/if}
+        {#if schildInHand && (art === 'schuss' || art === 'nahkampf')}
+          <label class="schalter"><input type="checkbox" bind:checked={schildVorn} /> Der Angriff kommt von vorn (Schild, Schutz {schildInHand.deckung})</label>
+        {/if}
       </section>
 
       {#if art === 'explosion'}
@@ -687,8 +735,11 @@
           {#if liegend && exWerte.zahl > 0}<p class="hinweis">Im Liegen trifft dich die halbe Splitterzahl: {exSplitter} statt {exWerte.zahl}.</p>{/if}
           {#if deckungAufFigur}
             <label class="schalter"><input type="checkbox" bind:checked={exHinterDeckung} /> Deine Deckung liegt zwischen dir und der Explosion</label>
-          {:else}
+          {:else if !schildInHand}
             <p class="hinweis">Keine Deckung eingetragen; ändern über den Knopf Deckung auf der Figur.</p>
+          {/if}
+          {#if schildInHand}
+            <label class="schalter"><input type="checkbox" bind:checked={schildVorn} /> Dein Schild zeigt zur Explosion (Schutz {schildInHand.deckung})</label>
           {/if}
           {#if druckEingang}
             <p class="hinweis">{druckEingang.deckung !== null ? 'Dein Rumpf ist verdeckt: Die Druckwelle richtet nichts aus.' : standDanach !== meinStand ? 'Die Druckwelle wirft dich um; danach liegst du.' : 'Die Druckwelle trifft deinen Rumpf.'}</p>
@@ -793,7 +844,7 @@
       {#if mitZone}
       <section class="abschnitt">
         <h3 class="abschnitt-titel">{art === 'explosion' ? 'Wo trifft der erste Splitter?' : schrot ? 'Wo trifft die erste Kugel?' : 'Wo trifft es dich?'}</h3>
-        <Silhouette {d} verdeckt={deckungAufFigur?.zonen ?? []} deckungswert={deckungAufFigur?.wert ?? null} {farben} {zeichen} {ruestung} gewaehlt={zone} onwahl={(z) => (zone = z)} beschriftung="Getroffene Zone wählen" />
+        <Silhouette {d} verdeckt={Object.keys(deckungFigur)} deckungswerte={deckungFigur} {farben} {zeichen} {ruestung} gewaehlt={zone} onwahl={(z) => (zone = z)} beschriftung="Getroffene Zone wählen" />
         {#if mitVorschau}
           <p class="legende">
             <span class="muster gestoppt"></span>gestoppt

@@ -4,6 +4,22 @@
 
 Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. Die App arbeitet bis zur Entscheidung mit der genannten vorläufigen Lösung. Neue Einträge kommen beim Programmieren hinzu (Skill „regelfrage“). Die Regelpunkte aus den Schritten 1 bis 6 sind hierher übertragen (18.11.2026).
 
+### R37. Deckung und Schild auf derselben Zone (18.11.2026)
+- **Frage:** Wer hinter einer Deckung steht und zusätzlich den ballistischen Schild hält, hat auf manchen Zonen zwei Deckungen. Zählen beide nacheinander, oder nur eine?
+- **Stellen:** (Deckung und Rüstung, Ballistischer Schild); (Schaden, Blutung und Verletzungen, 1. Schutz prüfen)
+- **Vorläufig:** Sie zählen nicht zusammen; der höhere Wert gilt (wie bei mehreren Rüstungen auf einer Zone). Die Figur zeigt je Zone diesen Wert.
+- **Andere Möglichkeit:** Beide zählen nacheinander: Die DK sinkt erst um die eine, dann um die andere Deckung.
+- **Ändern:** Regelkern, Deckung je Zone (eine Stelle)
+- **Im Regelwerk klarstellen:** ja
+
+### R38. Schützt das Sichtfenster des Schilds vor der Blendung? (18.11.2026)
+- **Frage:** Eine Blendgranate im Band nah blendet nur, wenn der Kopf vom Explosionspunkt aus nicht verdeckt ist. Der Schild verdeckt den Kopf mit einem Sichtfenster. Zählt der Kopf hinter dem Schild als verdeckt, obwohl man durch das Fenster sieht?
+- **Stellen:** (Sprengwirkung, Blendung); (Deckung und Rüstung, Ballistischer Schild)
+- **Vorläufig:** Ja. Zeigt der Schild zur Explosion, blendet sie dich im Band nah nicht (Wortlaut: Der Schild verdeckt den Kopf).
+- **Andere Möglichkeit:** Das Sichtfenster lässt den Blitz durch; gegen die Blendung zählt nur eine Deckung ohne Fenster.
+- **Ändern:** Regelkern, Blendung (eine Stelle)
+- **Im Regelwerk klarstellen:** ja
+
 ### R36. Wurfaktion als Auslöser (18.11.2026)
 - **Frage:** Das Regelwerk nennt als Auslöser „Du schießt auf jemanden“. Zählt auch eine Wurfaktion (Messer, Granate) als Auslöser?
 - **Stellen:** (Adrenalin, Anstieg, Auslöser); (Kampfsystem, Werfen: „Der Wurf wird ausgewertet wie ein Schuss“)
@@ -326,8 +342,18 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 6. **Schnelllader und Ladestreifen.** → Regelfragen R11.
 7. **Magazine nach dem Gefecht füllen.** Entschieden (18.11.2026): Knopf „Magazine füllen“ außerhalb des Gefechts; leere Magazine werden gezählt statt verworfen. Dauer und Reihenfolge → Regelfragen R12.
 8. **Ausrüstung ohne Laden.** Im Schreibmodus frei eintragbar, ohne Kassenbuch und ohne Eintrag im Protokoll. Mit dem Laden (§ 3.14) ändert sich das.
-9. **Noch nicht da:** Knöpfe Getroffen und Ereignis (erledigt 18.11.2026), Wurfaktion (erledigt 18.11.2026), Nahkampf (erledigt 18.11.2026), Wunde versorgen (im Menü ausgegraut), Schaden beim Ziel vorrechnen im Schussbericht, Malstep und Waffen-Einschränkung des ballistischen Schilds beim Schießen. Kommen mit Schritt 7 (Treffer, Wunden, Schutz).
+9. **Noch nicht da:** Knöpfe Getroffen und Ereignis (erledigt 18.11.2026), Wurfaktion (erledigt 18.11.2026), Nahkampf (erledigt 18.11.2026), Wunde versorgen (im Menü ausgegraut), Schaden beim Ziel vorrechnen im Schussbericht. Erledigt (18.11.2026): Malstep und Waffen-Einschränkung des ballistischen Schilds beim Schießen. Kommen mit Schritt 7 (Treffer, Wunden, Schutz).
 10. **Skill austauschen beim Schießen** (Konzept § 3.6) fehlt noch; der Schussrechner nimmt immer den Waffenskill der Waffe.
+
+## Offen aus den Zuständen und dem Schild (18.11.2026)
+
+1. **Schild aufnehmen und ablegen.** *Vorläufig:* Im Gefecht über Main → „Schild aufnehmen“ bzw. „Schild ablegen“ (dort auch „Fallen lassen“ ohne Aktion). Außerhalb des Gefechts im Dialog Deckung („Dein Schild ist in der Hand · abgelegt“). Neben der Figur steht ein kleines Schildzeichen, solange er gehalten wird.
+2. **„Von vorn“ beim Getroffen.** *Vorläufig:* Hält der Charakter den Schild, fragt Getroffen mit einem Schalter „Der Angriff kommt von vorn“ (vorbelegt an); bei einer Explosion „Dein Schild zeigt zur Explosion“. Die Figur zeigt den Schild immer als Deckung, weil sie die Richtung nicht kennt.
+3. **Schild beim Werfen und im Nahkampf.** Das Regelwerk nennt nur das Schießen (nur Pistolen, 1 Malstep). Werfen und Nahkampf mit dem Schild in der Hand schränkt die App nicht ein; das entscheidet die SL.
+4. **Geblendet und Gereizt nur im Gefecht.** Sie zählen in Runden; außerhalb des Gefechts sagt der Bericht nur, was passiert, und trägt nichts ein.
+5. **Grit-Probe gegen Reizgas.** Die App weiß nicht, wann dein Zug beginnt. Sie erinnert am Rundenende daran; die Probe würfelst du über den Zustand oben („in Reizgas“) oder Ereignis → Reizgas. Ohne Skill (nur Grit).
+6. **Gasmaske** führt die App nicht als Ausrüstung; im Fenster Reizgas gibt es dafür einen Schalter.
+7. **Schutzanzug: Malsteps auf Agility** (2, mit Rüstungsträger 1) rechnet die App noch nicht ein; nur die Bewegung (höchstens Gehen, mit Rüstungsträger Laufen).
 
 ## Offen aus Schritt 7 (Treffer, Wunden, 18.11.2026)
 
@@ -335,9 +361,9 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 2. **Deckung beim Getroffen.** Erledigt (18.11.2026): Im Gefecht gilt die Deckung auf der Figur. Außerhalb des Gefechts wählt der Spieler die Deckung weiter im Dialog Getroffen.
 3. **Silhouette** zeigt vorerst nur die Haltung „stehend“; Hocken und Liegen folgen. Prellungen werden nicht je Zone gezeigt, weil die App sie nur als Summe kennt. Antippen einer Zone auf der Figur (Übersicht der Zone mit Versorgen) folgt.
 4. **Rückgängig** gibt es vorerst nur direkt nach dem Treffer (Meldung „Treffer eingetragen“); einzeln aus dem Gefechtsprotokoll folgt mit dem Reiter Verlauf.
-5. **Noch nicht da:** ballistischer Schild beim Getroffen, Zurückwerfen einer Granate (kommt mit Werfen; Hechten und Standwechsel als Reaktion gehen schon über Break). Erledigt (18.11.2026): Ereignis (Beschossen, Explosion in der Nähe, Verbündeter ausgeschaltet, Sonstiges), Blutungsfristen und Versorgen, Getroffen durch Nahkampf, Nahkampfangriff ausgehend, Getroffen durch Explosion (Splitter, Druckwelle) und Schrot über mehrere Zonen.
+5. **Noch nicht da:** Zurückwerfen einer Granate (kommt mit Werfen; Hechten und Standwechsel als Reaktion gehen schon über Break). Erledigt (18.11.2026): Ereignis (Beschossen, Explosion in der Nähe, Verbündeter ausgeschaltet, Sonstiges), Blutungsfristen und Versorgen, Getroffen durch Nahkampf, Nahkampfangriff ausgehend, Getroffen durch Explosion (Splitter, Druckwelle) und Schrot über mehrere Zonen, ballistischer Schild beim Getroffen.
 15. **Deckung bei einer Explosion.** Die Deckung auf der Figur steht gegen den Schützen; bei einer Explosion zählt sie vom Explosionspunkt aus. *Vorläufig:* Schalter „Deine Deckung liegt zwischen dir und der Explosion“ (vorbelegt an). Ist er an, gelten die schraffierten Zonen; sonst gilt keine Deckung. Eine andere Seite der Deckung lässt sich nicht eintragen.
-16. **Sonderwirkungen von Granaten** (Blendung, Rauch, Reizgas) stehen im Fenster Explosion nur als Hinweis. Geblendet und Gereizt trägt die App noch nicht ein; der Stagger der Blendgranate im Kern auch nicht. Kommt mit den Zuständen.
+16. **Sonderwirkungen von Granaten.** Erledigt (18.11.2026): Die Blendgranate trägt Geblendet und den Stagger im Kern ein (Getroffen → Explosion, mit Schalter „abgewendet“); Reizgas läuft über Ereignis → Reizgas. Rauch stellt man weiter über die Sichtstufe ein.
 17. **Hohlladung:** Den Strahl trägt der Spieler als Schuss (DK und MW) ein; das Fenster Explosion nennt die Werte. Die Explosion selbst läuft über Explosion.
 18. **Umgeworfen außerhalb des Gefechts:** Die Druckwelle wirft auch in Ruhe um; die App sagt es nur im Bericht, weil sie außerhalb des Gefechts keinen Stand führt.
 11. **Nahkampf eingehend, Stand im Gefecht.** Im Dialog Getroffen → Nahkampf lässt sich der eigene Stand im Gefecht nicht ändern; er kommt aus der Aktionsleiste (Break → Standwechsel vorher). *Vorläufig* so, weil ein Standwechsel als Reaktion eine Breakaction kostet und über ihren Knopf laufen soll.
@@ -346,7 +372,7 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 7. **Operation im Gefecht.** Sie dauert mehrere Runden (Dauer legt die SL fest). *Vorläufig:* Die App verbraucht nur die Mainaction der Runde, in der gewürfelt wird; die Runden davor trägt der Spieler über Main → Sonderfähigkeit mit voller Konzentration ein. Notoperation und Unter Feuer erscheinen als Hinweis im Fenster.
 8. **Wunde eines Verbündeten versorgen:** Die App würfelt nur die eigene Probe; die Wunde führt der andere Spieler bzw. die SL.
 9. **Deckungskante ziehen.** Entfallen (18.11.2026): Es gibt keine Deckungskante mehr, Deckung nur durch Antippen der Zonen. Der Dialog öffnet sich nur über den Knopf Deckung.
-10. **Ballistischer Schild** als mitgeführte Deckung fehlt noch (Schalter „Schild gehalten“).
+10. **Ballistischer Schild.** Erledigt (18.11.2026), siehe „Offen aus den Zuständen und dem Schild“.
 13. **Nahkampfwaffe in der Hand.** Die App führt nicht, ob eine Nahkampfwaffe gezogen ist; im Fenster Nahkampfangriff stehen alle eigenen Nahkampfwaffen zur Wahl. *Vorläufig:* Das Ziehen (Kosten nach Trageort) trägt der Spieler selbst ein, z. B. über Main → Sonderfähigkeit. Das Bajonett „aufgepflanzt“ erscheint auch ohne Gewehr in der Hand.
 19. **Geworfene Gegenstände.** Nach der Wurfaktion zählt die App das Messer bzw. die Granate um 1 herunter. Der Eintrag bleibt mit Anzahl 0 in der Ausrüstung stehen (mit Trageort), damit man ein aufgehobenes Messer im Schreibmodus wieder auf 1 setzen kann. Einen eigenen Knopf „aufheben“ gibt es nicht.
 20. **Bereit machen vor dem Wurf.** Die App führt nicht, ob Wurfwaffe oder Granate gezogen sind (wie bei Nahkampfwaffen, Punkt 13). Das Fenster nennt den Trageort; das Ziehen trägt der Spieler vorher selbst ein.

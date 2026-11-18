@@ -7,7 +7,7 @@ import { gefechtErgaenzt, type Charakter, type Gefecht } from '../speicher/chara
 import { leiterSteps } from './leiter';
 import { hpAktuell, modifikatorenDes, modifikatorSteps, type Probenkontext } from './modifikatoren';
 import { probenwert, statwert, type Probenwert, type StepQuelle } from './probe';
-import { lebenslage, sichtstufenSteps, zustandsSteps, type Lebenslage } from './zustaende';
+import { geblendetRunden, istGereizt, lebenslage, sichtstufenSteps, zustandsSteps, type Lebenslage } from './zustaende';
 
 /** Das laufende Gefecht oder null. */
 export function gefechtVon(c: Charakter): Gefecht | null {
@@ -86,7 +86,7 @@ export function automatischeQuellen(c: Charakter, d: Spieldaten, a: ProbenAnfrag
       adrenalinschock: c.spielstand.adrenalinschock.aktiv,
       kampfunfaehig: lebenslageDes(c, d) !== 'einsatzfaehig',
       gefecht_aktiv: !!g,
-      gereizt: false,
+      gereizt: istGereizt(g),
       perks: c.perks,
       probe: a.probe
     },
@@ -101,7 +101,7 @@ export function automatischeQuellen(c: Charakter, d: Spieldaten, a: ProbenAnfrag
     quellen.push({ id: `sl_gefecht:${u.id}`, herkunft: 'sl', name: u.grund || 'SL (ganzes Gefecht)', malsteps: u.malsteps || undefined, stepshields: u.stepshields || undefined });
   }
   if (a.braucht_sicht) {
-    for (const q of sichtstufenSteps(g?.sichtstufe ?? a.sichtstufe ?? d.regeln.sicht.stufen[0]!.id, false, d.regeln)) quellen.push({ ...q, id: 'sicht' });
+    for (const q of sichtstufenSteps(g?.sichtstufe ?? a.sichtstufe ?? d.regeln.sicht.stufen[0]!.id, geblendetRunden(g) > 0, d.regeln)) quellen.push({ ...q, id: 'sicht' });
   }
   for (const [n, q] of (a.zusatz ?? []).entries()) quellen.push({ ...q, id: q.id ?? `zusatz:${n}` });
   return quellen;

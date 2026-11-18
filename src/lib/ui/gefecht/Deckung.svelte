@@ -5,7 +5,8 @@
   // keine Zone angetippt = keine Deckung. Ein Wert ändert sich; kein Bericht nötig.
   import { untrack } from 'svelte';
   import type { Spieldaten } from '../../daten/typen';
-  import { deckungSetzen, deckungZonen } from '../../regeln/gefecht';
+  import { deckungSetzen, deckungZonen, schildHalten } from '../../regeln/gefecht';
+  import { gefechtVon } from '../../regeln/probenrechner';
   import type { Charakter } from '../../speicher/charakter';
   import Dialog from '../Dialog.svelte';
   import Silhouette from '../Silhouette.svelte';
@@ -29,6 +30,12 @@
   const kurzname = (n: string) => n.replace(/\s*\(.*\)\s*$/, '');
   const passend = $derived(wert === null ? [] : werte.filter((x) => x.wert === wert).map((x) => kurzname(x.name)));
   let listeOffen = $state(false);
+
+  // Ballistischer Schild: mitgeführte Deckung (Deckung und Rüstung, Ballistischer Schild). Außerhalb des Gefechts hier
+  // umschaltbar; im Gefecht kostet Aufnehmen und Ablegen eine Mainaction und läuft über Main (Jede Aktion über ihren Knopf).
+  const schild = $derived(c.ausruestung.schild ? (d.schutz.schilde.find((x) => x.id === c.ausruestung.schild) ?? null) : null);
+  const imGefecht = $derived(!!gefechtVon(c));
+  let inHand = $state(untrack(() => !!c.spielstand.schild_gehalten));
 
   /** Zone antippen: verdecken oder wieder freigeben. */
   function antippen(z: string) {
@@ -75,11 +82,31 @@
         </ul>
       {/if}
     </section>
+    {#if schild}
+      <section class="abschnitt">
+        <h3 class="abschnitt-titel">Schild</h3>
+        {#if imGefecht}
+          <p>{schild.name}: {inHand ? 'in der Hand' : 'nicht in der Hand'}.</p>
+          <p class="hinweis">Aufnehmen, Ablegen und Fallenlassen über Main → {inHand ? 'Schild ablegen' : 'Schild aufnehmen'}.</p>
+        {:else}
+          <div class="gruppe">
+            <span class="gruppe-titel">Dein Schild ist</span>
+            <div class="umschalter" role="group" aria-label="Dein Schild ist">
+              <button aria-pressed={inHand} onclick={() => (inHand = true)}>in der Hand</button>
+              <button aria-pressed={!inHand} onclick={() => (inHand = false)}>abgelegt</button>
+            </div>
+          </div>
+        {/if}
+        {#if inHand}
+          <p class="hinweis">Deckung mit Schutz {schild.deckung} für Kopf, Rumpf und Arme, nur gegen Angriffe von vorn. Beim Getroffen fragt die App, ob der Angriff von vorn kommt.</p>
+        {/if}
+      </section>
+    {/if}
   </div>
   {#snippet knoepfe()}
     <button onclick={onabbrechen}>Abbrechen</button>
     <button class="haupt" disabled={zonen.length > 0 && wert === null}
-      onclick={() => onfertig(deckungSetzen(c, { wert: wert ?? 0, art, getippt }, d))}>Eintragen</button>
+      onclick={() => onfertig(deckungSetzen(imGefecht || !schild ? c : schildHalten(c, inHand), { wert: wert ?? 0, art, getippt }, d))}>Eintragen</button>
   {/snippet}
 </Dialog>
 

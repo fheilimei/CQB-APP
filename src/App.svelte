@@ -17,7 +17,8 @@
   import { MODUS_NAME, punkte, type Modus, type Zeile } from './lib/ui/texte';
   import Werte from './lib/ui/Werte.svelte';
   import { modusFuer } from './lib/wuerfel/wuerfel';
-  import { adrenalinschockBeenden, leiterSetzen, letzteLeiterAenderung, rueckgaengig } from './lib/regeln/gefecht';
+  import { adrenalinschockBeenden, geblendetBeenden, leiterSetzen, letzteLeiterAenderung, rueckgaengig } from './lib/regeln/gefecht';
+  import { geblendetRunden } from './lib/regeln/zustaende';
   import { overTheEdge } from './lib/regeln/leiter';
   import { gefechtVon, lebenslageDes } from './lib/regeln/probenrechner';
   import Adrenalinrad from './lib/ui/gefecht/Adrenalinrad.svelte';
@@ -36,6 +37,7 @@
   import WaffeWechseln from './lib/ui/gefecht/WaffeWechseln.svelte';
   import Deckung from './lib/ui/gefecht/Deckung.svelte';
   import Ereignis from './lib/ui/gefecht/Ereignis.svelte';
+  import Reizgas from './lib/ui/gefecht/Reizgas.svelte';
   import Getroffen from './lib/ui/gefecht/Getroffen.svelte';
   import Nahkampfangriff from './lib/ui/gefecht/Nahkampfangriff.svelte';
   import Werfen from './lib/ui/gefecht/Werfen.svelte';
@@ -62,11 +64,11 @@
   let reiter = $state<'figur' | 'werte' | 'ausruestung' | 'verlauf'>('figur');
 
   let modus = $state<Modus>('lesen');
-  let bericht = $state<{ titel: string; zeilen: Zeile[]; weiter: () => void } | null>(null);
+  let bericht = $state<{ titel: string; zeilen: Zeile[]; weiter: () => void; knopf?: string } | null>(null);
   /** Offener Dialog des Spiels: Probenrechner, Abläufe rund um Gefecht und Adrenalin. */
   type Spieldialog =
     | { art: 'probe'; stat: string | null; skill: string | null; alsMain?: boolean }
-    | { art: 'start' | 'initiative' | 'runde' | 'senken' | 'verschieben' | 'detail' | 'schiessen' | 'wechseln' | 'getroffen' | 'deckung' | 'ereignis' | 'ende' }
+    | { art: 'start' | 'initiative' | 'runde' | 'senken' | 'verschieben' | 'detail' | 'schiessen' | 'wechseln' | 'getroffen' | 'deckung' | 'ereignis' | 'reizgas' | 'ende' }
     | { art: 'aktion'; aktion: Aktion }
     | { art: 'nachladen'; id: string; als: 'main' | 'break' | null }
     | { art: 'ladehemmung'; id: string }
@@ -312,6 +314,23 @@
     };
   }
 
+  /** Geblendet (Sprengwirkung, Blendung): Wirkung und Ende; die SL kann es früher beenden. */
+  function geblendetFrage() {
+    if (!aktiv || !gefecht) return;
+    const c = aktiv;
+    const bis = gefecht.geblendet_bis!;
+    bericht = {
+      titel: 'Geblendet',
+      zeilen: [
+        { text: 'Für dich gilt die Sichtstufe keine, unabhängig vom Licht. Antizipation geht nur über das Gehör.' },
+        { text: bis === gefecht.runde ? 'Das endet am Ende dieser Runde.' : `Das endet am Ende von Runde ${bis}.` },
+        { text: 'Sagt die SL, dass es schon vorbei ist? Dann beende es hier.', fett: true }
+      ],
+      knopf: 'Beenden',
+      weiter: () => { void speichern(geblendetBeenden(c)); bericht = null; }
+    };
+  }
+
   async function importieren() {
     menueOffen = false;
     const text = await dateiOeffnen();
@@ -384,6 +403,12 @@
         <strong>{aktiv.name || 'ohne Namen'}</strong>
         {#if aktiv.spielstand.adrenalinschock.aktiv}
           <button class="chip-klein zustand" onclick={schockFrage}>Adrenalinschock</button>
+        {/if}
+        {#if gefecht && geblendetRunden(gefecht) > 0}
+          <button class="chip-klein zustand" onclick={geblendetFrage}>Geblendet {geblendetRunden(gefecht)}</button>
+        {/if}
+        {#if gefecht?.reizgas}
+          <button class="chip-klein zustand" onclick={() => (dialog = { art: 'reizgas' })}>{gefecht.reizgas.gereizt ? 'Gereizt' : 'in Reizgas'}</button>
         {/if}
       </div>
       <div class="modus">
@@ -470,7 +495,9 @@
     {:else if dialog.art === 'ende' && gefecht}
       <GefechtBeenden c={aktiv} d={daten} onfertig={(c) => { void speichern(c); dialog = null; }} onabbrechen={() => (dialog = null)} />
     {:else if dialog.art === 'ereignis' && gefecht}
-      <Ereignis c={aktiv} d={daten} onfertig={ereignisFertig} onabbrechen={() => (dialog = null)} />
+      <Ereignis c={aktiv} d={daten} onfertig={ereignisFertig} onreizgas={() => (dialog = { art: 'reizgas' })} onabbrechen={() => (dialog = null)} />
+    {:else if dialog.art === 'reizgas' && gefecht}
+      <Reizgas c={aktiv} d={daten} wuerfelModus={probeModus} onaendern={aendern} onfertig={(c) => nachAblauf(c)} onabbrechen={() => (dialog = null)} />
     {:else if dialog.art === 'getroffen'}
       <Getroffen c={aktiv} d={daten} {zonenModus} wuerfelModus={probeModus} onaendern={aendern} onfertig={trefferFertig} onabbrechen={() => (dialog = null)} />
     {:else if dialog.art === 'start'}
@@ -499,7 +526,7 @@
     onmodus={(m) => { modus = m; menueOffen = false; if (m !== 'lesen') reiter = 'werte'; }} onsession={sessionFrage} />
 
   {#if bericht}
-    <Bericht titel={bericht.titel} zeilen={bericht.zeilen} onweiter={bericht.weiter} onzurueck={() => (bericht = null)} />
+    <Bericht titel={bericht.titel} zeilen={bericht.zeilen} weiter={bericht.knopf} onweiter={bericht.weiter} onzurueck={() => (bericht = null)} />
   {/if}
 {/if}
 

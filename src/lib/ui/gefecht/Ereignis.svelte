@@ -11,9 +11,11 @@
     c: Charakter;
     d: Spieldaten;
     onfertig: (c: Charakter, text: string) => void;
+    /** Öffnet das Fenster Reizgas (Zustand Gereizt). */
+    onreizgas: () => void;
     onabbrechen: () => void;
   }
-  let { c, d, onfertig, onabbrechen }: Props = $props();
+  let { c, d, onfertig, onreizgas, onabbrechen }: Props = $props();
 
   const gesetzt = $derived(gefechtVon(c)?.ausloeser_diese_runde ?? []);
   /** Meldung nach dem Tipp; heißt der Eintrag anders als sein Auslöser (Explosion → beschossen), nennt sie den Auslöser. */
@@ -37,6 +39,12 @@
           </button>
         </li>
       {/each}
+    </ul>
+  </div>
+  <div class="gruppe">
+    <span class="gruppe-titel">Zustand</span>
+    <ul class="auswahlliste">
+      <li><button onclick={onreizgas}>Reizgas<small>Du stehst in einer Gaswolke: Grit-Probe, sonst gereizt.</small></button></li>
     </ul>
   </div>
   <p class="hinweis">Wirst du getroffen, auch von Splittern oder der Druckwelle, nimm Getroffen. Das zählt „beschossen“ mit.</p>

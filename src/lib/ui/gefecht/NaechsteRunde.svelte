@@ -2,7 +2,7 @@
   // Nächste Runde (konzept.md § 3.7, Abläufe): Rundenende mit Checkliste der Auslöser und freiwilliger Nerve-Probe,
   // Bericht, dann neue Runde. Die Initiative folgt im Anschluss (App).
   import type { Spieldaten } from '../../daten/typen';
-  import { naechsteRunde, standNachRundenende } from '../../regeln/gefecht';
+  import { naechsteRunde, standNachRundenende, zustaendeNachRunde } from '../../regeln/gefecht';
   import { anstiegMalsteps, overTheEdge } from '../../regeln/leiter';
   import { gefechtVon, probeStellen } from '../../regeln/probenrechner';
   import type { Charakter, Gefecht, Quelle } from '../../speicher/charakter';
@@ -60,6 +60,13 @@
     else zeilen.push({ text: `${nach > g.leiter ? 'Du steigst' : 'Du sinkst'} von ${standText(g.leiter, d)} auf ${standText(nach, d)}.`, fett: overTheEdge(nach, d.regeln) });
     if (overTheEdge(nach, d.regeln) && !g.adrenalin4_erreicht)
       zeilen.push({ text: 'Over the Edge: nur 1 Aktion pro Runde. Nach dem Gefecht folgt ein Adrenalinschock.', fett: true });
+    // Zustände am Rundenende (Sprengwirkung, Blendung und Reizgas).
+    const z = zustaendeNachRunde(g);
+    if (g.geblendet_bis && !z.geblendet_bis) zeilen.push({ text: 'Du bist nicht mehr geblendet.' });
+    else if (z.geblendet_bis) zeilen.push({ text: z.geblendet_bis === g.runde + 1 ? 'Du bist auch in der nächsten Runde noch geblendet, danach nicht mehr.' : `Du bist noch bis Runde ${z.geblendet_bis} geblendet.` });
+    if (g.reizgas?.gereizt && !z.reizgas) zeilen.push({ text: 'Du hast die Reizgaswolke verlassen; du bist nicht mehr gereizt.' });
+    else if (z.reizgas?.gereizt) zeilen.push({ text: 'Du stehst noch in der Reizgaswolke und bleibst gereizt.' });
+    else if (z.reizgas && !z.reizgas.gasmaske) zeilen.push({ text: 'Du stehst noch in der Reizgaswolke: Zu Beginn deines Zuges legst du eine Grit-Probe ab (Zustand oben antippen).' });
     zeilen.push({ text: `Runde ${g.runde + 1} beginnt. Danach folgt die Initiative.` });
     bericht = zeilen;
   }

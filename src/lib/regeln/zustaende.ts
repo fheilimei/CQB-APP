@@ -1,7 +1,8 @@
 // Zustände und ihre Malsteps (konzept.md § 4.5; Regelwerk: Würfelmechanik, Zustände).
 // Adrenalin und Ruhepuls stehen in leiter.ts; Geblendet wirkt über die Sichtstufe.
 
-import type { Regeln, Spieldaten } from '../daten/typen';
+import type { Regeln, Spieldaten, Sprengwaffe } from '../daten/typen';
+import type { Gefecht } from '../speicher/charakter';
 import type { StepQuelle } from './probe';
 
 export type Lebenslage = 'einsatzfaehig' | 'kampfunfaehig' | 'tot';
@@ -66,4 +67,40 @@ export function sichtstufenSteps(sichtstufe: string, geblendet: boolean, r: Rege
   const s = r.sicht.stufen.find((x) => x.id === id);
   if (!s || !s.malsteps) return [];
   return [{ herkunft: geblendet ? 'zustand' : 'lage', name: geblendet ? 'Geblendet' : `Sicht ${s.name}`, malsteps: s.malsteps }];
+}
+
+/** Runden, die Geblendet noch dauert, die laufende eingeschlossen; 0 = nicht geblendet. */
+export function geblendetRunden(g: Gefecht | null): number {
+  if (!g?.geblendet_bis) return 0;
+  return Math.max(0, g.geblendet_bis - g.runde + 1);
+}
+
+/** Gereizt im laufenden Gefecht (Sprengwirkung, Reizgas). */
+export function istGereizt(g: Gefecht | null): boolean {
+  return !!g?.reizgas?.gereizt;
+}
+
+/** Sichtstufe, die im Gefecht gilt: die eingestellte, bei Geblendet „keine“. Ohne Gefecht die erste Stufe. */
+export function geltendeSicht(g: Gefecht | null, r: Regeln): string {
+  return wirksameSicht(g?.sichtstufe ?? r.sicht.stufen[0]!.id, geblendetRunden(g) > 0, r);
+}
+
+export interface Blendung {
+  /** Runden Geblendet ab der Detonation; 0 = nicht geblendet. */
+  runden: number;
+  stagger: boolean;
+}
+
+/**
+ * Wirkung einer Blendgranate auf dich (Sprengwirkung, Blendung), aus `sonderwirkung` der Waffe: Runden Geblendet je Band
+ * (`geblendet_runden`), Stagger je Band (`stagger`). In den Bändern aus `kopf_verdeckt_schuetzt` blendet sie nur, wenn der
+ * Kopf vom Explosionspunkt aus frei ist. Wer mit Erfolg reagiert (abgewendet), wird nicht geblendet; der Stagger bleibt.
+ */
+export function blendung(w: Sprengwaffe | undefined, band: string, kopfVerdeckt: boolean, abgewendet: boolean): Blendung {
+  const sw = w?.sonderwirkung;
+  if (!sw || sw.art !== 'blendung') return { runden: 0, stagger: false };
+  const runden = (sw.geblendet_runden as Record<string, number> | undefined)?.[band] ?? 0;
+  const stagger = ((sw.stagger as string[] | undefined) ?? []).includes(band);
+  const geschuetzt = kopfVerdeckt && ((sw.kopf_verdeckt_schuetzt as string[] | undefined) ?? []).includes(band);
+  return { runden: abgewendet || geschuetzt ? 0 : runden, stagger };
 }

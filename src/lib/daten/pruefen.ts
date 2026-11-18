@@ -211,6 +211,7 @@ export function pruefeDaten(d: Spieldaten): string[] {
       if (w.art === 'reichweite_frei') for (const b of w.baender) if (!baender.has(b)) f('regeln.json', `perk_wirkungen.${perk}: unbekanntes Band „${b}“`);
       if (w.art === 'folgetreffer_zonen') for (const z of [w.ansage, ...w.zonen]) if (!zonenIds.has(z)) f('regeln.json', `perk_wirkungen.${perk}: unbekannte Zone „${z}“`);
       if (w.art === 'konzentration_statt' && !r.konzentration.aktionen[w.aktion]) f('regeln.json', `perk_wirkungen.${perk}: unbekannte Aktion „${w.aktion}“`);
+      if (w.art === 'ausruestung_bewegung' && !r.bewegung.reihenfolge.includes(w.bewegung_max)) f('regeln.json', `perk_wirkungen.${perk}: unbekannte Bewegung „${w.bewegung_max}“`);
       if (w.art === 'ziehen_ohne_aktion') for (const t of w.trageorte) if (!trageorte.includes(t)) f('regeln.json', `perk_wirkungen.${perk}: unbekannter Trageort „${t}“`);
     }
   }
@@ -405,6 +406,9 @@ export function pruefeDaten(d: Spieldaten): string[] {
   }
   for (const sc of d.schutz.schilde) {
     for (const z of sc.zonen) if (!zonenIds.has(z)) f(`schutz.json ${sc.id}`, `unbekannte Zone „${z}“`);
+    const waffen = sc.einschraenkung?.waffen;
+    if (waffen !== undefined && !(Array.isArray(waffen) && waffen.every((k) => typeof k === 'string')))
+      f(`schutz.json ${sc.id}`, 'einschraenkung.waffen muss eine Liste von Waffenkategorien sein');
   }
 
   // ---------- klassen.json

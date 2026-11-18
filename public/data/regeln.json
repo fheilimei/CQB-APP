@@ -989,6 +989,12 @@
         "art": "eingreifen_als_break"
       }
     ],
+    "ruestungstraeger": [
+      {
+        "art": "ausruestung_bewegung",
+        "bewegung_max": "laufen"
+      }
+    ],
     "feldversorgung": [
       {
         "art": "konzentration_statt",

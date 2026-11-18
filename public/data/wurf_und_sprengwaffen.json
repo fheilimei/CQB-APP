@@ -135,6 +135,9 @@
         },
         "stagger": [
           "bedraengt"
+        ],
+        "kopf_verdeckt_schuetzt": [
+          "nah"
         ]
       },
       "ausloeser": [

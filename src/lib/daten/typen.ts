@@ -54,12 +54,13 @@ export type PerkWirkung =
   | { art: 'ziehen_ohne_aktion'; trageorte: string[] }
   | { art: 'werfen_als_break' }
   | { art: 'eingreifen_als_break' }
-  | { art: 'konzentration_statt'; aktion: string; konzentration: 'leicht' | 'voll' };
+  | { art: 'konzentration_statt'; aktion: string; konzentration: 'leicht' | 'voll' }
+  | { art: 'ausruestung_bewegung'; bewegung_max: string };
 
 export const PERK_WIRKUNGEN: PerkWirkung['art'][] = [
   'reichweite_frei', 'eigene_bewegung_weniger', 'zielen_stepshields', 'zielen_ohne_reichweite', 'folgetreffer_zonen',
   'einzeln_patronen', 'nachladen_als_break', 'ziehen_ohne_aktion', 'werfen_als_break', 'eingreifen_als_break',
-  'konzentration_statt'
+  'konzentration_statt', 'ausruestung_bewegung'
 ];
 
 export interface Blutungsart {

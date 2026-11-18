@@ -587,10 +587,17 @@ Dann folgt der **Bericht** ([§ 3.0c](#30c-bericht-was-ist-passiert-a)). „Weit
 3. **Wer versorgt:** du selbst oder jemand anders (Entscheidung 18.11.2026). Selbst: Probe auf Erste Hilfe bzw. Operation; nach dem Gefecht ist der Druckverband ab Erste Hilfe 1 ohne Probe. Im Gefecht Mainaction mit Konzentration (Feldversorgung: leicht), gesperrt nach einer Breakaction. Jemand anders: Der Spieler tippt gelungen oder misslungen.
 4. **Bericht**; eine misslungene Versorgung ändert nichts und darf wiederholt werden, solange die Frist läuft.
 
+**Ballistischer Schild** (18.11.2026; Deckung und Rüstung, Ballistischer Schild): mitgeführte Deckung mit Wert 3 für Kopf, Rumpf und Arme, nur von vorn. Er zählt nur, solange er **in der Hand** ist. Im Gefecht: Main → „Schild aufnehmen“ bzw. „Schild ablegen“ (Mainaction; im selben Fenster „Fallen lassen“ ohne Aktion). Außerhalb des Gefechts im Dialog Deckung („Dein Schild ist in der Hand · abgelegt“). Solange er gehalten wird: kleines Schildzeichen neben der Figur, Deckungswert auf den Zonen (mit Deckung zusammen gilt je Zone der höhere Wert, R37), Bewegung höchstens Gehen (Rüstungsträger: Laufen), Schießen nur mit Waffen der erlaubten Art (Pistole) und mit 1 Malstep. Getroffen fragt „Der Angriff kommt von vorn“ bzw. bei einer Explosion „Dein Schild zeigt zur Explosion“ (vorbelegt an).
+
 **Gefechtsprotokoll:** Jeder übernommene Treffer (und später jeder Schuss) wird mit Runde und Uhrzeit protokolliert. Jeder Eintrag lässt sich einzeln rückgängig machen; Wunde, HP und Auslöser werden dann zurückgesetzt (mit Bericht).
 
 ### 3.11 Zustände (A, M)
 Adrenalin/Ruhepuls (über die Leiter), Adrenalinschock (mit 4-Stunden-Ruhe-Abhaken), Kampfunfähigkeit (automatisch aus HP und offenen kritischen Wunden), **Geblendet** (Rundenzähler ab der Detonation; setzt für den Charakter die Sichtstufe keine), **Gereizt** (Schalter „in der Wolke“; endet am Ende der Runde nach dem Verlassen). Jeder aktive Zustand zeigt seine Wirkung als Kurztext und fließt mit seinen Malsteps in alle Rechner ein ([§ 4.5](#45-zustände)).
+
+Umsetzung (18.11.2026): Aktive Zustände stehen als Chips in der Kopfzeile, Geblendet mit den verbleibenden Runden („Geblendet 2“), Reizgas als „in Reizgas“ bzw. „Gereizt“. Antippen zeigt die Wirkung (Geblendet: mit Knopf Beenden, falls die SL es früher beendet) bzw. öffnet das Fenster Reizgas.
+- **Geblendet** entsteht über Getroffen → Explosion mit einer Blendgranate: Abstand wählen, Schalter „Du hast dich abgewendet“ (Reaktion gelungen). Bedrängt: Stagger und 2 Runden; nah: 1 Runde, wenn der Kopf vom Explosionspunkt aus frei ist (Deckung oder Schild, R38). Am Rundenende zählt die App herunter.
+- **Reizgas** über Ereignis → Reizgas oder den Chip: Du stehst in der Wolke · außerhalb, Schalter Gasmaske, Grit-Probe zu Beginn des Zuges (misslungen → Gereizt). Am Rundenende erinnert der Bericht an die Probe; wer die Wolke verlassen hat, ist ab der nächsten Runde nicht mehr gereizt.
+- Beide gelten nur im Gefecht; außerhalb nennt der Bericht die Wirkung nur.
 
 **Sichtstufe** (klar, eingeschränkt, schlecht, keine) ist kein Zustand, sondern eine Einstellung im Gefecht. Sie gilt für alle Proben, die Sicht brauchen (Wahrnehmung, Sehen), bis der Spieler sie ändert. Geblendet erzwingt „keine“.
 

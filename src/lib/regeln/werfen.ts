@@ -13,6 +13,7 @@ import { gefechtVon, type ProbenAnfrage } from './probenrechner';
 import { ansageMoeglich, ansageSteps, lageSteps, zoneAusW8, type Ansage } from './schiessen';
 import { entfernungsgruppe, lageAuswahl } from './schuss';
 import { sprengwaffe } from './waffen';
+import { geltendeSicht } from './zustaende';
 
 // ---------- Gegenstände
 
@@ -156,7 +157,7 @@ export function wurfStellen(c: Charakter, d: Spieldaten, gg: Wurfgegenstand, s: 
       stat: r.werfen.stat, skill: wurfSkill(gg, d), probe: 'werfen', zusatz, fest,
       kontext: { band, stand, ohne_bewegung: !bewegung, aufgelegt: false }
     },
-    ansage_moeglich: mitAnsage && ansageMoeglich(g?.leiter ?? 0, g?.sichtstufe ?? r.sicht.stufen[0]!.id, r),
+    ansage_moeglich: mitAnsage && ansageMoeglich(g?.leiter ?? 0, geltendeSicht(g, r), r),
     nahkampf,
     sperre: !band ? 'entfernung' : bs === null ? 'band' : null
   };

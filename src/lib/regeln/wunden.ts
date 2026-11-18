@@ -1,7 +1,7 @@
 // Eingehende Treffer übernehmen (konzept.md § 3.10, § 4.7): Wunde oder Prellung anlegen, HP abziehen,
 // Tod durch Krit-Folge, Stagger und Auslöser im Gefecht. Jede Funktion gibt einen neuen Charakter zurück.
 
-import type { Folgesatz, Spieldaten } from '../daten/typen';
+import type { Folgesatz, Schild, Spieldaten } from '../daten/typen';
 import type { Charakter, Gefecht, Trefferereignis, Wunde } from '../speicher/charakter';
 import { eigeneBewegungFuerLage, eigenerStand } from './aktionen';
 import { hatWirkung } from './leiter';
@@ -38,10 +38,41 @@ export function staggerRegel(c: Charakter, d: Spieldaten): StaggerRegel {
  * Aktuelle Deckung für eine Zone (spielstand.deckung, datenformat.md), im Gefecht und in Ruhe. Gespeichert sind die schon
  * erweiterten Zonen; für die Ansage „Rumpf“ zählt die Deckung, wenn alle Rumpfzonen verdeckt sind (R32).
  */
-export function deckungFuer(zone: string, c: Charakter, d: Spieldaten): number | null {
+export function deckungFuer(zone: string, c: Charakter, d: Spieldaten, mit: DeckungsArten = {}): number | null {
+  const werte: number[] = [];
   const dg = c.spielstand.deckung;
-  if (!dg) return null;
-  return verdeckteZonen(dg.zonen, d).includes(zone) ? dg.wert : null;
+  if (dg && mit.deckung !== false && verdeckteZonen(dg.zonen, d).includes(zone)) werte.push(dg.wert);
+  const s = gehaltenerSchild(c, d);
+  if (s && mit.schild !== false && verdeckteZonen(s.zonen, d).includes(zone)) werte.push(s.deckung);
+  // Regelfrage R37 (docs/offen.md): vorläufig zählen Deckung und Schild auf derselben Zone nicht zusammen; der höhere Wert gilt.
+  return werte.length ? Math.max(...werte) : null;
+}
+
+/** Welche Deckung zählt: die auf der Figur und der Schild (nur von vorn); fehlt = zählt. */
+export interface DeckungsArten {
+  deckung?: boolean;
+  schild?: boolean;
+}
+
+/** Schild in der Hand (spielstand.schild_gehalten) aus schutz.json, oder null. */
+export function gehaltenerSchild(c: Charakter, d: Spieldaten): Schild | null {
+  if (!c.spielstand.schild_gehalten || !c.ausruestung.schild) return null;
+  return d.schutz.schilde.find((s) => s.id === c.ausruestung.schild) ?? null;
+}
+
+/** Stagger ohne Treffer (z. B. Blendgranate im Kern): Breakaction weg, Konzentration unterbrochen, Auslöser Stagger. Schmerz ignorieren verhindert ihn. */
+export function staggerOhneTreffer(c: Charakter, d: Spieldaten): { nach: Charakter; verhindert: boolean } {
+  const g = gefechtVon(c);
+  if (!g) return { nach: c, verhindert: false };
+  if (staggerRegel(c, d) === 'nie') return { nach: c, verhindert: true };
+  const st = d.regeln.eingehend.ausloeser.stagger;
+  const ng: Gefecht = {
+    ...g,
+    break_verloren: true,
+    konzentration: null,
+    ausloeser_diese_runde: g.ausloeser_diese_runde.includes(st) ? g.ausloeser_diese_runde : [...g.ausloeser_diese_runde, st]
+  };
+  return { nach: { ...c, geaendert: new Date().toISOString(), spielstand: { ...c.spielstand, gefecht: ng } }, verhindert: false };
 }
 
 /** Was ein Treffer auf eine Zone auslösen würde, ohne etwas zu ändern (Vorschau und Bericht). */
