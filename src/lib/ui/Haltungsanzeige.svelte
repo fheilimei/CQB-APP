@@ -34,7 +34,7 @@
       {#if pfeile === 'sprung'}
         <svg viewBox="0 0 24 24" class="bild pfeil"><path d="M3 19Q11 3 21 17M21 17l-.6-5M21 17l-4.8-1.6" /></svg>
       {:else}
-        <svg viewBox="0 0 {pfeilBreite} 24" class="bild pfeil" style:width="{(pfeilBreite / 24) * 32}px">
+        <svg viewBox="0 0 {pfeilBreite} 24" class="bild pfeil" style:width="{pfeilBreite}px">
           {#each { length: pfeile } as _, i (i)}<path d="M{3 + i * 6} 6l6 6l-6 6" />{/each}
         </svg>
       {/if}
@@ -42,7 +42,13 @@
   {/if}
   {#if konzentration}
     <span class="titel" aria-hidden="true">Konzentration</span>
-    <span class="feld ersatz" aria-hidden="true">{konzentration}</span>
+    <!-- Halber Kreis = leicht, voller Kreis = voll. -->
+    <span class="feld" aria-hidden="true">
+      <svg viewBox="0 0 16 16" class="kreis">
+        <circle cx="8" cy="8" r="6.25" class="ring" />
+        {#if konzentration === 'voll'}<circle cx="8" cy="8" r="6.25" />{:else}<path d="M8 1.75a6.25 6.25 0 0 0 0 12.5z" />{/if}
+      </svg>
+    </span>
   {/if}
 </div>
 
@@ -52,8 +58,9 @@
   .titel { justify-self: end; font-size: 0.7rem; color: var(--text-2); }
   .feld { display: flex; align-items: center; justify-content: center; min-width: 44px; min-height: 40px; padding: var(--abstand-1); border-radius: 8px;
     background: var(--flaeche-2); border: 1px solid var(--linie); }
-  /* 32 px: groß genug, um die Haltung auf einen Blick zu erkennen, klein genug für die freie Ecke neben dem Kopf der Figur. */
-  .bild { width: 32px; height: 32px; display: block; fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-  .pfeil { stroke: var(--akzent); stroke-width: 2.5; }
+  /* Gleicher Stil wie die Zeichen auf Deckung und Getroffen: einfarbig in Textfarbe, dünne Linien (etwa 1,5 px). */
+  .bild { width: 24px; height: 24px; display: block; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .kreis { width: 16px; height: 16px; display: block; fill: currentColor; }
+  .kreis .ring { fill: none; stroke: currentColor; stroke-width: 1.5; }
   .ersatz { font-size: 0.85rem; }
 </style>

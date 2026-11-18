@@ -43,6 +43,7 @@ Rückmeldung des Nutzers vom 17.11.2026:
 - **Vorerst nichts fett** (18.11.2026): Text, Überschriften, Werte und Knöpfe alle in normaler Stärke. Was fett sein soll, sagt der Nutzer einzeln; nicht eigenmächtig Fettschrift einsetzen. Hervorhebung über Rahmen, Fläche, Größe oder Zeichen.
 - **Knöpfe neben der Figur** (18.11.2026): HP-Balken rechts neben der HP-Zahl. Deckung und Getroffen mit kleinem Bildzeichen (Mauer, Einschlag), ohne Akzentrahmen und in der Textschrift wie Nächste Runde und Gefecht beenden.
 - **Knöpfe, die nur einen Dialog öffnen, zeigen keinen Zustand** (18.11.2026, Getroffen/Deckung): Ein Akzentrahmen sieht aus wie „aktiv“. Der Zustand gehört an die Stelle, die ihn darstellt (Deckungswert mit Mauerzeichen auf der Schraffur der Figur). Keine Zusatzzeilen unter Knöpfen, wenn die Information schon woanders steht (Stand/Bewegung unter den Aktionsknöpfen entfielen); Beschriftung mittig.
+- **Ein Stil für Bildzeichen** (18.11.2026): einfarbig in Textfarbe (`currentColor`), dünne Linien (etwa 1,5 px) bzw. kleine gefüllte Formen, wie Mauer und Einschlag auf Deckung/Getroffen. Keine dicken Striche, keine Akzentfarbe für Zeichen. Stufen als Formen statt Text (Konzentration: halber/voller Kreis).
 - Besonders aufgefallen: **Waffe wechseln** (`gefecht/WaffeWechseln.svelte`) und **Schießen** (`gefecht/Schiessen.svelte`).
 
 Jede Arbeit an der Oberfläche muss diese Punkte verbessern oder darf sie zumindest nicht verschlimmern.
