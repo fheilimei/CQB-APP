@@ -103,23 +103,6 @@
     </div>
   </div>
 
-  <!-- Gefecht starten bzw. Nächste Runde und Gefecht beenden unter der Figur (18.11.2026, vorher in der Kopfzeile).
-       Bildzeichen als SVG statt Unicode (▶ ⏹ ⏭), weil Android diese sonst als bunte Emoji zeigt und ■ ▲ ▼ belegt sind. -->
-  <div class="gefecht-knoepfe">
-    {#if imGefecht}
-      <button onclick={onnaechsteRunde}>
-        <svg class="zeichen" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3l7 5-7 5z" /><rect x="11" y="3" width="2" height="10" /></svg>
-        Nächste Runde</button>
-      <button onclick={ongefechtende}>
-        <svg class="zeichen" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="3" width="10" height="10" rx="1" /></svg>
-        Gefecht beenden</button>
-    {:else}
-      <button class="betont" class:warnung={kampfunfaehig} onclick={ongefechtstart}>
-        {#if kampfunfaehig}⚠{:else}<svg class="zeichen" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5l9 5.5-9 5.5z" /></svg>{/if}
-        Gefecht starten</button>
-    {/if}
-  </div>
-
   {#if gewaehlt}
     <div class="zone gruppe" aria-live="polite">
       <div class="kopf">
@@ -156,6 +139,24 @@
     <p class="hinweis mitte">Tippe eine Zone an, um ihre Wunden zu sehen.</p>
   {/if}
 </section>
+
+  <!-- Gefecht starten bzw. Nächste Runde und Gefecht beenden unter dem Kasten der Figur (18.11.2026, vorher in der Kopfzeile, dann im Kasten).
+       Bildzeichen als SVG statt Unicode (▶ ⏹ ⏭), weil Android diese sonst als bunte Emoji zeigt und ■ ▲ ▼ belegt sind. -->
+  <div class="gefecht-knoepfe">
+    {#if imGefecht}
+      <button onclick={onnaechsteRunde}>
+        <svg class="zeichen" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3l7 5-7 5z" /><rect x="11" y="3" width="2" height="10" /></svg>
+        Nächste Runde</button>
+      <button onclick={ongefechtende}>
+        <svg class="zeichen" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="3" width="10" height="10" rx="1" /></svg>
+        Gefecht beenden</button>
+    {:else}
+      <button class="betont" class:warnung={kampfunfaehig} onclick={ongefechtstart}>
+        {#if kampfunfaehig}⚠{:else}<svg class="zeichen" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5l9 5.5-9 5.5z" /></svg>{/if}
+        Gefecht starten</button>
+    {/if}
+  </div>
+
 
 <style>
   .hp { display: flex; flex-direction: column; gap: var(--abstand-1); }
