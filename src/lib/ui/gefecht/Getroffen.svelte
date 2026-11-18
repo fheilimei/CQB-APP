@@ -209,7 +209,7 @@
       const ew = nkAusgang === 'abgewehrt' ? eigeneWirkungen.find((x) => x.wirkung.id === eigeneWirkung) : undefined;
       if (ew) {
         const perks = ew.perks.map((id) => mitZeichen('perk', id, d)).join(', ');
-        zeilen.push({ text: `Für die SL: Mit dem überlegenen Stand (${perks}) wirkst du ${ew.wirkung.name}: Der Gegner ${ew.wirkung.folge}.` });
+        zeilen.push({ text: `Für die SL: Mit dem überlegenen Stand (${perks}) ${ew.wirkung.tat_du}: Er ${ew.wirkung.folge}.` });
       }
     } else {
       const e = eingang!;
@@ -222,9 +222,9 @@
       const gw = wirkungVon(gegnerWirkung);
       if (gw) {
         const f = wirkungsFolge(nach, gw, d);
-        if (f.stagger_verhindert) zeilen.push({ text: `Der Gegner wirkt ${gw.name}, doch du ignorierst den Schmerz und erleidest keinen Stagger.` });
-        else if (gw.stagger && a.stagger) zeilen.push({ text: `Der Gegner wirkt zusätzlich ${gw.name}.` });
-        else zeilen.push({ text: `Der Gegner wirkt ${gw.name}: ${gw.folge_du}${gw.stagger && gef ? ' Deine Breakaction dieser Runde verfällt, und eine Aktion mit Konzentration ist unterbrochen.' : ''}`, fett: true });
+        if (f.stagger_verhindert) zeilen.push({ text: `Der Gegner ${gw.tat_gegner}, doch du ignorierst den Schmerz und erleidest keinen Stagger.` });
+        else if (gw.stagger && a.stagger) zeilen.push({ text: `Der Gegner ${gw.tat_gegner}; den Stagger hast du schon.` });
+        else zeilen.push({ text: `Der Gegner ${gw.tat_gegner}: ${gw.folge_du}${gw.stagger && gef ? ' Deine Breakaction dieser Runde verfällt, und eine Aktion mit Konzentration ist unterbrochen.' : ''}`, fett: true });
         nach = gegnerWirkungAnwenden(nach, gw, d);
       }
     }
@@ -445,12 +445,14 @@
             </div>
           </div>
           {#if ueber === 'a'}
-            <p class="ansage">Gegner hat {malstepsText(malstepsDesGegners(nkLage, d))}</p>
+            <p class="ansage klein">Gegner hat {malstepsText(malstepsDesGegners(nkLage, d))}</p>
             <p class="hinweis">Du hast den überlegenen Stand.</p>
           {:else if ueber === 'b'}
-            <p class="hinweis">Der Gegner hat den überlegenen Stand: {malstepsText(d.regeln.nahkampf.ueberlegener_stand_malsteps)} für dich.</p>
+            <p class="ansage klein">Du hast {malstepsText(d.regeln.nahkampf.ueberlegener_stand_malsteps)}</p>
+            <p class="hinweis">Der Gegner hat den überlegenen Stand.</p>
           {:else}
-            <p class="hinweis">Gleicher Stand: Keiner hat einen Vorteil.</p>
+            <p class="ansage klein">Kein Vorteil</p>
+            <p class="hinweis">Gleicher Stand: Keiner hat den überlegenen Stand.</p>
           {/if}
         </section>
 
@@ -473,7 +475,7 @@
             <button aria-pressed={nkAusgang === 'getroffen'} onclick={() => (nkAusgang = 'getroffen')}>getroffen</button>
             {#if wahrgenommen}
               <button aria-pressed={nkAusgang === 'abgewehrt'} onclick={() => (nkAusgang = 'abgewehrt')}>abgewehrt</button>
-              <button aria-pressed={nkAusgang === 'unentschieden'} onclick={() => (nkAusgang = 'unentschieden')}>unentschieden</button>
+              <button aria-pressed={nkAusgang === 'unentschieden'} onclick={() => (nkAusgang = 'unentschieden')}>unent&shy;schieden</button>
             {:else}
               <button aria-pressed={nkAusgang === 'unentschieden'} onclick={() => (nkAusgang = 'unentschieden')}>daneben</button>
             {/if}
@@ -557,5 +559,7 @@
   .muster.gestoppt { background: var(--treffer-gestoppt); }
   .muster.wucht { background: var(--treffer-wucht); }
   .muster.durchschlag { background: var(--treffer-durchschlag); }
+  /* Standvorteil: wie eine Ansage, aber kleiner, weil er nur eine Zwischeninfo ist. */
+  .ansage.klein { font-size: 1.3rem; padding: var(--abstand-2); }
   .ergebnis { margin: 0; text-align: center; font-size: 1.1rem; }
 </style>

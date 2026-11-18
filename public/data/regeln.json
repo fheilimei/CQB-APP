@@ -609,26 +609,34 @@
         "name": "Umreißen",
         "folge": "fällt in den Stand Liegen",
         "stand_danach": "liegen",
-        "folge_du": "Du fällst in den Stand Liegen."
+        "folge_du": "Du fällst in den Stand Liegen.",
+        "tat_du": "wirfst den Gegner um",
+        "tat_gegner": "wirft dich um"
       },
       {
         "id": "erschuettern",
         "name": "Erschüttern",
         "folge": "erleidet einen Stagger",
         "stagger": true,
-        "folge_du": "Du erleidest einen Stagger."
+        "folge_du": "Du erleidest einen Stagger.",
+        "tat_du": "erschütterst den Gegner",
+        "tat_gegner": "erschüttert dich"
       },
       {
         "id": "fixieren",
         "name": "Fixieren",
         "folge": "kann bis zum Ende seines nächsten Zuges den Stand nicht wechseln",
-        "folge_du": "Du kannst bis zum Ende deines nächsten Zuges den Stand nicht wechseln."
+        "folge_du": "Du kannst bis zum Ende deines nächsten Zuges den Stand nicht wechseln.",
+        "tat_du": "fixierst den Gegner",
+        "tat_gegner": "fixiert dich"
       },
       {
         "id": "entwaffnen",
         "name": "Entwaffnen",
         "folge": "lässt einen Gegenstand fallen, den er in der Hand hält; der Sieger wählt, welchen",
-        "folge_du": "Du lässt einen Gegenstand fallen, den du in der Hand hältst; der Gegner wählt, welchen."
+        "folge_du": "Du lässt einen Gegenstand fallen, den du in der Hand hältst; der Gegner wählt, welchen.",
+        "tat_du": "entwaffnest den Gegner",
+        "tat_gegner": "entwaffnet dich"
       }
     ]
   },

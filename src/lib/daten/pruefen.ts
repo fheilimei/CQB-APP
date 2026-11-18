@@ -170,8 +170,11 @@ export function pruefeDaten(d: Spieldaten): string[] {
   for (const [a, b] of Object.entries(nk.stand_schlaegt))
     if (!staende.has(a) || !staende.has(b)) f('regeln.json', `nahkampf.stand_schlaegt: unbekannter Stand „${staende.has(a) ? b : a}“`);
   if (!r.leiter.ausloeser.some((a) => a.id === nk.ausloeser)) f('regeln.json', `nahkampf.ausloeser: unbekannter Auslöser „${nk.ausloeser}“`);
-  for (const w of nk.wirkungen ?? [])
+  for (const w of nk.wirkungen ?? []) {
+    for (const feld of ['folge', 'folge_du', 'tat_du', 'tat_gegner'] as const)
+      if (!w[feld]) f('regeln.json', `nahkampf.wirkungen.${w.id}: „${feld}“ fehlt`);
     if (w.stand_danach && !staende.has(w.stand_danach)) f('regeln.json', `nahkampf.wirkungen.${w.id}: unbekannter Stand „${w.stand_danach}“`);
+  }
   const wirkungsNamen = new Set((nk.wirkungen ?? []).map((w) => w.name));
   for (const p of d.perks.eintraege) {
     for (const [paar, text] of Object.entries(p.kampfkunst ?? {})) {

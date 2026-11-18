@@ -44,6 +44,7 @@ Rückmeldung des Nutzers vom 17.11.2026:
 - **Knöpfe neben der Figur** (18.11.2026): HP-Balken rechts neben der HP-Zahl. Deckung und Getroffen mit kleinem Bildzeichen (Mauer, Einschlag), ohne Akzentrahmen und in der Textschrift wie Nächste Runde und Gefecht beenden.
 - **Knöpfe, die nur einen Dialog öffnen, zeigen keinen Zustand** (18.11.2026, Getroffen/Deckung): Ein Akzentrahmen sieht aus wie „aktiv“. Der Zustand gehört an die Stelle, die ihn darstellt (Deckungswert mit Mauerzeichen auf der Schraffur der Figur). Keine Zusatzzeilen unter Knöpfen, wenn die Information schon woanders steht (Stand/Bewegung unter den Aktionsknöpfen entfielen); Beschriftung mittig.
 - **Ein Stil für Bildzeichen** (18.11.2026): einfarbig in Textfarbe (`currentColor`), dünne Linien (etwa 1,5 px) bzw. kleine gefüllte Formen, wie Mauer und Einschlag auf Deckung/Getroffen. Keine dicken Striche, keine Akzentfarbe für Zeichen. Stufen als Formen statt Text (Konzentration: halber/voller Kreis).
+- **Gleiche Info, gleiche Form** (18.11.2026, Getroffen → Nahkampf): Der Standvorteil steht in allen drei Fällen (du, Gegner, keiner) als kleine Ansage mit Hinweis darunter. Lange Wörter in gleich breiten Knöpfen werden getrennt statt über den Rand zu ragen. Im Bericht handelt der Gegner mit Verb („Der Gegner wirft dich um“), nicht „wirkt Umreißen“.
 - Besonders aufgefallen: **Waffe wechseln** (`gefecht/WaffeWechseln.svelte`) und **Schießen** (`gefecht/Schiessen.svelte`).
 
 Jede Arbeit an der Oberfläche muss diese Punkte verbessern oder darf sie zumindest nicht verschlimmern.

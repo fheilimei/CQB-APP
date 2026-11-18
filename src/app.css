@@ -166,7 +166,8 @@ table.rechnung tr.summe td { border-top: 1px solid var(--linie); font-weight: 40
 .auswahlliste small.sperre { color: var(--gefahr); }
 /* Auswahlreihe mit gleich breiten Knöpfen (z. B. drei Stände). */
 .auswahlreihe.gleich { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; }
-.auswahlreihe.gleich button { padding-left: var(--abstand-1); padding-right: var(--abstand-1); }
+.auswahlreihe.gleich button { padding-left: var(--abstand-1); padding-right: var(--abstand-1);
+  min-width: 0; hyphens: auto; overflow-wrap: break-word; } /* lange Wörter trennen statt über den Rand ragen */
 .warnung { color: var(--gefahr); font-weight: 400; }
 
 /* Eingabefeld mit Beschriftung: Beschriftung umschließt das Feld, beide eng beieinander. */

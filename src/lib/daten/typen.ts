@@ -162,7 +162,7 @@ export interface Regeln {
     /** Auslöser (leiter.ausloeser) eines eingehenden Nahkampfangriffs, auch wenn er abgewehrt wird. */
     ausloeser: string;
     /** Kampfkunst-Wirkungen; `name` wie in perks.json `kampfkunst`. */
-    wirkungen: { id: string; name: string; folge: string; folge_du: string; stand_danach?: string; stagger?: boolean }[];
+    wirkungen: { id: string; name: string; folge: string; folge_du: string; tat_du: string; tat_gegner: string; stand_danach?: string; stagger?: boolean }[];
   };
   /** Auslöser (leiter.ausloeser), die ein eingehender Treffer setzt (konzept.md § 3.10). */
   eingehend: { ausloeser: { beschossen: string; getroffen: string; verletzt: string; stagger: string } };
