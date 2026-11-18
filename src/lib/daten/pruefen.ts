@@ -154,6 +154,11 @@ export function pruefeDaten(d: Spieldaten): string[] {
     for (const s of art.stand) if (!staende.has(s)) f('regeln.json', `bewegung.arten.${id}: unbekannter Stand „${s}“`);
     if (!d.darstellung.bewegungen?.[id]) f('darstellung.json', `Bewegungsart „${id}“ ohne Namen (bewegungen)`);
   }
+  for (const id of [...Object.keys(r.bewegung.arten), 'hechten']) {
+    const p = d.darstellung.bewegung_pfeile?.[id];
+    if (p !== 'sprung' && !(typeof p === 'number' && p >= 1)) f('darstellung.json', `Bewegungsart „${id}“ ohne Pfeile (bewegung_pfeile)`);
+  }
+  for (const s of staende) if (!d.darstellung.stand_bilder?.[s]) f('darstellung.json', `Stand „${s}“ ohne Piktogramm (stand_bilder)`);
   for (const s of [...r.hechten.staende, ...Object.keys(r.schiessen.rueckstoss_stepshields)])
     if (!staende.has(s)) f('regeln.json', `unbekannter Stand „${s}“ (hechten bzw. rueckstoss_stepshields)`);
   if (!r.eingehend?.ausloeser) f('regeln.json', 'eingehend.ausloeser fehlt');

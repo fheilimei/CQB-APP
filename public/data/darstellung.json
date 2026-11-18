@@ -110,5 +110,17 @@
     "diese_runde": "diese Runde",
     "letzte_runde": "letzte Runde",
     "aelter": "älter"
+  },
+  "stand_bilder": {
+    "stehen": "M14.2 4a2.2 2.2 0 1 0-4.4 0a2.2 2.2 0 1 0 4.4 0M12 7v7.5M8 12l4-3l4 3M8.5 22l3.5-7.5l3.5 7.5M3 23h18",
+    "hocke": "M12.7 9a2.2 2.2 0 1 0-4.4 0a2.2 2.2 0 1 0 4.4 0M11 12l1.5 5.5M11.5 13.5l4 2M12.5 17.5h4v4.5M12.5 17.5l-3 4.5M3 23h18",
+    "liegen": "M6.7 19a2.2 2.2 0 1 0-4.4 0a2.2 2.2 0 1 0 4.4 0M7.5 20h8.5M16 20l5.5-1M16 20l5.5 1.5M9.5 20l-2 2.5M2 23h20"
+  },
+  "bewegung_pfeile": {
+    "kriechen": 1,
+    "gehen": 1,
+    "laufen": 2,
+    "rennen": 3,
+    "hechten": "sprung"
   }
 }

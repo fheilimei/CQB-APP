@@ -7,6 +7,7 @@
   import { ruestungswert } from '../regeln/schaden';
   import { deckungFuer } from '../regeln/wunden';
   import type { Charakter, Wunde } from '../speicher/charakter';
+  import Haltungsanzeige from './Haltungsanzeige.svelte';
   import Silhouette from './Silhouette.svelte';
 
   interface Props { c: Charakter; d: Spieldaten; ongetroffen: () => void }
@@ -52,8 +53,13 @@
   {:else if lage === 'kampfunfaehig'}
     <p class="warnung">kampfunfähig{imGefecht ? ': im Gefecht keine Aktionen' : ''}</p>
   {/if}
-  <Silhouette {d} {ruestung} {wunden} gewaehlt={zone} onwahl={(z) => (zone = zone === z ? null : z)}
-    beschriftung="Körperbild mit Rüstung und Wunden; Zone antippen für Einzelheiten" />
+  <div class="figurbox">
+    <Silhouette {d} {ruestung} {wunden} gewaehlt={zone} onwahl={(z) => (zone = zone === z ? null : z)}
+      beschriftung="Körperbild mit Rüstung und Wunden; Zone antippen für Einzelheiten" />
+    {#if gefechtVon(c)}
+      <div class="haltung"><Haltungsanzeige g={gefechtVon(c)!} {d} /></div>
+    {/if}
+  </div>
 
   {#if gewaehlt}
     <div class="zone gruppe" aria-live="polite">
@@ -96,6 +102,9 @@
   .fuellung.niedrig { background: var(--gefahr); }
   .warnung { margin: 0; }
   p { margin: 0; }
+  /* Stand und Bewegung oben rechts in der freien Ecke neben dem Kopf der Figur. */
+  .figurbox { position: relative; }
+  .haltung { position: absolute; top: 0; right: 0; }
   .mitte { text-align: center; }
   /* Übersicht der gewählten Zone: eigene Fläche mit Akzentstreifen, passend zum Akzentrahmen der Zone in der Figur. */
   .zone { background: var(--flaeche-2); border-left: 3px solid var(--akzent); border-radius: 8px; padding: var(--abstand-2) var(--abstand-3); }

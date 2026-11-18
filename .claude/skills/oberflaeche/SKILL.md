@@ -32,6 +32,7 @@ Rückmeldung des Nutzers vom 17.11.2026:
 - **Gleicher Knopf, gleiche Stelle** (18.11.2026, Getroffen): Ein Knopf, den es im Gefecht und in Ruhe gibt, steht in beiden an derselben Stelle (Getroffen unter der Figur, nicht in der Aktionsleiste).
 - **Einzelheiten beim Antippen statt eigener Liste** (18.11.2026, Wunden): Was zu einer Stelle der Figur gehört, erscheint beim Antippen dieser Stelle, nicht in einer zusätzlichen Liste darunter.
 - **Berichte als kleine Erzählung** (18.11.2026): Der Bericht nach einem Ablauf erzählt in ganzen Sätzen, was passiert ist („Ein Schuss trifft dich an der Brust. Er durchschlägt deine Rüstung …“), nicht als Stichpunkte mit Doppelpunkt.
+- **Bildzeichen statt Text für Zustände an der Figur** (18.11.2026): Stand und Bewegung als Piktogramme oben rechts neben der Silhouette, wenig Text.
 - Besonders aufgefallen: **Waffe wechseln** (`gefecht/WaffeWechseln.svelte`) und **Schießen** (`gefecht/Schiessen.svelte`).
 
 Jede Arbeit an der Oberfläche muss diese Punkte verbessern oder darf sie zumindest nicht verschlimmern.
