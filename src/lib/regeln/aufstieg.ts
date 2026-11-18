@@ -263,6 +263,68 @@ export function wechselVorschau(c: Charakter, zielId: string, d: Spieldaten, zwe
   };
 }
 
+// ---------- Klassenwechsel (konzept.md § 3.0d; Regelwerk: Charakteraufstieg, Klassenwechsel; Klassen)
+
+export type Wechselart = 'befoerderung' | 'wechsel' | 'zweite_spezialisierung';
+
+export interface Wechselziel {
+  klasse: string;
+  art: Wechselart;
+}
+
+/** Stufe, auf der der Charakter steht; eine zweite Spezialisierung gilt als Stufe 4. null = ohne Klasse. */
+export function stufeDesCharakters(c: Charakter, d: Spieldaten): number | null {
+  const letzter = c.klassenweg.at(-1);
+  if (!letzter) return null;
+  const k = klasseVon(letzter.klasse, d);
+  return letzter.art === 'zweite_spezialisierung' ? k.stufe + 1 : k.stufe;
+}
+
+/**
+ * Klassen, in die der Charakter wechseln kann (konzept.md § 3.0d). Beförderung: die nächste Stufe der eigenen Laufbahn
+ * (Stufe 2 → Spezialisierungen; Spezialisierung → ihre erweiterte Form oder eine zweite Spezialisierung; Stufe 4 → Meister).
+ * Laufbahnwechsel: Klassen anderer Laufbahnen bis zur eigenen Stufe. Ohne Klasse: alle Klassen.
+ * Ob die Bedingungen erfüllt sind, prüft klassenwechselPruefen.
+ */
+export function wechselZiele(c: Charakter, d: Spieldaten): Wechselziel[] {
+  const id = aktuelleKlasse(c);
+  if (!id) return d.klassen.eintraege.map((k) => ({ klasse: k.id, art: 'wechsel' }));
+  const k = klasseVon(id, d);
+  const stufe = stufeDesCharakters(c, d)!;
+  const zweite = c.klassenweg.at(-1)!.art === 'zweite_spezialisierung';
+  const ziele: Wechselziel[] = [];
+  for (const z of d.klassen.eintraege) {
+    if (z.laufbahn !== k.laufbahn) continue;
+    if (k.art === 'spezialisierung' && !zweite) {
+      if (z.art === 'erweiterte_form' && z.erweitert === k.id) ziele.push({ klasse: z.id, art: 'befoerderung' });
+      // Regelfrage R41 (docs/offen.md): vorläufig gilt eine schon durchlaufene Spezialisierung nicht als zweite.
+      else if (z.art === 'spezialisierung' && z.id !== k.id && !c.klassenweg.some((s) => s.klasse === z.id))
+        ziele.push({ klasse: z.id, art: 'zweite_spezialisierung' });
+    } else if (z.stufe === stufe + 1) ziele.push({ klasse: z.id, art: 'befoerderung' });
+  }
+  for (const z of d.klassen.eintraege) {
+    if (z.laufbahn !== k.laufbahn && z.stufe <= stufe) ziele.push({ klasse: z.id, art: 'wechsel' });
+  }
+  return ziele;
+}
+
+/** Klassenwechsel eintragen: neuer Eintrag im Klassenweg und im Protokoll. Stats, Skills und Perks bleiben. Nicht rücknehmbar. */
+export function klasseWechseln(c: Charakter, ziel: Wechselziel, jetzt: Date = new Date()): Charakter {
+  const zeit = jetzt.toISOString();
+  const von = aktuelleKlasse(c);
+  const x = { ...c, klassenweg: [...c.klassenweg, { klasse: ziel.klasse, art: ziel.art, zeit }] };
+  return eintrag(x, zeit, { art: 'klassenwechsel', von, nach: ziel.klasse, wechsel: ziel.art });
+}
+
+/** Gehalt pro Auftrag der aktuellen Klasse; zweite Spezialisierung: das der erweiterten Formen der Laufbahn (höchstes). */
+export function gehalt(c: Charakter, d: Spieldaten): number | null {
+  const letzter = c.klassenweg.at(-1);
+  if (!letzter) return null;
+  const k = klasseVon(letzter.klasse, d);
+  if (letzter.art !== 'zweite_spezialisierung') return k.gehalt;
+  return Math.max(...d.klassen.eintraege.filter((x) => x.art === 'erweiterte_form' && x.laufbahn === k.laufbahn).map((x) => x.gehalt));
+}
+
 // ---------- Aufstiegsschritte (konzept.md § 3.0a). Jeder Schritt wird protokolliert und ist nicht rücknehmbar.
 
 export interface Moeglichkeit {

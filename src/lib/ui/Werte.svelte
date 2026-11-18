@@ -5,7 +5,7 @@
   import type { Modifikator, Rang, Spieldaten } from '../daten/typen';
   import {
     aktuelleKlasse, eingefroreneSkills, moeglichkeiten, perkKaufen, perkVoraussetzungen, skillSteigern,
-    skillSteigernSperre, statrankUp, statrankUpSperre, vorratslevel, type Moeglichkeit
+    gehalt, skillSteigernSperre, statrankUp, statrankUpSperre, stufeDesCharakters, vorratslevel, type Moeglichkeit
   } from '../regeln/aufstieg';
   import { modifikatorenAn, perkModifikatoren, stepReihe } from '../regeln/bogen';
   import { GROESSEN } from '../regeln/erstellung';
@@ -20,6 +20,7 @@
   import Guertel from './Guertel.svelte';
   import Herkunft from './Herkunft.svelte';
   import Kaufliste from './Kaufliste.svelte';
+  import Klassenwechsel from './Klassenwechsel.svelte';
   import StatrankUp from './StatrankUp.svelte';
   import {
     bedingungText, geld, klasseName, laufbahnName, mitZeichen, perkName, punkte, stufeName, vorzeichen, wirkungText, wurfText, zielText,
@@ -72,6 +73,7 @@
   let stammOffen = $state(false);
   let alleSkills = $state(false);
   let rankUp = $state<string | null>(null);
+  let wechselOffen = $state(false);
   let kauf = $state<{ m: Moeglichkeit; zeilen: Zeile[] } | null>(null);
   let neuerPerk = $state('');
 
@@ -144,7 +146,8 @@
 {/snippet}
 
 {#if modus === 'aufstieg'}
-  <div class="leiste karte" aria-live="polite"><strong>{punkte(c.freie_punkte)} frei</strong></div>
+  <div class="leiste karte" aria-live="polite"><strong>{punkte(c.freie_punkte)} frei</strong>
+    <button class="betont" onclick={() => (wechselOffen = true)}>Klasse wechseln</button></div>
 {/if}
 
 <section class="karte">
@@ -164,8 +167,9 @@
       {#if klasse}
         {#if c.klassenweg.length > 1}<dt>Weg</dt><dd>{c.klassenweg.map((w) => klasseName(w.klasse, d)).join(' → ')}</dd>{/if}
         <dt>Laufbahn</dt><dd>{laufbahnName(klasse.laufbahn, d)}</dd>
-        <dt>Stufe</dt><dd>{klasse.stufe} ({stufeName(klasse.stufe, d)})</dd>
-        <dt>Gehalt</dt><dd>{geld(klasse.gehalt)} pro Auftrag{c.hintergrund.vertrag ? '' : ' (kein Vertrag)'}</dd>
+        {@const stufe = stufeDesCharakters(c, d) ?? klasse.stufe}
+        <dt>Stufe</dt><dd>{stufe} ({stufeName(stufe, d)})</dd>
+        <dt>Gehalt</dt><dd>{geld(gehalt(c, d) ?? klasse.gehalt)} pro Auftrag{c.hintergrund.vertrag ? '' : ' (kein Vertrag)'}</dd>
       {/if}
       <dt>Vorratslevel</dt>
       <dd class:hand={markiert('vorratslevel')}>
@@ -401,13 +405,17 @@
 {#if kauf}
   <Bericht titel="Aufstieg" zeilen={kauf.zeilen} weiter="Kaufen" onweiter={kaufBestaetigen} onzurueck={() => (kauf = null)} />
 {/if}
+{#if wechselOffen}
+  <Klassenwechsel {c} {d} onfertig={(n) => { onaendern(n); wechselOffen = false; }} onabbrechen={() => (wechselOffen = false)} />
+{/if}
 {#if rankUp}
   <StatrankUp {d} statId={rankUp} alt={c.stats[rankUp]!} freie={c.freie_punkte} modus={abweichungModus}
     onwurf={(w) => onaendern(statrankUp(c, rankUp!, w, d))} onschliessen={() => (rankUp = null)} />
 {/if}
 
 <style>
-  .leiste { position: sticky; top: 56px; z-index: 4; text-align: center; padding: 10px; }
+  /* Freie Punkte links, Klasse wechseln rechts in derselben Zeile. */
+  .leiste { position: sticky; top: 56px; z-index: 4; padding: 10px; flex-direction: row; justify-content: space-between; align-items: center; gap: var(--abstand-2); }
   summary { min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 8px; cursor: pointer; }
   summary h2 { margin: 0; font-size: 1.1rem; }
   dl { display: grid; grid-template-columns: auto 1fr; gap: var(--abstand-2) var(--abstand-3); margin: 0; align-items: center; }

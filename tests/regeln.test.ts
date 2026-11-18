@@ -5,7 +5,11 @@ import {
   aktuelleKlasse,
   eingefroreneSkills,
   fehlendeRangstufen,
+  gehalt,
+  klasseWechseln,
   klassenwechselPruefen,
+  stufeDesCharakters,
+  wechselZiele,
   perkKaufenSperre,
   rankSetErfuellt,
   skillSteigernSperre,
@@ -581,6 +585,48 @@ describe('Aufstieg', () => {
     const meister = klassenwechselPruefen(c, 'veteran', d);
     expect(meister.find((p) => p.art === 'weg')?.erfuellt).toBe(false);
     expect(meister.find((p) => p.art === 'mindestskills_wahl')?.erfuellt).toBe(false);
+  });
+
+  it('Wechselziele: Beförderung in die nächste Stufe der Laufbahn, Laufbahnwechsel bis zur eigenen Stufe', () => {
+    const ziele = (weg: { klasse: string; art: 'erstellung' | 'befoerderung' | 'zweite_spezialisierung' }[]) =>
+      wechselZiele(charakter(LEHRLING, { klassenweg: weg }), d);
+    const vonRekrut = ziele([{ klasse: 'rekrut', art: 'erstellung' }]);
+    expect(vonRekrut.filter((z) => z.art === 'befoerderung').map((z) => z.klasse)).toEqual(['soldat']);
+    expect(vonRekrut.filter((z) => z.art === 'wechsel').map((z) => z.klasse)).toEqual(['laufbursche', 'anwaerter']);
+
+    const vonSoldat = ziele([{ klasse: 'soldat', art: 'erstellung' }]).filter((z) => z.art === 'befoerderung').map((z) => z.klasse);
+    expect(vonSoldat).toEqual(['kommandosoldat', 'scharfschuetze', 'grenadier', 'sanitaeter']);
+
+    const vonKommando = ziele([{ klasse: 'soldat', art: 'erstellung' }, { klasse: 'kommandosoldat', art: 'befoerderung' }]);
+    expect(vonKommando.filter((z) => z.art === 'befoerderung').map((z) => z.klasse)).toEqual(['einzelkaempfer']);
+    expect(vonKommando.filter((z) => z.art === 'zweite_spezialisierung').map((z) => z.klasse)).toEqual(['scharfschuetze', 'grenadier', 'sanitaeter']);
+    // Laufbahnwechsel höchstens auf Stufe 3: keine erweiterte Form, kein Meister einer anderen Laufbahn.
+    expect(vonKommando.some((z) => z.klasse === 'auftragskiller' || z.klasse === 'unantastbarer')).toBe(false);
+    expect(vonKommando.some((z) => z.klasse === 'vollstrecker' && z.art === 'wechsel')).toBe(true);
+
+    const zweite = [{ klasse: 'soldat', art: 'erstellung' as const }, { klasse: 'kommandosoldat', art: 'befoerderung' as const },
+      { klasse: 'grenadier', art: 'zweite_spezialisierung' as const }];
+    expect(ziele(zweite).filter((z) => z.art === 'befoerderung').map((z) => z.klasse)).toEqual(['veteran']);
+    expect(ziele([{ klasse: 'veteran', art: 'erstellung' }]).filter((z) => z.art === 'befoerderung')).toEqual([]);
+  });
+
+  it('Zweite Spezialisierung gilt als Stufe 4, mit Gehalt der erweiterten Formen', () => {
+    const c = charakter(LEHRLING, { klassenweg: [{ klasse: 'kommandosoldat', art: 'erstellung' }, { klasse: 'grenadier', art: 'zweite_spezialisierung' }] });
+    expect(stufeDesCharakters(c, d)).toBe(4);
+    const erweitert = d.klassen.eintraege.filter((k) => k.laufbahn === 'militaer' && k.art === 'erweiterte_form').map((k) => k.gehalt);
+    expect(gehalt(c, d)).toBe(Math.max(...erweitert));
+    expect(stufeDesCharakters(charakter(LEHRLING, { klassenweg: [] }), d)).toBeNull();
+  });
+
+  it('Klasse wechseln hängt an den Klassenweg und protokolliert; Skills und Perks bleiben', () => {
+    const c = charakter(LEHRLING, { klassenweg: [{ klasse: 'rekrut', art: 'erstellung' }], skills: { waffe_ar: 2 }, perks: ['zaeh_1'] });
+    const nach = klasseWechseln(c, { klasse: 'soldat', art: 'befoerderung' }, new Date('2026-11-18T10:00:00Z'));
+    expect(aktuelleKlasse(nach)).toBe('soldat');
+    expect(nach.klassenweg.at(-1)).toEqual({ klasse: 'soldat', art: 'befoerderung', zeit: '2026-11-18T10:00:00.000Z' });
+    expect(nach.protokoll.at(-1)).toMatchObject({ art: 'klassenwechsel', von: 'rekrut', nach: 'soldat', wechsel: 'befoerderung' });
+    expect(nach.skills).toEqual(c.skills);
+    expect(nach.perks).toEqual(c.perks);
+    expect(nach.freie_punkte).toBe(c.freie_punkte);
   });
 
   it('Vorschau des Wechsels: eingefrorene und wieder steigerbare Skills', () => {

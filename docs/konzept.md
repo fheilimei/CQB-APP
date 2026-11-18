@@ -173,6 +173,8 @@ Fehlende Ränge oder Skills lassen sich nicht im Dialog kaufen; der Spieler kauf
 
 Stats, Skills und Perks des Charakters ändert der Wechsel nicht. Bestätigt der Spieler, hängt die App einen Eintrag an den Klassenweg und protokolliert den Wechsel. Wie jeder Aufstiegsschritt ist er nicht rücknehmbar; Korrekturen im Schreibmodus.
 
+Umsetzung (18.11.2026): Knopf **Klasse wechseln** in der Leiste mit den freien Punkten (Reiter Werte, Aufstiegsmodus). Das Fenster listet unter **Wohin?** die Klassen nach Beförderung, Zweite Spezialisierung und Laufbahnwechsel, je mit Stufe und „✓ alles erfüllt“ bzw. „fehlt: mindestens n Punkte“. Nach der Wahl: **Prüfung** (✓/✗ je Bedingung mit dem, was fehlt; Schalter „Die SL gibt den Wechsel frei“), **Was sich ändert** (Vorratslevel und Gehalt vorher → nachher, eingefrorene, wieder steigerbare und neue Skills, neue Perks). „Weiter“ geht erst, wenn alles erfüllt und die Freigabe gesetzt ist; dann Bericht. Eine zweite Spezialisierung zeigt im Reiter Werte Stufe 4 und das Gehalt der erweiterten Formen.
+
 ### 3.0e Gefecht und Ruhe (M)
 Unabhängig von den Modi Lesen, Aufstieg und Schreiben ([§ 3.0a](#30a-modi-lesen-aufstieg-schreiben-m)) ist ein Charakter entweder **in Ruhe** oder **im Gefecht**.
 

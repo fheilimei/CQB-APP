@@ -4,6 +4,14 @@
 
 Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. Die App arbeitet bis zur Entscheidung mit der genannten vorläufigen Lösung. Neue Einträge kommen beim Programmieren hinzu (Skill „regelfrage“). Die Regelpunkte aus den Schritten 1 bis 6 sind hierher übertragen (18.11.2026).
 
+### R41. Welche Spezialisierungen gelten als „zweite“? (18.11.2026)
+- **Frage:** Die zweite Spezialisierung ist eine andere Spezialisierung der eigenen Laufbahn. Darf es eine sein, die der Charakter früher schon hatte (z. B. nach einem Laufbahnwechsel zurück)?
+- **Stellen:** (Klassen, Zweite Spezialisierung)
+- **Vorläufig:** Nein; die App bietet nur Spezialisierungen an, die noch nicht im Klassenweg stehen.
+- **Andere Möglichkeit:** jede andere Spezialisierung als die aktuelle.
+- **Ändern:** Regelkern, Aufstieg (Wechselziele).
+- **Im Regelwerk klarstellen:** nein
+
 ### R39. Heildauer einer kritischen Wunde halbieren: in Wochen oder in Tagen? (18.11.2026)
 - **Frage:** Eine kritische Wunde heilt in Wochen aus Ruhetagen. Ein Krit bei der Nachsorge halbiert die Heildauer „aufgerundet“. Wird in Wochen aufgerundet (3 Wochen → 2 Wochen) oder in Ruhetagen (21 → 11)?
 - **Stellen:** (Schaden, Blutung und Verletzungen, Wunden heilen)
@@ -402,3 +410,9 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 3. **Pflege.** Der Betreuer würfelt selbst; der Spieler tippt sein Ergebnis (keine · misslungen · gelungen · Krit). Ob man sich selbst pflegen kann, sagt das Regelwerk nicht; die App fragt nicht danach.
 4. **Nachsorge** steht als Knopf bei der versorgten Wunde in der Übersicht der Zone (nur außerhalb des Gefechts), solange sie noch nicht gemacht ist. Ohne Nachsorge rechnet die App die Heildauer wie „keine Nachsorge“ (×2) und schreibt dazu „ohne Nachsorge“.
 5. **Kein Protokoll** für Ruhe und Nachsorge; sie gehören zum Spielstand wie Treffer außerhalb des Gefechts.
+
+## Offen aus Schritt 8 (Klassenwechsel, 18.11.2026)
+
+1. **Wechsel innerhalb der eigenen Laufbahn auf gleicher Stufe** (z. B. von einer Spezialisierung in eine andere, ohne Beförderung) bietet die App nicht an; das Konzept nennt nur Beförderung und Laufbahnwechsel. Die zweite Spezialisierung auf Stufe 4 geht.
+2. **Ohne Klasse:** Ein Charakter ohne Klasse kann über „Klasse wechseln“ in jede Klasse wechseln, wenn die Bedingungen erfüllt sind. Danach gilt der Zugang der Klasse.
+3. **Laufbahnwechsel** zeigt alle Klassen anderer Laufbahnen bis zur eigenen Stufe; ob der Weg passt (z. B. erweiterte Form ohne ihre Spezialisierung), steht in der Prüfung.
