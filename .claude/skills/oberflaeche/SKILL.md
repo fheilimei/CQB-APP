@@ -23,6 +23,7 @@ Rückmeldung des Nutzers vom 17.11.2026:
 - **Zusammengehöriges in eine Zeile, Arten von Werten unterscheidbar** (17.11.2026, Stats im Reiter Werte): Hauptwert direkt neben dem Namen, Folgewerte (Steps) in derselben Zeile in fester Reihenfolge. Eine Eigenschaft wie der Rang sieht anders aus als Zahlenwerte (kleine Marke) und schwebt nicht über anderen Werten.
 - **Kein unnötiger Platz in festen Leisten am unteren Rand** (18.11.2026, Adrenalin-Rad): flach halten; was der Daumen beim Bedienen verdecken würde, klappt beim Halten nach oben auf.
 - **Aufklappen muss erkennbar sein** (18.11.2026, Menü): Was etwas aufklappt, trägt einen Pfeil wie ein Ordner (› zu, nach unten gedreht offen), nicht ⋯. Nebenhandlungen einer Liste (Neu, Importieren) stehen als kleine Knöpfe in der Überschriftzeile statt als eigener Block.
+- **Keine großen gefüllten Knöpfe für seltene Handlungen** (18.11.2026, Gefecht starten): Start und Ende eines Zustands stehen an derselben Stelle (oben rechts in der Kopfzeile). Hervorheben lieber mit Akzentrahmen (`button.betont`) als mit gefüllter Fläche. Keine doppelten Wege (Knopf Probe auf Figur entfiel, Proben laufen über den Reiter Werte).
 - Besonders aufgefallen: **Waffe wechseln** (`gefecht/WaffeWechseln.svelte`) und **Schießen** (`gefecht/Schiessen.svelte`).
 
 Jede Arbeit an der Oberfläche muss diese Punkte verbessern oder darf sie zumindest nicht verschlimmern.

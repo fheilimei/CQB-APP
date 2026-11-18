@@ -47,6 +47,9 @@ button { font: inherit; color: inherit; min-height: var(--tipp); min-width: var(
   border: 1px solid var(--linie); background: var(--flaeche); padding: 0 16px; cursor: pointer; }
 button.haupt { background: var(--akzent); color: var(--akzent-text); border-color: transparent; font-weight: 600; }
 button.gefahr { color: var(--gefahr); border-color: var(--gefahr); }
+/* Hervorgehoben, aber nicht gefüllt: Akzentrahmen und Akzentschrift (z. B. Gefecht starten). */
+button.betont { color: var(--akzent); border: 2px solid var(--akzent); background: transparent; font-weight: 600; }
+button.betont.warnung { color: var(--gefahr); border-color: var(--gefahr); }
 button.flach { border-color: transparent; background: transparent; }
 button:disabled { opacity: 0.45; cursor: default; }
 /* Rückmeldung beim Tippen: jeder Knopf gibt sichtbar nach. */

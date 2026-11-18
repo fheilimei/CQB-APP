@@ -176,7 +176,7 @@ Unabhängig von den Modi Lesen, Aufstieg und Schreiben ([§ 3.0a](#30a-modi-lese
 **In Ruhe** (Standard):
 - Keine Aktionsleiste, keine Zähler, keine Initiative. Der Bereich „Adrenalin“ ist eingeklappt.
 - Verfügbar: Bogen, Probenrechner, Waffen (Nachladen, Wechsel, Aufsätze frei, ohne Aktion), **Getroffen** ([§ 3.7c](#37c-treffer-ausgehend-und-eingehend-m-r)), Wunden, Versorgen, Heilung, Ausrüstung.
-- Am unteren Rand steht groß **Gefecht starten**.
+- Oben rechts in der Kopfzeile steht **Gefecht starten** (an der Stelle, an der im Gefecht „Gefecht beenden“ steht; Akzentrahmen, nicht gefüllt).
 
 **Im Gefecht** (nach „Gefecht starten“, [§ 3.7](#37-leiter-m-r)):
 - Am unteren Rand erscheinen das Wählrad „Adrenalin“ ([§ 3.7](#37-leiter-m-r)) und darüber die Aktionsleiste mit **Main · Break · Bewegung · Stand · Getroffen · Ereignis** ([§ 3.7a](#37a-aktionsleiste-m-r)).
@@ -184,7 +184,7 @@ Unabhängig von den Modi Lesen, Aufstieg und Schreiben ([§ 3.0a](#30a-modi-lese
 - Der **Aufstiegsmodus** ist gesperrt (Steigern gehört nicht in die Runde). Der **Schreibmodus** bleibt erreichbar für Korrekturen.
 
 **Kampfunfähig.** Die App sperrt nichts; die Entscheidung der SL geht vor. Sie **markiert** aber deutlich, dass der Charakter nach den Regeln keine Aktionen hat ([§ 4.5](#45-zustände)):
-- **Gefecht starten** trägt eine Warnmarkierung (Warnfarbe und Zeichen) mit dem Grund, z. B. „kampfunfähig: 0 HP – im Gefecht keine Aktionen“.
+- **Gefecht starten** trägt eine Warnmarkierung (Warnfarbe und Zeichen), darunter in der Kopfzeile der Grund, z. B. „kampfunfähig: 0 HP – im Gefecht keine Aktionen“.
 - **Im Gefecht** tragen die vier Aktionsknöpfe dieselbe Markierung, und über der Aktionsleiste steht ein Banner „kampfunfähig: keine Aktionen“. Die Zähler zählen weiter wie sonst. Wer trotzdem eine Aktion wählt, sieht vorher einen Hinweis und bestätigt „Trotzdem ausführen“; der Bericht vermerkt es.
 - Das Gefecht läuft weiter, auch wenn der Charakter darin kampfunfähig wird; weitere Treffer, Blutungsfristen und Adrenalinschock hängen am Gefechtsende.
 
@@ -194,7 +194,7 @@ Die App hat vier Reiter in einer Leiste am unteren Rand: **Figur · Werte · Aus
 **Figur** (Startbildschirm). Die Silhouette ([§ 3.0f](#30f-körperbild-silhouette-a-r)) steht groß in der Mitte, damit der Zustand des Charakters immer vor Augen ist.
 - **Darüber:** Kopfzeile mit Name und Statusfeld ([§ 3.0a](#30a-modi-lesen-aufstieg-schreiben-m), [§ 3.0e](#30e-gefecht-und-ruhe-m)), HP als Balken mit Zahl, Adrenalin bzw. Ruhepuls (nur wenn nicht 0), aktive Zustände als Chips (z. B. Geblendet 1, Adrenalinschock).
 - **Mitte:** die Silhouette mit Stand, Rüstung, Deckung, Wunden und Folgen; die aktive Waffe in der Hand mit Magazinstand.
-- **Darunter:** in Ruhe die Knöpfe **Probe** (Probenrechner), **Getroffen**, **Heilung** und groß **Gefecht starten**; im Gefecht Aktionsleiste und Bereich „Adrenalin“ ([§ 3.7](#37-leiter-m-r), [§ 3.7a](#37a-aktionsleiste-m-r)).
+- **Darunter:** in Ruhe die Knöpfe **Getroffen** und **Heilung** (Proben starten über den Reiter Werte; **Gefecht starten** steht oben rechts in der Kopfzeile); im Gefecht Aktionsleiste und Bereich „Adrenalin“ ([§ 3.7](#37-leiter-m-r), [§ 3.7a](#37a-aktionsleiste-m-r)).
 - **Antippen einer Zone** öffnet die Übersicht der Zone: Rüstung, Deckung, Wunden mit Status, andauernde Folgen; von dort Versorgen und Getroffen (Zone vorbelegt).
 
 **Werte:** Stammdaten (eingeklappt) · **Stats** · **Skills** · **Perks** · Grundwerte. Stats, Skills und Perks stehen direkt untereinander, weil sie beim Spielen zusammen gebraucht werden ([§ 3.1](#31-stammdaten-a-m) bis [§ 3.5](#35-perks-a-m)). Auch Aufstieg und Klassenwechsel finden hier statt.
@@ -295,7 +295,7 @@ Automatisch einbezogen: Steps aus der Leiter und aus Zuständen ([§ 4.5](#45-zu
 **Skill austauschen.** Wo immer ein Ablauf einen Skill vorwählt (Probenrechner, Schießen, Werfen, Nahkampf, Breakaction …), kann der Spieler ihn durch einen anderen Skill ersetzen. Die SL erlaubt das mit guten Argumenten (Regelwerk: Stats, Skills und Perks, Skills). Der Bericht nennt den verwendeten Skill.
 Ausgabe: **Zielwert**, **Krit-Schwelle**, oder „keine Probe möglich“ ([§ 4.2](#42-steps-und-zielwert), [§ 4.3](#43-krit)). Die App zeigt die Herkunft jedes Steps mit Zeichen und Namen ([§ 3.0b](#30b-herkunft-von-werten-a-r)), außerdem die Hinweise passender Perks.
 
-**Aufbau** (Dialog, erreichbar über den Knopf **Probe** auf dem Reiter Figur, über einen Skill und über das Detail eines Stats):
+**Aufbau** (Dialog, erreichbar über einen Skill und über das Detail eines Stats):
 - Oben neun Stat-Knöpfe mit Statwert (drei Spalten), darunter die Auswahl **Skill**: zuerst die eigenen Skills mit Stufe, dann die übrigen mit Stufe 0. Wird ein Skill gewählt, bevor ein Stat gewählt ist, übernimmt die App dessen Stat. Gehört der Skill zu einem anderen Stat, steht der Hinweis „Skill ausgetauscht … Das muss die SL erlauben.“
 - Kopfzeile „▼ Malsteps · ▲ Stepshields · ⬢ Skillstufe · netto n“ mit **Zielwert** und **Krit ≤**; Antippen klappt die Rechnung auf (Stat, Skill, jede Quelle, Ergebnis). Die Kopfzeile steht in jedem Dialog mit Probe (auch Schießen) fest oben unter dem Titel und scrollt nicht mit.
 - **Automatisch** (Lage-Block 1): Chips mit Herkunftszeichen, je mit × bzw. ↺; Steps der SL für das ganze Gefecht zusätzlich mit „löschen“.

@@ -318,11 +318,20 @@
           <button class="chip-klein zustand" onclick={schockFrage}>Adrenalinschock</button>
         {/if}
       </div>
-      {#if modus !== 'lesen'}
+      {#if modus !== 'lesen' || !gefecht}
         <div class="modus">
-          <span class="status an">{MODUS_NAME[modus]}</span>
-          <button class="haupt klein" onclick={() => (modus = 'lesen')}>Fertig</button>
+          {#if modus !== 'lesen'}
+            <span class="status an">{MODUS_NAME[modus]}</span>
+            <button class="haupt klein" onclick={() => (modus = 'lesen')}>Fertig</button>
+          {/if}
+          {#if !gefecht}
+            <button class="betont klein" class:warnung={kampfunfaehig} onclick={gefechtStarten}>
+              {#if kampfunfaehig}⚠ {/if}Gefecht starten</button>
+          {/if}
         </div>
+      {/if}
+      {#if !gefecht && kampfunfaehig}
+        <p class="fehler kampfunfaehig">kampfunfähig: im Gefecht keine Aktionen</p>
       {/if}
       {#if gefecht}
         <div class="gefechtszeile">
@@ -347,14 +356,6 @@
           {#if aktiv.aussehen}<p>{aktiv.aussehen}</p>{/if}
           <p class="hinweis">Hier entsteht die Figur mit Silhouette. Deine Werte findest du im Reiter Werte.</p>
         </section>
-        <div class="figur-knoepfe">
-          <button class="breit" onclick={() => (dialog = { art: 'probe', stat: null, skill: null })}>Probe</button>
-          {#if !gefecht}
-            <button class="haupt breit gross" class:warnung={kampfunfaehig} onclick={gefechtStarten}>
-              {#if kampfunfaehig}⚠ {/if}Gefecht starten</button>
-            {#if kampfunfaehig}<p class="fehler">kampfunfähig: im Gefecht keine Aktionen</p>{/if}
-          {/if}
-        </div>
       {:else if reiter === 'werte'}
         <Werte c={aktiv} d={daten} {modus} {abweichungModus} onaendern={aendern}
           onprobe={(stat, skill) => (dialog = { art: 'probe', stat, skill })} />
@@ -471,10 +472,7 @@
   .gefechtszeile .rechts { margin-left: auto; display: flex; gap: 6px; }
   .gefechtszeile .klein { padding: 0 10px; font-size: 0.9rem; }
   .initiative { padding: 0 6px; font-size: 0.9rem; min-height: 40px; text-decoration: underline; text-underline-offset: 3px; }
-  .figur-knoepfe { margin-top: auto; display: flex; flex-direction: column; gap: var(--abstand-3); }
-  .breit { width: 100%; }
-  .gross { min-height: 64px; font-size: 1.15rem; }
-  .warnung { background: var(--gefahr); }
+  .kampfunfaehig { flex-basis: 100%; margin: 0; text-align: right; font-size: 0.85rem; }
   .update { position: fixed; left: 16px; right: 16px; bottom: calc(72px + env(safe-area-inset-bottom)); z-index: 50;
     display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: var(--abstand-3); }
   .datenfehler { margin: var(--abstand-2) var(--abstand-3) 0; border-color: var(--gefahr); display: block; }
