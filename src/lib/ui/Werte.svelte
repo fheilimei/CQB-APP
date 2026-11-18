@@ -394,7 +394,7 @@
 
   /* Stat in einer Zeile: Name (mit Rang-Marke) | Statwert groß | Zielwerte bei ▼1 … ▼n, von links nach rechts absteigend.
      Kopfreihe und Zeilen teilen dieselben Spalten, damit die Zahlen untereinander stehen. */
-  /* Spaltenbreiten in rem, damit „Decisiveness“ bei 360 Pixel Breite neben fünf Steps passt. */
+  /* Spaltenbreiten in rem, damit „Decision“ bei 360 Pixel Breite neben fünf Steps passt. */
   .statgitter, .zeile.statgitter { display: grid; grid-template-columns: minmax(0, 1fr) 2.6rem repeat(var(--spalten), 1.6rem) 1rem; align-items: center;
     column-gap: 2px; font-variant-numeric: tabular-nums; }
   .statwert, .step { font-family: var(--schrift-zahl); }

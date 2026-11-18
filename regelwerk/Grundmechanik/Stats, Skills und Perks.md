@@ -54,7 +54,7 @@ Im Spiel werden Statwerte nie direkt verändert. Vorübergehende Boni wirken nur
 ## Liste von Stats
 Die 9 Stats bilden drei Gruppen:
 - **Gruppe A:** Twitch, Brawn, Agility, Grit.
-- **Gruppe B:** Control, Empathy, Intellect, Decisiveness.
+- **Gruppe B:** Control, Empathy, Intellect, Decision.
 - **Gruppe C:** Nerve.
 
 [[Adrenalin]] wirkt auf Gruppe A positiv und auf Gruppe B negativ, der Ruhepuls umgekehrt. Nerve bremst den Anstieg von Adrenalin (siehe [[#Stats und ihre Auswirkung]]).
@@ -71,7 +71,7 @@ Jeder Stat steht für eine Fähigkeit. Die Tabelle nennt die festen Proben des S
 | Control | B | Schießen ([[Kampfsystem#Treffen]]); einfache Ladehemmung beheben ([[Kampfsystem#Ladehemmung]]); Feinmotorik | Waffenskills, Fahren, Taktisches Fahren, Erste Hilfe, Operation, Schlösser |
 | Empathy | B | Verbündete verschieben ([[Adrenalin#Verbündete verschieben]]); Umgang mit Menschen | Verhandeln, Führung, Beschaffen, Verhören |
 | Intellect | B | Antizipation bei der Breakaction ([[Kampfsystem#Reaktion und Antizipation]]); schwere Ladehemmung beheben ([[Kampfsystem#Ladehemmung]]) | Lagegespür, Wachsamkeit, Mechanik, Bildung, Tarnen, Ballistik, Sprengstoff |
-| Decisiveness | B | Initiative, ohne Skill ([[Kampfsystem#Action Economy]]) | Krisenmanagement |
+| Decision | B | Initiative, ohne Skill ([[Kampfsystem#Action Economy]]) | Krisenmanagement |
 | Nerve | C | Nerve-Proben vor dem Gefecht, gegen den Anstieg und beim Senken ([[Adrenalin]]) | Selbstbeherrschung |
 
 **Perks.** Viele Perks verlangen einen Mindestwert in einem Stat ([[#Rang und Voraussetzungen]]), z. B. Brawn für Zäh, Schlagkraft und Wurfarm, Grit für Schmerzunempfindlich und Rüstungsträger ([[#Perks für Grundwerte]], [[#Allgemeine Perks]]).
@@ -173,7 +173,7 @@ Mit dem Waffenskill triffst du ([[Kampfsystem#Treffen]]) und behebst eine einfac
 ### Entscheidung
 | Skill | Stat | Einsatz |
 | --- | --- | --- |
-| Krisenmanagement | Decisiveness | in Notlagen mit unvollständigem Lagebild Prioritäten setzen: Triage mehrerer Verwundeter ([[Schaden, Blutung und Verletzungen#Blutung]]), Evakuierung, Rückzug, Handeln unter einer Frist der SL |
+| Krisenmanagement | Decision | in Notlagen mit unvollständigem Lagebild Prioritäten setzen: Triage mehrerer Verwundeter ([[Schaden, Blutung und Verletzungen#Blutung]]), Evakuierung, Rückzug, Handeln unter einer Frist der SL |
 
 ### Medizin
 | Skill | Stat | Einsatz |
@@ -249,13 +249,13 @@ Jede Kampfkunst ordnet einem Sieg mit überlegenem Stand im Nahkampf eine Wirkun
 | Perk | Rang | Voraussetzung | Wirkung |
 | --- | --- | --- | --- |
 | CQB | 1 | Twitch 60 | Im Band bedrängt bringt die Reichweite deiner Waffe keine Malsteps ([[Schusswaffen (tragbar)#Begriffserklärung]], *Reichweite*). |
-| Entschlossen | 1 | Decisiveness 60 | Wirst du überrascht, hast du in der ersten Runde keinen Malstep auf Initiative und Breakaction ([[Kampfsystem#Die Breakaction benutzen]], *Überrascht*). |
+| Entschlossen | 1 | Decision 60 | Wirst du überrascht, hast du in der ersten Runde keinen Malstep auf Initiative und Breakaction ([[Kampfsystem#Die Breakaction benutzen]], *Überrascht*). |
 | Feuer in Bewegung | 1 | Brawn 60 | Deine eigene Bewegung bringt beim Schießen 1 Malstep weniger ([[Kampfsystem#Malsteps der Lage]]). |
 | Fingerfertig | 1 | Control 40 | Beim einzeln Laden lädst du bis zu 3 statt 2 Patronen pro Mainaction ([[Kampfsystem#Nachladen]]). |
 | Funkdisziplin | 1 | Intellect 60 | Per Funk gemeldete Informationen zählen beim Antizipieren wie gesehen: 0 statt 1 Malstep für die Güte ([[Kampfsystem#Reaktion und Antizipation]]). |
 | Gegner einschätzen | 1 | Empathy 50 | Einmal pro Gefecht wählst du ohne Aktion einen Gegner, den du wahrnimmst. Gegen ihn hast du bis zum Ende des Gefechts 1 Stepshield auf Antizipation ([[Kampfsystem#Reaktion und Antizipation]]). Fällt er aus, darfst du neu wählen. |
 | Gezielter Schuss | 2 | Control 70 | Zielst du ([[Kampfsystem#Breakaction]]) und bewegst dich in dieser Runde nicht, ignoriert dein nächster Schuss in der folgenden Runde die Malsteps der Reichweite. Das ersetzt den Stepshield des Zielens. |
-| Improvisieren | 2 | Decisiveness 60 | Einmal pro Gefecht: Misslingt deine Mainaction, darfst du im selben Zug eine andere Mainaction ausführen ([[Kampfsystem#Mainaction]]). |
+| Improvisieren | 2 | Decision 60 | Einmal pro Gefecht: Misslingt deine Mainaction, darfst du im selben Zug eine andere Mainaction ausführen ([[Kampfsystem#Mainaction]]). |
 | Niederhalten | 2 | Control 60 | Gibst du einen Feuerstoß von mindestens 3 Schüssen auf einen Gegner ab, hat er bis zu deinem nächsten Zug 1 Malstep auf Schießen ([[Kampfsystem#Treffen]]). Das gilt auch, wenn alle Schüsse ins Leere gehen. |
 | Offangle | 1 | Intellect 50 | Nur in Gebäuden. Als Mainaction nimmst du einen Offangle ein. Bis zu deinem nächsten Zug hat jeder, der dich mit einer Breakaction unterbricht, 1 Malstep auf Reaktion oder Antizipation ([[Kampfsystem#Die Breakaction benutzen]]). Bewegst du dich, endet die Wirkung. |
 | Overwatch | 1 | Intellect 60 | Als Mainaction wählst du einen Sektor, z. B. eine Tür, einen Gang oder einen Straßenabschnitt. Du darfst dich in dieser Runde nicht bewegen. Bis zu deinem nächsten Zug hast du 1 Stepshield auf Reaktion und Antizipation gegen Akteure in diesem Sektor ([[Kampfsystem#Reaktion und Antizipation]]). Bewegst du dich, endet die Wirkung. |
@@ -282,18 +282,18 @@ Diese Perks stehen nur der genannten Klasse zur Auswahl ([[Klassen#Spezialisieru
 | Korrektur | Grenadier | 1 | Brawn 60 | Misslingt dein Wurf oder Werferschuss, würfelst du die Richtung zweimal und wählst eine ([[Sprengwirkung#Landepunkt]]). |
 | Gerichtete Ladung | Pionier | 2 | Intellect 70 | Bei einer Ladung, die du anbringst, bestimmst du eine Seite; dorthin fliegen keine Splitter ([[Sprengwirkung#Splitter]]). |
 | Feldversorgung | Sanitäter | 1 | Intellect 60 | Erste Hilfe braucht leichte statt voller Konzentration ([[Kampfsystem#Konzentration]], [[Schaden, Blutung und Verletzungen#Versorgen]]). |
-| Unter Feuer | Gefechtssanitäter | 2 | Decisiveness 70 | Ein Stagger unterbricht deine Versorgung nicht ([[Kampfsystem#Konzentration]], *Unterbrechung*). |
+| Unter Feuer | Gefechtssanitäter | 2 | Decision 70 | Ein Stagger unterbricht deine Versorgung nicht ([[Kampfsystem#Konzentration]], *Unterbrechung*). |
 | Abreibung | Vollstrecker | 1 | Brawn 60 | Nach einem gelungenen Nahkampfangriff hast du gegen dieses Ziel bis zum Ende des Auftrags 1 Stepshield auf Einschüchtern ([[#Exklusive Skills]]). |
 | Kaltblütig | Auftragskiller | 2 | Nerve 70 | Nimmt dich das Ziel nicht wahr ([[Wahrnehmung]]), steigt bei deinem ersten Schuss auf es die Krit-Schwelle um 5 ([[Würfelmechanik#Krit]]). |
 | Lautlos | Einbrecher | 1 | Agility 60 | Deine Arbeit an Schlössern, Türen und Fenstern ist nicht zu hören ([[Wahrnehmung#Hören]]). |
 | Fingerspitzengefühl | Safeknacker | 2 | Intellect 70 | Schlösser-Proben, die mehrere Runden dauern, brauchen halb so viele Runden, aufgerundet ([[Kampfsystem#Konzentration]], *Dauer*). |
 | Kontakte | Fixer | 1 | Empathy 60 | Einmal pro Auftrag zählt beim Kauf das Vorratslevel der Ware 1 niedriger ([[Schusswaffen (tragbar)#Begriffserklärung]], *Vorratslevel*). |
-| Plan B | Drahtzieher | 2 | Decisiveness 70 | Einmal pro Auftrag darf ein Verbündeter eine misslungene Probe wiederholen. |
+| Plan B | Drahtzieher | 2 | Decision 70 | Einmal pro Auftrag darf ein Verbündeter eine misslungene Probe wiederholen. |
 | Abschirmen | Leibwächter | 1 | Nerve 60, Perk Schutzreflex | Du kannst mit Schutzreflex auch für einen Verbündeten bis 3 m Entfernung eingreifen statt nur in Armeslänge ([[#Kampfperks]]). |
 | Stimme des Bosses | Rechte Hand | 2 | Empathy 70 | Gelingt dir Verbündete verschieben, verschiebst du einen zweiten Verbündeten ebenso ([[Adrenalin#Verbündete verschieben]]). |
 | Dynamischer Zugriff | Zugriffsbeamter | 1 | Twitch 60 | In der Runde, in der du einen Raum betrittst, hast du 1 Stepshield auf Reaktion ([[Kampfsystem#Reaktion und Antizipation]]). |
 | Evakuieren | Personenschützer | 1 | Nerve 60 | Ein Verbündeter in Armeslänge bewegt sich ohne eigene Aktion mit dir, höchstens mit Gehen ([[Kampfsystem#Bewegung]]). |
-| Lagebild | Schutzkommandoführer | 2 | Decisiveness 70 | Einmal pro Gefecht haben alle Verbündeten, die dich hören, in der nächsten Runde 1 Stepshield auf Initiative ([[Kampfsystem#Action Economy]]). |
+| Lagebild | Schutzkommandoführer | 2 | Decision 70 | Einmal pro Gefecht haben alle Verbündeten, die dich hören, in der nächsten Runde 1 Stepshield auf Initiative ([[Kampfsystem#Action Economy]]). |
 | Menschenkenntnis | Ermittler | 1 | Intellect 60 | Gelingt dir eine Wachsamkeits-Probe gegen eine Person in Sicht, weißt du, ob sie bewaffnet ist ([[Wahrnehmung]]). |
 | Legende | Verdeckter Ermittler | 2 | Empathy 70 | Will jemand deine falsche Identität durchschauen, ist das ein Contested Roll; du hast 1 Stepshield ([[Würfelmechanik#Contested Rolls]]). |
 | Teamzugriff | SEK-Beamter | 2 | Grit 70 | Betrittst du einen Raum, kannst du einen Verbündeten in Armeslänge mitnehmen, der in dieser Runde noch nicht am Zug war. Er bewegt sich während deines Zuges mit dir hinein; seine Bewegung ist damit verbraucht. Mainaction und Standwechsel behält er für seinen Zug; seine Breakaction kann er sofort einsetzen ([[Kampfsystem#Action Economy]], [[Kampfsystem#Bewegung]]). |

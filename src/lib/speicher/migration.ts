@@ -29,7 +29,18 @@ export const MIGRATIONEN: Record<number, (c: Roh) => Roh> = {
     const getippt = [...new Set([...(dg.getippt ?? []), ...(dg.zonen ?? [])])];
     return { ...c, spielstand: { ...sp, deckung: { ...rest, getippt } } };
   },
+  // 4 → 5: Der Stat „Decisiveness“ heißt jetzt „Decision“. Die alte ID wird überall ersetzt, als Schlüssel und als Wert.
+  4: (c) => benenneUm(c, 'decisiveness', 'decision') as Roh,
 };
+
+/** Ersetzt eine umbenannte ID überall im Charakter: als Schlüssel eines Objekts und als Zeichenkette. */
+function benenneUm(wert: unknown, alt: string, neu: string): unknown {
+  if (wert === alt) return neu;
+  if (Array.isArray(wert)) return wert.map((w) => benenneUm(w, alt, neu));
+  if (typeof wert === 'object' && wert !== null)
+    return Object.fromEntries(Object.entries(wert).map(([k, v]) => [k === alt ? neu : k, benenneUm(v, alt, neu)]));
+  return wert;
+}
 
 export class ImportFehler extends Error {}
 

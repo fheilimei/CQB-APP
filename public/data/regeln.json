@@ -247,7 +247,7 @@
     }
   },
   "initiative": {
-    "stat": "decisiveness",
+    "stat": "decision",
     "skill": null,
     "krit_break_extra": 1,
     "ueberrascht_malsteps": 1,

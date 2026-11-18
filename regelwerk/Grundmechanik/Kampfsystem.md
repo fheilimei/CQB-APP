@@ -4,7 +4,7 @@
 
 **Während und außerhalb deines Zuges.** Die Zeit, in der du am Zug bist, heißt **während deines Zuges**; die übrige Zeit der Runde, in der andere am Zug sind, heißt **außerhalb deines Zuges**.
 
-**Initiative.** Die Initiative legt die Zugreihenfolge fest. Zu Beginn jeder Runde legen alle Beteiligten gleichzeitig eine Probe auf **Decisiveness** ab, ohne Skill. Malsteps bringen die Leiter ([[Adrenalin#Steps]]), Überraschung (1 Malstep in der ersten Runde, [[Adrenalin#Vor dem Gefecht]]) und die Umstände, die die SL festlegt.
+**Initiative.** Die Initiative legt die Zugreihenfolge fest. Zu Beginn jeder Runde legen alle Beteiligten gleichzeitig eine Probe auf **Decision** ab, ohne Skill. Malsteps bringen die Leiter ([[Adrenalin#Steps]]), Überraschung (1 Malstep in der ersten Runde, [[Adrenalin#Vor dem Gefecht]]) und die Umstände, die die SL festlegt.
 
 **Zugreihenfolge.** Die Proben werden nach dieser Rangfolge geordnet. Wer vorne steht, zieht zuerst.
 1. **Krits** vor **Erfolgen** vor **Misserfolgen** ([[Würfelmechanik#Krit]]).
@@ -442,7 +442,7 @@ Jede Probe im Kampf kann ein Krit sein ([[Würfelmechanik#Wirkung des Krits]]). 
 | Probe | Stat | Krit-Folge |
 | ----- | ---- | ---------- |
 | Schießen ([[#Treffen]]) | Control | Spalte „Krit“ der getroffenen Zone ([[Körperzonen]]). Nur der erste Schuss. |
-| Initiative ([[#Action Economy]]) | Decisiveness | Du erhältst in dieser Runde eine zusätzliche Breakaction. ⚠ |
+| Initiative ([[#Action Economy]]) | Decision | Du erhältst in dieser Runde eine zusätzliche Breakaction. ⚠ |
 | Nahkampfangriff ([[#Nahkampf]]) | Agility | Scharfe Waffe: Spalte „Krit“ der getroffenen Zone ([[Körperzonen]]). Stumpfe Waffe: Stagger ([[Schaden, Blutung und Verletzungen#Stumpfe Treffer]]). |
 | Nahkampfverteidigung ([[#Nahkampf]]) | Agility | Abstand bestimmen: Du bewegst dich sofort in Armeslänge zum Angreifer oder aus dem Band bedrängt heraus. Kostet keine Aktion. |
 | Wurfaktion ([[#Werfen]]) | Agility | Wurfwaffe: Krit-Folge der Trefferzone ([[Körperzonen]]). Sprengwaffe: landet genau am Zielpunkt ([[Sprengwirkung#Landepunkt]]). |

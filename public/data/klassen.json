@@ -468,7 +468,7 @@
       "beschreibung": "Der Gefechtssanitäter versorgt unter Beschuss und entscheidet, wer zuerst behandelt wird.",
       "erweitert": "sanitaeter",
       "voraussetzung_stat": {
-        "stat": "decisiveness",
+        "stat": "decision",
         "rang": "A"
       },
       "vorratslevel": 5,
@@ -811,7 +811,7 @@
       "beschreibung": "Der Drahtzieher plant Coups und hält die Fäden in der Hand. Andere führen aus, was er entscheidet.",
       "erweitert": "fixer",
       "voraussetzung_stat": {
-        "stat": "decisiveness",
+        "stat": "decision",
         "rang": "A"
       },
       "vorratslevel": 4,
@@ -1164,7 +1164,7 @@
       "beschreibung": "Der Schutzkommandoführer plant Routen und Einsätze und führt das Team um die Schutzperson.",
       "erweitert": "personenschuetzer",
       "voraussetzung_stat": {
-        "stat": "decisiveness",
+        "stat": "decision",
         "rang": "A"
       },
       "vorratslevel": 4,

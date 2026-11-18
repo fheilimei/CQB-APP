@@ -179,7 +179,7 @@ Laufbahn: Militär | Stufe: 2 | Freie Charakterpunkte: 5 | Vorratslevel: 3 | Geh
 | Kommandosoldat | Twitch A | Einzelkämpfer | Grit A | Tarnen |
 | Scharfschütze | Control A | Fernspäher | Nerve A | Ballistik |
 | Grenadier | Brawn A | Pionier | Intellect A | Sprengstoff |
-| Sanitäter | Intellect A | Gefechtssanitäter | Decisiveness A | Operation |
+| Sanitäter | Intellect A | Gefechtssanitäter | Decision A | Operation |
 
 ## Kommandosoldat
 Der Kommandosoldat kämpft in kleinen Trupps hinter den Linien. Er schlägt schnell zu, nutzt Überraschung und verschwindet wieder.
@@ -298,7 +298,7 @@ Der Gefechtssanitäter versorgt unter Beschuss und entscheidet, wer zuerst behan
 
 Laufbahn: Militär | Stufe: 4 | Freie Charakterpunkte: 5 | Vorratslevel: 5 | Gehalt pro Auftrag: 1000 $
 
-**Stats.** Rank-Set der Stufe 4 ([[#Stufen]]). Voraussetzung: Decisiveness A; erweiterte Form von Sanitäter ([[#Spezialisierungen]]).
+**Stats.** Rank-Set der Stufe 4 ([[#Stufen]]). Voraussetzung: Decision A; erweiterte Form von Sanitäter ([[#Spezialisierungen]]).
 
 **Mindestskills.** Erste Hilfe 4, Krisenmanagement 2, Operation 2, Sturmgewehr 2, Rückstoßkontrolle 1, Granaten 1, Athletik 1, Entbehrung 1, Wachsamkeit 1, Selbstbeherrschung 1 ([[Stats, Skills und Perks#Liste von Skills]], [[Stats, Skills und Perks#Exklusive Skills]]).
 
@@ -393,7 +393,7 @@ Laufbahn: Organisiertes Verbrechen | Stufe: 2 | Freie Charakterpunkte: 5 | Vorra
 | --- | --- | --- | --- | --- |
 | Vollstrecker | Brawn A | Auftragskiller | Nerve A | Einschüchtern |
 | Einbrecher | Agility A | Safeknacker | Intellect A | Schlösser |
-| Fixer | Empathy A | Drahtzieher | Decisiveness A | Beschaffen |
+| Fixer | Empathy A | Drahtzieher | Decision A | Beschaffen |
 | Leibwächter | Nerve A | Rechte Hand | Empathy A | Taktisches Fahren |
 
 ## Vollstrecker
@@ -481,7 +481,7 @@ Der Drahtzieher plant Coups und hält die Fäden in der Hand. Andere führen aus
 
 Laufbahn: Organisiertes Verbrechen | Stufe: 4 | Freie Charakterpunkte: 5 | Vorratslevel: 4 | Gehalt pro Auftrag: 950 $
 
-**Stats.** Rank-Set der Stufe 4 ([[#Stufen]]). Voraussetzung: Decisiveness A; erweiterte Form von Fixer ([[#Spezialisierungen]]).
+**Stats.** Rank-Set der Stufe 4 ([[#Stufen]]). Voraussetzung: Decision A; erweiterte Form von Fixer ([[#Spezialisierungen]]).
 
 **Mindestskills.** Verhandeln 4, Führung 2, Krisenmanagement 2, Beschaffen 2, Bildung 1, Pistole 2, Maschinenpistole 1, Nahkampf 1, Schleichen 1, Wachsamkeit 1, Fahren 1, Selbstbeherrschung 1 ([[Stats, Skills und Perks#Liste von Skills]], [[Stats, Skills und Perks#Exklusive Skills]]).
 
@@ -608,7 +608,7 @@ Laufbahn: Zivil | Stufe: 2 | Freie Charakterpunkte: 5 | Vorratslevel: 2 | Gehalt
 | Spezialisierung (Stufe 3) | Voraussetzung | Erweiterte Form (Stufe 4) | Voraussetzung | Exklusive Skills |
 | --- | --- | --- | --- | --- |
 | Zugriffsbeamter | Twitch A | SEK-Beamter | Grit A | Aufbrechen |
-| Personenschützer | Nerve A | Schutzkommandoführer | Decisiveness A | Taktisches Fahren |
+| Personenschützer | Nerve A | Schutzkommandoführer | Decision A | Taktisches Fahren |
 | Ermittler | Intellect A | Verdeckter Ermittler | Empathy A | Verhören |
 | Rettungssanitäter | Control A | Notarzt | Intellect A | Operation |
 
@@ -666,7 +666,7 @@ Der Schutzkommandoführer plant Routen und Einsätze und führt das Team um die 
 
 Laufbahn: Zivil | Stufe: 4 | Freie Charakterpunkte: 5 | Vorratslevel: 4 | Gehalt pro Auftrag: 1000 $
 
-**Stats.** Rank-Set der Stufe 4 ([[#Stufen]]). Voraussetzung: Decisiveness A; erweiterte Form von Personenschützer ([[#Spezialisierungen]]).
+**Stats.** Rank-Set der Stufe 4 ([[#Stufen]]). Voraussetzung: Decision A; erweiterte Form von Personenschützer ([[#Spezialisierungen]]).
 
 **Mindestskills.** Führung 2, Krisenmanagement 2, Taktisches Fahren 2, Wachsamkeit 3, Reflexe 2, Pistole 2, Schrotflinte 1, Nahkampf 1, Fahren 1, Erste Hilfe 1, Bildung 1, Selbstbeherrschung 1 ([[Stats, Skills und Perks#Liste von Skills]], [[Stats, Skills und Perks#Exklusive Skills]]).
 

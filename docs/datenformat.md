@@ -103,7 +103,7 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
     "geblendet": { "sichtstufe": "keine", "malsteps_mit_gereizt_addieren": true },
     "gereizt": { "malsteps": 2, "probe": "grit" }
   },
-  "initiative": { "stat": "decisiveness", "skill": null, "krit_break_extra": 1, "ueberrascht_malsteps": 1, "ueberrascht_mit_perk": { "entschlossen": 0 } },
+  "initiative": { "stat": "decision", "skill": null, "krit_break_extra": 1, "ueberrascht_malsteps": 1, "ueberrascht_mit_perk": { "entschlossen": 0 } },
   "breakaction": {
     "reaktion": { "stat": "twitch", "skill": "reflexe", "malsteps": { "gesehen": 0, "gehoert": 1 } },
     "antizipation": { "stat": "intellect", "skill": "lagegespuer",
@@ -341,7 +341,7 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
     { "id": "control", "name": "Control", "gruppe": "B" },
     { "id": "empathy", "name": "Empathy", "gruppe": "B" },
     { "id": "intellect", "name": "Intellect", "gruppe": "B" },
-    { "id": "decisiveness", "name": "Decisiveness", "gruppe": "B" },
+    { "id": "decision", "name": "Decision", "gruppe": "B" },
     { "id": "nerve", "name": "Nerve", "gruppe": "C" }
   ]
 }
@@ -816,7 +816,7 @@ Die Datei bildet das Regelwerk „Klassen“ ab: Stufen, Laufbahnen und Klassen.
       "beschreibung": "Hat die militärische Grundausbildung hinter sich …",
       "rank_vorschlag": {
         "twitch": "D", "brawn": "E", "agility": "E", "grit": "F",
-        "control": "C", "empathy": "E", "intellect": "D", "decisiveness": "F", "nerve": "E"
+        "control": "C", "empathy": "E", "intellect": "D", "decision": "F", "nerve": "E"
       },
       "vorratslevel": 3,
       "gehalt": 250,
@@ -956,7 +956,7 @@ Speicherformat eines Charakters, lokal und als Exportdatei (`<name>.cqb.json`). 
 
 ```json
 {
-  "schema": 4,
+  "schema": 5,
   "id": "c7f1e2a0-3b5d-4a8e-9f10-2c4d6e8a1b3c",
   "geaendert": "2026-11-13T17:20:00+01:00",
 
@@ -994,7 +994,7 @@ Speicherformat eines Charakters, lokal und als Exportdatei (`<name>.cqb.json`). 
     "control":      { "rang": "C", "wurf": { "positiv": 8, "negativ": 4, "quelle": "app" } },
     "empathy":      { "rang": "E", "wurf": { "positiv": 1, "negativ": 7, "quelle": "app" } },
     "intellect":    { "rang": "D", "wurf": { "positiv": 6, "negativ": 6, "quelle": "app" } },
-    "decisiveness": { "rang": "F", "wurf": { "positiv": 10, "negativ": 3, "quelle": "app" } },
+    "decision": { "rang": "F", "wurf": { "positiv": 10, "negativ": 3, "quelle": "app" } },
     "nerve":        { "rang": "E", "wurf": { "positiv": 4, "negativ": 5, "quelle": "app" } }
   },
   "skills": { "waffe_ar": 2, "rueckstosskontrolle": 1, "erste_hilfe": 1 },
@@ -1150,7 +1150,7 @@ IndexedDB-Datenbank `cqb` mit zwei Speichern: `charaktere` (ein Datensatz je Cha
 - **2 → 3:** `gefecht.deckung` wandert nach `spielstand.deckung` (ohne laufendes Gefecht `null`).
 - **3 → 4:** Die Deckungskante entfällt: `deckung.kante` wird gelöscht, alle verdeckten Zonen kommen zu `deckung.getippt` hinzu. Die Figur zeigt danach dieselbe Deckung.
 
-`schema` wird bei jeder inkompatiblen Änderung erhöht. Beim Laden prüft die App die Version und migriert schrittweise (1 → 2 → 3 …). Import einer Datei mit höherer Version als bekannt: Fehlermeldung, nichts überschreiben.
+`schema` wird bei jeder inkompatiblen Änderung erhöht. Beim Laden prüft die App die Version und migriert schrittweise (1 → 2 → 3 …). Schritt 4 → 5: Stat-ID `decisiveness` wird zu `decision` (als Schlüssel und als Wert). Import einer Datei mit höherer Version als bekannt: Fehlermeldung, nichts überschreiben.
 
 ---
 

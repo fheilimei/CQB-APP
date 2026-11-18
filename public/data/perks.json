@@ -387,7 +387,7 @@
       "voraussetzung": {
         "stats": [
           {
-            "stat": "decisiveness",
+            "stat": "decision",
             "min": 60
           }
         ],
@@ -521,7 +521,7 @@
       "voraussetzung": {
         "stats": [
           {
-            "stat": "decisiveness",
+            "stat": "decision",
             "min": 60
           }
         ],
@@ -949,7 +949,7 @@
       "voraussetzung": {
         "stats": [
           {
-            "stat": "decisiveness",
+            "stat": "decision",
             "min": 70
           }
         ],
@@ -1101,7 +1101,7 @@
       "voraussetzung": {
         "stats": [
           {
-            "stat": "decisiveness",
+            "stat": "decision",
             "min": 70
           }
         ],
@@ -1228,7 +1228,7 @@
       "voraussetzung": {
         "stats": [
           {
-            "stat": "decisiveness",
+            "stat": "decision",
             "min": 70
           }
         ],

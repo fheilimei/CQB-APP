@@ -111,13 +111,28 @@ describe('Migration', () => {
   it('Schema 3 → 4: Deckungskante entfällt, alle verdeckten Zonen gelten als angetippt', () => {
     const b = beispiel();
     const alt = { wert: 2, zonen: ['brust', 'bauch', 'unterleib', 'rumpf', 'arm_r', 'arm_l', 'bein_r', 'bein_l'], art: 'autotuer', kante: { richtung: 'unten', stufe: 3 }, getippt: ['kopf'] };
-    const c = migriere({ ...b, schema: 3, spielstand: { ...b.spielstand, deckung: alt } });
+    const c = migriere({ ...b, schema: 3, spielstand: { ...b.spielstand, deckung: alt } }, 4);
     expect(c.schema).toBe(4);
     expect(c.spielstand.deckung).toEqual({ wert: 2, zonen: alt.zonen, art: 'autotuer', getippt: ['kopf', ...alt.zonen] });
     // Die Figur zeigt dieselben Zonen wie vorher, dazu den angetippten Kopf.
     expect(new Set(deckungZonen(c.spielstand.deckung!.getippt!, ladeTestdaten()))).toEqual(new Set(['kopf', ...alt.zonen]));
     const ohne = migriere({ ...b, schema: 3, spielstand: { ...b.spielstand, deckung: null } });
     expect(ohne.spielstand.deckung).toBeNull();
+  });
+
+  it('Schema 4 → 5: Decisiveness heißt jetzt Decision, Werte bleiben erhalten', () => {
+    const b = beispiel();
+    const stats = { ...b.stats } as Record<string, unknown>;
+    const eintrag = stats.decision;
+    delete stats.decision;
+    stats.decisiveness = eintrag;
+    const anpassungen = [{ id: 'x', grund: 'Test', aktiv: true, stat: 'decisiveness' }];
+    const c = migriere({ ...b, schema: 4, stats, anpassungen });
+    expect(c.schema).toBe(5);
+    expect(c.stats.decision).toEqual(eintrag);
+    expect('decisiveness' in c.stats).toBe(false);
+    expect((c.anpassungen[0] as unknown as Record<string, unknown>).stat).toBe('decision');
+    expect(JSON.stringify(c)).not.toContain('decisiveness');
   });
 
   it('für jede ältere Schemaversion gibt es einen Schritt', async () => {

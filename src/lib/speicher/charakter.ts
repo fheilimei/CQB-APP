@@ -4,7 +4,7 @@
 import type { Modifikator, Rang } from '../daten/typen';
 
 /** Aktuelle Schemaversion. Bei jeder inkompatiblen Änderung erhöhen und eine Migration ergänzen (migration.ts). */
-export const SCHEMA = 4;
+export const SCHEMA = 5;
 
 export type Quelle = 'app' | 'hand';
 

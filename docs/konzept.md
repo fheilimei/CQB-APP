@@ -397,7 +397,7 @@ Regeln: Kampfsystem (Action Economy; Die Breakaction benutzen; Reaktion und Anti
 **Grundsatz.** Die App kennt keine Zugreihenfolge und nicht die Würfe der anderen. Die SL ordnet und sagt an, wer wann handelt. Die App sagt dem Spieler, was er würfeln und ansagen muss, und führt seine Zähler.
 
 **Initiative** (am Ende von „Nächste Runde“ und nach „Gefecht starten“):
-1. Anzeige von Zielwert und Krit-Schwelle auf **Decisiveness**, ohne Skill (kein Malstep für Skill 0). Eingerechnet: Adrenalin bzw. Ruhepuls, Überraschung in Runde 1, Perks (z. B. Lagebild, Überfall, Entschlossen), Lage-Block 1 und 3 ([§ 3.8c](#38c-lage-auswahl-r)).
+1. Anzeige von Zielwert und Krit-Schwelle auf **Decision**, ohne Skill (kein Malstep für Skill 0). Eingerechnet: Adrenalin bzw. Ruhepuls, Überraschung in Runde 1, Perks (z. B. Lagebild, Überfall, Entschlossen), Lage-Block 1 und 3 ([§ 3.8c](#38c-lage-auswahl-r)).
 2. Wurf eintragen.
 3. Die App zeigt groß, was anzusagen ist: Stufe und Wurf („**Erfolg · 54**“), bei Misserfolg zusätzlich den Zielwert („**Misserfolg · Zielwert 47**“), weil er dann die Reihenfolge bestimmt.
 4. Bei Krit: Break-Zähler 2 für diese Runde.
@@ -626,7 +626,7 @@ Regeln: Schusswaffen (Begriffserklärung: Geldwertspanne, Vorratslevel; Zustand:
 Stand der Regeln: 16.11.2026. Werte mit *(v)* sind vorläufig und gehören in `regeln.json`. Maßgeblich ist das Regelwerk; dieser Abschnitt fasst nur zusammen, was die App rechnet.
 
 ### 4.1 Stats
-- Stats: **Gruppe A** Twitch, Brawn, Agility, Grit · **Gruppe B** Control, Empathy, Intellect, Decisiveness · **Gruppe C** Nerve.
+- Stats: **Gruppe A** Twitch, Brawn, Agility, Grit · **Gruppe B** Control, Empathy, Intellect, Decision · **Gruppe C** Nerve.
 - **Statwert = Rang + Abweichung.** Ränge: S 90, A 80, B 70, C 60, D 50, E 40, F 30. Abweichung −9 bis +9. Spanne damit 21–99, fest.
 
 ### 4.2 Steps und Zielwert
@@ -809,7 +809,7 @@ Perk I: Rang 1, Stat ≥ 50. Perk II: Rang 2, Stat ≥ 70 und Perk I *(v)*. Stat
 ### 4.12 Aktionen
 **Runde** ≈ 3 Sekunden *(v)*. Je Zug einmal: **Mainaction**, **Bewegung**, **Standwechsel**; sie verbrauchen sich nicht gegenseitig. Je Runde einmal: **Breakaction**. Standwechsel ist auch als Breakaction möglich und verbraucht dann diese. Hechten ist Main- oder Breakaction und keine Bewegung. Schießen ist eine Breakaction. Over the Edge: genau eine der vier Aktionen pro Runde. Kampfunfähig: keine.
 
-**Initiative:** zu Beginn jeder Runde Decisiveness ohne Skill (kein Malstep für Skill 0). Reihenfolge: Krits vor Erfolgen vor Misserfolgen; Krits und Erfolge: höherer Wurf zuerst; Misserfolge: höherer Zielwert zuerst; Gleichstand: Spielercharaktere vor NSC, sonst W10. Kein Zurückstellen. Krit: eine zusätzliche Breakaction in dieser Runde *(v)*.
+**Initiative:** zu Beginn jeder Runde Decision ohne Skill (kein Malstep für Skill 0). Reihenfolge: Krits vor Erfolgen vor Misserfolgen; Krits und Erfolge: höherer Wurf zuerst; Misserfolge: höherer Zielwert zuerst; Gleichstand: Spielercharaktere vor NSC, sonst W10. Kein Zurückstellen. Krit: eine zusätzliche Breakaction in dieser Runde *(v)*.
 
 **Breakaction im fremden Zug:** Voraussetzung: den aktiven Akteur wahrnehmen oder antizipieren, Breakaction noch vorhanden. Im Unterbrechungsmoment sagen alle vor dem Wurf an (Unterbrecher, der aktive Akteur zur Verteidigung, seine Verbündeten). Jeder würfelt Reaktion (Twitch + Reflexe; gesehen 0, nur gehört 1 Malstep, dazu Sichtstufe) oder Antizipation (Intellect + Lagegespür; Malsteps nach Güte und Alter der Information *(v)*). Rangfolge wie beim Contested Roll; Gleichauf und alle Misserfolge handeln gleichzeitig; wer durch eine frühere Breakaction einen Stagger erleidet, verliert seine. Keine Krit-Folge. Lässt der aktive Akteur die Unterbrechung zu und spielt die Reihenfolge keine Rolle: kein Wurf. Im eigenen Zug: ohne Probe.
 

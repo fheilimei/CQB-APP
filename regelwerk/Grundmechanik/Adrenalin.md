@@ -28,7 +28,7 @@ Beide Seiten sind gleich aufgebaut:
 
 ## Steps
 
-| Stand | Gruppe A (Twitch, Brawn, Agility, Grit) | Gruppe B (Control, Empathy, Intellect, Decisiveness) |
+| Stand | Gruppe A (Twitch, Brawn, Agility, Grit) | Gruppe B (Control, Empathy, Intellect, Decision) |
 | ----- | --------------------------------------- | ---------------------------------------------------- |
 | Ruhepuls 2 / 3 | 1 / 2 **Malsteps** | 1 / 2 **Stepshields** |
 | Adrenalin 2 / 3 | 1 / 2 **Stepshields** | 1 / 2 **Malsteps** |
