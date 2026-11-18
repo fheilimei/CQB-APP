@@ -94,16 +94,26 @@ describe('Statwert, Zielwert und Krit', () => {
     expect(zielwert(wert, 0, r)).toBe(wert);
   });
 
+  it('R1: gerundet zugunsten des Spielers – kein Zielwert unter dem genauen Faktor', () => {
+    // Genaue Faktoren aus den Abschlägen 15 %, 25 %, 35 %, 45 %, 55 %
+    const genau = [1, 0.85, 0.85 * 0.75, 0.85 * 0.75 * 0.65, 0.85 * 0.75 * 0.65 * 0.55, 0.85 * 0.75 * 0.65 * 0.55 * 0.45];
+    r.steps.faktoren.forEach((f, n) => expect(f).toBeGreaterThanOrEqual(genau[n]!));
+    for (let wert = 1; wert <= 100; wert++)
+      for (let n = 0; n <= 5; n++) expect(zielwert(wert, n, r)).toBeGreaterThanOrEqual(runden(wert * genau[n]!));
+    expect(zielwert(29, 2, r)).toBe(19); // 29 × 0,638 = 18,5
+    expect(zielwert(100, 3, r)).toBe(42); // 100 × 0,415 = 41,5
+  });
+
   it('rundet kaufmännisch (ab ,5 auf)', () => {
     expect(runden(42.5)).toBe(43);
     expect(runden(42.49)).toBe(42);
     expect(zielwert(50, 1, r)).toBe(43); // 50 × 0,85 = 42,5
   });
 
-  it('Faktoren folgen dem Abschlag 15 %, 25 %, 35 % … auf die vorherige Stufe', () => {
+  it('R1: Faktoren = Abschlag 15 %, 25 %, 35 % … auf die vorherige Stufe, auf drei Stellen aufgerundet', () => {
     const abschlag = [0.15, 0.25, 0.35, 0.45, 0.55];
     const faktoren = abschlag.reduce((f, a) => [...f, f[f.length - 1]! * (1 - a)], [1]);
-    faktoren.forEach((f, i) => expect(r.steps.faktoren[i]).toBeCloseTo(f, 10));
+    faktoren.forEach((f, i) => expect(r.steps.faktoren[i]).toBeCloseTo(Math.ceil(f * 1000 - 1e-9) / 1000, 10));
   });
 
   it('6 Netto-Malsteps: keine Probe möglich, Handlung misslingt', () => {

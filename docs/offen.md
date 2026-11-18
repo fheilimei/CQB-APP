@@ -23,14 +23,6 @@ Die App wird erst entwickelt, wenn die Regeln weitgehend stehen ([[App/docs/konz
 
 Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. Die App arbeitet bis zur Entscheidung mit der genannten vorläufigen Lösung. Neue Einträge kommen beim Programmieren hinzu (Skill „regelfrage“). Die Regelpunkte aus den Schritten 1 bis 6 sind hierher übertragen (18.11.2026).
 
-### R1. Step-Faktoren gerundet oder genau (17.11.2026)
-- **Frage:** Das Regelwerk nennt die Abschläge 15 %, 25 %, 35 %, 45 %, 55 % und dazu gerundete Faktoren (0,638; 0,414; 0,228; 0,103). Mit den gerundeten Faktoren ergibt Statwert 35 bei 3 Malsteps 14; das Beispiel im Regelwerk nennt 15.
-- **Stellen:** (Stats, Skills und Perks, Steps)
-- **Vorläufig:** Die App rechnet mit den ungerundeten Faktoren (0,6375; 0,414375; 0,22790625; 0,1025578125). Damit stimmen alle Beispiele.
-- **Andere Möglichkeit:** gerundete Faktoren. Dann ändern sich 8 Zielwerte um 1 (Statwert/Malsteps: 29/2, 34/5, 35/3, 64/3, 68/4, 73/5, 87/2, 98/2), und das Beispiel im Regelwerk müsste angepasst werden.
-- **Ändern:** eine Zeile in regeln.json (steps.faktoren)
-- **Im Regelwerk klarstellen:** ja (Faktoren mit mehr Stellen angeben oder „ungerundet rechnen“ ergänzen)
-
 ### R2. Rüstung bei der Ansage „Rumpf“ (17.11.2026)
 - **Frage:** Bei der Ansage „Rumpf“ steht nicht fest, welche Rumpfzone für die Rüstung zählt.
 - **Stellen:** (Deckung und Rüstung, Rüstung); (Kampfsystem, Treffen)
@@ -167,6 +159,15 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 - **Im Regelwerk klarstellen:** ja (Werte ergänzen)
 
 ### Erledigt
+
+### R1. Step-Faktoren gerundet oder genau (17.11.2026)
+- **Entschieden (18.11.2026):** Gerundet wird immer zugunsten des Spielers. Umgesetzt: Die Faktoren sind auf drei Stellen aufgerundet (0,85 · 0,638 · 0,415 · 0,228 · 0,103, regeln.json, steps.faktoren); der Zielwert selbst wird weiter kaufmännisch gerundet, wie das Regelwerk es verlangt. Alle Beispiele des Regelwerks stimmen. Gegenüber vorher steigen 10 Zielwerte um 1 (Statwert/Malsteps: 29/2, 34/5, 47/3, 68/4, 73/5, 76/3, 87/2, 88/3, 98/2, 100/3); keiner sinkt.
+- **Frage:** Das Regelwerk nennt die Abschläge 15 %, 25 %, 35 %, 45 %, 55 % und dazu gerundete Faktoren (0,638; 0,414; 0,228; 0,103). Mit den gerundeten Faktoren ergibt Statwert 35 bei 3 Malsteps 14; das Beispiel im Regelwerk nennt 15.
+- **Stellen:** (Stats, Skills und Perks, Steps)
+- **Vorläufig:** Die App rechnet mit den ungerundeten Faktoren (0,6375; 0,414375; 0,22790625; 0,1025578125). Damit stimmen alle Beispiele.
+- **Andere Möglichkeit:** gerundete Faktoren. Dann ändern sich 8 Zielwerte um 1 (Statwert/Malsteps: 29/2, 34/5, 35/3, 64/3, 68/4, 73/5, 87/2, 98/2), und das Beispiel im Regelwerk müsste angepasst werden.
+- **Ändern:** eine Zeile in regeln.json (steps.faktoren)
+- **Im Regelwerk klarstellen:** ja, **noch offen**: In der Tabelle (Stats, Skills und Perks, Steps) 0,414 durch 0,415 ersetzen und den Grundsatz „gerundet wird zugunsten des Spielers“ ergänzen.
 
 ### R19. Rank-Vorschlag der Klassen (16.11.2026)
 - **Entschieden (16.11.2026):** kein Vorschlag; der Spieler verteilt das Rank-Set selbst. Konzept § 3.0 angepasst.

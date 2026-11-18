@@ -45,7 +45,7 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
   "raenge": { "S": 90, "A": 80, "B": 70, "C": 60, "D": 50, "E": 40, "F": 30 },
   "abweichung": { "min": -9, "max": 9 },
   "steps": {
-    "faktoren": [1, 0.85, 0.6375, 0.414375, 0.22790625, 0.1025578125],
+    "faktoren": [1, 0.85, 0.638, 0.415, 0.228, 0.103],
     "keine_probe_ab": 6,
     "skill_null_malsteps": 1
   },
