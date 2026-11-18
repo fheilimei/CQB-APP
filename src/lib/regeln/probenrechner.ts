@@ -21,7 +21,7 @@ export function leiterStand(c: Charakter): number {
 
 /**
  * Offene kritische Wunde: kritisch und Blutung nicht gestoppt.
- * Vorläufig, bis Wunden in Schritt 7 eingetragen werden (docs/offen.md, Schritt 5).
+ * Regelfrage R6 (docs/offen.md): vorläufig, bis Wunden in Schritt 7 eingetragen werden.
  */
 export function offeneKritischeWunde(c: Charakter): boolean {
   return c.spielstand.wunden.some((w) => w.kritisch === true && (w.blutung as { status?: string } | undefined)?.status !== 'gestoppt');

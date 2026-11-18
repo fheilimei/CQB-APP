@@ -63,6 +63,7 @@ export function rankSetFuer(e: Erstellungsstand, d: Spieldaten): Rang[] | null {
 /**
  * Stat-Voraussetzungen bei der Erstellung: Spezialisierung und erweiterte Form verlangen ihren Stat auf Rang A,
  * die erweiterte Form auch den ihrer Spezialisierung (Ränge sinken nie). Der Meister hat keine (Regelwerk: Klassen, Meister).
+ * Regelfrage R14 (docs/offen.md): vorläufig.
  */
 export function statVoraussetzungen(e: Erstellungsstand, d: Spieldaten): { stat: string; rang: Rang }[] {
   const k = erstellungsklasse(e, d);

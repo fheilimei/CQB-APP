@@ -21,41 +21,201 @@ Die App wird erst entwickelt, wenn die Regeln weitgehend stehen ([[App/docs/konz
 
 ## Regelfragen
 
-Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. Die App arbeitet bis zur Entscheidung mit der genannten vorläufigen Lösung. Neue Einträge kommen beim Programmieren hinzu (Skill „regelfrage“). Ältere Regelpunkte stehen noch unten bei den einzelnen Schritten.
+Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. Die App arbeitet bis zur Entscheidung mit der genannten vorläufigen Lösung. Neue Einträge kommen beim Programmieren hinzu (Skill „regelfrage“). Die Regelpunkte aus den Schritten 1 bis 6 sind hierher übertragen (18.11.2026).
 
-Noch keine Einträge.
+### R1. Step-Faktoren gerundet oder genau (17.11.2026)
+- **Frage:** Das Regelwerk nennt die Abschläge 15 %, 25 %, 35 %, 45 %, 55 % und dazu gerundete Faktoren (0,638; 0,414; 0,228; 0,103). Mit den gerundeten Faktoren ergibt Statwert 35 bei 3 Malsteps 14; das Beispiel im Regelwerk nennt 15.
+- **Stellen:** (Stats, Skills und Perks, Steps)
+- **Vorläufig:** Die App rechnet mit den ungerundeten Faktoren (0,6375; 0,414375; 0,22790625; 0,1025578125). Damit stimmen alle Beispiele.
+- **Andere Möglichkeit:** gerundete Faktoren. Dann ändern sich 8 Zielwerte um 1 (Statwert/Malsteps: 29/2, 34/5, 35/3, 64/3, 68/4, 73/5, 87/2, 98/2), und das Beispiel im Regelwerk müsste angepasst werden.
+- **Ändern:** eine Zeile in regeln.json (steps.faktoren)
+- **Im Regelwerk klarstellen:** ja (Faktoren mit mehr Stellen angeben oder „ungerundet rechnen“ ergänzen)
+
+### R2. Rüstung bei der Ansage „Rumpf“ (17.11.2026)
+- **Frage:** Bei der Ansage „Rumpf“ steht nicht fest, welche Rumpfzone für die Rüstung zählt.
+- **Stellen:** (Deckung und Rüstung, Rüstung); (Kampfsystem, Treffen)
+- **Vorläufig:** Es zählt der niedrigste Rüstungswert von Brust, Bauch und Unterleib. Bei allen heutigen Westen sind die drei gleich.
+- **Andere Möglichkeit:** Der Treffer wird mit dem W8 einer Rumpfzone zugeordnet, und deren Rüstung zählt.
+- **Ändern:** Regelkern, Schaden (Rüstungswert)
+- **Im Regelwerk klarstellen:** ja
+
+### R3. Arme hinter Deckung (17.11.2026)
+- **Frage:** Regelwerk: „Verdeckt eine Deckung **von unten** die Brust, gelten auch beide Arme als verdeckt.“ Die App weiß nicht, von welcher Seite die Deckung verdeckt.
+- **Stellen:** (Deckung und Rüstung, Deckung)
+- **Vorläufig:** Ist die Brust verdeckt, sind auch die Arme verdeckt. Die Richtung prüft die App nicht.
+- **Andere Möglichkeit:** Der Spieler gibt an, ob die Deckung von unten kommt; nur dann zählen die Arme.
+- **Ändern:** Regelkern, Schaden (verdeckte Zonen), und die Auswahl der Deckung
+- **Im Regelwerk klarstellen:** nein
+
+### R4. Stumpfer Krit gegen „Schmerz ignorieren“ (17.11.2026)
+- **Frage:** Ein stumpfer Krit löst „immer“ einen Stagger aus. Das Symptom Schmerz ignorieren sagt „kein Stagger“. Was gilt?
+- **Stellen:** (Schaden, Blutung und Verletzungen, Stumpfe Treffer); (Adrenalin, Symptome)
+- **Vorläufig:** Schmerz ignorieren gewinnt, kein Stagger.
+- **Andere Möglichkeit:** Der stumpfe Krit gewinnt, Stagger trotz Schmerz ignorieren.
+- **Ändern:** Regelkern, Schaden (eine Zeile)
+- **Im Regelwerk klarstellen:** ja
+
+### R5. Wuchttreffer mit 0 Schaden (17.11.2026)
+- **Frage:** Ein Wuchttreffer erzeugt eine Prellung. Gilt das auch, wenn er 0 Schaden macht?
+- **Stellen:** (Schaden, Blutung und Verletzungen, Wuchttreffer); (Schaden, Blutung und Verletzungen, Prellungen)
+- **Vorläufig:** keine Prellung, weil nichts zu heilen ist.
+- **Andere Möglichkeit:** Prellung mit 0 Schaden (wichtig nur, wenn eine Prellung außer dem Schaden noch etwas bewirkt).
+- **Ändern:** Regelkern, Schaden
+- **Im Regelwerk klarstellen:** ja
+
+### R6. Offene kritische Wunde und Kampfunfähigkeit (17.11.2026)
+- **Frage:** Welche kritische Wunde macht kampfunfähig: jede oder nur eine, deren Blutung nicht gestoppt ist?
+- **Stellen:** (Schaden, Blutung und Verletzungen, Kampfunfähigkeit); (Schaden, Blutung und Verletzungen, Kritische Blutung); (Würfelmechanik, Zustände)
+- **Vorläufig:** Jede kritische Wunde, deren Blutung nicht gestoppt ist. Wird mit den Wunden (Schritt 7) überprüft.
+- **Andere Möglichkeit:** jede kritische Wunde, bis sie geheilt ist.
+- **Ändern:** Regelkern, Zustände
+- **Im Regelwerk klarstellen:** offen, Prüfung mit Schritt 7
+
+### R7. Kosten des Waffenwechsels (18.11.2026)
+- **Frage:** Ein Wechsel umfasst Wegstecken der alten und Bereitmachen der neuen Waffe. Was kostet er, wenn die beiden Trageorte verschieden viel kosten?
+- **Stellen:** (Kampfsystem, Waffe wechseln)
+- **Vorläufig:** Es zählt der teurere der beiden Trageorte (Pistole ins Holster, Gewehr von der Schlinge → Mainaction). Rucksack (2 Runden): Die App wechselt sofort und weist auf die zweite Runde hin.
+- **Andere Möglichkeit:** Beide Kosten werden zusammengezählt.
+- **Ändern:** Regelkern, Waffen (Wechselkosten)
+- **Im Regelwerk klarstellen:** ja
+
+### R8. Wie lange gilt Zielen? (18.11.2026)
+- **Frage:** Regelwerk: „in der nächsten Runde einen Bonus“. Gilt er nur in der nächsten Runde und nur für den ersten Schuss?
+- **Stellen:** (Kampfsystem, Breakaction); (Kampfsystem, Treffen)
+- **Vorläufig:** Nur in der nächsten Runde für den nächsten Schuss; wird es nicht genutzt, verfällt es. Ein Schuss in der Runde des Zielens lässt es verfallen. „Neues Ziel“ löscht es.
+- **Andere Möglichkeit:** Das Zielen gilt bis zum nächsten Schuss auf dasselbe Ziel, auch über mehrere Runden.
+- **Ändern:** Regelkern, Aktionen (Zielen)
+- **Im Regelwerk klarstellen:** ja
+
+### R9. Bewegung und Hechten in derselben Runde (18.11.2026)
+- **Frage:** Bewegt sich der Charakter und hechtet in derselben Runde: Zählen für die Lage beide Malsteps?
+- **Stellen:** (Kampfsystem, Malsteps der Lage); (Kampfsystem, Standwechsel)
+- **Vorläufig:** Es zählt nur eins von beiden, das mit mehr Malsteps (wie bei Sprint die schnellere Bewegung).
+- **Andere Möglichkeit:** Beide zählen.
+- **Ändern:** Regelkern, Aktionen (eigene Bewegung für die Lage)
+- **Im Regelwerk klarstellen:** ja
+
+### R10. Atemkontrolle: wann zählt „liegend oder aufgelegt“? (18.11.2026)
+- **Frage:** Atemkontrolle wirkt nur liegend oder mit aufgelegter Waffe. Zählt der Stand beim Zielen oder beim Schuss?
+- **Stellen:** (Stats, Skills und Perks, Exklusive Perks)
+- **Vorläufig:** im Moment des Zielens (Schalter beim Zielen, vorbelegt mit dem Stand).
+- **Andere Möglichkeit:** im Moment des Schusses.
+- **Ändern:** Regelkern, Aktionen (Zielen), und der Schalter beim Zielen
+- **Im Regelwerk klarstellen:** ja
+
+### R11. Schnelllader und Ladestreifen: Patronen, die noch in der Waffe sind (18.11.2026)
+- **Frage:** Was passiert mit den Patronen, die beim Laden mit Schnelllader oder Ladestreifen noch in der Waffe sind?
+- **Stellen:** (Kampfsystem, Nachladen); (Schusswaffen (tragbar), Zubehör)
+- **Vorläufig:** Sie kommen zu den losen Patronen.
+- **Andere Möglichkeit:** Sie gehen verloren (fallen zu Boden).
+- **Ändern:** Regelkern, Waffen (Laden mit Zubehör)
+- **Im Regelwerk klarstellen:** ja
+
+### R12. Magazine nach dem Gefecht füllen: Dauer und Reihenfolge (18.11.2026)
+- **Frage:** Das Regelwerk sagt nicht, wie lange das Füllen von Magazinen dauert und was zuerst gefüllt wird. (Entschieden ist schon: Knopf „Magazine füllen“ außerhalb des Gefechts; leere Magazine werden gezählt statt verworfen.)
+- **Stellen:** (Kampfsystem, Nachladen)
+- **Vorläufig:** Kostet keine Zeit. Reihenfolge: Waffe, angebrochene Magazine, leere Magazine.
+- **Andere Möglichkeit:** eine feste Dauer je Magazin.
+- **Ändern:** Regelkern, Waffen (Magazine füllen); für eine Dauer zusätzlich eine Zahl in regeln.json
+- **Im Regelwerk klarstellen:** ja
+
+### R13. Exklusive Skills ohne Gruppe (16.11.2026)
+- **Frage:** Tarnen, Ballistik, Sprengstoff, Einschüchtern, Schlösser, Beschaffen, Taktisches Fahren, Aufbrechen und Verhören stehen nur unter „Exklusive Skills“, ohne Gruppe.
+- **Stellen:** (Stats, Skills und Perks, Exklusive Skills)
+- **Vorläufig:** Gruppe „exklusiv“, nur für die Anzeige. Über Gruppen werden sie ohnehin nie freigegeben.
+- **Andere Möglichkeit:** jedem eine der vorhandenen Gruppen zuordnen.
+- **Ändern:** skills.json (Feld gruppe bei diesen Skills)
+- **Im Regelwerk klarstellen:** nein
+
+### R14. Stat-Voraussetzung bei der Erstellung auf höherer Stufe (17.11.2026)
+- **Frage:** Die Klassen nennen „Voraussetzung: Twitch A“ usw. Gilt das auch bei der Erstellung? Und müssen beim Meister die Stats seines Wegs (Spezialisierung, Stufe-4-Klasse) auf A stehen, obwohl er selbst keine Stat-Voraussetzung hat?
+- **Stellen:** (Klassen, Spezialisierungen); (Klassen, Meister); (Charaktererstellung, 1. Klasse wählen)
+- **Vorläufig:** Gilt auch bei der Erstellung. Die erweiterte Form verlangt zusätzlich den Stat ihrer Spezialisierung. Beim Meister: nein.
+- **Andere Möglichkeit:** Beim Meister gelten die Voraussetzungen seines Wegs.
+- **Ändern:** Regelkern, Erstellung (Stat-Voraussetzungen)
+- **Im Regelwerk klarstellen:** ja
+
+### R15. Meister mit zweiter Spezialisierung bei der Erstellung (17.11.2026)
+- **Frage:** Als Stufe-4-Klasse bietet die Erstellung nur die erweiterten Formen an, keine zweite Spezialisierung. Reicht das?
+- **Stellen:** (Klassen, Zweite Spezialisierung); (Klassen, Meister)
+- **Vorläufig:** ja, nur die erweiterten Formen.
+- **Andere Möglichkeit:** Auch die zweite Spezialisierung als Weg zum Meister anbieten.
+- **Ändern:** Regelkern, Erstellung (Wahl der Stufe-4-Klasse)
+- **Im Regelwerk klarstellen:** ja
+
+### R16. Mindestskills beim Einstieg als erweiterte Form (17.11.2026)
+- **Frage:** Gelten bei der Erstellung als erweiterte Form auch die Mindestskills der Spezialisierung darunter?
+- **Stellen:** (Klassen, Spezialisierungen); (Klassen, Funktion der Klasse)
+- **Vorläufig:** Es gelten nur die Mindestskills der gewählten Klasse. Sie enthalten laut Regelwerk die der Klasse darunter.
+- **Andere Möglichkeit:** Die Mindestskills beider Klassen werden zusammengenommen (jeweils der höhere Wert).
+- **Ändern:** Regelkern, Erstellung (Grund-Skills)
+- **Im Regelwerk klarstellen:** nein
+
+### R17. Klasse wechseln nach einem Statrank-Up bei der Erstellung (17.11.2026)
+- **Frage:** Wechselt der Spieler in der Erstellung die Klasse, nachdem er in Schritt 5 einen Statrank-Up gekauft hat: Was passiert mit dem Statrank-Up?
+- **Stellen:** (Charaktererstellung, 5. freie Charakterpunkte verteilen); (Klassen, Rank-Set)
+- **Vorläufig:** Der Statrank-Up bleibt am Stat, denn sein Wurf ist fest. Hat der Stat danach keinen Rang oder steht schon auf S, zählt er nicht und kostet nichts. Der Wurf ist dann verloren.
+- **Andere Möglichkeit:** Ein Klassenwechsel setzt alle Statrank-Ups zurück.
+- **Ändern:** Regelkern, Erstellung
+- **Im Regelwerk klarstellen:** nein
+
+### R18. Aufsätze ohne Preis und Vorratslevel (16.11.2026)
+- **Frage:** Reflexvisier, Zielfernrohr, Zweibein, Vordergriff, Lampe, Schalldämpfer, Kompensator und erweiterte Magazine haben im Regelwerk keine Geldwertspanne und kein Vorratslevel. Für den Laden werden sie gebraucht.
+- **Stellen:** (Schusswaffen (tragbar), Aufsätze)
+- **Vorläufig:** noch keine; zurückgestellt, bis der Laden gebaut wird (Konzept § 3.14). Dann schlage ich Werte vor, falls das Regelwerk sie bis dahin nicht nennt.
+- **Ändern:** aufsaetze.json (Geldwert und Vorratslevel je Aufsatz)
+- **Im Regelwerk klarstellen:** ja (Werte ergänzen)
 
 ### Erledigt
+
+### R19. Rank-Vorschlag der Klassen (16.11.2026)
+- **Entschieden (16.11.2026):** kein Vorschlag; der Spieler verteilt das Rank-Set selbst. Konzept § 3.0 angepasst.
+
+### R20. M4 Carbine und M16A4, Magazingröße (16.11.2026)
+- **Entschieden (16.11.2026):** Die M4 bleibt bei 20+1 (erweitert 30, Trommel 100). Die M16A4 bekommt ebenfalls 20+1 mit erweitertem Magazin 30 und Trommel 100. In waffen.json und aufsaetze.json so eingetragen.
+- **Im Regelwerk klarstellen:** ja, **noch offen**: Im Repo CQB (Schusswaffen, M16A4) steht weiter 30+1 mit Trommel 100 (Stand 17.11.2026). Bis zum Nachtrag weicht die App hier von der Kopie in `regelwerk/` ab.
+
+### R21. Gummi- und Unterschallmunition an Waffen (16.11.2026)
+- **Entschieden (17.11.2026):** Jede Waffe verschießt alle Typen ihres Kalibers (Munitionstypen: Gummi und Unterschall gelten „wie gewöhnliche Munition des Kalibers“).
+
+### R22. Kompensator (16.11.2026)
+- **Entschieden (16.11.2026):** für Pistole und Gewehr, je ein eigener Aufsatz.
+
+### R23. Gewehrkolben und Gewehrlauf „mit jeder Langwaffe“ (16.11.2026)
+- **Entschieden (17.11.2026):** Kategorien AR, SG, DMR, SR, LMG; nicht SMG und Werfer.
+
+### R24. Wurfwaffen (16.11.2026)
+- **Entschieden (17.11.2026):** Jede Nahkampfwaffe ist werfbar und hat eine Wurf-Reichweite (Malsteps je Band, „n/A“ = nicht werfbar), dazu zählt die Wurfweite des Charakters. Neu: Wurfmesser und Wurfaxt, auch im Nahkampf einsetzbar. Keine eigene Datei für Wurfwaffen. Im Regelwerk (Kampfsystem, Werfen; Nahkampfwaffen) eingetragen und übernommen; in nahkampfwaffen.json Feld wurf. Nahkampfwaffen im Charakter tragen eine Anzahl (Standard 1).
 
 ## Offen aus Schritt 1 (Grundgerüst, 16.11.2026)
 
 Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorläufigen Lösung, mit der die App arbeitet.
 
-1. **Rank-Vorschlag der Klassen.** Entschieden (16.11.2026): kein Vorschlag; der Spieler verteilt das Rank-Set selbst. Konzept § 3.0 angepasst.
-2. **M4 Carbine und M16A4, Magazingröße.** Entschieden (16.11.2026): Die M4 bleibt bei 20+1 (erweitert 30, Trommel 100). Die M16A4 bekommt ebenfalls 20+1 mit erweitertem Magazin 30 und Trommel 100. In `waffen.json` und `aufsaetze.json` schon so eingetragen. **Im Regelwerk (Repo CQB, Schusswaffen, M16A4) noch nachzutragen** (Stand 17.11.2026: dort weiter 30+1 mit Trommel 100; die Änderung war in der Kopie `regelwerk/` der App gelandet und wurde beim Übernehmen überschrieben). Bis dahin weicht die App an dieser Stelle von der Kopie in `regelwerk/` ab.
-3. **Gummi- und Unterschallmunition an Waffen.** Entschieden (17.11.2026): Jede Waffe verschießt alle Typen ihres Kalibers (Munitionstypen: Gummi und Unterschall gelten „wie gewöhnliche Munition des Kalibers“).
-4. **Kompensator.** Entschieden (16.11.2026): für Pistole und Gewehr, je ein eigener Aufsatz.
-5. **Aufsätze ohne Preis und Vorratslevel.** Zurückgestellt (16.11.2026) bis zum Bau des Ladens. Reflexvisier, Zielfernrohr, Zweibein, Vordergriff, Lampe, Schalldämpfer, Kompensator und erweiterte Magazine haben im Regelwerk keine Geldwertspanne und kein Vorratslevel. Für den Laden (§ 3.14) werden sie gebraucht.
-6. **Gewehrkolben und Gewehrlauf „mit jeder Langwaffe“.** Entschieden (17.11.2026): Kategorien AR, SG, DMR, SR, LMG; nicht SMG und Werfer.
-7. **Wurfwaffen.** Entschieden (17.11.2026): Jede Nahkampfwaffe ist werfbar und hat eine Wurf-Reichweite (Malsteps je Band, „n/A“ = nicht werfbar), dazu zählt die Wurfweite des Charakters. Neu: Wurfmesser und Wurfaxt, auch im Nahkampf einsetzbar. Keine eigene Datei für Wurfwaffen. Im Regelwerk (Kampfsystem, Werfen; Nahkampfwaffen) eingetragen und übernommen; in `nahkampfwaffen.json` Feld `wurf`. Nahkampfwaffen im Charakter tragen eine Anzahl (Standard 1).
-8. **Exklusive Skills ohne Gruppe.** Tarnen, Ballistik, Sprengstoff, Einschüchtern, Schlösser, Beschaffen, Taktisches Fahren, Aufbrechen und Verhören stehen im Regelwerk nur unter „Exklusive Skills“. *Vorläufig:* Gruppe `exklusiv` (nur für die Anzeige; über Gruppen werden sie ohnehin nie freigegeben).
+1. **Rank-Vorschlag der Klassen.** → Regelfragen R19.
+2. **M4 Carbine und M16A4, Magazingröße.** → Regelfragen R20.
+3. **Gummi- und Unterschallmunition an Waffen.** → Regelfragen R21.
+4. **Kompensator.** → Regelfragen R22.
+5. **Aufsätze ohne Preis und Vorratslevel.** → Regelfragen R18.
+6. **Gewehrkolben und Gewehrlauf „mit jeder Langwaffe“.** → Regelfragen R23.
+7. **Wurfwaffen.** → Regelfragen R24.
+8. **Exklusive Skills ohne Gruppe.** → Regelfragen R13.
 9. **Prüfung „Mindestskills liegen im Zugang der Klasse“.** Erledigt (17.11.2026, Schritt 2): Die Datenprüfung rechnet den Zugang jeder Klasse aus; alle 33 Klassen bestehen.
 
 ## Offen aus Schritt 2 (Regelkern, 17.11.2026)
 
-1. **Step-Faktoren gerundet oder genau?** Das Regelwerk (Stats, Skills und Perks, Steps) beschreibt die Abschläge 15 %, 25 %, 35 %, 45 %, 55 % und zeigt dazu gerundete Faktoren (0,638; 0,414; 0,228; 0,103). Mit den gerundeten Faktoren ergibt Statwert 35 bei 3 Malsteps 14, das Beispiel im Regelwerk nennt 15. *Vorläufig:* Die App rechnet mit den ungerundeten Faktoren (0,6375; 0,414375; 0,22790625; 0,1025578125); damit stimmen alle Beispiele. Unterschied zu den gerundeten Faktoren: 8 Zielwerte um 1 (29/2, 34/5, 35/3, 64/3, 68/4, 73/5, 87/2, 98/2). **Im Regelwerk (Repo CQB) klarstellen:** Faktoren mit mehr Stellen angeben oder „ungerundet rechnen“ ergänzen. Änderung in der App: eine Zeile in `regeln.json`.
-2. **Rüstung bei der Ansage „Rumpf“.** Das Regelwerk sagt nicht, welche Rumpfzone für die Rüstung zählt. *Vorläufig:* der niedrigste Rüstungswert von Brust, Bauch und Unterleib (bei allen heutigen Westen gleich).
-3. **Krit eines stumpfen Treffers gegen „Schmerz ignorieren“.** Ein stumpfer Krit löst „immer“ einen Stagger aus; das Symptom Schmerz ignorieren sagt „keinen Stagger“. *Vorläufig:* Schmerz ignorieren gewinnt, kein Stagger.
-4. **Wuchttreffer mit 0 Schaden.** *Vorläufig:* keine Prellung, weil nichts zu heilen ist.
+1. **Step-Faktoren gerundet oder genau?** → Regelfragen R1.
+2. **Rüstung bei der Ansage „Rumpf“.** → Regelfragen R2.
+3. **Krit eines stumpfen Treffers gegen „Schmerz ignorieren“.** → Regelfragen R4.
+4. **Wuchttreffer mit 0 Schaden.** → Regelfragen R5.
 5. **Perks, deren Wirkung nur als Text vorliegt.** Erledigt für Schritt 6 (18.11.2026): `perk_wirkungen` in `regeln.json` mit festen Wirkungsarten; der Regelkern führt CQB, Feuer in Bewegung, Atemkontrolle, Gezielter Schuss, Triple Tap, Fingerfertig, Schnell nachladen, Schnellzieher, Quickthrow und Schutzreflex selbst aus. Weiter nur als Hinweis: Überfall, Kaltblütig, Geduld, Niederhalten, Lucky Numbers, Korrektur (sie brauchen Wissen, das die App nicht hat, z. B. ob das Ziel dich wahrnimmt).
-6. **Arme hinter Deckung.** Regelwerk: „Verdeckt eine Deckung **von unten** die Brust, gelten auch beide Arme als verdeckt.“ *Vorläufig:* Ist die Brust verdeckt, sind die Arme verdeckt; die Richtung prüft die App nicht.
+6. **Arme hinter Deckung.** → Regelfragen R3.
 
 ## Offen aus Schritt 3 (Erstellung und Modi, 17.11.2026)
 
-1. **Stat-Voraussetzung bei der Erstellung auf höherer Stufe.** Die Klassen nennen „Voraussetzung: Twitch A“ usw. *Vorläufig:* gilt auch bei der Erstellung; die erweiterte Form verlangt zusätzlich den Stat ihrer Spezialisierung. Der Meister hat laut Regelwerk keine Stat-Voraussetzung; ob die Stats seines Wegs (Spezialisierung, Stufe-4-Klasse) trotzdem auf A stehen müssen, ist offen. *Vorläufig:* nein.
-2. **Meister mit zweiter Spezialisierung bei der Erstellung.** Als Stufe-4-Klasse bietet die Erstellung nur die erweiterten Formen an, keine zweite Spezialisierung. Reicht das?
-3. **Mindestskills der Spezialisierung beim Einstieg als erweiterte Form.** Es gelten nur die Mindestskills der gewählten Klasse (sie enthalten laut Regelwerk die der Klasse darunter).
-4. **Klasse wechseln nach einem Statrank-Up in Schritt 5.** Der Statrank-Up bleibt am Stat (sein Wurf ist fest). Liegt der Stat danach ohne Rang oder schon auf S, zählt er nicht und kostet nichts; der Wurf ist dann verloren.
+1. **Stat-Voraussetzung bei der Erstellung auf höherer Stufe.** → Regelfragen R14.
+2. **Meister mit zweiter Spezialisierung bei der Erstellung.** → Regelfragen R15.
+3. **Mindestskills der Spezialisierung beim Einstieg als erweiterte Form.** → Regelfragen R16.
+4. **Klasse wechseln nach einem Statrank-Up in Schritt 5.** → Regelfragen R17.
 5. **Laden in Schritt 7** fehlt noch (§ 3.14). Bis dahin wird nur das Startgeld gebucht.
 6. **Noch nicht im Schreibmodus:** Klasse/Klassenweg, Geld, Optionen des Hintergrunds (Schulden, Coup, Vertrag). Ausrüstung: erledigt in Schritt 6. Kommen mit den Schritten 7 und 8. Klassenwechsel-Dialog kommt mit Schritt 8. Erledigt in Schritt 4: Grundwerte, Anpassungen der SL, Name, Aussehen, Freitexte des Hintergrunds.
 
@@ -68,7 +228,7 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 
 ## Offen aus Schritt 5 (Probenrechner und Adrenalin, 17.11.2026)
 
-1. **Offene kritische Wunde.** Für „kampfunfähig“ zählt vorläufig jede kritische Wunde, deren Blutung nicht gestoppt ist. Wird mit den Wunden (Schritt 7) genau festgelegt.
+1. **Offene kritische Wunde.** → Regelfragen R6.
 2. **Steps der SL für das ganze Gefecht** gelten vorläufig für **alle** Proben. Die Auswahl, für welche Proben sie gelten (Schießen, Werfen, alle; `gilt_fuer`), kommt mit dem Schussrechner (Schritt 6); das Datenformat kennt sie schon.
 3. **Senken und Verbündete verschieben** sind Mainactions. Erledigt (Schritt 6): Sie ziehen die Main ab.
 4. **Rückhalt und Einsamer Wolf** (Stepshield gegen den Anstieg bzw. beim Senken, wenn Verbündete in Hörweite sind bzw. nicht) erscheinen als Hinweis; den Stepshield trägt der Spieler im Block SL ein, weil die App nicht weiß, wer in Hörweite ist.
@@ -76,13 +236,13 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 
 ## Offen aus Schritt 6 (Aktionsleiste, Waffen, Schießen, 18.11.2026)
 
-1. **Kosten des Waffenwechsels.** Ein Wechsel umfasst Wegstecken und Bereitmachen. *Vorläufig:* Es zählt der teurere der beiden Trageorte (Pistole ins Holster, Gewehr von der Schlinge → Mainaction). Rucksack (2 Runden): Die App wechselt sofort und weist auf die zweite Runde hin.
-2. **Wie lange gilt Zielen?** Regelwerk: „in der nächsten Runde einen Bonus“. *Vorläufig:* nur in der nächsten Runde; nicht genutzt, verfällt es. Ein Schuss in der Runde des Zielens lässt es verfallen; „Neues Ziel“ löscht es.
-3. **Bewegung und Hechten in derselben Runde.** *Vorläufig:* Für die Lage zählt nur eins von beiden, das mit mehr Malsteps (wie bei Sprint die schnellere Bewegung).
-4. **Atemkontrolle.** *Vorläufig:* Ob der Charakter liegt oder die Waffe aufgelegt ist, zählt im Moment des Zielens (Schalter im Zielen, vorbelegt mit dem Stand).
+1. **Kosten des Waffenwechsels.** → Regelfragen R7.
+2. **Wie lange gilt Zielen?** → Regelfragen R8.
+3. **Bewegung und Hechten in derselben Runde.** → Regelfragen R9.
+4. **Atemkontrolle.** → Regelfragen R10.
 5. **Aufsätze im Gefecht anbringen.** Die App führt keine losen Aufsätze. *Vorläufig:* Der Spieler hakt an, was danach an der Waffe ist, und wählt nur, was er dabeihat.
-6. **Schnelllader und Ladestreifen.** *Vorläufig:* Patronen, die beim Laden noch in der Waffe sind, kommen zu den losen Patronen.
-7. **Magazine nach dem Gefecht füllen.** Entschieden (18.11.2026): Knopf „Magazine füllen“ außerhalb des Gefechts; leere Magazine werden gezählt statt verworfen. *Vorläufig* ist die Reihenfolge: Waffe, angebrochene Magazine, leere Magazine. Es kostet keine Zeit; wie lange das Füllen dauert, sagt das Regelwerk nicht.
+6. **Schnelllader und Ladestreifen.** → Regelfragen R11.
+7. **Magazine nach dem Gefecht füllen.** Entschieden (18.11.2026): Knopf „Magazine füllen“ außerhalb des Gefechts; leere Magazine werden gezählt statt verworfen. Dauer und Reihenfolge → Regelfragen R12.
 8. **Ausrüstung ohne Laden.** Im Schreibmodus frei eintragbar, ohne Kassenbuch und ohne Eintrag im Protokoll. Mit dem Laden (§ 3.14) ändert sich das.
 9. **Noch nicht da:** Knöpfe Getroffen und Ereignis, Wurfaktion, Nahkampf, Wunde versorgen (im Menü ausgegraut), Schaden beim Ziel vorrechnen im Schussbericht, Malstep und Waffen-Einschränkung des ballistischen Schilds beim Schießen. Kommen mit Schritt 7 (Treffer, Wunden, Schutz).
 10. **Skill austauschen beim Schießen** (Konzept § 3.6) fehlt noch; der Schussrechner nimmt immer den Waffenskill der Waffe.

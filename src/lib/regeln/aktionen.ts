@@ -216,7 +216,10 @@ export interface Zielwirkung {
   perk: string | null;
 }
 
-/** Was Zielen jetzt bringt: Stepshield, mit Perk mehr (liegend oder aufgelegt) oder „ohne Reichweite“ (ohne Bewegung). */
+/**
+ * Was Zielen jetzt bringt: Stepshield, mit Perk mehr (liegend oder aufgelegt) oder „ohne Reichweite“ (ohne Bewegung).
+ * Regelfrage R10 (docs/offen.md): vorläufig zählt „liegend oder aufgelegt“ im Moment des Zielens.
+ */
 export function zielwirkung(c: Charakter, d: Spieldaten, liegendOderAufgelegt: boolean): Zielwirkung {
   const g = gefechtVon(c);
   let w: Zielwirkung = { stepshields: d.regeln.zielen.stepshields, ohne_reichweite: false, perk: null };
@@ -242,7 +245,7 @@ export function zielen(c: Charakter, d: Spieldaten, als: 'main' | 'break', liege
   });
 }
 
-/** Zielen, das für einen Schuss in dieser Runde gilt, sonst null. */
+/** Zielen, das für einen Schuss in dieser Runde gilt, sonst null. Regelfrage R8 (docs/offen.md): vorläufig nur die nächste Runde. */
 export function zielenAktiv(g: Gefecht): Gefecht['zielen'] {
   return g.zielen && g.zielen.runde === g.runde ? g.zielen : null;
 }
@@ -282,7 +285,7 @@ export function rundeZuruecksetzen(g: Gefecht, d: Spieldaten): Gefecht {
   };
 }
 
-/** Eigene Bewegung dieser Runde für die Lage: die mit mehr Malsteps aus Bewegung und Hechten. */
+/** Eigene Bewegung dieser Runde für die Lage: die mit mehr Malsteps aus Bewegung und Hechten. Regelfrage R9 (docs/offen.md): vorläufig. */
 export function eigeneBewegungFuerLage(g: Gefecht, d: Spieldaten): string | null {
   const m = d.regeln.lage.eigene_bewegung;
   const kandidaten = [g.bewegt, g.gehechtet ? 'hechten' : null].filter((x): x is string => !!x);

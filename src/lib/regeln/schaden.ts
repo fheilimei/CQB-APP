@@ -5,7 +5,7 @@ import type { Spieldaten } from '../daten/typen';
 /**
  * Tatsächlich verdeckte Zonen nach den Regeln für Rumpf und Arme:
  * Ist eine Rumpfzone verdeckt, gilt der ganze Rumpf als verdeckt. Ist die Zone `deckung.arme_mit` (Brust) verdeckt,
- * gelten auch die Arme als verdeckt.
+ * gelten auch die Arme als verdeckt. Regelfrage R3 (docs/offen.md): vorläufig ohne Richtung („von unten“).
  */
 export function verdeckteZonen(zonen: string[], d: Spieldaten): string[] {
   const menge = new Set(zonen);
@@ -18,6 +18,7 @@ export function verdeckteZonen(zonen: string[], d: Spieldaten): string[] {
 /**
  * Rüstungswert einer Zone: höchster Wert aller getragenen Rüstungen (Westen, Helme, Anzug).
  * Zone ohne Nummer (Rumpf nach Ansage): niedrigster Wert der Rumpfzonen.
+ * Regelfrage R2 (docs/offen.md): vorläufig.
  */
 export function ruestungswert(zone: string, getragen: string[], d: Spieldaten): number {
   const teile = d.schutz.ruestung.filter((r) => getragen.includes(r.id));
@@ -62,6 +63,7 @@ export interface Trefferfolge {
 }
 
 function stagger(schaden: number, e: Treffereingabe, kritStumpf: boolean): boolean {
+  // Regelfrage R4 (docs/offen.md): vorläufig gewinnt Schmerz ignorieren gegen den stumpfen Krit.
   if (e.stagger_regel === 'nie') return false;
   if (kritStumpf) return true;
   return e.stagger_regel === 'empfindlich' ? schaden >= e.schmerzresistenz : schaden > e.schmerzresistenz;
@@ -74,6 +76,7 @@ export function treffer(e: Treffereingabe, d: Spieldaten): Trefferfolge {
   const kugeln = Math.max(1, e.kugeln);
   const gestoppt: Trefferfolge = { art: 'gestoppt', rest_dk: null, schaden: 0, wunde: false, prellung: false, folge: null, stagger: false };
 
+  // Regelfrage R5 (docs/offen.md): vorläufig keine Prellung bei 0 Schaden (prellung: schaden > 0, auch unten).
   // Stumpf: verdeckte Zone → kein Schaden; sonst immer Wuchttreffer mit vollem Rüstungswert als Restschutz.
   if (e.dk === null) {
     if (e.deckung !== null) return gestoppt;

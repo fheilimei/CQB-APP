@@ -170,7 +170,7 @@ export function magazinWechseln(e: WaffenEintrag, index: number, d: Spieldaten):
   };
 }
 
-/** Schnelllader bzw. Ladestreifen: füllt auf einmal; Patronen, die noch drin waren, kommen zu den losen Patronen. */
+/** Schnelllader bzw. Ladestreifen: füllt auf einmal; Patronen, die noch drin waren, kommen zu den losen Patronen (Regelfrage R11, vorläufig). */
 export function mitZubehoerLaden(e: WaffenEintrag, art: string, d: Spieldaten): WaffenEintrag {
   const z = e.zubehoer?.find((x) => x.art === art);
   if (!z || z.gefuellt <= 0) return e;
@@ -232,7 +232,7 @@ export function kostenAm(c: Charakter, trageort: string, d: Spieldaten): { koste
 
 /**
  * Kosten eines Wechsels: Er umfasst Wegstecken der alten und Bereitmachen der neuen Waffe; es zählt der teurere
- * der beiden Trageorte (docs/offen.md, Schritt 6).
+ * der beiden Trageorte. Regelfrage R7 (docs/offen.md): vorläufig.
  */
 export function wechselkosten(c: Charakter, nachId: string, d: Spieldaten): { kosten: Wechselkosten; perk: string | null } {
   const alt = aktiverEintrag(c);
@@ -295,6 +295,7 @@ export interface Fuellung {
  * Füllt aus den losen Patronen, so weit sie reichen: zuerst die Waffe (Wechselmagazin bis zur Kapazität), dann
  * angebrochene Ersatzmagazine, dann leere Magazine; bei Waffen ohne Wechselmagazin leere Schnelllader und Ladestreifen
  * (je Magazingröße). Einzeln laden in die Waffe selbst bleibt beim Nachladen.
+ * Regelfrage R12 (docs/offen.md): Reihenfolge und „kostet keine Zeit“ vorläufig.
  */
 export function magazineFuellen(e: WaffenEintrag, d: Spieldaten): Fuellung {
   const w = waffeVon(e, d);
