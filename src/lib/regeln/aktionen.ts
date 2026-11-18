@@ -176,10 +176,22 @@ export function bewegen(c: Charakter, art: string, d: Spieldaten): Charakter {
 
 // ---------- Standwechsel und Hechten
 
-/** Standwechsel über den Knopf Stand verbraucht den Stand-Zähler, als Breakaction (Break-Menü, mit Reaktion oder Antizipation) die Breakaction. */
-export function standWechseln(c: Charakter, stand: string, als: 'stand' | 'break'): Charakter {
+/** Bewegung der Runde nach einem Standwechsel: Ist sie im neuen Stand nicht möglich, gilt die schnellste Bewegungsart,
+ *  die der neue Stand erlaubt (Hocke → Gehen, Liegen → Kriechen; Kampfsystem, Standwechsel).
+ *  Regelfrage R33 (entschieden): Wer rennt und dann in die Hocke geht oder sich hinlegt, verlangsamt auf das erlaubte Maß. */
+export function bewegungImStand(bewegt: string | null, stand: string, d: Spieldaten): string | null {
+  if (!bewegt) return null;
+  const arten = d.regeln.bewegung.arten;
+  if (arten[bewegt]?.stand.includes(stand)) return bewegt;
+  const moeglich = d.regeln.bewegung.reihenfolge.filter((id) => arten[id]!.stand.includes(stand) && tempo(id, d) <= tempo(bewegt, d));
+  return moeglich.at(-1) ?? null;
+}
+
+/** Standwechsel über den Knopf Stand verbraucht den Stand-Zähler, als Breakaction (Break-Menü, mit Reaktion oder Antizipation) die Breakaction.
+ *  Die Bewegung der Runde sinkt auf das, was der neue Stand erlaubt (R33). */
+export function standWechseln(c: Charakter, stand: string, als: 'stand' | 'break', d: Spieldaten): Charakter {
   const g = laufend(c);
-  return mit(c, { ...g, stand, verbraucht: { ...g.verbraucht, [als]: g.verbraucht[als] + 1 } });
+  return mit(c, { ...g, stand, bewegt: bewegungImStand(g.bewegt, stand, d), verbraucht: { ...g.verbraucht, [als]: g.verbraucht[als] + 1 } });
 }
 
 /** Hechten ist gesperrt aus einem Stand mit kein_hechten (Liegen) und mit dem Symptom „Kein Hechten“. */
@@ -191,9 +203,9 @@ export function hechtenSperre(c: Charakter, d: Spieldaten): 'stand' | 'symptom' 
 }
 
 /** Hechten (Main oder Break): in einen Stand aus regeln.json hechten.staende (R27: nur Liegen); zählt bis Rundenende bzw. bis zur nächsten Bewegung als eigene Bewegung für die Lage (R9). */
-export function hechten(c: Charakter, zielstand: string, als: 'main' | 'break'): Charakter {
+export function hechten(c: Charakter, zielstand: string, als: 'main' | 'break', d: Spieldaten): Charakter {
   const g = laufend(c);
-  return mit(c, { ...g, stand: zielstand, gehechtet: true, verbraucht: { ...g.verbraucht, [als]: g.verbraucht[als] + 1 } });
+  return mit(c, { ...g, stand: zielstand, bewegt: bewegungImStand(g.bewegt, zielstand, d), gehechtet: true, verbraucht: { ...g.verbraucht, [als]: g.verbraucht[als] + 1 } });
 }
 
 // ---------- Zielen

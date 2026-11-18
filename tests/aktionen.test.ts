@@ -88,8 +88,8 @@ describe('Bewegung, Stand, Hechten', () => {
     const erlaubt = (c: Charakter) => bewegungsarten(c, d).filter((b) => b.erlaubt).map((b) => b.id);
     const c = imGefecht();
     expect(erlaubt(c)).toEqual(['gehen', 'laufen', 'rennen']);
-    expect(erlaubt(standWechseln(c, 'hocke', 'stand'))).toEqual(['gehen']);
-    expect(erlaubt(standWechseln(c, 'liegen', 'stand'))).toEqual(['kriechen']);
+    expect(erlaubt(standWechseln(c, 'hocke', 'stand', d))).toEqual(['gehen']);
+    expect(erlaubt(standWechseln(c, 'liegen', 'stand', d))).toEqual(['kriechen']);
   });
 
   it('Schutzanzug: höchstens Gehen', () => {
@@ -103,19 +103,36 @@ describe('Bewegung, Stand, Hechten', () => {
     expect(g(c)).toMatchObject({ bewegt: 'rennen', bewegungen: 2 });
   });
 
+  it('R33: Rennen, dann Hocke → Gehen; Rennen, dann Liegen → Kriechen; Stehen erlaubt die Bewegung weiter', () => {
+    const gerannt = bewegen(imGefecht(), 'rennen', d);
+    expect(g(standWechseln(gerannt, 'hocke', 'stand', d)).bewegt).toBe('gehen');
+    expect(g(standWechseln(gerannt, 'liegen', 'break', d)).bewegt).toBe('kriechen');
+    expect(eigeneBewegungFuerLage(g(standWechseln(gerannt, 'hocke', 'stand', d)))).toBe('gehen');
+    // Gehen bleibt in der Hocke Gehen; wieder aufstehen macht nicht schneller
+    expect(g(standWechseln(bewegen(imGefecht(), 'gehen', d), 'hocke', 'stand', d)).bewegt).toBe('gehen');
+    const zurueck = standWechseln(standWechseln(gerannt, 'hocke', 'stand', d), 'stehen', 'break', d);
+    expect(g(zurueck).bewegt).toBe('gehen');
+    // Ohne Bewegung bleibt es ohne Bewegung
+    expect(g(standWechseln(imGefecht(), 'liegen', 'stand', d)).bewegt).toBeNull();
+    // Hechten ins Liegen nach dem Rennen: für die Lage zählt Hechten (R9), die Bewegung sinkt auf Kriechen
+    const gehechtet = hechten(gerannt, 'liegen', 'main', d);
+    expect(g(gehechtet).bewegt).toBe('kriechen');
+    expect(eigeneBewegungFuerLage(g(bewegen(gehechtet, 'kriechen', d)))).toBe('kriechen');
+  });
+
   it('Standwechsel: über Stand verbraucht den Stand-Zähler, als Breakaction die Breakaction', () => {
-    const c = standWechseln(imGefecht(), 'hocke', 'stand');
+    const c = standWechseln(imGefecht(), 'hocke', 'stand', d);
     expect(verfuegbar(c, 'stand', d)).toBe(0);
-    const b = standWechseln(c, 'liegen', 'break');
+    const b = standWechseln(c, 'liegen', 'break', d);
     expect(verfuegbar(b, 'break', d)).toBe(0);
     expect(g(b).stand).toBe('liegen');
   });
 
   it('Hechten: gesperrt im Liegen und mit Ruhepuls 2; setzt Stand und zählt als Bewegung für die Lage', () => {
-    expect(hechtenSperre(standWechseln(imGefecht(), 'liegen', 'stand'), d)).toBe('stand');
+    expect(hechtenSperre(standWechseln(imGefecht(), 'liegen', 'stand', d), d)).toBe('stand');
     expect(hechtenSperre(imGefecht(-2), d)).toBe('symptom');
     expect(d.regeln.hechten.staende).toEqual(['liegen']); // R27: Hechten nur ins Liegen
-    const c = hechten(imGefecht(), 'liegen', 'main');
+    const c = hechten(imGefecht(), 'liegen', 'main', d);
     expect(g(c)).toMatchObject({ stand: 'liegen', gehechtet: true });
     expect(verfuegbar(c, 'main', d)).toBe(0);
   });
@@ -124,10 +141,10 @@ describe('Bewegung, Stand, Hechten', () => {
     const gerannt = bewegen(imGefecht(), 'rennen', d);
     expect(eigeneBewegungFuerLage(g(gerannt))).toBe('rennen');
     // Rennen, dann Hechten: Hechten zählt (2 statt 4 Malsteps)
-    const danachGehechtet = hechten(gerannt, 'hocke', 'main');
+    const danachGehechtet = hechten(gerannt, 'hocke', 'main', d);
     expect(eigeneBewegungFuerLage(g(danachGehechtet))).toBe('hechten');
     // Hechten, dann Gehen: Gehen zählt (1 statt 2 Malsteps)
-    const danachGegangen = bewegen(hechten(imGefecht(), 'hocke', 'main'), 'gehen', d);
+    const danachGegangen = bewegen(hechten(imGefecht(), 'hocke', 'main', d), 'gehen', d);
     expect(eigeneBewegungFuerLage(g(danachGegangen))).toBe('gehen');
     expect(eigeneBewegungFuerLage(g(imGefecht()))).toBeNull();
   });
@@ -301,7 +318,7 @@ describe('Schussrechner', () => {
     const e = waffe('ak47');
     const c = nah(bewaffnet(e));
     expect(schussStellen(c, d, e, einstellung({ modus: 'VA', anzahl: 10 })).haltezahl!.wert).toBe(1);
-    expect(schussStellen(standWechseln(c, 'liegen', 'stand'), d, e, einstellung({ modus: 'VA', anzahl: 10 })).haltezahl!.wert).toBe(2);
+    expect(schussStellen(standWechseln(c, 'liegen', 'stand', d), d, e, einstellung({ modus: 'VA', anzahl: 10 })).haltezahl!.wert).toBe(2);
     const m4 = waffe('m4', { aufsaetze: ['vordergriff'] });
     // M4 VA: Rückstoß 2 + Skill 0 = 3, Vordergriff 1 → netto 2 → 38 → 3.
     expect(schussStellen(nah(bewaffnet(m4)), d, m4, einstellung({ modus: 'VA', anzahl: 10 })).haltezahl!.wert).toBe(3);

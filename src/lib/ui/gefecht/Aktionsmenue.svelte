@@ -291,7 +291,7 @@
       {:else if aktion === 'bewegung'}
         <button class="haupt" disabled={!wahl || verfuegbar(c, 'bewegung', d) <= 0} onclick={() => wahl && onfertig(protokolliere(bewegen(c, wahl, d), `Bewegung: ${bewegungName(wahl, d)}`))}>Ausführen</button>
       {:else if aktion === 'stand'}
-        <button class="haupt" disabled={!wahl || verfuegbar(c, 'stand', d) <= 0} onclick={() => wahl && onfertig(protokolliere(standWechseln(c, wahl, 'stand'), `Standwechsel: ${standAdjektiv(wahl, d)}`))}>Ausführen</button>
+        <button class="haupt" disabled={!wahl || verfuegbar(c, 'stand', d) <= 0} onclick={() => wahl && onfertig(protokolliere(standWechseln(c, wahl, 'stand', d), `Standwechsel: ${standAdjektiv(wahl, d)}`))}>Ausführen</button>
       {/if}
     {:else}
       <button onclick={() => (ansicht = { art: 'liste' })}>Zurück</button>
@@ -300,12 +300,12 @@
         <button class="haupt" onclick={() => ausfuehren(c, v.als, `${v.titel}${freitext.trim() ? `: ${freitext.trim()}` : ''}`, konz === 'keine' ? null : konz)}>Ausführen</button>
       {:else if ansicht.art === 'hechten'}
         {@const v = ansicht}
-        <button class="haupt" disabled={!wahl} onclick={() => wahl && onfertig(protokolliere(hechten(c, wahl, v.als), `Hechten: ${standAdjektiv(wahl, d)}`))}>Ausführen</button>
+        <button class="haupt" disabled={!wahl} onclick={() => wahl && onfertig(protokolliere(hechten(c, wahl, v.als, d), `Hechten: ${standAdjektiv(wahl, d)}`))}>Ausführen</button>
       {:else if ansicht.art === 'zielen'}
         {@const v = ansicht}
         <button class="haupt" onclick={() => onfertig(protokolliere(zielen(c, d, v.als, liegendAufgelegt), 'Zielen'))}>Ausführen</button>
       {:else if ansicht.art === 'stand'}
-        <button class="haupt" disabled={!wahl} onclick={() => wahl && onfertig(protokolliere(standWechseln(c, wahl, 'break'), `Standwechsel (Break): ${standAdjektiv(wahl, d)}`))}>Ausführen</button>
+        <button class="haupt" disabled={!wahl} onclick={() => wahl && onfertig(protokolliere(standWechseln(c, wahl, 'break', d), `Standwechsel (Break): ${standAdjektiv(wahl, d)}`))}>Ausführen</button>
       {:else if ansicht.art === 'aufsatz'}
         <button class="haupt" onclick={() => ausfuehren(c, 'main', 'Aufsatz angebracht oder abgenommen', 'leicht')}>Ausführen</button>
       {/if}

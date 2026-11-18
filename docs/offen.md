@@ -117,6 +117,13 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 
 ### Erledigt
 
+### R33. Erst rennen, dann Hocke oder Liegen (18.11.2026)
+- **Entschieden (18.11.2026):** Wer sich bewegt und danach in die Hocke geht oder sich hinlegt (auch durch Hechten), verlangsamt auf das, was der neue Stand erlaubt: in der Hocke Gehen, im Liegen Kriechen. Für die Lage zählt dann diese langsamere Bewegung. Steht man danach wieder auf, wird die Bewegung nicht wieder schneller.
+- **Frage:** Das Regelwerk sagt, dass in der Hocke nur Gehen und im Liegen nur Kriechen möglich ist, und dass eine Bewegung bis zum Ende der Runde zählt. Offen war, was mit einer schnelleren Bewegung geschieht, wenn danach der Stand wechselt.
+- **Stellen:** (Kampfsystem, Standwechsel); (Kampfsystem, Bewegung); (Kampfsystem, Malsteps der Lage)
+- **Ändern:** Regelkern, Aktionen (Bewegung nach dem Standwechsel)
+- **Im Regelwerk klarstellen:** ja
+
 ### R31. Rumpfzonen hinter Deckung einzeln (18.11.2026)
 - **Entschieden (18.11.2026):** Jede Rumpfzone (Brust, Bauch, Unterleib) wird für sich verdeckt. Eine Kante bis zum Unterleib verdeckt also nicht mehr Bauch und Brust. Für die Ansage „Rumpf“ siehe R32.
 - **Frage:** Das Regelwerk sagt: „Ist eine Zone des Rumpfs verdeckt, gilt der ganze Rumpf als verdeckt.“

@@ -184,7 +184,7 @@ describe('Folgen als Sätze im Bericht', () => {
   });
   it('Bein nach Gehen oder nach Laufen und dann Hechten: kein Sturz', () => {
     expect(folgeSaetze(bein(), bewegen(imGefecht(fertig()), 'gehen', d), d).some((s) => s.includes('stürzt'))).toBe(false);
-    const gehechtet = hechten(bewegen(imGefecht(fertig()), 'laufen', d), 'liegen', 'break');
+    const gehechtet = hechten(bewegen(imGefecht(fertig()), 'laufen', d), 'liegen', 'break', d);
     expect(folgeSaetze(bein(), gehechtet, d).some((s) => s.includes('stürzt'))).toBe(false);
   });
   it('Bein außerhalb des Gefechts: Sturz als Bedingung', () => {

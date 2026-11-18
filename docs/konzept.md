@@ -380,7 +380,7 @@ Ein **langer Druck** auf einen Knopf erlaubt ±1 von Hand (Sonderregeln, Fehltip
 | | Werfen | nur mit Perk Quickthrow |
 | | Nachladen | nur mit Perk Schnell nachladen; nur Magazin, Schnelllader, Ladestreifen |
 | | Eingreifen | nur mit Perk Schutzreflex (Abschirmen: bis 3 m) |
-| Bewegung | Kriechen, Gehen, Laufen, Rennen | merkt die Art für diese Runde (Lage-Malsteps, Hörbarkeit); erlaubt nach Stand (Stehen: alle außer Kriechen; Hocke: Gehen; Liegen: Kriechen) und gesperrt durch Konzentration, Schutzanzug und Schild (höchstens Gehen) |
+| Bewegung | Kriechen, Gehen, Laufen, Rennen | merkt die Art für diese Runde (Lage-Malsteps, Hörbarkeit); erlaubt nach Stand (Stehen: alle außer Kriechen; Hocke: Gehen; Liegen: Kriechen) und gesperrt durch Konzentration, Schutzanzug und Schild (höchstens Gehen). Wechselt der Stand nach der Bewegung (Standwechsel oder Hechten), sinkt die Bewegung dieser Runde auf das, was der neue Stand erlaubt: Rennen, dann Hocke → Gehen; dann Liegen → Kriechen. Wieder Aufstehen macht sie nicht schneller (R33, 18.11.2026) |
 | Stand | Stehen, Hocke, Liegen | merkt den Stand; die Silhouette zeigt ihn an. Ist der Standwechsel der Runde verbraucht, ist der Knopf grau; ein weiterer geht nur über Break → Standwechsel. Der Stand fließt in Lage, Splitter und Nahkampf ein (überlegener Stand, Kampfsystem, Stand im Nahkampf). |
 
 Unter jedem Knopf steht klein, was gerade gilt (Bewegung dieser Runde, eigener Stand, Konzentration).
@@ -709,7 +709,7 @@ Adrenalinschock mit Perk Eiserne Nerven: 2 Malsteps. Malsteps aus Geblendet (üb
 **Trefferwert:** Probe auf **Control** mit dem Waffenskill der Waffe ([4.2](#42-steps-und-zielwert)). Malsteps:
 - Reichweitenband der Waffe (Tabelle der Waffe; „n/A“ = Schuss nicht möglich),
 - Ansage: Rumpf 1, einzelne Zone 2 (Adrenalin 1+ und Sichtstufe keine: Ansage nicht möglich),
-- Lage *(v)*: eigene Bewegung (Kriechen, Gehen 1; Laufen, Hechten 2; Rennen 4; Perk Feuer in Bewegung −1), Ziel bewegt sich (Laufen 1; Rennen, Hechten 2), Ziel im Nahkampf 1 (ersetzt den Wert für seine Bewegung, der höhere zählt), Stand des Ziels (Hocke 1, Liegen 2; nicht im Band bedrängt; von oben auf Liegende 0), Sichtstufe (0–3, nur die schlechteste), kleines Ziel (kopfgroß 2, handgroß 3). Bewegung zählt vom Beginn der Bewegung bis Rundenende; bei Sprint die schnellere; bewegt sich der Charakter und hechtet in derselben Runde, zählt das zuletzt Gewählte (Regelfrage R9),
+- Lage *(v)*: eigene Bewegung (Kriechen, Gehen 1; Laufen, Hechten 2; Rennen 4; Perk Feuer in Bewegung −1), Ziel bewegt sich (Laufen 1; Rennen, Hechten 2), Ziel im Nahkampf 1 (ersetzt den Wert für seine Bewegung, der höhere zählt), Stand des Ziels (Hocke 1, Liegen 2; nicht im Band bedrängt; von oben auf Liegende 0), Sichtstufe (0–3, nur die schlechteste), kleines Ziel (kopfgroß 2, handgroß 3). Bewegung zählt vom Beginn der Bewegung bis Rundenende; bei Sprint die schnellere; bewegt sich der Charakter und hechtet in derselben Runde, zählt das zuletzt Gewählte (Regelfrage R9); wechselt er danach in Hocke oder Liegen, sinkt die Bewegung auf Gehen bzw. Kriechen (Regelfrage R33),
 - Leiter und Zustände auf Control.
 
 Stepshields: Zielen (1; Atemkontrolle 2), Lage (Waffe aufgelegt 1, nur ohne eigene Bewegung; großes Ziel 1, nur Gegenstände), Aufsätze (Reflexvisier bedrängt/nah 1; Zielfernrohr ab weit 1, bedrängt 1 Malstep), Leiter, Perks.
