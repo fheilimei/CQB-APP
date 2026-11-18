@@ -322,27 +322,27 @@
           <button class="chip-klein zustand" onclick={schockFrage}>Adrenalinschock</button>
         {/if}
       </div>
-      {#if modus !== 'lesen' || !gefecht}
-        <div class="modus">
-          {#if modus !== 'lesen'}
-            <span class="status an">{MODUS_NAME[modus]}</span>
-            <button class="haupt klein" onclick={() => (modus = 'lesen')}>Fertig</button>
-          {/if}
-          {#if !gefecht}
-            <button class="betont klein" class:warnung={kampfunfaehig} onclick={gefechtStarten}>
-              {#if kampfunfaehig}⚠ {/if}Gefecht starten</button>
-          {/if}
-        </div>
-      {/if}
+      <div class="modus">
+        {#if gefecht}
+          <button class="flach initiative" onclick={() => (dialog = { art: 'initiative' })}>
+            <small>Runde {gefecht.runde} · Initiative</small>
+            <span>{gefecht.initiative ? ansage(gefecht.initiative.stufe, gefecht.initiative.wurf, gefecht.initiative.zielwert) : 'würfeln'}</span>
+          </button>
+        {/if}
+        {#if modus !== 'lesen'}
+          <span class="status an">{MODUS_NAME[modus]}</span>
+          <button class="haupt klein" onclick={() => (modus = 'lesen')}>Fertig</button>
+        {/if}
+        {#if !gefecht}
+          <button class="betont klein" class:warnung={kampfunfaehig} onclick={gefechtStarten}>
+            {#if kampfunfaehig}⚠ {/if}Gefecht starten</button>
+        {/if}
+      </div>
       {#if !gefecht && kampfunfaehig}
         <p class="fehler kampfunfaehig">kampfunfähig: im Gefecht keine Aktionen</p>
       {/if}
       {#if gefecht}
         <div class="gefechtszeile">
-          <button class="flach initiative" onclick={() => (dialog = { art: 'initiative' })}>
-            <small>Runde {gefecht.runde} · Initiative</small>
-            <span>{gefecht.initiative ? ansage(gefecht.initiative.stufe, gefecht.initiative.wurf, gefecht.initiative.zielwert) : 'würfeln'}</span>
-          </button>
           <span class="rechts">
             <button class="klein" onclick={() => (dialog = { art: 'runde' })}>Nächste Runde</button>
             <button class="klein" onclick={gefechtEndeFrage}>Gefecht beenden</button>
@@ -493,9 +493,9 @@
   .gefechtszeile { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
   .gefechtszeile .rechts { margin-left: auto; display: flex; gap: 6px; }
   .gefechtszeile .klein { padding: 0 10px; font-size: 0.9rem; }
-  /* Initiative der Runde als Info links neben den Knöpfen; antippbar (öffnet die Initiative). */
-  .initiative { padding: 0 var(--abstand-1); min-height: 40px; display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
-    line-height: 1.15; text-align: left; font-weight: 600; font-size: 0.9rem; }
+  /* Runde und Initiative als Info oben rechts in der Kopfzeile; antippbar (öffnet die Initiative). */
+  .initiative { padding: 0 var(--abstand-1); min-height: 40px; display: flex; flex-direction: column; align-items: flex-end; justify-content: center;
+    line-height: 1.15; text-align: right; font-weight: 600; font-size: 0.9rem; }
   .initiative small { font-size: 0.75rem; font-weight: 400; color: var(--text-2); }
   .kampfunfaehig { flex-basis: 100%; margin: 0; text-align: right; font-size: 0.85rem; }
   .update { position: fixed; left: 16px; right: 16px; bottom: calc(72px + env(safe-area-inset-bottom)); z-index: 50;
