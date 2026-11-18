@@ -36,7 +36,7 @@ export default defineConfig({
       },
       workbox: {
         // Spieldaten gehören zum Offline-Paket, damit die App ohne Netz startet.
-        globPatterns: ['**/*.{js,css,html,svg,png,json,webmanifest}']
+        globPatterns: ['**/*.{js,css,html,svg,png,json,webmanifest,woff2}']
       }
     })
   ],

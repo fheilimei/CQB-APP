@@ -233,8 +233,8 @@
   .probe { display: flex; flex-direction: column; gap: var(--abstand-3); }
   .kopfzeile { width: 100%; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--abstand-1) var(--abstand-3);
     padding: var(--abstand-2) var(--abstand-3); background: var(--flaeche-2); border-radius: var(--radius); text-align: left; }
-  .steps { font-variant-numeric: tabular-nums; }
-  .ziel strong { font-size: 1.4rem; }
+  .steps { font-family: var(--schrift-zahl); font-variant-numeric: tabular-nums; }
+  .ziel strong { font-size: 1.4rem; font-family: var(--schrift-zahl); }
   .chips { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--abstand-2); }
   .chip { display: flex; align-items: center; justify-content: space-between; gap: var(--abstand-2); padding: 0 0 0 var(--abstand-3);
     border: 1px solid var(--linie); border-radius: var(--radius); }

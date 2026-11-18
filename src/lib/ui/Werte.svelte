@@ -397,8 +397,9 @@
   /* Spaltenbreiten in rem, damit „Decisiveness“ bei 360 Pixel Breite neben fünf Steps passt. */
   .statgitter, .zeile.statgitter { display: grid; grid-template-columns: minmax(0, 1fr) 2.6rem repeat(var(--spalten), 1.6rem) 1rem; align-items: center;
     column-gap: 2px; font-variant-numeric: tabular-nums; }
+  .statwert, .step { font-family: var(--schrift-zahl); }
   .stat { padding: var(--abstand-1) 0; }
-  .statname { display: flex; align-items: center; flex-wrap: wrap; gap: var(--abstand-1) var(--abstand-2); min-width: 0; }
+  .statname { display: flex; align-items: center; flex-wrap: wrap; gap: var(--abstand-1) var(--abstand-2); min-width: 0; hyphens: auto; overflow-wrap: anywhere; }
   /* Rang: kleine umrandete Marke am Namen, sieht anders aus als Werte und Steps. */
   .rang { font-size: 0.75rem; font-weight: 700; line-height: 1; padding: 3px 6px; border: 1px solid var(--text-2); border-radius: 6px; color: var(--text-2); }
   .statwert { font-size: 1.35rem; text-align: right; white-space: nowrap; }

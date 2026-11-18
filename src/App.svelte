@@ -489,6 +489,9 @@
     background: var(--flaeche); border-bottom: 1px solid var(--linie); position: sticky; top: 0; z-index: 5; }
   .titel { display: flex; align-items: center; gap: 8px; min-width: 0; }
   .titel strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  /* Name der Figur und Banner Over the Edge in der Schablonenschrift wie die Überschriften (app.css). */
+  .titel strong, .banner { font-family: var(--schrift-titel); font-weight: 400; font-synthesis: none; text-transform: uppercase; letter-spacing: 0.03em; }
+  .titel strong { font-size: 1.15rem; }
   .modus { margin-left: auto; display: flex; align-items: center; gap: 8px; }
   .status.an { color: var(--akzent); box-shadow: inset 0 0 0 2px var(--akzent); font-weight: 600; }
   .klein { min-height: 40px; padding: 0 12px; }
@@ -508,6 +511,7 @@
   /* Runde und Initiative als Info oben rechts in der Kopfzeile; antippbar (öffnet die Initiative). */
   .initiative { padding: 0 var(--abstand-1); min-height: 40px; display: flex; flex-direction: column; align-items: flex-end; justify-content: center;
     line-height: 1.15; text-align: right; font-weight: 600; font-size: 0.9rem; }
+  .initiative span { font-family: var(--schrift-zahl); }
   .initiative small { font-size: 0.75rem; font-weight: 400; color: var(--text-2); }
   .update { position: fixed; left: 16px; right: 16px; bottom: calc(72px + env(safe-area-inset-bottom)); z-index: 50;
     display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: var(--abstand-3); }

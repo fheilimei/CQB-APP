@@ -30,6 +30,7 @@ Gewürfelt wird mit echten Würfeln. Die App kennt weder Gegner noch Zugreihenfo
 | Speicher | Charaktere lokal auf dem Gerät (IndexedDB). Kein Server, kein Konto. |
 | Backup | **Export und Import** einzelner Charaktere als JSON-Datei. Pflichtfunktion von Anfang an, weil lokale Daten verloren gehen können (Browser-Speicher löschen; iOS räumt Daten selten genutzter Seiten). |
 | Updates | Der Service Worker lädt neue Versionen beim nächsten Start mit Netz. Die App zeigt an, wenn ein Update bereitsteht, und lädt es auf Tipp. |
+| Schriften | In der App mitgeliefert, damit sie auf jedem Gerät gleich aussehen und offline da sind (18.11.2026). **Text:** IBM Plex Mono. **Zahlen** (Statwerte, Steps, Zielwert, Würfelergebnis, HP, Munition, Rechenweg): Share Tech Mono mit gleich breiten Ziffern. **Überschriften, Name der Figur, Ansagen und Hauptknöpfe** (gefüllt oder mit Akzentrahmen): Saira Stencil One in Großbuchstaben. Alle anderen Knöpfe (Auswahl, Reiter, +/−) in der Textschrift, weil die Schablonenschrift klein schlecht lesbar ist. Zeichen ■ ⬢ ◆ ▲ ▼ kommen aus der Systemschrift. |
 | Sprache | Deutsch. Begriffe exakt wie im Regelwerk (Malstep, Stepshield, Breakaction, Haltezahl …). Ausnahmen und Formulierung in der Oberfläche: [§ 2, Texte in der Oberfläche](#texte-in-der-oberfläche). |
 
 ### Texte in der Oberfläche

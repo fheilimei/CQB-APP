@@ -1,3 +1,11 @@
+/* Schriften (Wahl des Nutzers 18.11.2026), in der App mitgeliefert, damit sie ohne Netz da sind. Lizenz: SIL OFL, siehe assets/fonts.
+   Text: IBM Plex Mono · Zahlen: Share Tech Mono · Überschriften, Ansagen, Hauptknöpfe: Saira Stencil One. */
+@font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url('./assets/fonts/ibm-plex-mono-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 600; font-display: swap; src: url('./assets/fonts/ibm-plex-mono-latin-600-normal.woff2') format('woff2'); }
+@font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 700 900; font-display: swap; src: url('./assets/fonts/ibm-plex-mono-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Share Tech Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url('./assets/fonts/share-tech-mono-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Saira Stencil One'; font-style: normal; font-weight: 400; font-display: swap; src: url('./assets/fonts/saira-stencil-one-latin-400-normal.woff2') format('woff2'); }
+
 :root {
   --hg: #f4f4f1;
   --flaeche: #ffffff;
@@ -23,7 +31,11 @@
   /* Körperbild: leere Zone und Vorschau eines Treffers (gestoppt, Wuchttreffer, Durchschlag). */
   --zone-leer: #ebebe6; --deckung: #4f6584; --treffer-gestoppt: #c3c7cf; --treffer-wucht: #f3d36b; --treffer-durchschlag: #ec8a82;
   color-scheme: light;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --schrift-system: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --schrift-text: 'IBM Plex Mono', ui-monospace, var(--schrift-system);
+  --schrift-zahl: 'Share Tech Mono', ui-monospace, var(--schrift-system);
+  --schrift-titel: 'Saira Stencil One', var(--schrift-system);
+  font-family: var(--schrift-text);
   font-size: 16px;
   line-height: 1.4;
 }
@@ -46,6 +58,11 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; }
 body { background: var(--hg); color: var(--text); -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
+/* Monospace-Text ist breit: lange Wörter umbrechen statt über den Rand ragen. */
+body { overflow-wrap: break-word; }
+/* Zahlen: gleich breite Ziffern, damit Werte untereinander stehen. */
+.zahl, .zeilen .wert, .stepper strong, table.rechnung td:last-child { font-family: var(--schrift-zahl); font-variant-numeric: tabular-nums; }
+.zahl .hinweis { font-family: var(--schrift-text); }
 #app { min-height: 100%; display: flex; flex-direction: column; }
 button { font: inherit; color: inherit; min-height: var(--tipp); min-width: var(--tipp); border-radius: var(--radius);
   border: 1px solid var(--linie); background: var(--flaeche); padding: 0 16px; cursor: pointer; }
@@ -156,3 +173,11 @@ label.feld > :is(input, select, textarea) { font-weight: 400; }
 /* Stapel: Inhalte untereinander mit Gruppenabstand (z. B. Seite der Erstellung, aufgeklappte Karte). */
 .stapel { display: flex; flex-direction: column; gap: var(--abstand-3); }
 .stapel > * { margin: 0; }
+
+/* Überschriften, Ansagen und Hauptknöpfe in der Schablonenschrift. Sie hat nur eine Stärke; kein künstliches Fett.
+   Steht am Ende, damit Stärke und Schrift der früheren Regeln (z. B. .ansage, button.haupt) hier überschrieben werden. */
+h1, h2, h3:not(.gruppe-titel), .abschnitt-titel, .ansage, button.haupt, button.betont {
+  font-family: var(--schrift-titel); font-weight: 400; font-synthesis: none; text-transform: uppercase; letter-spacing: 0.03em; }
+/* Was in einer Überschrift steht, aber keine ist (kleine Knöpfe, Hinweise), bleibt in der Textschrift. */
+:is(h1, h2, h3, .abschnitt-titel) :is(button:not(.haupt):not(.betont), .hinweis, small) {
+  font-family: var(--schrift-text); text-transform: none; letter-spacing: normal; }

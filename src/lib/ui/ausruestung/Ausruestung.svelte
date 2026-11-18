@@ -364,7 +364,7 @@
 
 <style>
   .name { display: flex; flex-direction: column; min-width: 0; }
-  .stand { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; display: flex; flex-direction: column; align-items: flex-end; }
+  .stand { text-align: right; font-family: var(--schrift-zahl); font-variant-numeric: tabular-nums; white-space: nowrap; display: flex; flex-direction: column; align-items: flex-end; }
   .aktiv-text { color: var(--akzent); font-weight: 700; }
   li.aktiv .zeile strong { color: var(--akzent); }
   .lh { color: var(--gefahr); font-size: 0.8rem; font-weight: 700; }

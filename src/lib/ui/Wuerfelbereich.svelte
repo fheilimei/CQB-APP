@@ -106,7 +106,7 @@
   .breit { width: 100%; }
   .werte { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--abstand-1); }
   .werte li { display: flex; justify-content: space-between; align-items: baseline; gap: var(--abstand-2); }
-  .werte strong { font-size: 1.5rem; font-variant-numeric: tabular-nums; }
+  .werte strong { font-size: 1.5rem; font-family: var(--schrift-zahl); font-variant-numeric: tabular-nums; }
   .felder { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: var(--abstand-3); }
   .felder label { margin: 0; font-weight: 400; display: flex; flex-direction: column; justify-content: space-between; gap: var(--abstand-1); }
 </style>
