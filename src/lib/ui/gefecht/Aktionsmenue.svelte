@@ -12,7 +12,8 @@
 
 <script lang="ts">
   // Menüs der Aktionsleiste (konzept.md § 3.7a, § 3.7b). Optionen ohne Rechnung zeigen den Regeltext und „Ausführen“
-  // (verbraucht den Zähler); Optionen mit Rechnung führen in ihren Ablauf. Break beginnt mit der Wahl der Probe.
+  // (verbraucht den Zähler); Optionen mit Rechnung führen in ihren Ablauf. Break hat zwei Schritte: erst eigener oder
+  // fremder Zug (dort Probe Reaktion oder Antizipation), dann mit „Weiter“ die Wahl der Aktion.
   import type { Spieldaten } from '../../daten/typen';
   import {
     bewegen, bewegungsarten, breakZusatz, eigenerStand, hechten, hechtenSperre, konzentrationMoeglich, konzentrationSetzen,
@@ -51,7 +52,9 @@
   let konz = $state<'keine' | 'leicht' | 'voll'>('keine');
   let wahl = $state<string | null>(null);
   let liegendAufgelegt = $state(false);
+  let breakZug = $state<'eigener' | 'fremder' | null>(null);
   let breakProbe = $state<'ohne' | 'reaktion' | 'antizipation' | null>(null);
+  let breakSchritt = $state<'zug' | 'aktion'>('zug');
   let breakErgebnis = $state<ProbenErgebnis | null>(null);
 
   const g = $derived(gefechtVon(c)!);
@@ -122,6 +125,18 @@
   const breakAnfrage = $derived(breakProbe === 'reaktion' || breakProbe === 'antizipation'
     ? { stat: r.breakaction[breakProbe].stat, skill: r.breakaction[breakProbe].skill, probe: breakProbe, zusatz: breakZusatz(c, d) }
     : null);
+  const breakWeiter = $derived(breakZug === 'eigener' || (breakZug === 'fremder' && (breakProbe === 'ohne' || !!breakErgebnis)));
+  function zugWaehlen(z: 'eigener' | 'fremder') { breakZug = z; breakProbe = z === 'eigener' ? 'ohne' : null; breakErgebnis = null; }
+  function probeWaehlen(p: 'ohne' | 'reaktion' | 'antizipation') { breakProbe = p; breakErgebnis = null; }
+  const stufeName: Record<string, string> = { krit: 'Krit', erfolg: 'Erfolg', misserfolg: 'Misserfolg' };
+  const breakAnsage = $derived.by(() => {
+    if (breakZug === 'eigener') return 'In deinem Zug, ohne Probe.';
+    if (breakProbe === 'ohne') return 'Im fremden Zug, ohne Wurf: Die SL lässt die Unterbrechung zu.';
+    if (!breakErgebnis) return '';
+    const art = breakProbe === 'reaktion' ? 'Reaktion' : 'Antizipation';
+    const st = stufeName[breakErgebnis.stufe] ?? breakErgebnis.stufe;
+    return `Im fremden Zug mit ${art}: ${st}${breakErgebnis.wurf !== null && breakErgebnis.stufe !== 'misserfolg' ? ` · ${String(breakErgebnis.wurf).padStart(2, '0')}` : ''}.`;
+  });
   const info = (k: string) => d.darstellung.informationen[k] ?? k;
   const malstepListe = (m: Record<string, number>) => Object.entries(m).map(([k, n]) => `${info(k)} ${n}`).join(', ');
 
@@ -140,34 +155,51 @@
       <p class="hinweis">Noch {verfuegbar(c, aktion, d)} × {AKTION_NAME[aktion]} in dieser Runde.</p>
     {/if}
 
-    {#if aktion === 'break'}
+    {#if aktion === 'break' && breakSchritt === 'zug'}
       <section class="abschnitt">
-      <h3 class="abschnitt-titel">Zuerst: mit oder ohne Probe?</h3>
-      <div class="auswahlreihe gleich" role="group" aria-label="Probe der Breakaction">
-        <button aria-pressed={breakProbe === 'ohne'} onclick={() => { breakProbe = 'ohne'; breakErgebnis = null; }}>Ohne Probe</button>
-        <button aria-pressed={breakProbe === 'reaktion'} onclick={() => { breakProbe = 'reaktion'; breakErgebnis = null; }}>Reaktion</button>
-        <button aria-pressed={breakProbe === 'antizipation'} disabled={tunnelblick}
-          onclick={() => { breakProbe = 'antizipation'; breakErgebnis = null; }}>Antizipation</button>
-      </div>
-      {#if tunnelblick}<p class="hinweis">Tunnelblick: keine Antizipation.</p>{/if}
-      {#if breakProbe === 'ohne'}
-        <p class="hinweis">Im eigenen Zug, oder die SL lässt die Unterbrechung ohne Wurf zu.</p>
-      {:else if breakProbe && breakAnfrage}
-        <p class="hinweis"><strong>Braucht eine Information über den Akteur.</strong>
-          {#if breakProbe === 'reaktion'}Malsteps nach Wahrnehmung im Moment: {malstepListe(r.breakaction.reaktion.malsteps)} (gesehen: dazu die Sicht).
-          {:else}Malsteps nach Güte ({malstepListe(r.breakaction.antizipation.malsteps_guete)}) und Alter ({malstepListe(r.breakaction.antizipation.malsteps_alter)}), zusammengezählt.{/if}
-          Die SL legt sie fest; trag sie unten bei SL ein.</p>
-        {#key breakProbe}
-          <ProbeKern {c} {d} anfrage={breakAnfrage} hinweise={['breakaction']} {wuerfelModus} sichtSchalter sichtVorgewaehlt={breakProbe === 'reaktion'}
-            mitAusgang bind:ergebnis={breakErgebnis} {onaendern} />
-        {/key}
-        <p class="hinweis">Sag das Ergebnis an. Die Reihenfolge legt die SL fest. Danach wählst du die Aktion.</p>
-      {/if}
+        <h3 class="abschnitt-titel">Wann handelst du?</h3>
+        <div class="auswahlreihe gleich" role="group" aria-label="Wann handelst du?">
+          <button aria-pressed={breakZug === 'eigener'} onclick={() => zugWaehlen('eigener')}>In deinem Zug</button>
+          <button aria-pressed={breakZug === 'fremder'} onclick={() => zugWaehlen('fremder')}>Im fremden Zug</button>
+        </div>
+        {#if breakZug === 'eigener'}
+          <p class="hinweis">Im eigenen Zug brauchst du keine Probe. Tippe auf Weiter und wähle die Aktion.</p>
+        {:else if breakZug === 'fremder'}
+          <p class="hinweis">Du unterbrichst einen anderen Akteur. Dafür musst du ihn wahrnehmen oder antizipieren.</p>
+        {/if}
       </section>
-      {#if breakProbe}<h3 class="abschnitt-titel trenner">Aktion</h3>{/if}
+
+      {#if breakZug === 'fremder'}
+        <section class="abschnitt">
+          <h3 class="abschnitt-titel">Probe auf</h3>
+          <div class="auswahlreihe gleich" role="group" aria-label="Probe auf">
+            <button aria-pressed={breakProbe === 'reaktion'} onclick={() => probeWaehlen('reaktion')}>Reaktion</button>
+            <button aria-pressed={breakProbe === 'antizipation'} disabled={tunnelblick} onclick={() => probeWaehlen('antizipation')}>Antizipation</button>
+            <button aria-pressed={breakProbe === 'ohne'} onclick={() => probeWaehlen('ohne')}>ohne Wurf</button>
+          </div>
+          {#if tunnelblick}<p class="hinweis">Tunnelblick: keine Antizipation.</p>{/if}
+          {#if breakProbe === 'ohne'}<p class="hinweis">Nur wenn die SL die Unterbrechung ohne Wurf zulässt.</p>{/if}
+          {#if breakProbe && breakAnfrage}
+            <p class="hinweis"><strong>Braucht eine Information über den Akteur.</strong>
+              {#if breakProbe === 'reaktion'}Malsteps nach Wahrnehmung im Moment: {malstepListe(r.breakaction.reaktion.malsteps)} (gesehen: dazu die Sicht).
+              {:else}Malsteps nach Güte ({malstepListe(r.breakaction.antizipation.malsteps_guete)}) und Alter ({malstepListe(r.breakaction.antizipation.malsteps_alter)}), zusammengezählt.{/if}
+              Die SL legt sie fest; trag sie unten bei SL ein.</p>
+            {#key breakProbe}
+              <ProbeKern {c} {d} anfrage={breakAnfrage} hinweise={['breakaction']} {wuerfelModus} sichtSchalter sichtVorgewaehlt={breakProbe === 'reaktion'}
+                mitAusgang bind:ergebnis={breakErgebnis} {onaendern} />
+            {/key}
+            <p class="hinweis">Sag das Ergebnis an. Die Reihenfolge legt die SL fest. Mit Weiter wählst du die Aktion.</p>
+          {/if}
+        </section>
+      {/if}
     {/if}
 
-    {#if aktion === 'main' || (aktion === 'break' && breakProbe)}
+    {#if aktion === 'break' && breakSchritt === 'aktion'}
+      <p><strong>{breakAnsage}</strong></p>
+      <h3 class="abschnitt-titel">Was tust du?</h3>
+    {/if}
+
+    {#if aktion === 'main' || (aktion === 'break' && breakSchritt === 'aktion')}
       <ul class="auswahlliste">
         {#each aktion === 'main' ? mainOptionen : breakOptionen as o (o.text)}
           <li><button disabled={!!o.sperre} onclick={o.los}>
@@ -242,9 +274,13 @@
   {/if}
 
   {#snippet knoepfe()}
-    {#if ansicht.art === 'liste'}
+    {#if ansicht.art === 'liste' && aktion === 'break' && breakSchritt === 'aktion'}
+      <button onclick={() => (breakSchritt = 'zug')}>Zurück</button>
+    {:else if ansicht.art === 'liste'}
       <button onclick={onschliessen}>Schließen</button>
-      {#if aktion === 'bewegung'}
+      {#if aktion === 'break'}
+        <button class="haupt" disabled={!breakWeiter} onclick={() => (breakSchritt = 'aktion')}>Weiter</button>
+      {:else if aktion === 'bewegung'}
         <button class="haupt" disabled={!wahl || verfuegbar(c, 'bewegung', d) <= 0} onclick={() => wahl && onfertig(protokolliere(bewegen(c, wahl, d), `Bewegung: ${bewegungName(wahl, d)}`))}>Ausführen</button>
       {:else if aktion === 'stand'}
         <button class="haupt" disabled={!wahl || verfuegbar(c, 'stand', d) <= 0} onclick={() => wahl && onfertig(protokolliere(standWechseln(c, wahl, 'stand'), `Standwechsel: ${standAdjektiv(wahl, d)}`))}>Ausführen</button>
@@ -284,6 +320,4 @@
   <p class="hinweis">Liegend: 1 Stepshield nur auf die Haltezahl; Hocke und Liegen machen dich zum kleineren Ziel.</p>
 {/snippet}
 
-<style>
-  .abschnitt-titel.trenner { border-top: 1px solid var(--linie); padding-top: var(--abstand-3); }
-</style>
+

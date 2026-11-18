@@ -8,7 +8,7 @@ import { hatWirkung, overTheEdge } from './leiter';
 import type { StepQuelle } from './probe';
 import { gefechtVon } from './probenrechner';
 
-export const AKTIONEN: Aktion[] = ['main', 'break', 'bewegung', 'stand'];
+export const AKTIONEN: Aktion[] = ['main', 'bewegung', 'stand', 'break'];
 
 function laufend(c: Charakter): Gefecht {
   const g = gefechtVon(c);

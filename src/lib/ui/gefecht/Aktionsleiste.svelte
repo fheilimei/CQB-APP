@@ -1,5 +1,6 @@
 <script lang="ts">
-  // Aktionsleiste (konzept.md § 3.7a): nur im Gefecht, über dem Wählrad. Vier Knöpfe Main · Break · Bewegung · Stand mit
+  // Aktionsleiste (konzept.md § 3.7a): nur im Gefecht, unter dem Wählrad. Vier Knöpfe Main · Bewegung · Stand | Break mit
+  // Break ganz rechts, durch eine dünne Linie abgesetzt (Breakaction ist etwas anderes als die Aktionen des eigenen Zugs).
   // Zähler (bei 0 ausgegraut). Getroffen steht im Reiter Figur, wie in Ruhe. Langer Druck: ±1 von Hand. Kampfunfähig: Warnmarkierung, Ausführen nur nach Bestätigung.
   import type { Spieldaten } from '../../daten/typen';
   import { AKTIONEN, eigenerStand, korrigieren, zaehler } from '../../regeln/aktionen';
@@ -43,6 +44,7 @@
 
 <div class="leiste" role="group" aria-label="Aktionen der Runde">
   {#each AKTIONEN as a (a)}
+    {#if a === 'break'}<span class="trenner" aria-hidden="true"></span>{/if}
     <button class="aktion" class:leer={z[a] === 0} class:warnung={kampfunfaehig}
       aria-label="{AKTION_NAME[a]}, noch {z[a]}"
       onpointerdown={() => druck(a)} onpointerup={loslassen} onpointerleave={loslassen} onpointercancel={loslassen}
@@ -67,8 +69,10 @@
 {/if}
 
 <style>
-  .leiste { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 6px 8px calc(6px + env(safe-area-inset-bottom)); background: var(--flaeche); border-top: 1px solid var(--linie);
+  .leiste { display: grid; grid-template-columns: 1fr 1fr 1fr auto 1fr; gap: 6px; padding: 6px 8px calc(6px + env(safe-area-inset-bottom)); background: var(--flaeche); border-top: 1px solid var(--linie);
     user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  /* 1px: Rahmenstärke der Trennlinie */
+  .trenner { width: 1px; align-self: stretch; background: var(--linie); }
   .aktion { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px 2px; min-height: 60px; line-height: 1.1;
     touch-action: manipulation; }
   .aktion .name { font-weight: 700; font-size: 0.95rem; }

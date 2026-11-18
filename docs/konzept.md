@@ -179,7 +179,7 @@ Unabhängig von den Modi Lesen, Aufstieg und Schreiben ([§ 3.0a](#30a-modi-lese
 - Oben rechts in der Kopfzeile steht **Gefecht starten** (an der Stelle, an der im Gefecht „Gefecht beenden“ steht; Akzentrahmen, nicht gefüllt).
 
 **Im Gefecht** (nach „Gefecht starten“, [§ 3.7](#37-leiter-m-r)):
-- Am unteren Rand erscheinen die Aktionsleiste und darüber das Wählrad „Adrenalin“ ([§ 3.7](#37-leiter-m-r)); die Aktionsleiste hat **Main · Break · Bewegung · Stand · Ereignis** (Getroffen steht unter der Figur) ([§ 3.7a](#37a-aktionsleiste-m-r)).
+- Am unteren Rand erscheinen die Aktionsleiste und darüber das Wählrad „Adrenalin“ ([§ 3.7](#37-leiter-m-r)); die Aktionsleiste hat **Main · Bewegung · Stand | Break** (Ereignis am Rand) (Getroffen steht unter der Figur) ([§ 3.7a](#37a-aktionsleiste-m-r)).
 - Kopfzeile und untere Leisten (Aktionsleiste, Adrenalin) tragen einen Rand in der Akzentfarbe; ein eigener Schriftzug „Gefecht“ entfällt. Oben rechts in der Kopfzeile, auf Höhe des Namens, steht klein „Runde n · Initiative“ mit dem Ergebnis der Initiative dieser Runde darunter; in der zweiten Zeile rechts die kleinen Knöpfe **Nächste Runde** und **Gefecht beenden**.
 - Der **Aufstiegsmodus** ist gesperrt (Steigern gehört nicht in die Runde). Der **Schreibmodus** bleibt erreichbar für Korrekturen.
 
@@ -338,7 +338,7 @@ Regeln: [§ 4.4](#44-die-leiter). Ziel: höchstens zwei Handgriffe pro Runde; al
 - **Gefecht beenden:** Leiter auf 0, Adrenalinschock setzen (falls Adrenalin 4 erreicht), Blutungsfristen starten ([§ 3.10](#310-treffer-wunden-und-blutung-m-r)).
 
 ### 3.7a Aktionsleiste (M, R)
-Nur im Gefecht ([§ 3.0e](#30e-gefecht-und-ruhe-m)) liegen ganz unten, unter dem Wählrad, die Knöpfe **Main · Break · Bewegung · Stand** und kleiner am Rand **Ereignis**. **Getroffen** steht nicht hier, sondern wie in Ruhe unter der Figur (18.11.2026). Die ersten vier bilden die Aktionen der Runde ab ([§ 4.12](#412-aktionen)); so sieht der Spieler jederzeit, was er noch tun kann.
+Nur im Gefecht ([§ 3.0e](#30e-gefecht-und-ruhe-m)) liegen ganz unten, unter dem Wählrad, die Knöpfe **Main · Bewegung · Stand** und ganz rechts, durch eine dünne Linie abgesetzt, **Break** (18.11.2026: die Breakaction ist etwas anderes als die Aktionen des eigenen Zugs); kleiner am Rand **Ereignis**. **Getroffen** steht nicht hier, sondern wie in Ruhe unter der Figur (18.11.2026). Die ersten vier bilden die Aktionen der Runde ab ([§ 4.12](#412-aktionen)); so sieht der Spieler jederzeit, was er noch tun kann.
 
 **Zähler.** Jeder der vier Aktionsknöpfe trägt eine kleine Zahl: wie oft die Aktion in dieser Runde noch verfügbar ist. Bei 0 ist der Knopf ausgegraut. „Nächste Runde“ ([§ 3.7](#37-leiter-m-r)) setzt alle Zähler zurück. Die App verfolgt nicht, wer am Zug ist: Main, Bewegung und Standwechsel stehen die ganze Runde bereit und lassen sich so oft ausführen, wie der Zähler erlaubt. Wann der Charakter dran ist, sagt die SL. Die App passt die Zähler selbst an:
 - **Sprint** (Symptom A2): Bewegung 2.
@@ -371,7 +371,7 @@ Ein **langer Druck** auf einen Knopf erlaubt ±1 von Hand (Sonderregeln, Fehltip
 | | Skill/Probe, Sonderfähigkeit | Konzentration wählt der Spieler (keine, leicht, voll); gesperrt, wenn die Breakaction schon eingesetzt ist |
 | | Wachsamkeit, Ballistik | Probenrechner; Ballistik: Erfolg/Krit merkt 1/2 Malsteps weniger Reichweite für den nächsten Schuss auf das Ziel |
 | | Sonderfähigkeit | Perks wie Offangle und Overwatch: Regeltext und Merker bis zum nächsten Zug; sonst Freitext |
-| Break | *zuerst* | ohne Probe, Reaktion oder Antizipation ([§ 3.7b](#37b-initiative-und-breakaction-m-r)); danach eine der folgenden Aktionen |
+| Break | *zuerst* | eigener oder fremder Zug; im fremden Zug Probe Reaktion oder Antizipation ([§ 3.7b](#37b-initiative-und-breakaction-m-r)); mit Weiter in einem zweiten Fenster eine der folgenden Aktionen |
 | | **Schießen** | Schussrechner ([§ 3.8](#38-waffen-und-schießen-a-m-r)) |
 | | Zielen | merkt 1 Stepshield für den nächsten Schuss (nächste Runde); mit Atemkontrolle 2, mit Gezielter Schuss stattdessen „keine Malsteps der Reichweite“. Gilt nur in der nächsten Runde; ein Schuss in der Runde des Zielens und „Neues Ziel“ lassen es verfallen |
 | | Hechten | wie unter Main |
@@ -402,14 +402,13 @@ Regeln: Kampfsystem (Action Economy; Die Breakaction benutzen; Reaktion und Anti
 
 Das Ergebnis bleibt bis zur nächsten Runde oben in der Aktionsleiste sichtbar, falls die SL nachfragt.
 
-**Breakaction** (Knopf Break):
-1. **Mit oder ohne Probe** wählen; drei Knöpfe:
-	- **Ohne Probe:** im eigenen Zug, oder die SL lässt die Unterbrechung ohne Wurf zu.
-	- **Reaktion:** Twitch + Reflexe.
-	- **Antizipation:** Intellect + Lagegespür. Gesperrt bei Tunnelblick (Adrenalin 2 und höher).
+**Breakaction** (Knopf Break), zwei Fenster nacheinander (18.11.2026):
+1. **Wann handelst du?** „In deinem Zug“ oder „Im fremden Zug“.
+	- **In deinem Zug:** ohne Probe; Weiter führt gleich zur Aktion.
+	- **Im fremden Zug:** „Probe auf“ **Reaktion** (Twitch + Reflexe) oder **Antizipation** (Intellect + Lagegespür; gesperrt bei Tunnelblick, Adrenalin 2 und höher); dazu **ohne Wurf**, wenn die SL die Unterbrechung ohne Wurf zulässt.
 2. Bei Reaktion und Antizipation: Hinweis „**Braucht eine Information über den Akteur**“ mit Kurzfassung der Malsteps nach Wahrnehmung bzw. Güte und Alter (Regeltext). Die App fragt nicht nach der Information; die Malsteps legt die SL fest und der Spieler trägt sie in Lage-Block 3 ein. Eingerechnet werden automatisch: Adrenalin bzw. Ruhepuls, Überraschung in Runde 1, Perks (z. B. Overwatch, Offangle des Gegners als SL-Malstep, Gegner einschätzen, Dynamischer Zugriff), Sichtstufe bei Reaktion auf Gesehenes.
-3. Wurf eintragen. Die App zeigt groß, was anzusagen ist: „**Krit · 07**“, „**Erfolg · 54**“ oder „**Misserfolg**“. Einen Vergleich mit anderen rechnet sie nicht; die Reihenfolge sagt die SL an. Ein Krit hat keine weitere Folge.
-4. **Aktion wählen:** Schießen, Zielen, Hechten, Standwechsel, Nahkampfangriff, Abfangen, Werfen, Nachladen, Eingreifen ([§ 3.7a](#37a-aktionsleiste-m-r)). Sie führt in ihren Ablauf; Break −1.
+3. Wurf eintragen. Die App zeigt groß, was anzusagen ist: „**Krit · 07**“, „**Erfolg · 54**“ oder „**Misserfolg**“. Einen Vergleich mit anderen rechnet sie nicht; die Reihenfolge sagt die SL an. Ein Krit hat keine weitere Folge. **Weiter** ist erst möglich, wenn der Wurf eingetragen ist.
+4. **Aktion wählen** (zweites Fenster; oben steht, wie es zur Breakaction kam, z. B. „Im fremden Zug mit Reaktion: Erfolg · 54.“; Zurück führt zum ersten Fenster): Schießen, Zielen, Hechten, Standwechsel, Nahkampfangriff, Abfangen, Werfen, Nachladen, Eingreifen ([§ 3.7a](#37a-aktionsleiste-m-r)). Sie führt in ihren Ablauf; Break −1.
 
 Probe und Aktion sind getrennt, damit der Spieler die Probe würfeln und ansagen kann, bevor die SL die Reihenfolge festlegt. Verliert der Charakter seine Breakaction durch einen Stagger, bevor er handelt, setzt der Treffer den Zähler auf 0 ([§ 3.10](#310-treffer-wunden-und-blutung-m-r)); die Probe verfällt.
 

@@ -35,6 +35,7 @@ Rückmeldung des Nutzers vom 17.11.2026:
 - **Bildzeichen statt Text für Zustände an der Figur** (18.11.2026): Stand und Bewegung als Piktogramme oben rechts neben der Silhouette, wenig Text. Kein Bodenstrich unter den Strichmännchen (unnötige Linie).
 - **Berichte ohne Formularsprache** (18.11.2026, Getroffen): nicht „Für das Rundenende ist angehakt: …“, sondern „Für das Rundenende: Du wurdest beschossen und getroffen.“ Folgen als Sätze („Die Wunde blutet.“, „Du kannst nur noch humpeln.“), nicht „Folge: …“. Was die App weiß (z. B. eigene Bewegung), steht als Tatsache im Satz („Du stürzt, weil du im Lauf getroffen wurdest.“).
 - **Jede Aktion über ihren eigenen Knopf** (18.11.2026, Standwechsel): Was eine Breakaction kostet, läuft über den Knopf Break (dort wählt man Reaktion oder Antizipation), nie still über einen anderen Knopf. Ist ein Zähler leer, ist sein Knopf grau und der Hinweis sagt, wo es weitergeht.
+- **Andersartiges sichtbar absetzen, Voraussetzung vor Wahl** (18.11.2026, Break): Break steht ganz rechts in der Aktionsleiste, durch eine dünne Linie von Main · Bewegung · Stand getrennt. Der Break-Dialog klärt zuerst eigener oder fremder Zug (dort die Probe) und zeigt erst nach Weiter in einem zweiten Fenster die Aktionen.
 - Besonders aufgefallen: **Waffe wechseln** (`gefecht/WaffeWechseln.svelte`) und **Schießen** (`gefecht/Schiessen.svelte`).
 
 Jede Arbeit an der Oberfläche muss diese Punkte verbessern oder darf sie zumindest nicht verschlimmern.
