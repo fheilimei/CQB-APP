@@ -8,7 +8,7 @@ export interface Einstellungen {
   darstellung: 'system' | 'hell' | 'dunkel';
   /** Je Würfelstelle: Würfelt die App oder wird von Hand eingegeben? Fehlt eine Stelle, gilt ihr Standard. */
   wuerfeln: Record<string, 'app' | 'hand'>;
-  /** Reiterleiste unten eingeklappt (mehr Platz für den Inhalt). */
+  /** Reiterleiste am rechten Rand eingeklappt (mehr Platz für den Inhalt). */
   reiterEingeklappt: boolean;
 }
 

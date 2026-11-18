@@ -4,6 +4,7 @@
   import { datenstand, ladeSpieldaten } from './lib/daten/laden';
   import type { Spieldaten } from './lib/daten/typen';
   import { Ablage, STANDARD_EINSTELLUNGEN, type Einstellungen } from './lib/speicher/ablage';
+  import Reiterleiste from './lib/ui/Reiterleiste.svelte';
   import { dateiname, exportiereText, importiereText } from './lib/speicher/austausch';
   import { neuerCharakter, type Charakter } from './lib/speicher/charakter';
   import { dateiOeffnen, dateiSpeichern } from './lib/ui/datei';
@@ -282,7 +283,6 @@
     zeige(`„${c.name}“ gelöscht.`);
   }
 
-  const REITER_NAMEN = { figur: 'Figur', werte: 'Werte', ausruestung: 'Ausrüstung', verlauf: 'Verlauf' } as const;
   function reiterKlappen(zu: boolean) {
     void einstellungenSetzen({ ...einstellungen, reiterEingeklappt: zu });
   }
@@ -351,7 +351,7 @@
       {/if}
     </header>
 
-    <main class="bogen">
+    <main class="bogen" class:mit-leiste={!einstellungen.reiterEingeklappt}>
       {#if reiter === 'figur'}
         <section class="karte">
           <h2>{aktiv.name}</h2>
@@ -383,19 +383,7 @@
       <Aktionsleiste c={aktiv} d={daten} {kampfunfaehig} onaendern={aendern} onoeffnen={(a) => (dialog = { art: 'aktion', aktion: a })} />
       <Adrenalinrad stand={gefecht.leiter} d={daten} onsetzen={leiterDrehen} ondetail={() => (dialog = { art: 'detail' })} />
     {/if}
-    {#if einstellungen.reiterEingeklappt}
-      <button class="lasche" aria-expanded="false" aria-label="Reiter ausklappen (jetzt: {REITER_NAMEN[reiter]})"
-        onclick={() => reiterKlappen(false)}><span aria-hidden="true">▴</span></button>
-    {:else}
-      <nav class="reiter" aria-label="Reiter">
-        {#each Object.entries(REITER_NAMEN) as [id, text] (id)}
-          <button class="flach" class:an={reiter === id} aria-current={reiter === id ? 'page' : undefined}
-            onclick={() => (reiter = id as typeof reiter)}>{text}</button>
-        {/each}
-        <button class="flach einklappen" aria-expanded="true" aria-label="Reiter einklappen"
-          onclick={() => reiterKlappen(true)}><span aria-hidden="true">▾</span></button>
-      </nav>
-    {/if}
+    <Reiterleiste {reiter} eingeklappt={einstellungen.reiterEingeklappt} onwahl={(r) => (reiter = r)} onklappen={reiterKlappen} />
     </div>
   {/if}
 
@@ -466,23 +454,11 @@
   .status { font-size: 0.8rem; padding: 2px 8px; border-radius: 999px; background: var(--flaeche-2); color: var(--text-2); }
   .bogen { flex: 1; padding: var(--abstand-3); display: flex; flex-direction: column; gap: var(--abstand-3); }
   .unten { position: sticky; bottom: 0; z-index: 5; }
-  .reiter { display: grid; grid-template-columns: repeat(4, 1fr) var(--tipp); background: var(--flaeche); border-top: 1px solid var(--linie);
-    padding-bottom: env(safe-area-inset-bottom); }
-  .reiter button { border-radius: 0; padding: 0 4px; font-size: 0.9rem; color: var(--text-2); min-height: 56px; }
-  .reiter .einklappen { min-width: 0; font-size: 1.2rem; border-left: 1px solid var(--linie); }
-  /* Eingeklappt: schmale Lasche am rechten Rand, immer direkt über allem, was unten fest steht.
-     Sichtbar nur so breit wie der Rand des Inhalts; die Tippfläche (44 px) reicht unsichtbar nach links. */
-  .lasche { position: absolute; right: 0; bottom: calc(100% + var(--abstand-2)); z-index: 6; width: var(--tipp); height: 56px;
-    padding: 0; border: none; background: transparent; border-radius: 0; }
-  .lasche span { position: absolute; top: 0; bottom: 0; right: 0; width: var(--abstand-3); display: flex; align-items: center; justify-content: center;
-    font-size: 0.75rem; color: var(--akzent); background: var(--flaeche); border: 1px solid var(--linie); border-right: none;
-    border-radius: var(--radius) 0 0 var(--radius); box-shadow: -2px 0 6px rgb(0 0 0 / 0.2); }
-  /* Ohne feste Leiste unten liegt die Lasche über dem sicheren Bereich am unteren Bildschirmrand. */
-  .unten:not(.im-gefecht) .lasche { bottom: calc(var(--abstand-2) + env(safe-area-inset-bottom)); }
+  /* Platz rechts für die senkrechte Reiterleiste. */
+  .bogen.mit-leiste { padding-right: calc(var(--tipp) + var(--abstand-2)); }
   /* Gefecht: Kopfzeile und untere Leisten tragen einen Akzentrand statt eines Schriftzugs „Gefecht“. */
   .kopfzeile.im-gefecht { border-bottom: 2px solid var(--akzent); }
   .unten.im-gefecht { border-top: 2px solid var(--akzent); }
-  .reiter button.an { color: var(--akzent); font-weight: 700; box-shadow: inset 0 3px 0 var(--akzent); }
   .toast { position: absolute; left: 16px; right: 16px; bottom: calc(100% + 8px); z-index: 15; }
   .rueck { display: flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 8px; padding: 4px 4px 4px 16px; }
   .banner { background: #2b0a0a; color: #fff; text-align: center; font-weight: 700; padding: 6px; }
