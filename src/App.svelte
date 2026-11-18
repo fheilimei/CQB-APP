@@ -16,7 +16,7 @@
   import { MODUS_NAME, punkte, type Modus, type Zeile } from './lib/ui/texte';
   import Werte from './lib/ui/Werte.svelte';
   import { modusFuer } from './lib/wuerfel/wuerfel';
-  import { adrenalinschockBeenden, gefechtBeenden, leiterSetzen, letzteLeiterAenderung, rueckgaengig } from './lib/regeln/gefecht';
+  import { adrenalinschockBeenden, leiterSetzen, letzteLeiterAenderung, rueckgaengig } from './lib/regeln/gefecht';
   import { overTheEdge } from './lib/regeln/leiter';
   import { gefechtVon, lebenslageDes } from './lib/regeln/probenrechner';
   import Adrenalinrad from './lib/ui/gefecht/Adrenalinrad.svelte';
@@ -36,11 +36,12 @@
   import Deckung from './lib/ui/gefecht/Deckung.svelte';
   import Getroffen from './lib/ui/gefecht/Getroffen.svelte';
   import Versorgen from './lib/ui/gefecht/Versorgen.svelte';
-  import { blutet, blutungsart, fristAblaufen, fristablauf, fristMinuten } from './lib/regeln/blutung';
+  import GefechtBeenden from './lib/ui/gefecht/GefechtBeenden.svelte';
+  import { blutungsart, fristAblaufen, fristablauf } from './lib/regeln/blutung';
   import { wundenText } from './lib/regeln/wunden';
   import Figur from './lib/ui/Figur.svelte';
   import type { Aktion } from './lib/speicher/charakter';
-  import { ansage, standText } from './lib/ui/texte';
+  import { AKTION_NAME, ansage, standText } from './lib/ui/texte';
 
   const APP_VERSION = __APP_VERSION__;
 
@@ -61,13 +62,13 @@
   /** Offener Dialog des Spiels: Probenrechner, Abläufe rund um Gefecht und Adrenalin. */
   type Spieldialog =
     | { art: 'probe'; stat: string | null; skill: string | null; alsMain?: boolean }
-    | { art: 'start' | 'initiative' | 'runde' | 'senken' | 'verschieben' | 'detail' | 'schiessen' | 'wechseln' | 'getroffen' | 'deckung' }
+    | { art: 'start' | 'initiative' | 'runde' | 'senken' | 'verschieben' | 'detail' | 'schiessen' | 'wechseln' | 'getroffen' | 'deckung' | 'ende' }
     | { art: 'aktion'; aktion: Aktion }
     | { art: 'nachladen'; id: string; als: 'main' | 'break' | null }
     | { art: 'ladehemmung'; id: string }
     | { art: 'versorgen'; wundId: string | null };
   let dialog = $state<Spieldialog | null>(null);
-  /** Kurze Meldung mit „Rückgängig“ nach einer Änderung von Adrenalin bzw. Ruhepuls (konzept.md § 3.7). */
+  /** Kurze Meldung mit „Rückgängig“ nach einer Aktion der Aktionsleiste oder einem Treffer (konzept.md § 3.7a). */
   let rueckgaengigText = $state('');
 
   const aktiv = $derived(charaktere.find((c) => c.id === aktiveId) ?? null);
@@ -183,36 +184,49 @@
   // ---- Gefecht und Adrenalin (konzept.md § 3.0e, § 3.7)
 
   let rueckgaengigZeit: ReturnType<typeof setTimeout> | undefined;
-  /** Was „Rückgängig“ in der kurzen Meldung tut; ohne Angabe: letzte Änderung von Adrenalin bzw. Ruhepuls. */
+  /** Was „Rückgängig“ in der kurzen Meldung tut. */
   let rueckAktion: (() => Promise<void>) | null = null;
-  function zeigeRueckgaengig(text: string, aktion: (() => Promise<void>) | null = null) {
+  function zeigeRueckgaengig(text: string, aktion: () => Promise<void>) {
     rueckAktion = aktion;
     rueckgaengigText = text;
     clearTimeout(rueckgaengigZeit);
     rueckgaengigZeit = setTimeout(() => (rueckgaengigText = ''), 5000);
   }
 
+  /** Wählrad: ohne Meldung „Rückgängig“ (Wunsch des Nutzers 18.11.2026); zurück geht es über das Detail am Rad. */
   async function leiterDrehen(stand: number) {
     if (!aktiv || !gefecht) return;
-    const von = gefecht.leiter;
     await speichern(leiterSetzen(aktiv, stand, daten!));
-    zeigeRueckgaengig(`${standText(von, daten!)} → ${standText(stand, daten!)}`);
   }
 
   async function zuruecknehmen() {
-    if (!aktiv) return;
     rueckgaengigText = '';
-    if (rueckAktion) { const a = rueckAktion; rueckAktion = null; await a(); return; }
-    await speichern(rueckgaengig(aktiv, daten!));
+    const a = rueckAktion;
+    rueckAktion = null;
+    if (a) await a();
   }
 
-  /** Nach einem Ablauf mit Bericht: speichern, Änderung von Adrenalin melden. */
+  /** Stand vor einer Aktion aus der Aktionsleiste (Main, Bewegung, Stand, Break), für „Rückgängig“ nach dem Ablauf. */
+  let vorAktion: { c: Charakter; aktion: Aktion } | null = null;
+  function aktionOeffnen(a: Aktion) {
+    vorAktion = { c: $state.snapshot(aktiv) as Charakter, aktion: a };
+    dialog = { art: 'aktion', aktion: a };
+  }
+  // Schließt sich der Dialog ohne Ergebnis, gilt der gemerkte Stand nicht mehr.
+  $effect(() => { if (!dialog) vorAktion = null; });
+
+  /** Nach einem Ablauf mit Bericht: speichern; kam er aus der Aktionsleiste, mit Meldung „Rückgängig“. */
   async function nachAblauf(c: Charakter, folgt: Spieldialog | null = null) {
-    const von = gefecht?.leiter ?? 0;
+    const vorher = vorAktion;
+    vorAktion = null;
     await speichern(c);
-    const nach = gefechtVon(c)?.leiter ?? 0;
     dialog = folgt;
-    if (von !== nach && !folgt) zeigeRueckgaengig(`${standText(von, daten!)} → ${standText(nach, daten!)}`);
+    if (vorher && !folgt) {
+      // Text der Meldung: der Eintrag, den die Aktion ins Protokoll schrieb, sonst der Name des Knopfs.
+      const alt = gefechtVon(vorher.c)?.protokoll.length ?? 0;
+      const neu = (gefechtVon(c)?.protokoll ?? []).slice(alt).filter((e) => e.art === 'aktion').at(-1);
+      zeigeRueckgaengig(neu && 'text' in neu ? neu.text : AKTION_NAME[vorher.aktion], async () => { await speichern(vorher.c); });
+    }
   }
 
   /** Ablauf aus dem Menü der Aktionsleiste öffnen (konzept.md § 3.7a). */
@@ -244,22 +258,7 @@
   }
 
   function gefechtEndeFrage() {
-    if (!aktiv || !gefecht) return;
-    const c = aktiv;
-    const g = gefecht;
-    const zeilen: Zeile[] = [{ text: 'Das Gefecht endet.', fett: true }];
-    zeilen.push({ text: g.leiter === 0 ? 'Du bist bei 0 und bleibst dort.' : `${standText(g.leiter, daten!)} fällt auf 0.` });
-    if (g.adrenalin4_erreicht) {
-      const r = daten!.regeln.zustaende.adrenalinschock;
-      zeilen.push({ text: `Du hast Over the Edge erreicht: Du erleidest einen Adrenalinschock. Alle Proben sind erschwert, bis du ${r.ende_ruhe_stunden} Stunden ununterbrochen ruhst.`, fett: true });
-    }
-    if (g.lage.sl_gefecht.length) zeilen.push({ text: 'Die Steps der SL für dieses Gefecht entfallen.' });
-    const blutend = c.spielstand.wunden.filter(blutet);
-    if (blutend.length) {
-      zeilen.push({ text: `Jetzt beginnen die Blutungsfristen: ${blutend.map((w) => `${wundenText(w, daten!)}, ${fristMinuten(w, daten!)} ${fristMinuten(w, daten!) === 1 ? 'Minute' : 'Minuten'}`).join('; ')}.`, fett: true });
-      zeilen.push({ text: 'Versorge die Wunden über die Figur. Sagt die SL, dass eine Frist abgelaufen ist, tippe dort „Frist abgelaufen“.' });
-    }
-    bericht = { titel: 'Gefecht beenden', zeilen, weiter: () => { void speichern(gefechtBeenden(c)); bericht = null; dialog = null; } };
+    if (gefecht) dialog = { art: 'ende' };
   }
 
   /** Frist einer blutenden Wunde abgelaufen (konzept.md § 3.10, § 4.8): Bericht vor der Änderung. */
@@ -414,7 +413,7 @@
       {/if}
       <!-- Rad über der Aktionsleiste: am unteren Bildschirmrand fängt Android waagerechtes Wischen als App-Wechsel ab. -->
       <Adrenalinrad stand={gefecht.leiter} d={daten} onsetzen={leiterDrehen} ondetail={() => (dialog = { art: 'detail' })} />
-      <Aktionsleiste c={aktiv} d={daten} {kampfunfaehig} onaendern={aendern} onoeffnen={(a) => (dialog = { art: 'aktion', aktion: a })} />
+      <Aktionsleiste c={aktiv} d={daten} {kampfunfaehig} onaendern={aendern} onoeffnen={aktionOeffnen} />
     {/if}
     <Reiterleiste {reiter} eingeklappt={einstellungen.reiterEingeklappt} onwahl={(r) => (reiter = r)} onklappen={reiterKlappen}
       laschenHoehe={einstellungen.laschenHoehe} {kopfHoehe} onlasche={(h) => void einstellungenSetzen({ ...einstellungen, laschenHoehe: h })} />
@@ -444,6 +443,8 @@
         onfertig={(c) => nachAblauf(c)} onabbrechen={() => (dialog = null)} />
     {:else if dialog.art === 'deckung'}
       <Deckung c={aktiv} d={daten} onfertig={(c) => nachAblauf(c)} onabbrechen={() => (dialog = null)} />
+    {:else if dialog.art === 'ende' && gefecht}
+      <GefechtBeenden c={aktiv} d={daten} onfertig={(c) => { void speichern(c); dialog = null; }} onabbrechen={() => (dialog = null)} />
     {:else if dialog.art === 'getroffen'}
       <Getroffen c={aktiv} d={daten} {zonenModus} onfertig={trefferFertig} onabbrechen={() => (dialog = null)} />
     {:else if dialog.art === 'start'}
@@ -460,7 +461,7 @@
     {:else if dialog.art === 'detail' && gefecht}
       <LeiterDetail stand={gefecht.leiter} d={daten} letzte={letzteLeiterAenderung(aktiv)}
         onsenken={() => (dialog = { art: 'senken' })} onverschieben={() => (dialog = { art: 'verschieben' })}
-        onrueckgaengig={() => { void zuruecknehmen(); dialog = null; }} onschliessen={() => (dialog = null)} />
+        onrueckgaengig={() => { void speichern(rueckgaengig(aktiv!, daten!)); dialog = null; }} onschliessen={() => (dialog = null)} />
     {/if}
   {/if}
 

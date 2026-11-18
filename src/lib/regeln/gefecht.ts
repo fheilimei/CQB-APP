@@ -176,10 +176,13 @@ export function deckungSetzen(c: Charakter, e: { wert: number; art: string | nul
   return { ...c, geaendert: jetzt(), spielstand: { ...c.spielstand, deckung } };
 }
 
-/** Gefecht beenden: Stand auf 0; wer Over the Edge erreicht hat, erleidet den Adrenalinschock. */
-export function gefechtBeenden(c: Charakter): Charakter {
+/**
+ * Gefecht beenden: Stand auf 0; wer Over the Edge erreicht hat, erleidet den Adrenalinschock.
+ * `mitSchock` übersteuert das (Auswahl im Dialog, vorgewählt nach Over the Edge; Wunsch des Nutzers 18.11.2026).
+ */
+export function gefechtBeenden(c: Charakter, mitSchock?: boolean): Charakter {
   const g = laufend(c);
-  const ende = gefechtsende(g.adrenalin4_erreicht);
+  const ende = gefechtsende(mitSchock ?? g.adrenalin4_erreicht);
   const schock = ende.adrenalinschock ? { aktiv: true, ruhe_stunden: 0 } : c.spielstand.adrenalinschock;
   return mitGefecht(c, { aktiv: false }, { adrenalinschock: schock });
 }

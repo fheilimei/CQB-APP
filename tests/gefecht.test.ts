@@ -187,6 +187,12 @@ describe('Gefecht', () => {
     expect(gefechtBeenden(c).spielstand.adrenalinschock.aktiv).toBe(false);
   });
 
+  it('Gefecht beenden: Adrenalinschock nach Over the Edge abwählbar, ohne Over the Edge zuschaltbar', () => {
+    const otE = leiterSetzen(imGefecht(3), 4, d);
+    expect(gefechtBeenden(otE, false).spielstand.adrenalinschock.aktiv).toBe(false);
+    expect(gefechtBeenden(imGefecht(3), true).spielstand.adrenalinschock.aktiv).toBe(true);
+  });
+
   it('ohne Over the Edge kein Adrenalinschock', () => {
     expect(gefechtBeenden(imGefecht(3)).spielstand.adrenalinschock.aktiv).toBe(false);
   });
