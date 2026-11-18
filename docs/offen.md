@@ -145,7 +145,7 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 ### Erledigt
 
 ### R3. Arme hinter Deckung (17.11.2026)
-- **Entschieden (18.11.2026):** Ist die Brust verdeckt, sind auch beide Arme verdeckt. Von welcher Seite die Deckung kommt, prüft die App nicht. Das war schon die vorläufige Lösung; an der App ändert sich nichts.
+- **Entschieden (18.11.2026):** Wie im Regelwerk: Nur wenn eine Deckung **von unten** die Brust verdeckt, sind auch beide Arme verdeckt. Seitliche Deckung (Hausecke, Türrahmen) verdeckt nur den Arm ihrer Seite. Deckung von oben ist in der Regel nicht vorgesehen. Umgesetzt: Die App merkt sich, ob die Deckungskante von unten gezogen wurde; nur dann kommen die Arme dazu. Einzeln angetippte Zonen ziehen die Arme nicht mit.
 - **Frage:** Regelwerk: „Verdeckt eine Deckung **von unten** die Brust, gelten auch beide Arme als verdeckt.“ Die App weiß nicht, von welcher Seite die Deckung verdeckt.
 - **Stellen:** (Deckung und Rüstung, Deckung)
 - **Vorläufig:** Ist die Brust verdeckt, sind auch die Arme verdeckt. Die Richtung prüft die App nicht.
