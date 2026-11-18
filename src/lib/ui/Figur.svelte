@@ -1,7 +1,7 @@
 <script lang="ts">
   // Reiter Figur (konzept.md § Aufbau der App): HP, Silhouette mit Rüstung und Wunden. Antippen einer Zone zeigt darunter
   // ihre Übersicht (Rüstung, Deckung, Wunden mit Status, Frist und Folge; Versorgen und „Frist abgelaufen“).
-  // Darunter der Knopf Getroffen, im Gefecht und in Ruhe. Im Gefecht oben links der Knopf Deckung; verdeckte Zonen sind schraffiert.
+  // Rechts neben der Figur: oben Stand und Bewegung (Gefecht), unten Deckung (Gefecht) über Getroffen. Verdeckte Zonen sind schraffiert.
   import type { Spieldaten } from '../daten/typen';
   import { grundwerte, hpAktuell } from '../regeln/modifikatoren';
   import { gefechtVon, lebenslageDes } from '../regeln/probenrechner';
@@ -75,15 +75,24 @@
     <p class="warnung">kampfunfähig{imGefecht ? ': im Gefecht keine Aktionen' : ''}</p>
   {/if}
   <div class="figurbox">
-    <Silhouette {d} {ruestung} {wunden} verdeckt={gefechtsDeckung?.zonen ?? []} gewaehlt={zone} onwahl={(z) => (zone = zone === z ? null : z)}
-      beschriftung="Körperbild mit Rüstung und Wunden; Zone antippen für Einzelheiten" />
-    {#if gefechtVon(c)}
-      <button class="deckung" class:betont={!!gefechtsDeckung} onclick={ondeckung}
-        aria-label={gefechtsDeckung ? `Deckung mit Schutz ${gefechtsDeckung.wert} ändern` : 'Deckung eintragen'}>
-        Deckung{#if gefechtsDeckung} {gefechtsDeckung.wert}{/if}
-      </button>
-      <div class="haltung"><Haltungsanzeige g={gefechtVon(c)!} {d} /></div>
-    {/if}
+    <div class="figurplatz">
+      <Silhouette {d} {ruestung} {wunden} verdeckt={gefechtsDeckung?.zonen ?? []} gewaehlt={zone} onwahl={(z) => (zone = zone === z ? null : z)}
+        knapp beschriftung="Körperbild mit Rüstung und Wunden; Zone antippen für Einzelheiten" />
+    </div>
+    <div class="seite">
+      {#if gefechtVon(c)}
+        <Haltungsanzeige g={gefechtVon(c)!} {d} />
+      {/if}
+      <div class="knoepfe">
+        {#if gefechtVon(c)}
+          <button class:betont={!!gefechtsDeckung} onclick={ondeckung}
+            aria-label={gefechtsDeckung ? `Deckung mit Schutz ${gefechtsDeckung.wert} ändern` : 'Deckung eintragen'}>
+            Deckung{#if gefechtsDeckung} {gefechtsDeckung.wert}{/if}
+          </button>
+        {/if}
+        <button class="betont" onclick={ongetroffen}>Getroffen</button>
+      </div>
+    </div>
   </div>
 
   {#if gewaehlt}
@@ -121,8 +130,6 @@
   {:else if wunden.length}
     <p class="hinweis mitte">Tippe eine Zone an, um ihre Wunden zu sehen.</p>
   {/if}
-
-  <button class="betont" onclick={ongetroffen}>Getroffen</button>
 </section>
 
 <style>
@@ -133,11 +140,12 @@
   .fuellung.niedrig { background: var(--gefahr); }
   .warnung { margin: 0; }
   p { margin: 0; }
-  /* Stand und Bewegung oben rechts in der freien Ecke neben dem Kopf der Figur. */
-  .figurbox { position: relative; }
-  .haltung { position: absolute; top: 0; right: 0; }
-  /* Knopf Deckung in der freien Ecke oben links, Gegenstück zur Haltung oben rechts. */
-  .deckung { position: absolute; top: 0; left: 0; }
+  /* Figur links, rechts daneben eine Spalte: oben Stand und Bewegung, unten (Daumenbereich) Deckung über Getroffen, beide gleich breit. */
+  .figurbox { display: flex; gap: var(--abstand-2); align-items: stretch; }
+  .figurplatz { flex: 1 1 auto; min-width: 0; max-width: 240px; }
+  .seite { flex: 0 0 auto; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; gap: var(--abstand-2); margin-left: auto; }
+  .knoepfe { display: flex; flex-direction: column; gap: var(--abstand-2); align-self: stretch; }
+  .knoepfe button { width: 100%; padding: 0 var(--abstand-2); }
   .mitte { text-align: center; }
   /* Übersicht der gewählten Zone: eigene Fläche mit Akzentstreifen, passend zum Akzentrahmen der Zone in der Figur. */
   .zone { background: var(--flaeche-2); border-left: 3px solid var(--akzent); border-radius: 8px; padding: var(--abstand-2) var(--abstand-3); }

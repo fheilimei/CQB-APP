@@ -37,6 +37,7 @@ Rückmeldung des Nutzers vom 17.11.2026:
 - **Jede Aktion über ihren eigenen Knopf** (18.11.2026, Standwechsel): Was eine Breakaction kostet, läuft über den Knopf Break (dort wählt man Reaktion oder Antizipation), nie still über einen anderen Knopf. Ist ein Zähler leer, ist sein Knopf grau und der Hinweis sagt, wo es weitergeht.
 - **Andersartiges sichtbar absetzen, Voraussetzung vor Wahl** (18.11.2026, Break): Break steht ganz rechts in der Aktionsleiste, durch eine dünne Linie von Main · Bewegung · Stand getrennt. Der Break-Dialog klärt zuerst eigener oder fremder Zug (dort die Probe) und zeigt erst nach Weiter in einem zweiten Fenster die Aktionen.
 - **Lange Auswahllisten zuklappen, Zähler vorn** (18.11.2026, Deckung): Eine Liste fester Werte steht zugeklappt hinter einem Knopf mit Pfeil wie im Menü („Deckung auswählen ›“). Darüber der Zähler; hinter der Zahl in Klammern, wozu der Wert passt („2 (Autotür, dicke Holztür)“).
+- **Figur links, Knöpfe rechts daneben** (18.11.2026, Reiter Figur): Silhouette nicht mittig, sondern links; rechts eine Spalte mit Stand über Bewegung (untereinander) oben und Deckung über Getroffen (gleich breit) unten.
 - Besonders aufgefallen: **Waffe wechseln** (`gefecht/WaffeWechseln.svelte`) und **Schießen** (`gefecht/Schiessen.svelte`).
 
 Jede Arbeit an der Oberfläche muss diese Punkte verbessern oder darf sie zumindest nicht verschlimmern.

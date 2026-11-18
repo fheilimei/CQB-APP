@@ -29,8 +29,10 @@
     /** Ohne onwahl ist die Figur nur Anzeige. */
     onwahl?: (zone: string) => void;
     beschriftung?: string;
+    /** Ohne leeren Rand links und rechts, für eine Figur mit Knöpfen daneben (Reiter Figur). Die Breite gibt dann der Behälter vor. */
+    knapp?: boolean;
   }
-  let { d, farben = {}, zeichen = {}, ruestung = {}, verdeckt = [], wunden = [], gewaehlt = null, onwahl, beschriftung = 'Körperzonen' }: Props = $props();
+  let { d, farben = {}, zeichen = {}, ruestung = {}, verdeckt = [], wunden = [], gewaehlt = null, onwahl, beschriftung = 'Körperzonen', knapp = false }: Props = $props();
 
   // Zeichenfläche 200 × 300; dargestellt mit 240 px Breite (Faktor 1,2), damit jede Zone mindestens 44 × 44 px hat.
   const FLAECHEN: Record<string, { x: number; y: number; b: number; h: number; r: number; kurz: string }> = {
@@ -58,7 +60,7 @@
   }
 </script>
 
-<svg class="figur" viewBox="0 0 200 300" role={onwahl ? 'group' : 'img'} aria-label={beschriftung}>
+<svg class="figur" class:knapp viewBox={knapp ? '21 2 158 296' : '0 0 200 300'} role={onwahl ? 'group' : 'img'} aria-label={beschriftung}>
   {#if verdeckt.length}
     <defs>
       <pattern id={muster} width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
@@ -99,6 +101,8 @@
 <style>
   /* Feste Breite: 240 px ergibt mindestens 44 × 44 px je Zone (Arme und Beine 38 bzw. 36 Einheiten × 1,2). */
   .figur { width: 240px; max-width: 100%; height: auto; display: block; margin: 0 auto; user-select: none; -webkit-user-select: none; }
+  /* Knapp: Zeichenfläche nur 158 Einheiten breit; bei rund 195 px Breite (360-px-Handy, Knöpfe daneben) bleibt jede Zone etwa 44 px breit. */
+  .figur.knapp { width: 100%; margin: 0; }
   .zone rect { fill: var(--zone-leer); stroke: var(--linie); stroke-width: 1.5; }
   .zone.gestoppt rect { fill: var(--treffer-gestoppt); }
   .zone.wucht rect { fill: var(--treffer-wucht); }

@@ -34,7 +34,7 @@
 </div>
 
 <style>
-  .anzeige { display: flex; align-items: center; gap: var(--abstand-1); padding: var(--abstand-1); border-radius: 8px;
+  .anzeige { display: flex; flex-direction: column; align-items: center; gap: var(--abstand-1); padding: var(--abstand-1); border-radius: 8px;
     background: var(--flaeche-2); border: 1px solid var(--linie); }
   /* 32 px: groß genug, um die Haltung auf einen Blick zu erkennen, klein genug für die freie Ecke neben dem Kopf der Figur. */
   .bild { width: 32px; height: 32px; display: block; fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
