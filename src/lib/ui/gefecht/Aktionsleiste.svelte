@@ -4,7 +4,6 @@
   // Zähler (bei 0 ausgegraut). Getroffen steht im Reiter Figur, wie in Ruhe. Langer Druck: ±1 von Hand. Kampfunfähig: Warnmarkierung, Ausführen nur nach Bestätigung.
   import type { Spieldaten } from '../../daten/typen';
   import { AKTIONEN, korrigieren, zaehler } from '../../regeln/aktionen';
-  import { gefechtVon } from '../../regeln/probenrechner';
   import type { Aktion, Charakter } from '../../speicher/charakter';
   import { AKTION_NAME } from '../texte';
 
@@ -18,7 +17,6 @@
   let { c, d, kampfunfaehig, onoeffnen, onaendern }: Props = $props();
 
   const z = $derived(zaehler(c, d));
-  const g = $derived(gefechtVon(c)!);
   let korrektur = $state<Aktion | null>(null);
   let timer: ReturnType<typeof setTimeout> | undefined;
   let langGedrueckt = false;
@@ -34,11 +32,7 @@
     if (kampfunfaehig && !confirm('Du bist kampfunfähig. Trotzdem handeln? (Die SL entscheidet.)')) return;
     onoeffnen(a);
   }
-  // Stand und Bewegung stehen nicht mehr unter den Knöpfen; das zeigt die Anzeige neben der Figur (18.11.2026).
-  // Nur Konzentration bleibt (steht nirgends sonst), am unteren Rand des Knopfs, damit der Name immer mittig bleibt.
-  const unterzeile: Partial<Record<Aktion, () => string>> = {
-    main: () => (g.konzentration ? `Konzentration ${g.konzentration}` : '')
-  };
+  // Stand, Bewegung und Konzentration stehen nicht unter den Knöpfen; das zeigt die Anzeige neben der Figur (18.11.2026).
 </script>
 
 <div class="leiste" role="group" aria-label="Aktionen der Runde">
@@ -50,7 +44,6 @@
       oncontextmenu={(ev) => ev.preventDefault()} onclick={() => tippen(a)}>
       <span class="name">{#if kampfunfaehig}⚠ {/if}{AKTION_NAME[a]}</span>
       <span class="zahl">{z[a]}</span>
-      {#if unterzeile[a]?.()}<small>{unterzeile[a]!()}</small>{/if}
     </button>
   {/each}
 </div>
@@ -77,8 +70,6 @@
   .aktion .name { font-weight: 400; font-size: 0.95rem; }
   .aktion .zahl { position: absolute; top: 3px; right: 5px; font-size: 0.8rem; font-weight: 400; background: var(--akzent); color: var(--akzent-text);
     border-radius: 999px; min-width: 1.4em; padding: 0 4px; }
-  .aktion small { position: absolute; left: 2px; right: 2px; bottom: 3px; text-align: center; font-size: 0.7rem; color: var(--text-2);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .aktion.leer { opacity: 0.45; }
   .aktion.leer .zahl { background: var(--text-2); }
   .aktion.warnung { border-color: var(--gefahr); }
