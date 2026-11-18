@@ -261,6 +261,8 @@ export interface Perk {
 export interface Koerperzone {
   id: string;
   name: string;
+  /** Ausgeschriebener Name als Überschrift („Rechter Arm“); fehlt er, gilt `name`. */
+  titel?: string;
   /** Ortsangabe für Sätze im Bericht („am Kopf“, „an der Brust“). */
   ort: string;
   w8: number | null;

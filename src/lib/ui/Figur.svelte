@@ -27,6 +27,8 @@
   let { c, d, ongetroffen, ondeckung, onversorgen, onfrist, kampfunfaehig, ongefechtstart, onnaechsteRunde, ongefechtende }: Props = $props();
 
   let zone = $state<string | null>(null);
+  /** Bildzeichen Mauer (Deckung), auf dem Knopf Deckung und in der Übersicht der Zone. */
+  const MAUER = 'M1 3h6v3H1zM8 3h7v3H8zM1 7h3v3H1zM5 7h6v3H5zM12 7h3v3h-3zM1 11h6v3H1zM8 11h7v3H8z';
 
   const hp = $derived(hpAktuell(c, d));
   const hpMax = $derived(grundwerte(c, d).hp);
@@ -93,7 +95,7 @@
         <!-- Bildzeichen: Mauer für Deckung, Einschlag für Getroffen. -->
         <!-- Beide Knöpfe öffnen nur einen Dialog; ob man in Deckung oder getroffen ist, zeigt die Figur (Schraffur mit Mauer und Zahl, Wunden). -->
         <button onclick={ondeckung} aria-label={deckungJetzt ? `Deckung mit Schutz ${deckungJetzt.wert} ändern` : 'Deckung eintragen'}>
-          <svg class="zeichen" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3h6v3H1zM8 3h7v3H8zM1 7h3v3H1zM5 7h6v3H5zM12 7h3v3h-3zM1 11h6v3H1zM8 11h7v3H8z" /></svg>
+          <svg class="zeichen" viewBox="0 0 16 16" aria-hidden="true"><path d={MAUER} /></svg>
           Deckung
         </button>
         <button onclick={ongetroffen}>
@@ -106,10 +108,16 @@
   {#if gewaehlt}
     <div class="zone gruppe" aria-live="polite">
       <div class="kopf">
-        <h3 class="abschnitt-titel">{gewaehlt.name}</h3>
+        <h3 class="abschnitt-titel">{#if gewaehlt.w8 !== null}<span class="zonenzahl">{gewaehlt.w8}</span> {/if}{gewaehlt.titel ?? gewaehlt.name}</h3>
         <button class="flach" aria-label="Übersicht der Zone schließen" onclick={() => (zone = null)}>✕</button>
       </div>
-      <p>Rüstung: {ruestung[gewaehlt.id] ? `Schutz ${ruestung[gewaehlt.id]}` : 'keine'}{#if deckung !== null} · Deckung: {deckungName ? `${deckungName}, ` : ''}Schutz {deckung}{/if}</p>
+      <!-- Gleiche Zeichen wie an der Figur: ⛨ für Rüstung, Mauer für Deckung. -->
+      <p class="schutzzeile">
+        <span>⛨ Rüstung: {#if ruestung[gewaehlt.id]}Schutz <span class="zahl">{ruestung[gewaehlt.id]}</span>{:else}keine{/if}</span>
+        {#if deckung !== null}
+          <span><svg class="zeichen mauer" viewBox="0 0 16 16" aria-hidden="true"><path d={MAUER} /></svg> Deckung: {deckungName ? `${deckungName}, ` : ''}Schutz <span class="zahl">{deckung}</span></span>
+        {/if}
+      </p>
       {#if zonenWunden.length}
         <ul class="zeilen">
           {#each zonenWunden as w (w.id)}
@@ -183,6 +191,11 @@
   .zeichen { width: 14px; height: 14px; fill: currentColor; flex: none; }
   /* Übersicht der gewählten Zone: eigene Fläche mit Akzentstreifen, passend zum Akzentrahmen der Zone in der Figur. */
   .zone { background: var(--flaeche-2); border-left: 3px solid var(--akzent); border-radius: 8px; padding: var(--abstand-2) var(--abstand-3); }
+  .schutzzeile { display: flex; flex-wrap: wrap; column-gap: var(--abstand-3); row-gap: var(--abstand-1); }
+  .schutzzeile > span { display: inline-flex; align-items: center; gap: var(--abstand-1); }
+  .mauer { fill: var(--deckung); }
+  /* Zahl und Name der Zone nebeneinander am Anfang, nicht auseinandergezogen. */
+  .kopf h3 { justify-content: flex-start; }
   .kopf { display: flex; justify-content: space-between; align-items: center; gap: var(--abstand-2); }
   .wundzeile { display: flex; justify-content: space-between; align-items: center; gap: var(--abstand-2); min-height: 44px; }
   .wundzeile small { display: block; color: var(--text-2); }

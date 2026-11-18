@@ -8,6 +8,7 @@
 <script lang="ts">
   // Körperbild (konzept.md § 3.0f): ein Baustein, der überall gleich aussieht. Jede Instanz blendet die Schichten ein,
   // die sie braucht (Rüstung, Wunden, Vorschau). Vorerst nur die Haltung „stehend“.
+  // Jede Zone zeigt ihre W8-Zahl umrandet statt eines Namens (18.11.2026); den Namen nennt die Übersicht beim Antippen.
   // Die Lage der Flächen ist Zeichnung, keine Regel: Zonen-IDs aus koerperzonen.json; Zonen ohne Fläche (Rumpf nach
   // Ansage) werden nicht gezeichnet. Rechts und links aus Sicht des Charakters (er schaut den Betrachter an).
   import type { Spieldaten } from '../daten/typen';
@@ -37,15 +38,15 @@
   let { d, farben = {}, zeichen = {}, ruestung = {}, verdeckt = [], deckungswert = null, wunden = [], gewaehlt = null, onwahl, beschriftung = 'Körperzonen', knapp = false }: Props = $props();
 
   // Zeichenfläche 200 × 300; dargestellt mit 240 px Breite (Faktor 1,2), damit jede Zone mindestens 44 × 44 px hat.
-  const FLAECHEN: Record<string, { x: number; y: number; b: number; h: number; r: number; kurz: string }> = {
-    kopf: { x: 78, y: 4, b: 44, h: 46, r: 20, kurz: 'Kopf' },
-    brust: { x: 63, y: 54, b: 74, h: 52, r: 10, kurz: 'Brust' },
-    bauch: { x: 63, y: 108, b: 74, h: 40, r: 4, kurz: 'Bauch' },
-    unterleib: { x: 63, y: 150, b: 74, h: 40, r: 6, kurz: 'Unterleib' },
-    arm_r: { x: 23, y: 54, b: 38, h: 128, r: 14, kurz: 'R' },
-    arm_l: { x: 139, y: 54, b: 38, h: 128, r: 14, kurz: 'L' },
-    bein_r: { x: 63, y: 192, b: 36, h: 104, r: 12, kurz: 'R' },
-    bein_l: { x: 101, y: 192, b: 36, h: 104, r: 12, kurz: 'L' }
+  const FLAECHEN: Record<string, { x: number; y: number; b: number; h: number; r: number }> = {
+    kopf: { x: 78, y: 4, b: 44, h: 46, r: 20 },
+    brust: { x: 63, y: 54, b: 74, h: 52, r: 10 },
+    bauch: { x: 63, y: 108, b: 74, h: 40, r: 4 },
+    unterleib: { x: 63, y: 150, b: 74, h: 40, r: 6 },
+    arm_r: { x: 23, y: 54, b: 38, h: 128, r: 14 },
+    arm_l: { x: 139, y: 54, b: 38, h: 128, r: 14 },
+    bein_r: { x: 63, y: 192, b: 36, h: 104, r: 12 },
+    bein_l: { x: 101, y: 192, b: 36, h: 104, r: 12 }
   };
   /** Eindeutige ID für das Schraffurmuster, falls mehrere Figuren gleichzeitig zu sehen sind. */
   const uid = $props.id();
@@ -98,7 +99,12 @@
       {#if verdeckt.includes(z.id)}
         <rect class="verdeckt" x={f.x} y={f.y} width={f.b} height={f.h} rx={f.r} style:fill="url(#{muster})" style:stroke="none" />
       {/if}
-      <text class="name" x={f.x + f.b / 2} y={f.y + (f.h > 60 ? 18 : f.h / 2 - 2)}>{f.kurz}</text>
+      {#if z.w8 !== null}
+        <!-- W8-Zahl der Zone, umrandet wie in der Übersicht der Zone (Klasse .zonenzahl), damit sie nicht wie Rüstung oder Deckung aussieht. -->
+        {@const ny = f.y + (f.h > 60 ? 18 : f.h / 2 - 3)}
+        <rect class="zahlrahmen" x={f.x + f.b / 2 - 8} y={ny - 7.5} width="16" height="15" rx="3" />
+        <text class="nummer" x={f.x + f.b / 2} y={ny + 0.5}>{z.w8}</text>
+      {/if}
       {#if sz.dk}
         <!-- Unterlage, damit Zahl und Mauer auf der Schraffur lesbar bleiben. -->
         <rect class="unterlage" x={sz.start - 2} y={sy - 6.5} width={sz.breite + 4} height="13" rx="3" />
@@ -140,8 +146,7 @@
   .verdeckt { pointer-events: none; }
   .schraffur { stroke: var(--deckung); stroke-width: 3; }
   text { text-anchor: middle; dominant-baseline: middle; fill: var(--text); pointer-events: none; }
-  .name { font-size: 11px; font-weight: 400; }
-  .zone.gewaehlt .name { font-weight: 400; }
+  .nummer { font-size: 11px; font-family: var(--schrift-zahl); }
   .schutz { font-size: 10px; fill: var(--text-2); }
   .schutz.links, .deckungszahl { text-anchor: start; }
   .deckungszahl { fill: var(--text); }
@@ -152,4 +157,6 @@
   .wunde.blutet { fill: var(--gefahr); }
   .wunde.versorgt { fill: var(--text-2); }
   .ring { fill: none; stroke: var(--gefahr); stroke-width: 2; }
+  /* Rahmen der W8-Zahl nach den Zonenstilen, damit Vorschaufarbe und Wahlrahmen der Zone ihn nicht überschreiben. */
+  .zone rect.zahlrahmen { fill: none; stroke: var(--text-2); stroke-width: 1; filter: none; pointer-events: none; }
 </style>

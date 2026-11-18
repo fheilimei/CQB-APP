@@ -28,6 +28,8 @@
   let ziehHoehe = $state<number | null>(null);
   const hoehe = $derived(ziehHoehe ?? laschenHoehe);
   let zug: { y: number; h: number; frei: number; zieht: boolean } | null = null;
+  /** Nur solange der Finger zieht: Akzentrahmen. */
+  let ziehtJetzt = $state(false);
   let gezogen = false;
 
   function runter(e: PointerEvent) {
@@ -44,29 +46,36 @@
     if (!zug.zieht) {
       if (Math.abs(dy) < 8) return;
       zug.zieht = true;
+      ziehtJetzt = true;
       gezogen = true;
       el?.setPointerCapture(e.pointerId);
     }
     ziehHoehe = Math.min(1, Math.max(0, zug.h - dy / zug.frei));
   }
   function hoch() {
-    if (zug?.zieht && ziehHoehe !== null) onlasche(Math.round(ziehHoehe * 1000) / 1000);
+    if (zug?.zieht && ziehHoehe !== null) {
+      const neu = Math.round(ziehHoehe * 1000) / 1000;
+      // Gleiche Stelle wie vorher: es kommt nichts aus den Einstellungen zurück, also gleich loslassen.
+      if (Math.abs(neu - laschenHoehe) < 0.002) ziehHoehe = null;
+      onlasche(neu);
+    }
     zug = null;
+    ziehtJetzt = false;
   }
   // Nach dem Speichern die gezogene Stelle halten, bis sie aus den Einstellungen zurückkommt (kein Zurückspringen).
   $effect(() => { if (!zug && ziehHoehe !== null && Math.abs(ziehHoehe - laschenHoehe) < 0.002) ziehHoehe = null; });
-  function abbrechen() { zug = null; ziehHoehe = null; }
+  function abbrechen() { zug = null; ziehHoehe = null; ziehtJetzt = false; }
   /** Nach einem Schieben keinen Tipp auslösen. */
   function tipp(aktion: () => void) { if (gezogen) { gezogen = false; return; } aktion(); }
 </script>
 
 {#if eingeklappt}
-  <button class="lasche schiebbar" bind:this={el} style:--hoehe={hoehe} style:--kopf="{kopfHoehe}px" class:zieht={ziehHoehe !== null}
+  <button class="lasche schiebbar" bind:this={el} style:--hoehe={hoehe} style:--kopf="{kopfHoehe}px" class:zieht={ziehtJetzt}
     aria-expanded="false" aria-label="Reiter ausklappen (jetzt: {name}); zum Verschieben hoch oder runter ziehen"
     onpointerdown={runter} onpointermove={bewegen} onpointerup={hoch} onpointercancel={abbrechen}
     onclick={() => tipp(() => onklappen(false))}><span class="griff" aria-hidden="true"><span class="klapppfeil">›</span></span></button>
 {:else}
-  <nav class="leiste schiebbar" bind:this={el} bind:offsetHeight={eigen} style:--eigen="{eigen}px" style:--hoehe={hoehe} style:--kopf="{kopfHoehe}px" class:zieht={ziehHoehe !== null}
+  <nav class="leiste schiebbar" bind:this={el} bind:offsetHeight={eigen} style:--eigen="{eigen}px" style:--hoehe={hoehe} style:--kopf="{kopfHoehe}px" class:zieht={ziehtJetzt}
     aria-label="Reiter (zum Verschieben hoch oder runter wischen)"
     onpointerdown={runter} onpointermove={bewegen} onpointerup={hoch} onpointercancel={abbrechen}>
     {#each REITER as r (r.id)}

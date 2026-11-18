@@ -143,6 +143,7 @@
     {
       "id": "arm_r",
       "name": "R. Arm",
+      "titel": "Rechter Arm",
       "ort": "am rechten Arm",
       "w8": 4,
       "multiplikator": 1,
@@ -174,6 +175,7 @@
     {
       "id": "arm_l",
       "name": "L. Arm",
+      "titel": "Linker Arm",
       "ort": "am linken Arm",
       "w8": 3,
       "multiplikator": 1,
@@ -205,6 +207,7 @@
     {
       "id": "bein_r",
       "name": "R. Bein",
+      "titel": "Rechtes Bein",
       "ort": "am rechten Bein",
       "w8": 2,
       "multiplikator": 1,
@@ -247,6 +250,7 @@
     {
       "id": "bein_l",
       "name": "L. Bein",
+      "titel": "Linkes Bein",
       "ort": "am linken Bein",
       "w8": 1,
       "multiplikator": 1,

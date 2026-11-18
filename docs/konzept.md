@@ -229,7 +229,7 @@ Die Silhouette ist **ein Baustein**, der überall gleich aussieht. Jede Instanz 
 **Grundform.**
 - Zehn antippbare Flächen nach `koerperzonen.json`: Kopf, Brust, Bauch, Unterleib, beide Arme, beide Beine; „Rumpf“ fasst Brust, Bauch und Unterleib zusammen, wo eine Regel das verlangt.
 - Drei Haltungen nach dem Stand: **stehend**, **hockend**, **liegend**. Die Zonen bleiben in jeder Haltung antippbar.
-- Gezeichnet als SVG; die Zonen tragen die IDs aus `koerperzonen.json`. Rechts und links sind aus Sicht des Charakters beschriftet, damit W8-Ansagen der SL eindeutig sind.
+- Gezeichnet als SVG; die Zonen tragen die IDs aus `koerperzonen.json`. Rechts und links aus Sicht des Charakters. Jede Zone zeigt statt ihres Namens nur ihre **W8-Zahl**, umrandet, damit sie nicht mit Rüstungs- und Deckungszahlen verwechselt wird (18.11.2026). Den Namen („Rechter Arm“) zeigt die Übersicht beim Antippen (Reiter Figur), zusammen mit der umrandeten Zahl; dort stehen Rüstung und Deckung mit denselben Zeichen wie an der Figur (⛨ bzw. Mauer).
 - Groß genug für den Daumen: Jede Zone ist mindestens 44 × 44 Pixel, auch im Liegen (dort wird die Figur breiter dargestellt).
 
 **Schichten**

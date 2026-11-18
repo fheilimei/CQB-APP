@@ -65,6 +65,9 @@ h1, h2, h3, h4, h5, h6, strong, b, th, legend, summary { font-weight: 400; }
 /* Zahlen: gleich breite Ziffern, damit Werte untereinander stehen. */
 .zahl, .zeilen .wert, .stepper strong, table.rechnung td:last-child { font-family: var(--schrift-zahl); font-variant-numeric: tabular-nums; }
 .zahl .hinweis { font-family: var(--schrift-text); }
+/* W8-Zahl einer Körperzone, umrandet wie auf der Silhouette, damit sie nicht wie ein Schutzwert aussieht. */
+.zonenzahl { display: inline-block; min-width: 1.5em; padding: 0 var(--abstand-1); border: 1px solid var(--text-2); border-radius: 4px;
+  font-family: var(--schrift-zahl); text-align: center; line-height: 1.3; }
 #app { min-height: 100%; display: flex; flex-direction: column; }
 button { font: inherit; color: inherit; min-height: var(--tipp); min-width: var(--tipp); border-radius: var(--radius);
   border: 1px solid var(--linie); background: var(--flaeche); padding: 0 16px; cursor: pointer; }

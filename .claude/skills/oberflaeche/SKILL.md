@@ -49,6 +49,8 @@ Rückmeldung des Nutzers vom 17.11.2026:
 - **Abschnitte nach Begriffsart** (18.11.2026, Reiter Werte): Zeichen ■ ⬢ ◆ nur in der Überschrift des Abschnitts, nicht an jedem Eintrag; Rahmen des Abschnitts in derselben Farbe (`.karte.typrahmen` mit `--typfarbe`). Skills: Stufe ganz links, dahinter der Gürtelgrad (`Guertel.svelte`: Streifen je Stufe, höchste Stufe gefüllt; Streifen statt Gürtelfarben, weil Farben schon belegt sind), dann der Name.
 - **Farben der Begriffsarten überall** (18.11.2026): ■ grün, ⬢ lila, ◆ rosa. Jedes dieser Zeichen erscheint in seiner Farbe, auch in Text aus `mitZeichen` (dort über `Farbtext.svelte`; Bericht färbt automatisch). Blau ist Ruhepuls, Rot Adrenalin; keine Begriffsart darf diese Farben bekommen.
 - **Adrenalin rot, Ruhepuls blau** (18.11.2026): Jeder Pfeil ▲ ▼, der aus Adrenalin oder Ruhepuls stammt, trägt diese Farbe (`leiter_pfeile`, Komponente `Steps.svelte`, Klasse `.leiterpfeil`). Kein + oder − dafür.
+- **Silhouette nur mit W8-Zahl** (18.11.2026): Zonen zeigen statt Namen ihre W8-Zahl, umrandet (`.zonenzahl` in `app.css`, in der Figur gleich gezeichnet), damit sie nicht mit Rüstung ⛨ oder Deckung (Mauer) verwechselt wird. Die Übersicht beim Antippen nennt Zahl und ausgeschriebenen Namen („Rechter Arm“, Feld `titel`) und zeigt Rüstung und Deckung mit ihren Zeichen.
+- **Rückmeldung nur, solange sie stimmt** (18.11.2026, Reiterleiste): Der Akzentrahmen beim Verschieben verschwindet beim Loslassen.
 - Besonders aufgefallen: **Waffe wechseln** (`gefecht/WaffeWechseln.svelte`) und **Schießen** (`gefecht/Schiessen.svelte`).
 
 Jede Arbeit an der Oberfläche muss diese Punkte verbessern oder darf sie zumindest nicht verschlimmern.

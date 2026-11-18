@@ -487,7 +487,7 @@ Die **Quelle** steht nicht im Modifikator; sie ergibt sich aus dem Ort (Perk, An
     { "id": "rumpf", "name": "Rumpf", "ort": "am Rumpf", "w8": null, "nur_ansage": true, "multiplikator": 2, "bereich": "rumpf",
       "normal": { "text": "Blutung", "dauerhaft": [] },
       "krit": { "text": "Kampfunfähig; verbluten innerhalb einer Minute", "blutung": "kritisch_rumpf" } },
-    { "id": "bein_r", "name": "R. Bein", "ort": "am rechten Bein", "w8": 2, "multiplikator": 1, "bereich": "glied",
+    { "id": "bein_r", "name": "R. Bein", "titel": "Rechtes Bein", "ort": "am rechten Bein", "w8": 2, "multiplikator": 1, "bereich": "glied",
       "normal": { "text": "Blutung; Sturz, falls im Lauf; humpeln", "dauerhaft": ["humpeln"],
         "saetze": [
           { "text": "Die Wunde blutet." },
@@ -499,6 +499,7 @@ Die **Quelle** steht nicht im Modifikator; sie ergibt sich aus dem Ort (Perk, An
 }
 ```
 
+- `titel` (optional) ist der ausgeschriebene Name als Überschrift, wenn `name` abgekürzt ist („Rechter Arm“ statt „R. Arm“); reiner Anzeigetext, sonst gilt `name`.
 - `ort` ist die Ortsangabe der Zone in Sätzen („Ein Schuss trifft dich am Kopf.“); reiner Anzeigetext.
 - `bereich` bestimmt, welche Rüstung schützt (Westen: `rumpf`) und welche Blutungsregel gilt.
 - `normal.blutung` und `krit.blutung` verweisen auf `regeln.json` (`blutung`). `krit.tot`: sofort tot; `krit.kampfunfaehig`: kampfunfähig ab dem Treffer.
