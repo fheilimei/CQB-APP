@@ -3,7 +3,7 @@
 import { describe, expect, it } from 'vitest';
 import { bewegungsarten, lageWaehlen } from '../src/lib/regeln/aktionen';
 import {
-  deckungSetzen, geblendetBeenden, geblendetSetzen, gefechtStarten, leiterSetzen, naechsteRunde, reizgasSetzen, schildHalten
+  deckungSetzen, geblendetBeenden, geblendetGenau, geblendetSetzen, gefechtStarten, leiterSetzen, naechsteRunde, reizgasSetzen, schildHalten
 } from '../src/lib/regeln/gefecht';
 import { gefechtVon, probeStellen } from '../src/lib/regeln/probenrechner';
 import { schildBeimSchiessen, schussStellen, type Schusseinstellung } from '../src/lib/regeln/schuss';
@@ -69,6 +69,15 @@ describe('Geblendet', () => {
   it('außerhalb des Gefechts ändert sich nichts', () => {
     const c = fertig();
     expect(geblendetSetzen(c, 2)).toBe(c);
+  });
+
+  it('von Hand (Ereignis): genau n Runden, auch kürzer als vorher; 0 beendet', () => {
+    let c = geblendetGenau(geblendetSetzen(imGefecht(), 2), 1);
+    expect(geblendetRunden(g(c))).toBe(1);
+    c = geblendetGenau(c, 3);
+    expect(geblendetRunden(g(c))).toBe(3);
+    expect(g(runde(c)).geblendet_bis).not.toBeNull();
+    expect(g(geblendetGenau(c, 0)).geblendet_bis).toBeNull();
   });
 
   it('setzt die Sichtstufe keine: 3 Malsteps statt der eingestellten Stufe, keine Ansage', () => {

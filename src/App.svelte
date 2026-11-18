@@ -495,7 +495,7 @@
     {:else if dialog.art === 'ende' && gefecht}
       <GefechtBeenden c={aktiv} d={daten} onfertig={(c) => { void speichern(c); dialog = null; }} onabbrechen={() => (dialog = null)} />
     {:else if dialog.art === 'ereignis' && gefecht}
-      <Ereignis c={aktiv} d={daten} onfertig={ereignisFertig} onreizgas={() => (dialog = { art: 'reizgas' })} onabbrechen={() => (dialog = null)} />
+      <Ereignis c={aktiv} d={daten} onfertig={ereignisFertig} onaendern={aendern} onreizgas={() => (dialog = { art: 'reizgas' })} onabbrechen={() => (dialog = null)} />
     {:else if dialog.art === 'reizgas' && gefecht}
       <Reizgas c={aktiv} d={daten} wuerfelModus={probeModus} onaendern={aendern} onfertig={(c) => nachAblauf(c)} onabbrechen={() => (dialog = null)} />
     {:else if dialog.art === 'getroffen'}

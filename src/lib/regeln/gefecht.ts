@@ -131,6 +131,12 @@ export function geblendetSetzen(c: Charakter, runden: number): Charakter {
   return mitGefecht(c, { ...g, geblendet_bis: Math.max(bis, g.geblendet_bis ?? 0) });
 }
 
+/** Geblendet von Hand auf genau `runden` Runden setzen, die laufende eingeschlossen (Ereignis → Zustand). 0 = nicht geblendet. */
+export function geblendetGenau(c: Charakter, runden: number): Charakter {
+  const g = laufend(c);
+  return mitGefecht(c, { ...g, geblendet_bis: runden > 0 ? g.runde + runden - 1 : null });
+}
+
 /** Geblendet von Hand beenden (die SL sagt es an). */
 export function geblendetBeenden(c: Charakter): Charakter {
   return mitGefecht(c, { ...laufend(c), geblendet_bis: null });
