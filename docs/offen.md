@@ -23,22 +23,6 @@ Die App wird erst entwickelt, wenn die Regeln weitgehend stehen ([[App/docs/konz
 
 Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. Die App arbeitet bis zur Entscheidung mit der genannten vorläufigen Lösung. Neue Einträge kommen beim Programmieren hinzu (Skill „regelfrage“). Die Regelpunkte aus den Schritten 1 bis 6 sind hierher übertragen (18.11.2026).
 
-### R4. Stumpfer Krit gegen „Schmerz ignorieren“ (17.11.2026)
-- **Frage:** Ein stumpfer Krit löst „immer“ einen Stagger aus. Das Symptom Schmerz ignorieren sagt „kein Stagger“. Was gilt?
-- **Stellen:** (Schaden, Blutung und Verletzungen, Stumpfe Treffer); (Adrenalin, Symptome)
-- **Vorläufig:** Schmerz ignorieren gewinnt, kein Stagger.
-- **Andere Möglichkeit:** Der stumpfe Krit gewinnt, Stagger trotz Schmerz ignorieren.
-- **Ändern:** Regelkern, Schaden (eine Zeile)
-- **Im Regelwerk klarstellen:** ja
-
-### R5. Wuchttreffer mit 0 Schaden (17.11.2026)
-- **Frage:** Ein Wuchttreffer erzeugt eine Prellung. Gilt das auch, wenn er 0 Schaden macht?
-- **Stellen:** (Schaden, Blutung und Verletzungen, Wuchttreffer); (Schaden, Blutung und Verletzungen, Prellungen)
-- **Vorläufig:** keine Prellung, weil nichts zu heilen ist.
-- **Andere Möglichkeit:** Prellung mit 0 Schaden (wichtig nur, wenn eine Prellung außer dem Schaden noch etwas bewirkt).
-- **Ändern:** Regelkern, Schaden
-- **Im Regelwerk klarstellen:** ja
-
 ### R6. Offene kritische Wunde und Kampfunfähigkeit (17.11.2026)
 - **Frage:** Welche kritische Wunde macht kampfunfähig: jede oder nur eine, deren Blutung nicht gestoppt ist?
 - **Stellen:** (Schaden, Blutung und Verletzungen, Kampfunfähigkeit); (Schaden, Blutung und Verletzungen, Kritische Blutung); (Würfelmechanik, Zustände)
@@ -144,6 +128,24 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 
 ### Erledigt
 
+### R5. Treffer mit 0 Schaden (17.11.2026)
+- **Entschieden (18.11.2026):** Ein Treffer mit 0 Schaden verursacht nichts: keine Prellung, keine Verletzung (Wunde, Blutung, Folge der Zone) und keinen Abzug von Lebenspunkten. Das gilt für jeden Treffer, nicht nur für Wuchttreffer. Umgesetzt: Auch ein Durchschlag mit 0 Schaden erzeugt keine Wunde und keine Folge.
+- **Frage:** Ein Wuchttreffer erzeugt eine Prellung. Gilt das auch, wenn er 0 Schaden macht?
+- **Stellen:** (Schaden, Blutung und Verletzungen, Wuchttreffer); (Schaden, Blutung und Verletzungen, Prellungen)
+- **Vorläufig:** keine Prellung, weil nichts zu heilen ist.
+- **Andere Möglichkeit:** Prellung mit 0 Schaden (wichtig nur, wenn eine Prellung außer dem Schaden noch etwas bewirkt).
+- **Ändern:** Regelkern, Schaden
+- **Im Regelwerk klarstellen:** ja, **noch offen**: In Schaden, Blutung und Verletzungen festhalten, dass ein Treffer mit 0 Schaden weder Prellung noch Verletzung noch HP-Abzug verursacht.
+
+### R4. Stumpfer Krit gegen „Schmerz ignorieren“ (17.11.2026)
+- **Entschieden (18.11.2026):** Schmerz ignorieren gewinnt: auch ein stumpfer Krit löst dann keinen Stagger aus. So rechnete die App schon.
+- **Frage:** Ein stumpfer Krit löst „immer“ einen Stagger aus. Das Symptom Schmerz ignorieren sagt „kein Stagger“. Was gilt?
+- **Stellen:** (Schaden, Blutung und Verletzungen, Stumpfe Treffer); (Adrenalin, Symptome)
+- **Vorläufig:** Schmerz ignorieren gewinnt, kein Stagger.
+- **Andere Möglichkeit:** Der stumpfe Krit gewinnt, Stagger trotz Schmerz ignorieren.
+- **Ändern:** Regelkern, Schaden (eine Zeile)
+- **Im Regelwerk klarstellen:** ja, **noch offen**: Bei den stumpfen Treffern ergänzen, dass Schmerz ignorieren auch den Stagger des stumpfen Krits verhindert.
+
 ### R3. Arme hinter Deckung (17.11.2026)
 - **Entschieden (18.11.2026):** Wie im Regelwerk: Nur wenn eine Deckung **von unten** die Brust verdeckt, sind auch beide Arme verdeckt. Seitliche Deckung (Hausecke, Türrahmen) verdeckt nur den Arm ihrer Seite. Deckung von oben ist in der Regel nicht vorgesehen. Umgesetzt: Die App merkt sich, ob die Deckungskante von unten gezogen wurde; nur dann kommen die Arme dazu. Einzeln angetippte Zonen ziehen die Arme nicht mit.
 - **Frage:** Regelwerk: „Verdeckt eine Deckung **von unten** die Brust, gelten auch beide Arme als verdeckt.“ Die App weiß nicht, von welcher Seite die Deckung verdeckt.
@@ -208,8 +210,8 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 
 1. **Step-Faktoren gerundet oder genau?** → Regelfragen R1.
 2. **Rüstung bei der Ansage „Rumpf“.** → Regelfragen R2 (entschieden).
-3. **Krit eines stumpfen Treffers gegen „Schmerz ignorieren“.** → Regelfragen R4.
-4. **Wuchttreffer mit 0 Schaden.** → Regelfragen R5.
+3. **Krit eines stumpfen Treffers gegen „Schmerz ignorieren“.** → Regelfragen R4 (entschieden).
+4. **Wuchttreffer mit 0 Schaden.** → Regelfragen R5 (entschieden).
 5. **Perks, deren Wirkung nur als Text vorliegt.** Erledigt für Schritt 6 (18.11.2026): `perk_wirkungen` in `regeln.json` mit festen Wirkungsarten; der Regelkern führt CQB, Feuer in Bewegung, Atemkontrolle, Gezielter Schuss, Triple Tap, Fingerfertig, Schnell nachladen, Schnellzieher, Quickthrow und Schutzreflex selbst aus. Weiter nur als Hinweis: Überfall, Kaltblütig, Geduld, Niederhalten, Lucky Numbers, Korrektur (sie brauchen Wissen, das die App nicht hat, z. B. ob das Ziel dich wahrnimmt).
 6. **Arme hinter Deckung.** → Regelfragen R3 (entschieden).
 

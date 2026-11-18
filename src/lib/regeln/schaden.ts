@@ -64,7 +64,7 @@ export interface Trefferfolge {
 }
 
 function stagger(schaden: number, e: Treffereingabe, kritStumpf: boolean): boolean {
-  // Regelfrage R4 (docs/offen.md): vorläufig gewinnt Schmerz ignorieren gegen den stumpfen Krit.
+  // Regelfrage R4 (docs/offen.md), entschieden: Schmerz ignorieren gewinnt gegen den stumpfen Krit, kein Stagger.
   if (e.stagger_regel === 'nie') return false;
   if (kritStumpf) return true;
   return e.stagger_regel === 'empfindlich' ? schaden >= e.schmerzresistenz : schaden > e.schmerzresistenz;
@@ -77,7 +77,7 @@ export function treffer(e: Treffereingabe, d: Spieldaten): Trefferfolge {
   const kugeln = Math.max(1, e.kugeln);
   const gestoppt: Trefferfolge = { art: 'gestoppt', rest_dk: null, schaden: 0, wunde: false, prellung: false, folge: null, stagger: false };
 
-  // Regelfrage R5 (docs/offen.md): vorläufig keine Prellung bei 0 Schaden (prellung: schaden > 0, auch unten).
+  // Regelfrage R5 (docs/offen.md), entschieden: Bei 0 Schaden keine Prellung, keine Wunde, keine Zonenfolge, kein HP-Abzug.
   // Stumpf: verdeckte Zone → kein Schaden; sonst immer Wuchttreffer mit vollem Rüstungswert als Restschutz.
   if (e.dk === null) {
     if (e.deckung !== null) return gestoppt;
@@ -98,9 +98,9 @@ export function treffer(e: Treffereingabe, d: Spieldaten): Trefferfolge {
       art: 'durchschlag',
       rest_dk: restDk,
       schaden,
-      wunde: true,
+      wunde: schaden > 0,
       prellung: false,
-      folge: e.krit ? 'krit' : 'normal',
+      folge: schaden > 0 ? (e.krit ? 'krit' : 'normal') : null,
       stagger: stagger(schaden, e, false)
     };
   }

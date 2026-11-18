@@ -379,6 +379,20 @@ describe('Schadensablauf', () => {
     expect(treffer({ ...stumpf, krit: true }, d).stagger).toBe(true);
   });
 
+  it('R4: Schmerz ignorieren gewinnt gegen den stumpfen Krit, kein Stagger', () => {
+    const stumpf = { ...basis, dk: null, mw: 2, schmerzresistenz: 3, krit: true };
+    expect(treffer({ ...stumpf, stagger_regel: 'nie' }, d).stagger).toBe(false);
+  });
+
+  it('R5: Bei 0 Schaden keine Prellung, keine Wunde, keine Zonenfolge', () => {
+    const wucht = treffer({ ...basis, dk: 1, mw: 2, ruestung: 3 }, d);
+    expect(wucht).toMatchObject({ art: 'wucht', schaden: 0, prellung: false, wunde: false });
+    const stumpf = treffer({ ...basis, dk: null, mw: 1, ruestung: 1 }, d);
+    expect(stumpf).toMatchObject({ art: 'wucht', schaden: 0, prellung: false });
+    const durch = treffer({ ...basis, mw: 0, krit: true }, d);
+    expect(durch).toMatchObject({ art: 'durchschlag', schaden: 0, wunde: false, folge: null });
+  });
+
   it('Stagger: größer als Schmerzresistenz; empfindlich ab gleich; Schmerz ignorieren nie', () => {
     const t = { ...basis, zone: 'arm_r', mw: 2, schmerzresistenz: 2 };
     expect(treffer(t, d).stagger).toBe(false);
