@@ -156,6 +156,9 @@ export function pruefeDaten(d: Spieldaten): string[] {
   }
   for (const s of [...r.hechten.staende, ...Object.keys(r.schiessen.rueckstoss_stepshields)])
     if (!staende.has(s)) f('regeln.json', `unbekannter Stand „${s}“ (hechten bzw. rueckstoss_stepshields)`);
+  if (!r.eingehend?.ausloeser) f('regeln.json', 'eingehend.ausloeser fehlt');
+  for (const [k, id] of Object.entries(r.eingehend?.ausloeser ?? {}))
+    if (!r.leiter.ausloeser.some((a) => a.id === id)) f('regeln.json', `eingehend.ausloeser.${k}: unbekannter Auslöser „${id}“`);
   if (!r.leiter.ausloeser.some((a) => a.id === r.schiessen.ausloeser)) f('regeln.json', `schiessen.ausloeser: unbekannter Auslöser „${r.schiessen.ausloeser}“`);
   if (r.sprengwirkung.richtungen.length !== 8) f('regeln.json', 'sprengwirkung.richtungen braucht 8 Einträge (W8)');
   for (const k of [...Object.keys(r.breakaction.reaktion.malsteps), ...Object.keys(r.breakaction.antizipation.malsteps_guete), ...Object.keys(r.breakaction.antizipation.malsteps_alter)])

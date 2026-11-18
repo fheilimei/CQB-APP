@@ -554,6 +554,8 @@ Regeln: Kampfsystem (Nahkampf). Zusammenfassung: [§ 4.12](#412-aktionen). Glied
 
 Selbst ergänzt: Rüstung der Zone, aktuelle Deckung (nur wenn die Zone verdeckt ist, [§ 3.9](#39-schutz-a-m)), Symptome der Leiter für die Stagger-Prüfung. Der Spieler kann die Deckung für diesen Treffer ändern.
 
+*Stand 18.11.2026:* Solange die Deckung auf der Silhouette ([§ 3.9](#39-schutz-a-m)) noch fehlt, gibt der Spieler im Dialog an, welche Deckung vor der getroffenen Zone liegt (Auswahl aus `schutz.json`, Standard: keine); die Vorschau rechnet dann jede Zone so, als läge die Deckung vor ihr. Die Silhouette zeigt vorerst nur die Haltung „stehend“. Die Zone wird angetippt, als „Rumpf (Ansage)“ gewählt oder über den W8 bestimmt (Würfelstelle Trefferzone). Im Gefecht steht **Getroffen** als fünfter Knopf rechts in der Aktionsleiste (rot umrandet, ohne Zähler); in Ruhe unter der Figur. Nach „Weiter“ meldet die App „Treffer eingetragen“ mit **Rückgängig**.
+
 Dann folgt der **Bericht** ([§ 3.0c](#30c-bericht-was-ist-passiert-a)). „Weiter“ übernimmt:
 - Wunde (Durchschlag) oder Prellung (Wuchttreffer) anlegen, HP abziehen ([§ 4.7](#47-schadensablauf)).
 - Folgen der Zone als Hinweis (z. B. „Gegenstand fallen lassen“).

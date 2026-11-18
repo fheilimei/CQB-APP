@@ -33,6 +33,8 @@
   import Nachladen from './lib/ui/gefecht/Nachladen.svelte';
   import Schiessen from './lib/ui/gefecht/Schiessen.svelte';
   import WaffeWechseln from './lib/ui/gefecht/WaffeWechseln.svelte';
+  import Getroffen from './lib/ui/gefecht/Getroffen.svelte';
+  import Figur from './lib/ui/Figur.svelte';
   import type { Aktion } from './lib/speicher/charakter';
   import { ansage, standText } from './lib/ui/texte';
 
@@ -55,7 +57,7 @@
   /** Offener Dialog des Spiels: Probenrechner, Abläufe rund um Gefecht und Adrenalin. */
   type Spieldialog =
     | { art: 'probe'; stat: string | null; skill: string | null; alsMain?: boolean }
-    | { art: 'start' | 'initiative' | 'runde' | 'senken' | 'verschieben' | 'detail' | 'schiessen' | 'wechseln' }
+    | { art: 'start' | 'initiative' | 'runde' | 'senken' | 'verschieben' | 'detail' | 'schiessen' | 'wechseln' | 'getroffen' }
     | { art: 'aktion'; aktion: Aktion }
     | { art: 'nachladen'; id: string; als: 'main' | 'break' | null }
     | { art: 'ladehemmung'; id: string };
@@ -71,6 +73,7 @@
   const imGefecht = $derived(!!aktiv?.spielstand.gefecht.aktiv);
   const gefecht = $derived(aktiv ? gefechtVon(aktiv) : null);
   const probeModus = $derived(modusFuer('probe', einstellungen.wuerfeln));
+  const zonenModus = $derived(modusFuer('trefferzone', einstellungen.wuerfeln));
   const kampfunfaehig = $derived(!!aktiv && !!daten && lebenslageDes(aktiv, daten) !== 'einsatzfaehig');
 
   const { needRefresh, updateServiceWorker } = useRegisterSW();
@@ -175,7 +178,10 @@
   // ---- Gefecht und Adrenalin (konzept.md § 3.0e, § 3.7)
 
   let rueckgaengigZeit: ReturnType<typeof setTimeout> | undefined;
-  function zeigeRueckgaengig(text: string) {
+  /** Was „Rückgängig“ in der kurzen Meldung tut; ohne Angabe: letzte Änderung von Adrenalin bzw. Ruhepuls. */
+  let rueckAktion: (() => Promise<void>) | null = null;
+  function zeigeRueckgaengig(text: string, aktion: (() => Promise<void>) | null = null) {
+    rueckAktion = aktion;
     rueckgaengigText = text;
     clearTimeout(rueckgaengigZeit);
     rueckgaengigZeit = setTimeout(() => (rueckgaengigText = ''), 5000);
@@ -191,6 +197,7 @@
   async function zuruecknehmen() {
     if (!aktiv) return;
     rueckgaengigText = '';
+    if (rueckAktion) { const a = rueckAktion; rueckAktion = null; await a(); return; }
     await speichern(rueckgaengig(aktiv, daten!));
   }
 
@@ -215,6 +222,14 @@
       case 'senken': dialog = { art: 'senken' }; break;
       case 'verschieben': dialog = { art: 'verschieben' }; break;
     }
+  }
+
+  /** Treffer übernehmen; die Meldung bietet „Rückgängig“ (stellt den Stand vor dem Treffer wieder her). */
+  async function trefferFertig(c: Charakter) {
+    const vorher = $state.snapshot(aktiv) as Charakter;
+    await speichern(c);
+    dialog = null;
+    zeigeRueckgaengig('Treffer eingetragen', async () => { await speichern(vorher); });
   }
 
   function gefechtStarten() {
@@ -355,11 +370,7 @@
 
     <main class="bogen">
       {#if reiter === 'figur'}
-        <section class="karte">
-          <h2>{aktiv.name}</h2>
-          {#if aktiv.aussehen}<p>{aktiv.aussehen}</p>{/if}
-          <p class="hinweis">Hier entsteht die Figur mit Silhouette. Deine Werte findest du im Reiter Werte.</p>
-        </section>
+        <Figur c={aktiv} d={daten} ongetroffen={() => (dialog = { art: 'getroffen' })} />
       {:else if reiter === 'werte'}
         <Werte c={aktiv} d={daten} {modus} {abweichungModus} onaendern={aendern}
           onprobe={(stat, skill) => (dialog = { art: 'probe', stat, skill })} />
@@ -384,7 +395,8 @@
       {/if}
       <!-- Rad über der Aktionsleiste: am unteren Bildschirmrand fängt Android waagerechtes Wischen als App-Wechsel ab. -->
       <Adrenalinrad stand={gefecht.leiter} d={daten} onsetzen={leiterDrehen} ondetail={() => (dialog = { art: 'detail' })} />
-      <Aktionsleiste c={aktiv} d={daten} {kampfunfaehig} onaendern={aendern} onoeffnen={(a) => (dialog = { art: 'aktion', aktion: a })} />
+      <Aktionsleiste c={aktiv} d={daten} {kampfunfaehig} onaendern={aendern} onoeffnen={(a) => (dialog = { art: 'aktion', aktion: a })}
+        ongetroffen={() => (dialog = { art: 'getroffen' })} />
     {/if}
     <Reiterleiste {reiter} eingeklappt={einstellungen.reiterEingeklappt} onwahl={(r) => (reiter = r)} onklappen={reiterKlappen}
       laschenHoehe={einstellungen.laschenHoehe} {kopfHoehe} onlasche={(h) => void einstellungenSetzen({ ...einstellungen, laschenHoehe: h })} />
@@ -409,6 +421,8 @@
         onfertig={(c) => nachAblauf(c)} onabbrechen={() => (dialog = null)} />
     {:else if dialog.art === 'wechseln' && gefecht}
       <WaffeWechseln c={aktiv} d={daten} onfertig={(c) => nachAblauf(c)} onabbrechen={() => (dialog = null)} />
+    {:else if dialog.art === 'getroffen'}
+      <Getroffen c={aktiv} d={daten} {zonenModus} onfertig={trefferFertig} onabbrechen={() => (dialog = null)} />
     {:else if dialog.art === 'start'}
       <GefechtStarten c={aktiv} d={daten} wuerfelModus={probeModus} onaendern={aendern}
         onfertig={(c) => nachAblauf(c, { art: 'initiative' })} onabbrechen={() => (dialog = null)} />

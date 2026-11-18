@@ -111,6 +111,39 @@ export interface Aktionsereignis {
   text: string;
 }
 
+/** Eingehender Treffer im Gefechtsprotokoll (konzept.md § 3.10), mit den Änderungen für Rückgängig. */
+export interface Trefferereignis {
+  runde: number;
+  zeit: string;
+  art: 'treffer' | 'schaden_direkt';
+  quelle: string;
+  eingabe?: { zone: string; dk: number | null; mw: number; kugeln: number; krit: boolean; deckung: number | null };
+  direkt?: { zone: string; schaden: number; art: 'wunde' | 'prellung' };
+  ergebnis: { art: 'gestoppt' | 'durchschlag' | 'wucht'; schaden: number; stagger: boolean; tot: boolean };
+  aenderungen: {
+    wunde: string | null;
+    hp_verlust_wunden: [number, number];
+    prellungen: [number, number];
+    tot: [boolean, boolean];
+    /** Auslöser, die dieser Treffer neu gesetzt hat. */
+    ausloeser: string[];
+    /** Breakaction durch diesen Treffer verloren. */
+    break_verloren: boolean;
+  };
+}
+
+/** Wunde (datenformat.md § Felder im Spielstand). */
+export interface Wunde {
+  id: string;
+  zone: string;
+  schaden: number;
+  kritisch: boolean;
+  blutung: { status: 'offen' | 'gestoppt' | 'abgelaufen'; frist_ende: string | number | null };
+  versorgt: null | 'druckverband' | 'tourniquet' | 'operation';
+  nachsorge: null | 'krit' | 'gelungen' | 'misslungen' | 'keine';
+  ruhetage_geheilt: number;
+}
+
 /** Laufendes Gefecht (datenformat.md § Charakter, spielstand.gefecht). Außerhalb des Gefechts nur { aktiv: false }. */
 export interface Gefecht {
   aktiv: true;
@@ -145,7 +178,9 @@ export interface Gefecht {
   korrektur: Aktionszahlen;
   /** Break durch Stagger verloren (Schritt 7 setzt das). */
   break_verloren: boolean;
-  protokoll: (Gefechtsereignis | Schussereignis | Aktionsereignis)[];
+  /** Aktuelle Deckung: Wert und tatsächlich verdeckte Zonen; fehlt oder null = keine Deckung. */
+  deckung?: { wert: number; zonen: string[] } | null;
+  protokoll: (Gefechtsereignis | Schussereignis | Aktionsereignis | Trefferereignis)[];
 }
 
 /** Schusswaffe in der Ausrüstung (datenformat.md § Felder im Spielstand). */
@@ -239,7 +274,7 @@ export interface Charakter {
     prellungen: number;
     tot: boolean;
     adrenalinschock: { aktiv: boolean; ruhe_stunden: number };
-    wunden: Record<string, unknown>[];
+    wunden: Wunde[];
   };
 }
 

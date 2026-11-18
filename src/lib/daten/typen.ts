@@ -127,6 +127,8 @@ export interface Regeln {
     stat: string;
     haltezahl: { stat: string; skill: string };
   };
+  /** Auslöser (leiter.ausloeser), die ein eingehender Treffer setzt (konzept.md § 3.10). */
+  eingehend: { ausloeser: { beschossen: string; getroffen: string; verletzt: string; stagger: string } };
   zielen: { stepshields: number };
   /** Eigener Stand; der erste ist der Start eines Gefechts. Schlüssel von schiessen.rueckstoss_stepshields sind Stand-IDs. */
   staende: { id: string; name: string; adjektiv: string; liegend?: boolean; kein_hechten?: boolean }[];

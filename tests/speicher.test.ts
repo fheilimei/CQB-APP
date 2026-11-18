@@ -20,7 +20,7 @@ function beispiel(): Charakter {
   c.perks = ['zaeh_1'];
   c.kassenbuch = [{ zeit: '2026-11-13T17:05:00+01:00', betrag: 1300, art: 'startgeld', grund: 'Ersparnisse 300 + Schulden mittel 1000' }];
   c.anpassungen = [{ id: 'a1', ziel: { art: 'stat', id: 'intellect' }, wirkung: { stepshields: 1 }, grund: 'Ortskenntnis', aktiv: true }];
-  c.spielstand.wunden = [{ id: 'w1', zone: 'bein_r', schaden: 3, kritisch: false }];
+  c.spielstand.wunden = [{ id: 'w1', zone: 'bein_r', schaden: 3, kritisch: false, blutung: { status: 'gestoppt', frist_ende: null }, versorgt: 'druckverband', nachsorge: null, ruhetage_geheilt: 0 }];
   return c;
 }
 

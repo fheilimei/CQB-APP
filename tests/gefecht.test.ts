@@ -206,13 +206,13 @@ describe('Gefecht', () => {
 });
 
 describe('R6: Kampfunfähig durch kritische Wunde', () => {
-  const mitWunde = (zone: string, kritisch: boolean, status: string) => {
+  const mitWunde = (zone: string, kritisch: boolean, status: 'offen' | 'gestoppt' | 'abgelaufen') => {
     const c = fertig();
-    c.spielstand.wunden = [{ id: 'w1', zone, schaden: 0, kritisch, blutung: { status, frist_ende: null } }];
+    c.spielstand.wunden = [{ id: 'w1', zone, schaden: 0, kritisch, blutung: { status, frist_ende: null }, versorgt: null, nachsorge: null, ruhetage_geheilt: 0 }];
     return c;
   };
   it('R6: kritische Wunde mit Folge „kampfunfähig“ macht kampfunfähig, auch wenn die Blutung gestoppt ist', () => {
-    for (const status of ['offen', 'gestoppt', 'abgelaufen']) {
+    for (const status of ['offen', 'gestoppt', 'abgelaufen'] as const) {
       expect(offeneKritischeWunde(mitWunde('bein_r', true, status), d)).toBe(true);
       expect(lebenslageDes(mitWunde('bauch', true, status), d)).toBe('kampfunfaehig');
     }

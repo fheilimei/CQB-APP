@@ -655,6 +655,14 @@
     "over_the_edge_gesamt": 1,
     "sprint_bewegung": 2
   },
+  "eingehend": {
+    "ausloeser": {
+      "beschossen": "beschossen",
+      "getroffen": "getroffen",
+      "verletzt": "verletzt",
+      "stagger": "stagger"
+    }
+  },
   "schiessen": {
     "ansage_malsteps": {
       "rumpf": 1,

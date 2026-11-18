@@ -30,7 +30,9 @@ export function offeneKritischeWunde(c: Charakter, d: Spieldaten): boolean {
   );
 }
 
+/** Lebenslage des Charakters; ein Tod durch Krit-Folge („Sofort Tod“) steht in spielstand.tot. */
 export function lebenslageDes(c: Charakter, d: Spieldaten): Lebenslage {
+  if (c.spielstand.tot) return 'tot';
   return lebenslage(hpAktuell(c, d), offeneKritischeWunde(c, d), d.regeln);
 }
 

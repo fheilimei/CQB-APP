@@ -83,6 +83,14 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 - **Ändern:** aufsaetze.json (Geldwert und Vorratslevel je Aufsatz)
 - **Im Regelwerk klarstellen:** ja (Werte ergänzen)
 
+### R25. Welche Auslöser setzt ein eingehender Treffer? (18.11.2026)
+- **Frage:** Adrenalin nennt „du wirst beschossen“, „du wirst getroffen“ und „du wirst verletzt“. Gilt ein Schuss, der in der Deckung stecken bleibt, als getroffen? Und ein Wuchttreffer mit 0 Schaden?
+- **Stellen:** (Adrenalin, Anstieg); (Schaden, Blutung und Verletzungen, Schutz prüfen)
+- **Vorläufig:** Jeder Schuss auf dich setzt „beschossen“. „Getroffen“ zählt, sobald das Geschoss nicht in der Deckung stecken bleibt, auch wenn die Rüstung allen Schaden abfängt. „Verletzt“ nur bei Schaden. Schaden direkt (Sturz, Falle) setzt nur „verletzt“.
+- **Andere Möglichkeit:** „Getroffen“ auch bei einem Treffer in der Deckung; oder erst bei Schaden.
+- **Ändern:** Regelkern, Wunden (Auslöser eines Treffers)
+- **Im Regelwerk klarstellen:** ja
+
 ### Erledigt
 
 ### R6. Offene kritische Wunde und Kampfunfähigkeit (17.11.2026)
@@ -235,3 +243,11 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 8. **Ausrüstung ohne Laden.** Im Schreibmodus frei eintragbar, ohne Kassenbuch und ohne Eintrag im Protokoll. Mit dem Laden (§ 3.14) ändert sich das.
 9. **Noch nicht da:** Knöpfe Getroffen und Ereignis, Wurfaktion, Nahkampf, Wunde versorgen (im Menü ausgegraut), Schaden beim Ziel vorrechnen im Schussbericht, Malstep und Waffen-Einschränkung des ballistischen Schilds beim Schießen. Kommen mit Schritt 7 (Treffer, Wunden, Schutz).
 10. **Skill austauschen beim Schießen** (Konzept § 3.6) fehlt noch; der Schussrechner nimmt immer den Waffenskill der Waffe.
+
+## Offen aus Schritt 7 (Treffer, Wunden, 18.11.2026)
+
+1. **Auslöser eines eingehenden Treffers.** → Regelfragen R25.
+2. **Deckung beim Getroffen.** Die Deckung auf der Silhouette (§ 3.9) fehlt noch. *Vorläufig:* Der Spieler wählt im Dialog Getroffen die Deckung vor der getroffenen Zone; die Vorschau nimmt an, dass sie vor jeder Zone liegt.
+3. **Silhouette** zeigt vorerst nur die Haltung „stehend“; Hocken und Liegen folgen. Prellungen werden nicht je Zone gezeigt, weil die App sie nur als Summe kennt. Antippen einer Zone auf der Figur (Übersicht der Zone mit Versorgen) folgt.
+4. **Rückgängig** gibt es vorerst nur direkt nach dem Treffer (Meldung „Treffer eingetragen“); einzeln aus dem Gefechtsprotokoll folgt mit dem Reiter Verlauf.
+5. **Noch nicht da:** Getroffen durch Nahkampf und Splitter, Ereignis (Beschossen), Blutungsfristen nach dem Gefecht, Versorgen, ballistischer Schild beim Getroffen.
