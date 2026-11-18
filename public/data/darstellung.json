@@ -123,5 +123,8 @@
     "laufen": 2,
     "rennen": 3,
     "hechten": "sprung"
+  },
+  "statgruppen": {
+    "C": "Zum Ruhigbleiben"
   }
 }

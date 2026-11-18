@@ -938,6 +938,7 @@ Zeichen und Farben der Herkunftsmarkierung ([konzept.md § 3.0b](konzept.md#30b-
   "proben": { "schiessen": "Schießen", "haltezahl": "Haltezahl", "erholungsprobe": "Erholungsprobe", "nerve_anstieg": "Nerve-Probe beim Anstieg", "nerve_senken": "Nerve-Probe zum Senken", "initiative": "Initiative", "ladehemmung_beheben": "Ladehemmung beheben", "reaktion": "Reaktion", "antizipation": "Antizipation" },
   "trageorte": { "schlinge": "Schlinge", "weste": "Rig oder Weste", "holster": "Holster", "guertel": "Gürtel oder Scheide", "ruecken": "Rücken", "rucksack": "Rucksack oder Tasche" },
   "bewegungen": { "kriechen": "Kriechen", "gehen": "Gehen", "laufen": "Laufen", "rennen": "Rennen", "hechten": "Hechten" },
+  "statgruppen": { "C": "Zum Ruhigbleiben" },
   "informationen": { "gesehen": "gesehen", "gehoert": "nur gehört", "funk": "per Funk gemeldet", "diese_runde": "diese Runde", "letzte_runde": "letzte Runde", "aelter": "älter" },
   "stand_bilder": { "stehen": "M10.2 4.2a2.2 2.2 0 1 0-4.4 0a2.2 2.2 0 1 0 4.4 0M8.0 6.6L8.0 14.5 …", "hocke": "…", "liegen": "…" },
   "bewegung_pfeile": { "kriechen": 1, "gehen": 1, "laufen": 2, "rennen": 3, "hechten": "sprung" }
@@ -949,6 +950,7 @@ Zeichen und Farben der Herkunftsmarkierung ([konzept.md § 3.0b](konzept.md#30b-
 - `trageorte`, `bewegungen`: Anzeigenamen der Trageorte (`regeln.json` `waffe_wechseln.trageorte`) und der Bewegungsarten (`bewegung.arten`, dazu Hechten). Jeder Schlüssel braucht einen Namen (Datenprüfung).
 - `stand_bilder`: Piktogramm je Stand (`regeln.json` `staende`) für die Anzeige neben der Figur: SVG-Pfad in einem Feld 24 × 24, nur Linien (Strichstärke und Farbe setzt die App). Die Zeichnung ist in beiden Richtungen mittig (Mitte 12/12), damit jeder Stand auf Höhe der Beschriftung steht; das Männchen trägt ein kleines Gewehr. Jeder Stand braucht eines (Datenprüfung).
 - `bewegung_pfeile`: Anzeige der Bewegung dieser Runde neben der Figur: Zahl der Pfeile (›, ›› …) oder `"sprung"` für einen Bogenpfeil. Jede Bewegungsart und Hechten braucht einen Eintrag (Datenprüfung).
+- `statgruppen` (optional): Überschrift einer Statgruppe im Reiter Werte, auf die Adrenalin und Ruhepuls nicht wirken (Schlüssel wie `gruppe` in `stats.json`). Für die übrigen Gruppen rechnet die App die Überschrift aus `regeln.json` `leiter.stufen` („+ bei Adrenalin · − bei Ruhepuls“). Fehlt ein Eintrag, steht „Gruppe C“.
 - `informationen`: Anzeigenamen für Wahrnehmung, Güte und Alter einer Information (Schlüssel aus `regeln.json` `breakaction`); der Hinweis zur Breakaction baut daraus die Malsteps.
 
 Leiter, Zustand und Lage erscheinen nur in den Rechnern, nicht am Wert im Bogen.

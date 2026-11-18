@@ -11,7 +11,7 @@
   import { GROESSEN } from '../regeln/erstellung';
   import { anpassen, korrigiere, type Anpassungsaktion, type Korrektur } from '../regeln/korrektur';
   import type { HerkunftModifikator } from '../regeln/modifikatoren';
-  import { leiterSteps } from '../regeln/leiter';
+  import { gruppenRichtung, leiterSteps } from '../regeln/leiter';
   import { rangfolge, statwert, summe } from '../regeln/probe';
   import { leiterStand } from '../regeln/probenrechner';
   import type { Charakter, Quelle } from '../speicher/charakter';
@@ -46,6 +46,13 @@
   const markiert = (pfad: string) => c.ueberschrieben.includes(pfad);
   const schreiben = $derived(modus === 'schreiben');
   const gruppen = $derived([...new Set(d.stats.eintraege.map((s) => s.gruppe))]);
+  /** Überschrift einer Statgruppe: wie Adrenalin und Ruhepuls wirken, sonst Text aus darstellung.json. */
+  function gruppenTitel(gruppe: string): string {
+    const r = gruppenRichtung(gruppe, d.regeln);
+    if (!r) return d.darstellung.statgruppen?.[gruppe] ?? `Gruppe ${gruppe}`;
+    const z = (n: number) => (n > 0 ? '+' : n < 0 ? '−' : '±0');
+    return `${z(r.adrenalin)} bei Adrenalin · ${z(r.ruhepuls)} bei Ruhepuls`;
+  }
   const malstepSpalten = $derived(Array.from({ length: d.regeln.steps.keine_probe_ab - 1 }, (_, i) => i + 1));
 
   let offenStat = $state<string | null>(null);
@@ -210,15 +217,15 @@
 {/if}
 
 <section class="karte">
-  <h2>Stats</h2>
-  <div class="statgitter kopfreihe" style:--spalten={malstepSpalten.length} aria-hidden="true">
-    <span></span><span>Wert</span>
-    {#each malstepSpalten as n (n)}<span>▼{n}</span>{/each}
+  <!-- Überschrift und Spaltennenner in einer Zeile, damit keine Lücke vor dem Strich entsteht. -->
+  <div class="statgitter kopfreihe" style:--spalten={malstepSpalten.length}>
+    <h2>Stats</h2><span aria-hidden="true">Wert</span>
+    {#each malstepSpalten as n (n)}<span aria-hidden="true">▼{n}</span>{/each}
     <span></span>
   </div>
   {#each gruppen as gruppe (gruppe)}
     <div class="gruppe">
-    <h3 class="gruppe-titel">Gruppe {gruppe}</h3>
+    <h3 class="gruppe-titel">{gruppenTitel(gruppe)}</h3>
     <ul class="zeilen">
       {#each d.stats.eintraege.filter((s) => s.gruppe === gruppe) as s (s.id)}
         {@const e = c.stats[s.id]!}
@@ -227,11 +234,10 @@
         {@const offen = offenStat === s.id}
         {@const lt = leiterSpalte(s.id)}
         <li id="stat-{s.id}">
-          <!-- Eine Zeile: Name mit Rang-Marke, groß der Statwert, dann die Zielwerte bei 1 bis 5 Malsteps absteigend. -->
+          <!-- Eine Zeile: Name, groß der Statwert, dann die Zielwerte bei 1 bis 5 Malsteps absteigend. Der Rang steht nur aufgeklappt. -->
           <button class="zeile flach stat statgitter" style:--spalten={malstepSpalten.length} aria-expanded={offen} onclick={() => (offenStat = offen ? null : s.id)}>
             <span class="statname">
               <Begriff art="stat" name={s.name} darstellung={d.darstellung} />
-              {#if e.rang}<span class="rang" aria-label="Rang {e.rang}">{e.rang}</span>{/if}
             </span>
             <strong class="statwert" class:hand={markiert(`stats.${s.id}`)} class:gilt={lt.wirkt && lt.spalte === 0}>{sw ?? '–'}<Herkunft quellen={[...quellenVon(mods, `stats.${s.id}`), ...(lt.wirkt ? ['leiter'] : [])]} darstellung={d.darstellung} /></strong>
             {#if sw !== null}
@@ -400,13 +406,12 @@
   .statwert, .step { font-family: var(--schrift-zahl); }
   .stat { padding: var(--abstand-1) 0; }
   .statname { display: flex; align-items: center; flex-wrap: wrap; gap: var(--abstand-1) var(--abstand-2); min-width: 0; hyphens: auto; overflow-wrap: anywhere; }
-  /* Rang: kleine umrandete Marke am Namen, sieht anders aus als Werte und Steps. */
-  .rang { font-size: 0.75rem; font-weight: 400; line-height: 1; padding: 3px 6px; border: 1px solid var(--text-2); border-radius: 6px; color: var(--text-2); }
   .statwert { font-size: 1.35rem; text-align: right; white-space: nowrap; }
   .step { text-align: right; font-size: 0.85rem; color: var(--text-2); }
   .gilt { outline: 2px solid var(--akzent); outline-offset: 1px; border-radius: 4px; color: var(--text); font-weight: 400; }
   .kopfreihe { font-size: 0.75rem; color: var(--text-2); border-bottom: 1px solid var(--linie); padding-bottom: 2px; }
-  .kopfreihe > span { text-align: right; }
+  .kopfreihe > span { text-align: right; align-self: end; }
+  .kopfreihe h2 { margin: 0; font-size: 1.1rem; color: var(--text); text-align: left; }
 
   .skill { display: flex; align-items: center; gap: 8px; }
   .skill .name { flex: 1; min-width: 0; }

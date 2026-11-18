@@ -510,6 +510,8 @@ export interface Darstellung {
   stand_bilder: Record<string, string>;
   /** Anzeige der Bewegung (regeln.json `bewegung.arten`, dazu Hechten): Zahl der Pfeile oder „sprung“ (Bogenpfeil). */
   bewegung_pfeile: Record<string, number | 'sprung'>;
+  /** Überschrift einer Statgruppe, auf die Adrenalin und Ruhepuls nicht wirken (Schlüssel wie `gruppe` in stats.json). */
+  statgruppen?: Record<string, string>;
 }
 
 /** Alle Spieldaten zusammen, wie der Regelkern und die Oberfläche sie bekommen. */

@@ -16,6 +16,7 @@ import {
 } from '../src/lib/regeln/aufstieg';
 import {
   anstiegMalsteps,
+  gruppenRichtung,
   leiterSteps,
   rundenende,
   senken,
@@ -195,6 +196,12 @@ describe('Adrenalin und Ruhepuls', () => {
     expect(leiterSteps(4, 'intellect', d)[0]?.malsteps).toBe(2);
     expect(leiterSteps(1, 'control', d)).toEqual([]);
     expect(leiterSteps(4, 'nerve', d)).toEqual([]);
+  });
+
+  it('Richtung je Statgruppe: A plus bei Adrenalin, B umgekehrt, C nie', () => {
+    expect(gruppenRichtung('A', r)).toEqual({ adrenalin: 1, ruhepuls: -1 });
+    expect(gruppenRichtung('B', r)).toEqual({ adrenalin: -1, ruhepuls: 1 });
+    expect(gruppenRichtung('C', r)).toBeNull();
   });
 
   it('Symptome; Over the Edge nur mit Verlusten', () => {

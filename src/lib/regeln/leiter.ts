@@ -29,6 +29,22 @@ export function leiterSteps(stand: number, statId: string, d: Spieldaten): StepQ
   return [wert > 0 ? { herkunft: 'leiter', name: s.name, stepshields: wert } : { herkunft: 'leiter', name: s.name, malsteps: -wert }];
 }
 
+/** Richtung der Wirkung auf eine Statgruppe bei Adrenalin und bei Ruhepuls: +1 Stepshields, −1 Malsteps, 0 nichts.
+ *  Maßgeblich ist die erste Stufe, die auf die Gruppe wirkt (Over the Edge zählt nicht).
+ *  null, wenn die Gruppe nie beeinflusst wird (Gruppe C). */
+export function gruppenRichtung(gruppe: string, r: Regeln): { adrenalin: number; ruhepuls: number } | null {
+  if (gruppe !== 'A' && gruppe !== 'B') return null;
+  const feld = gruppe === 'A' ? 'gruppe_a' : 'gruppe_b';
+  const richtung = (schritt: 1 | -1) => {
+    for (let n = schritt; n >= r.leiter.min && n <= r.leiter.max; n += schritt) {
+      const s = r.leiter.stufen[String(n)];
+      if (s && !s.over_the_edge && s[feld] !== 0) return Math.sign(s[feld]);
+    }
+    return 0;
+  };
+  return { adrenalin: richtung(1), ruhepuls: richtung(-1) };
+}
+
 export interface Symptomlage {
   /** IDs der aktiven Symptome. */
   symptome: string[];
