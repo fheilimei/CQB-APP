@@ -1,9 +1,13 @@
 // Nahkampf (Regelwerk: Kampfsystem, Nahkampf; konzept.md § 3.8b, § 4.12): überlegener Stand, Steps der Verteidigung,
-// Schaden einer Nahkampfwaffe, Kampfkunst-Wirkungen. Vorerst die eingehende Richtung (Getroffen → Nahkampf).
+// Schaden einer Nahkampfwaffe, Kampfkunst-Wirkungen. Eingehend (Getroffen → Nahkampf) und ausgehend (Main bzw. Break →
+// Nahkampfangriff).
 
 import type { Spieldaten } from '../daten/typen';
 import type { Charakter, Gefecht } from '../speicher/charakter';
-import { eigenerStand } from './aktionen';
+import { eigenerStand, protokolliere, verbrauchen } from './aktionen';
+import { grundwerte } from './modifikatoren';
+import { ansageSteps, type Ansage } from './schiessen';
+import { aktiverEintrag, waffeVon } from './waffen';
 import { staggerRegel } from './wunden';
 import { gefechtVon } from './probenrechner';
 import type { StepQuelle } from './probe';
@@ -28,9 +32,10 @@ export interface NahkampfwaffenWahl {
   dk: number | null;
 }
 
-export function nahkampfwaffenWahl(d: Spieldaten): NahkampfwaffenWahl[] {
+export function nahkampfwaffenWahl(d: Spieldaten, nur?: (w: Spieldaten['nahkampfwaffen']['eintraege'][number]) => boolean): NahkampfwaffenWahl[] {
   const aus: NahkampfwaffenWahl[] = [];
   for (const w of d.nahkampfwaffen.eintraege) {
+    if (nur && !nur(w)) continue;
     if (w.varianten) {
       for (const [vid, v] of Object.entries(w.varianten)) {
         const art = v.art ?? w.art;
@@ -167,4 +172,67 @@ export function gegnerWirkungAnwenden(c: Charakter, w: Wirkung, d: Spieldaten): 
       : {})
   };
   return { ...c, geaendert: new Date().toISOString(), spielstand: { ...c.spielstand, gefecht: ng } };
+}
+
+// ---------- Ausgehend: eigener Nahkampfangriff (konzept.md § 3.8b)
+
+/**
+ * Womit du angreifen kannst: Körperwaffen (immer verfügbar), Nahkampfwaffen aus der Ausrüstung (je Variante) und
+ * Einsätze mit der aktiven Schusswaffe (Kolben, Lauf, Pistolengriff; `mit_waffe` nennt die Waffenkategorien).
+ */
+export function angriffsWaffen(c: Charakter, d: Spieldaten): NahkampfwaffenWahl[] {
+  const e = aktiverEintrag(c);
+  const kategorie = e ? waffeVon(e, d).kategorie : null;
+  const eigene = new Set(c.ausruestung.nahkampfwaffen.filter((x) => (x.anzahl ?? 1) > 0).map((x) => x.waffe));
+  return nahkampfwaffenWahl(d, (w) =>
+    !!w.immer_verfuegbar || (w.mit_waffe ? !!kategorie && w.mit_waffe.includes(kategorie) : eigene.has(w.id)));
+}
+
+/** Bedingung, unter der ein Angriff mit dieser Länge als Breakaction geht; null = nur als Mainaction. */
+export function alsBreak(laenge: NahkampfwaffenWahl['laenge'], d: Spieldaten): string | null {
+  return d.regeln.nahkampf.als_break[laenge] ?? null;
+}
+
+export interface Angriffslage {
+  eigenerStand: string;
+  gegnerStand: string;
+  /** Lange Waffe gegen ein Ziel in Armeslänge. */
+  langeWaffeInArmeslaenge: boolean;
+  ansage: Ansage;
+}
+
+/** Steps der Angriffsprobe zusätzlich zu Adrenalin, Zuständen usw.: überlegener Stand des Gegners, lange Waffe, Ansage. */
+export function angriffsSteps(l: Angriffslage, d: Spieldaten): StepQuelle[] {
+  const r = d.regeln.nahkampf;
+  const aus: StepQuelle[] = [];
+  if (ueberlegen(l.eigenerStand, l.gegnerStand, d) === 'b' && r.ueberlegener_stand_malsteps > 0) {
+    aus.push({ id: 'gegner_ueberlegen', herkunft: 'lage', name: 'Gegner hat den überlegenen Stand', malsteps: r.ueberlegener_stand_malsteps });
+  }
+  if (l.langeWaffeInArmeslaenge && r.lange_waffe_in_armeslaenge > 0) {
+    aus.push({ id: 'lange_waffe', herkunft: 'lage', name: 'lange Waffe in Armeslänge', malsteps: r.lange_waffe_in_armeslaenge });
+  }
+  aus.push(...ansageSteps(l.ansage, d.regeln));
+  return aus;
+}
+
+/** Was beim Ziel ankommt: DK der Waffe (stumpf: keine), MW = eigener Nahkampfschaden + MW der Waffe, Krit-Folge. */
+export interface AngriffsTreffer {
+  dk: number | null;
+  mw: number;
+  nahkampfschaden: number;
+  /** Krit-Folge beim Ziel, wenn der Treffer kritisch ist (scharf: Spalte „Krit“ der Zone; stumpf: Stagger). */
+  krit_folge: string;
+}
+
+export function angriffsTreffer(c: Charakter, w: NahkampfwaffenWahl, zone: string, d: Spieldaten): AngriffsTreffer {
+  const nks = grundwerte(c, d).nahkampfschaden;
+  const t = nahkampfTreffer(w, nks);
+  const z = d.koerperzonen.eintraege.find((x) => x.id === zone);
+  const krit_folge = w.art === 'stumpf' ? d.regeln.nahkampf.krit_stumpf : (z?.krit.text ?? '');
+  return { ...t, nahkampfschaden: nks, krit_folge };
+}
+
+/** Eigenen Nahkampfangriff übernehmen: Main bzw. Break −1 und Eintrag im Gefechtsprotokoll. Keine eigenen Auslöser. */
+export function angriffUebernehmen(c: Charakter, als: 'main' | 'break', text: string): Charakter {
+  return protokolliere(verbrauchen(c, als), text);
 }

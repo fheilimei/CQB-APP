@@ -1,4 +1,4 @@
-// Tests für den Nahkampf, eingehende Richtung (Regelwerk: Kampfsystem, Nahkampf; konzept.md § 3.8b).
+// Tests für den Nahkampf, eingehend und ausgehend (Regelwerk: Kampfsystem, Nahkampf; konzept.md § 3.8b).
 import { describe, expect, it } from 'vitest';
 import { pruefeDaten } from '../src/lib/daten/pruefen';
 import { konzentrationSetzen, rundeZuruecksetzen, standWechseln } from '../src/lib/regeln/aktionen';
@@ -9,6 +9,8 @@ import {
 } from '../src/lib/regeln/nahkampf';
 import { gefechtVon, probeStellen } from '../src/lib/regeln/probenrechner';
 import { ausgang, trefferUebernehmen } from '../src/lib/regeln/wunden';
+import { alsBreak, angriffsSteps, angriffsTreffer, angriffsWaffen, angriffUebernehmen } from '../src/lib/regeln/nahkampf';
+import { neuerWaffenEintrag } from '../src/lib/regeln/waffen';
 import { neuerCharakter, type Charakter, type Gefecht } from '../src/lib/speicher/charakter';
 import { ladeTestdaten } from './hilfen';
 
@@ -172,5 +174,86 @@ describe('Datenprüfung Nahkampf', () => {
     const kaputt = structuredClone(d);
     kaputt.perks.eintraege.find((p) => p.id === 'judo')!.kampfkunst!.stehen_ueber_hocke = 'Wegtragen';
     expect(pruefeDaten(kaputt).some((f) => f.includes('Wegtragen'))).toBe(true);
+  });
+});
+
+// ---------- Ausgehend: eigener Nahkampfangriff
+
+function mitSchusswaffe(c: Charakter, id: string): Charakter {
+  const e = neuerWaffenEintrag(id, d, `w_${id}`, 'schlinge');
+  return { ...c, ausruestung: { ...c.ausruestung, waffen: [e], aktive_waffe: e.id } };
+}
+const mitNahkampf = (c: Charakter, ...ids: string[]): Charakter =>
+  ({ ...c, ausruestung: { ...c.ausruestung, nahkampfwaffen: ids.map((w, i) => ({ id: `n${i}`, waffe: w, trageort: 'guertel' })) } });
+const alage = (eigen: string, gegner: string, mehr: Partial<{ langeWaffeInArmeslaenge: boolean; ansage: 'keine' | 'rumpf' | 'zone' }> = {}) =>
+  ({ eigenerStand: eigen, gegnerStand: gegner, langeWaffeInArmeslaenge: false, ansage: 'keine' as const, ...mehr });
+
+describe('Nahkampfangriff: Waffen', () => {
+  it('ohne Ausrüstung nur Körperwaffen', () => {
+    expect(angriffsWaffen(fertig(), d).map((w) => w.id)).toEqual(['koerper']);
+  });
+
+  it('eigene Nahkampfwaffen erscheinen, Varianten einzeln; Waffen mit Anzahl 0 nicht', () => {
+    const c = mitNahkampf(fertig(), 'kampfmesser', 'klappspaten');
+    expect(angriffsWaffen(c, d).map((w) => w.id)).toEqual(['koerper', 'kampfmesser', 'klappspaten:kante', 'klappspaten:flaeche']);
+    const leer = { ...c, ausruestung: { ...c.ausruestung, nahkampfwaffen: [{ id: 'n0', waffe: 'kampfmesser', trageort: 'guertel', anzahl: 0 }] } };
+    expect(angriffsWaffen(leer, d).map((w) => w.id)).toEqual(['koerper']);
+  });
+
+  it('Kolben und Lauf nur mit aktiver Langwaffe, Pistolengriff nur mit aktiver Pistole', () => {
+    expect(angriffsWaffen(mitSchusswaffe(fertig(), 'ak47'), d).map((w) => w.id)).toEqual(['koerper', 'gewehrkolben', 'gewehrlauf']);
+    expect(angriffsWaffen(mitSchusswaffe(fertig(), 'makarov'), d).map((w) => w.id)).toEqual(['koerper', 'pistolengriff']);
+  });
+
+  it('als Breakaction nur mit kurzer (Armeslänge) oder langer Waffe (Abfangen), nicht mit mittlerer', () => {
+    expect(alsBreak('kurz', d)).toMatch(/Armeslänge/);
+    expect(alsBreak('lang', d)).toMatch(/Abfangen/);
+    expect(alsBreak('mittel', d)).toBeNull();
+  });
+});
+
+describe('Nahkampfangriff: Probe', () => {
+  it('Gegner mit überlegenem Stand: 1 Malstep; eigener überlegener Stand: keiner', () => {
+    expect(angriffsSteps(alage('hocke', 'stehen'), d)).toEqual([expect.objectContaining({ id: 'gegner_ueberlegen', malsteps: 1 })]);
+    expect(angriffsSteps(alage('liegen', 'stehen'), d)).toEqual([]);
+    expect(angriffsSteps(alage('stehen', 'stehen'), d)).toEqual([]);
+  });
+
+  it('lange Waffe in Armeslänge 1 Malstep; Ansage Rumpf und Zone wie beim Schießen', () => {
+    expect(angriffsSteps(alage('stehen', 'stehen', { langeWaffeInArmeslaenge: true }), d)).toEqual([expect.objectContaining({ id: 'lange_waffe', malsteps: 1 })]);
+    expect(angriffsSteps(alage('stehen', 'stehen', { ansage: 'rumpf' }), d)).toEqual([expect.objectContaining({ id: 'ansage', malsteps: d.regeln.schiessen.ansage_malsteps.rumpf })]);
+    expect(angriffsSteps(alage('stehen', 'stehen', { ansage: 'zone' }), d)).toEqual([expect.objectContaining({ id: 'ansage', malsteps: d.regeln.schiessen.ansage_malsteps.zone })]);
+  });
+
+  it('Probe Agility + Nahkampf: Malstep des Stands senkt den Zielwert', () => {
+    const c = fertig();
+    const ohne = probeStellen(c, d, { stat: 'agility', skill: 'nahkampf', zusatz: angriffsSteps(alage('stehen', 'stehen'), d) }).wert!;
+    const mit = probeStellen(c, d, { stat: 'agility', skill: 'nahkampf', zusatz: angriffsSteps(alage('hocke', 'stehen'), d) }).wert!;
+    expect(mit.zielwert).toBeLessThan(ohne.zielwert);
+  });
+});
+
+describe('Nahkampfangriff: Treffer für die SL', () => {
+  const w = (id: string) => angriffsWaffen(mitNahkampf(fertig(), 'kampfmesser', 'baseballschlaeger'), d).find((x) => x.id === id)!;
+
+  it('MW = Nahkampfschaden + MW der Waffe; scharf mit DK und Krit der Zone', () => {
+    const t = angriffsTreffer(fertig(), w('kampfmesser'), 'kopf', d);
+    expect(t).toEqual({ dk: 1, mw: d.regeln.grundwerte.nahkampfschaden + 1, nahkampfschaden: d.regeln.grundwerte.nahkampfschaden, krit_folge: 'Sofort Tod' });
+  });
+
+  it('stumpf: keine DK, Krit bringt Stagger; Körperwaffen MW +0', () => {
+    expect(angriffsTreffer(fertig(), w('baseballschlaeger'), 'bein_l', d)).toMatchObject({ dk: null, mw: d.regeln.grundwerte.nahkampfschaden + 2, krit_folge: d.regeln.nahkampf.krit_stumpf });
+    expect(angriffsTreffer(fertig(), w('koerper'), 'brust', d)).toMatchObject({ dk: null, mw: d.regeln.grundwerte.nahkampfschaden });
+  });
+});
+
+describe('Nahkampfangriff übernehmen', () => {
+  it('Main −1 bzw. Break −1, Eintrag im Protokoll, kein eigener Auslöser', () => {
+    const c = imGefecht(fertig());
+    const m = angriffUebernehmen(c, 'main', 'Nahkampfangriff');
+    expect(g(m).verbraucht.main).toBe(1);
+    expect(g(m).ausloeser_diese_runde).toEqual(g(c).ausloeser_diese_runde);
+    expect(g(m).protokoll.at(-1)).toMatchObject({ art: 'aktion', text: 'Nahkampfangriff' });
+    expect(g(angriffUebernehmen(c, 'break', 'x')).verbraucht.break).toBe(1);
   });
 });

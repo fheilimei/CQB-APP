@@ -311,7 +311,7 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 6. **Schnelllader und Ladestreifen.** → Regelfragen R11.
 7. **Magazine nach dem Gefecht füllen.** Entschieden (18.11.2026): Knopf „Magazine füllen“ außerhalb des Gefechts; leere Magazine werden gezählt statt verworfen. Dauer und Reihenfolge → Regelfragen R12.
 8. **Ausrüstung ohne Laden.** Im Schreibmodus frei eintragbar, ohne Kassenbuch und ohne Eintrag im Protokoll. Mit dem Laden (§ 3.14) ändert sich das.
-9. **Noch nicht da:** Knöpfe Getroffen und Ereignis, Wurfaktion, Nahkampf, Wunde versorgen (im Menü ausgegraut), Schaden beim Ziel vorrechnen im Schussbericht, Malstep und Waffen-Einschränkung des ballistischen Schilds beim Schießen. Kommen mit Schritt 7 (Treffer, Wunden, Schutz).
+9. **Noch nicht da:** Knöpfe Getroffen und Ereignis, Wurfaktion, Nahkampf (erledigt 18.11.2026), Wunde versorgen (im Menü ausgegraut), Schaden beim Ziel vorrechnen im Schussbericht, Malstep und Waffen-Einschränkung des ballistischen Schilds beim Schießen. Kommen mit Schritt 7 (Treffer, Wunden, Schutz).
 10. **Skill austauschen beim Schießen** (Konzept § 3.6) fehlt noch; der Schussrechner nimmt immer den Waffenskill der Waffe.
 
 ## Offen aus Schritt 7 (Treffer, Wunden, 18.11.2026)
@@ -320,7 +320,7 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 2. **Deckung beim Getroffen.** Erledigt (18.11.2026): Im Gefecht gilt die Deckung auf der Figur. Außerhalb des Gefechts wählt der Spieler die Deckung weiter im Dialog Getroffen.
 3. **Silhouette** zeigt vorerst nur die Haltung „stehend“; Hocken und Liegen folgen. Prellungen werden nicht je Zone gezeigt, weil die App sie nur als Summe kennt. Antippen einer Zone auf der Figur (Übersicht der Zone mit Versorgen) folgt.
 4. **Rückgängig** gibt es vorerst nur direkt nach dem Treffer (Meldung „Treffer eingetragen“); einzeln aus dem Gefechtsprotokoll folgt mit dem Reiter Verlauf.
-5. **Noch nicht da:** Getroffen durch Splitter, Ereignis (Beschossen), ballistischer Schild beim Getroffen, Nahkampfangriff ausgehend. Erledigt (18.11.2026): Blutungsfristen und Versorgen, Getroffen durch Nahkampf.
+5. **Noch nicht da:** Getroffen durch Splitter, Ereignis (Beschossen), ballistischer Schild beim Getroffen. Erledigt (18.11.2026): Blutungsfristen und Versorgen, Getroffen durch Nahkampf, Nahkampfangriff ausgehend.
 11. **Nahkampf eingehend, Stand im Gefecht.** Im Dialog Getroffen → Nahkampf lässt sich der eigene Stand im Gefecht nicht ändern; er kommt aus der Aktionsleiste (Break → Standwechsel vorher). *Vorläufig* so, weil ein Standwechsel als Reaktion eine Breakaction kostet und über ihren Knopf laufen soll.
 12. **Fixieren und Entwaffnen** durch den Gegner erscheinen nur als Satz im Bericht; die App sperrt den Knopf Stand nicht und nimmt keine Waffe aus der Hand.
 6. **Fristen ohne Uhr.** Entschieden (18.11.2026): Die App zählt keine Zeit; der Spieler tippt „Frist abgelaufen“, wenn die SL es sagt.
@@ -328,3 +328,5 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 8. **Wunde eines Verbündeten versorgen:** Die App würfelt nur die eigene Probe; die Wunde führt der andere Spieler bzw. die SL.
 9. **Deckungskante ziehen.** Entfallen (18.11.2026): Es gibt keine Deckungskante mehr, Deckung nur durch Antippen der Zonen. Der Dialog öffnet sich nur über den Knopf Deckung.
 10. **Ballistischer Schild** als mitgeführte Deckung fehlt noch (Schalter „Schild gehalten“).
+13. **Nahkampfwaffe in der Hand.** Die App führt nicht, ob eine Nahkampfwaffe gezogen ist; im Fenster Nahkampfangriff stehen alle eigenen Nahkampfwaffen zur Wahl. *Vorläufig:* Das Ziehen (Kosten nach Trageort) trägt der Spieler selbst ein, z. B. über Main → Sonderfähigkeit. Das Bajonett „aufgepflanzt“ erscheint auch ohne Gewehr in der Hand.
+14. **Eigener Angriff und „im Nahkampf“.** Nach einem eigenen Nahkampfangriff ist der Charakter für Schützen ein Ziel im Nahkampf; die App merkt sich das nicht, weil es nur andere betrifft.

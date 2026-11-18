@@ -36,6 +36,7 @@
   import WaffeWechseln from './lib/ui/gefecht/WaffeWechseln.svelte';
   import Deckung from './lib/ui/gefecht/Deckung.svelte';
   import Getroffen from './lib/ui/gefecht/Getroffen.svelte';
+  import Nahkampfangriff from './lib/ui/gefecht/Nahkampfangriff.svelte';
   import Versorgen from './lib/ui/gefecht/Versorgen.svelte';
   import GefechtBeenden from './lib/ui/gefecht/GefechtBeenden.svelte';
   import { blutungsart, fristAblaufen, fristablauf } from './lib/regeln/blutung';
@@ -67,7 +68,8 @@
     | { art: 'aktion'; aktion: Aktion }
     | { art: 'nachladen'; id: string; als: 'main' | 'break' | null }
     | { art: 'ladehemmung'; id: string }
-    | { art: 'versorgen'; wundId: string | null };
+    | { art: 'versorgen'; wundId: string | null }
+    | { art: 'nahkampf'; als: 'main' | 'break' };
   let dialog = $state<Spieldialog | null>(null);
   /** Kurze Meldung mit „Rückgängig“ nach einer Aktion der Aktionsleiste oder einem Treffer (konzept.md § 3.7a). */
   let rueckgaengigText = $state('');
@@ -243,6 +245,7 @@
       case 'senken': dialog = { art: 'senken' }; break;
       case 'verschieben': dialog = { art: 'verschieben' }; break;
       case 'versorgen': dialog = { art: 'versorgen', wundId: null }; break;
+      case 'nahkampf': dialog = { art: 'nahkampf', als: a.als }; break;
     }
   }
 
@@ -442,6 +445,9 @@
       <WaffeWechseln c={aktiv} d={daten} onfertig={(c) => nachAblauf(c)} onabbrechen={() => (dialog = null)} />
     {:else if dialog.art === 'versorgen'}
       <Versorgen c={aktiv} d={daten} wundId={dialog.wundId} wuerfelModus={probeModus} onaendern={aendern}
+        onfertig={(c) => nachAblauf(c)} onabbrechen={() => (dialog = null)} />
+    {:else if dialog.art === 'nahkampf' && gefecht}
+      <Nahkampfangriff c={aktiv} d={daten} als={dialog.als} {zonenModus} wuerfelModus={probeModus} onaendern={aendern}
         onfertig={(c) => nachAblauf(c)} onabbrechen={() => (dialog = null)} />
     {:else if dialog.art === 'deckung'}
       <Deckung c={aktiv} d={daten} onfertig={(c) => nachAblauf(c)} onabbrechen={() => (dialog = null)} />

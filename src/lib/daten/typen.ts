@@ -161,6 +161,10 @@ export interface Regeln {
     stand_schlaegt: Record<string, string>;
     /** Auslöser (leiter.ausloeser) eines eingehenden Nahkampfangriffs, auch wenn er abgewehrt wird. */
     ausloeser: string;
+    /** Waffenlängen, mit denen ein Nahkampfangriff auch als Breakaction geht, mit Bedingung (Kampfsystem, Länge der Waffe). */
+    als_break: Partial<Record<'kurz' | 'mittel' | 'lang', string>>;
+    /** Krit-Folge eines stumpfen Treffers beim Ziel (Kampfsystem, Trefferzone, Schaden und Krit). */
+    krit_stumpf: string;
     /** Kampfkunst-Wirkungen; `name` wie in perks.json `kampfkunst`. */
     wirkungen: { id: string; name: string; folge: string; folge_du: string; tat_du: string; tat_gegner: string; stand_danach?: string; stagger?: boolean }[];
   };

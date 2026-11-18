@@ -603,6 +603,11 @@
       "hocke": "liegen"
     },
     "ausloeser": "nahkampf",
+    "als_break": {
+      "kurz": "gegen ein Ziel in Armeslänge",
+      "lang": "Abfangen: gegen ein Ziel, das in die Reichweite deiner Waffe eintritt"
+    },
+    "krit_stumpf": "Das Ziel erleidet einen Stagger.",
     "wirkungen": [
       {
         "id": "umreissen",
