@@ -33,6 +33,7 @@
         <button class="zeile flach" aria-expanded={auf} onclick={() => (offen = auf ? null : g.id)}>
           <span>{grundwertName(g.id, d)}</span>
           <strong class="wert" class:hand={g.hand !== null}>{grundwertWert(g.ergebnis, d)}<Herkunft {quellen} darstellung={d.darstellung} /></strong>
+          <span class="klapppfeil" aria-hidden="true">›</span>
         </button>
         {#if auf}
           <div class="detail">

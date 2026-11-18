@@ -132,7 +132,7 @@
 
 <section class="karte">
   <details bind:open={stammOffen}>
-    <summary><h2>Stammdaten</h2><span class="hinweis">{klasse ? klasse.name : 'ohne Klasse'}</span></summary>
+    <summary><h2>Stammdaten</h2><span class="hinweis">{klasse ? klasse.name : 'ohne Klasse'}</span><span class="klapppfeil" aria-hidden="true">›</span></summary>
     <div class="stapel stamm">
     {#if schreiben}
       <label class="feld">Name
@@ -214,6 +214,7 @@
   <div class="statgitter kopfreihe" style:--spalten={malstepSpalten.length} aria-hidden="true">
     <span></span><span>Wert</span>
     {#each malstepSpalten as n (n)}<span>▼{n}</span>{/each}
+    <span></span>
   </div>
   {#each gruppen as gruppe (gruppe)}
     <div class="gruppe">
@@ -236,7 +237,10 @@
             {#if sw !== null}
               {#each stepReihe(sw, d.regeln).slice(1) as z, i (i)}<span class="step" class:gilt={lt.wirkt && lt.spalte === i + 1}
                 aria-label="bei {i + 1} {i === 0 ? 'Malstep' : 'Malsteps'}: {z}">{z}</span>{/each}
+            {:else}
+              {#each malstepSpalten as n (n)}<span></span>{/each}
             {/if}
+            <span class="klapppfeil" aria-hidden="true">›</span>
           </button>
           {#if offen}
             <div class="detail">
@@ -290,6 +294,7 @@
             {#if modus !== 'schreiben'}
               <strong class="wert" class:hand={markiert(`skills.${s.id}`)}>{stufe}<Herkunft quellen={quellenVon(mods, `skills.${s.id}`)} darstellung={d.darstellung} /></strong>
             {/if}
+            {#if modus !== 'lesen'}<span class="klapppfeil" aria-hidden="true">›</span>{/if}
           </button>
           {#if schreiben}
             <span class="stepper">
@@ -329,6 +334,7 @@
           <span><Begriff art="perk" name={perkName(id, d)} darstellung={d.darstellung} />
             <span class="hinweis kurz">{p?.kurz}</span></span>
           {#if modus === 'aufstieg'}<span class="hinweis">Rang {p?.rang}</span>{/if}
+          <span class="klapppfeil" aria-hidden="true">›</span>
         </button>
         {#if offen && p}
           <div class="detail">
@@ -389,7 +395,7 @@
   /* Stat in einer Zeile: Name (mit Rang-Marke) | Statwert groß | Zielwerte bei ▼1 … ▼n, von links nach rechts absteigend.
      Kopfreihe und Zeilen teilen dieselben Spalten, damit die Zahlen untereinander stehen. */
   /* Spaltenbreiten in rem, damit „Decisiveness“ bei 360 Pixel Breite neben fünf Steps passt. */
-  .statgitter, .zeile.statgitter { display: grid; grid-template-columns: minmax(0, 1fr) 2.6rem repeat(var(--spalten), 1.6rem); align-items: center;
+  .statgitter, .zeile.statgitter { display: grid; grid-template-columns: minmax(0, 1fr) 2.6rem repeat(var(--spalten), 1.6rem) 1rem; align-items: center;
     column-gap: 2px; font-variant-numeric: tabular-nums; }
   .stat { padding: var(--abstand-1) 0; }
   .statname { display: flex; align-items: center; flex-wrap: wrap; gap: var(--abstand-1) var(--abstand-2); min-width: 0; }

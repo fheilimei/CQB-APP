@@ -69,7 +69,7 @@
 
     {#if schreiben}
       <details class="neu">
-        <summary>Neue Anpassung</summary>
+        <summary>Neue Anpassung<span class="klapppfeil" aria-hidden="true">›</span></summary>
         <div class="stapel">
         <label class="feld">Grund
   <input id="anp-grund" bind:value={grund} placeholder="z. B. Bonus der SL: Ortskenntnis" /></label>
@@ -118,7 +118,7 @@
   .knoepfe { display: flex; align-items: center; gap: var(--abstand-2); }
   .neu { border-top: 1px solid var(--linie); padding-top: var(--abstand-1); }
   .neu[open] > .stapel { padding-bottom: var(--abstand-2); }
-  .neu summary { min-height: 44px; display: flex; align-items: center; font-weight: 600; cursor: pointer; }
+  .neu summary { min-height: 44px; display: flex; align-items: center; justify-content: space-between; font-weight: 600; cursor: pointer; }
   .wahl { display: flex; align-items: center; justify-content: space-between; gap: var(--abstand-2); }
   .breit { width: 100%; }
 </style>

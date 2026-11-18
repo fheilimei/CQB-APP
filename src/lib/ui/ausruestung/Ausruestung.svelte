@@ -110,6 +110,7 @@
         {#if e.ladehemmung}<span class="lh">Ladehemmung</span>{/if}
         {#if istWerfer(w)}{e.munitionstyp ? (sprengwaffe(e.munitionstyp, d)?.name ?? e.munitionstyp) : 'leer'}{:else}{magazinText(e, d)}{/if}
       </span>
+      <span class="klapppfeil" aria-hidden="true">›</span>
     </button>
     {#if auf}
       <div class="detail">

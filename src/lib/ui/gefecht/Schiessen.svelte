@@ -258,7 +258,7 @@
         {#if v.haltezahl}
           <div class="gruppe">
             <button class="flach zeile-knopf" aria-expanded={haltezahlAuf} onclick={() => (haltezahlAuf = !haltezahlAuf)}>
-              <span>Haltezahl (Rückstoß {v.modus.rueckstoss})</span><strong>{v.haltezahl.wert}</strong></button>
+              <span>Haltezahl (Rückstoß {v.modus.rueckstoss})</span><strong>{v.haltezahl.wert}</strong><span class="klapppfeil" aria-hidden="true">›</span></button>
             {#if haltezahlAuf}
               <ul class="haltezahl">
                 {#each v.haltezahl.quellen as q, i (i)}<li>{q.name} <strong>{stepsText(q)}</strong></li>{/each}

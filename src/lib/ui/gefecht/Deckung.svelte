@@ -62,8 +62,8 @@
         {#if passend.length}<span>({passend.join(', ')})</span>{/if}
       </div>
       {#if wert === null && zonen.length}<p class="warnung">Wähle einen Deckungswert oder eine Deckung aus.</p>{/if}
-      <button class="flach aufklapper" class:offen={listeOffen} aria-expanded={listeOffen} onclick={() => (listeOffen = !listeOffen)}>
-        <span>Deckung auswählen</span><span class="pfeil" aria-hidden="true">›</span>
+      <button class="flach aufklapper" aria-expanded={listeOffen} onclick={() => (listeOffen = !listeOffen)}>
+        <span>Deckung auswählen</span><span class="klapppfeil" aria-hidden="true">›</span>
       </button>
       {#if listeOffen}
         <ul class="auswahlliste" role="group" aria-label="Deckung">
@@ -86,9 +86,5 @@
 <style>
   .zaehler { display: flex; align-items: center; flex-wrap: wrap; gap: var(--abstand-2); }
   .zaehler strong { font-size: 1.3rem; }
-  /* Aufklappen wie im Menü: Pfeil › zu, nach unten gedreht offen. */
   .aufklapper { display: flex; align-items: center; justify-content: space-between; width: 100%; }
-  .pfeil { display: inline-block; font-size: 1.5rem; line-height: 1; color: var(--text-2); transition: transform 150ms ease-out; }
-  .aufklapper.offen .pfeil { transform: rotate(90deg); color: var(--akzent); }
-  @media (prefers-reduced-motion: reduce) { .pfeil { transition: none; } }
 </style>

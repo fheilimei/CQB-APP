@@ -64,7 +64,7 @@
   <button class="lasche schiebbar" bind:this={el} style:--hoehe={hoehe} style:--kopf="{kopfHoehe}px" class:zieht={ziehHoehe !== null}
     aria-expanded="false" aria-label="Reiter ausklappen (jetzt: {name}); zum Verschieben hoch oder runter ziehen"
     onpointerdown={runter} onpointermove={bewegen} onpointerup={hoch} onpointercancel={abbrechen}
-    onclick={() => tipp(() => onklappen(false))}><span aria-hidden="true">◂</span></button>
+    onclick={() => tipp(() => onklappen(false))}><span class="griff" aria-hidden="true"><span class="klapppfeil">›</span></span></button>
 {:else}
   <nav class="leiste schiebbar" bind:this={el} bind:offsetHeight={eigen} style:--eigen="{eigen}px" style:--hoehe={hoehe} style:--kopf="{kopfHoehe}px" class:zieht={ziehHoehe !== null}
     aria-label="Reiter (zum Verschieben hoch oder runter wischen)"
@@ -91,7 +91,7 @@
       </button>
     {/each}
     <button class="flach einklappen" aria-expanded="true" aria-label="Reiter einklappen"
-      onclick={() => tipp(() => onklappen(true))}><span aria-hidden="true">▸</span></button>
+      onclick={() => tipp(() => onklappen(true))}><span class="klapppfeil" aria-hidden="true">›</span></button>
   </nav>
 {/if}
 
@@ -119,11 +119,11 @@
   /* Eingeklappt: Lasche, flacher und breiter (Wunsch 18.11.2026): sichtbar 32 × 52 px, ragt in den Inhalt.
      Die Tippfläche (48 px breit) reicht unsichtbar etwas weiter nach links. */
   .lasche { --eigen: 52px; width: var(--tipp); height: var(--eigen); padding: 0; border: none; background: transparent; border-radius: 0; }
-  .lasche span { position: absolute; top: 0; bottom: 0; right: 0; width: calc(var(--abstand-4) + var(--abstand-2)); display: flex; align-items: center; justify-content: center;
-    font-size: 1.1rem; color: var(--akzent); background: var(--flaeche); border: 1px solid var(--linie); border-right: none;
+  .lasche .griff { position: absolute; top: 0; bottom: 0; right: 0; width: calc(var(--abstand-4) + var(--abstand-2)); display: flex; align-items: center; justify-content: center;
+    background: var(--flaeche); border: 1px solid var(--linie); border-right: none;
     border-radius: var(--radius) 0 0 var(--radius); box-shadow: -2px 0 6px rgb(0 0 0 / 0.2); }
   .lasche:not(:disabled):active { transform: none; filter: none; }
 
   /* Beim Schieben: Akzentrahmen, damit man sieht, dass Leiste bzw. Lasche am Finger hängt. */
-  .lasche.zieht span, .leiste.zieht { border-color: var(--akzent); box-shadow: -2px 0 10px rgb(0 0 0 / 0.35); }
+  .lasche.zieht .griff, .leiste.zieht { border-color: var(--akzent); box-shadow: -2px 0 10px rgb(0 0 0 / 0.35); }
 </style>

@@ -77,6 +77,16 @@ label { display: block; font-weight: 600; margin: 16px 0 6px; }
 .karte > * { margin: 0; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 
+/* Aufklappen überall gleich (Wunsch 18.11.2026): Pfeil › wie bei einem Ordner, zu nach rechts, offen nach unten gedreht
+   und in Akzentfarbe. Der Zustand hängt an aria-expanded des Knopfs bzw. am offenen <details>. */
+.klapppfeil { display: inline-block; flex: none; font-size: 1.5rem; line-height: 1; color: var(--text-2); transition: transform 150ms ease-out; }
+[aria-expanded="true"] .klapppfeil, details[open] > summary .klapppfeil { transform: rotate(90deg); color: var(--akzent); }
+@media (prefers-reduced-motion: reduce) { .klapppfeil { transition: none; } }
+/* Der erste Teil der Zeile (Name) schiebt Wert und Pfeil nach rechts; so steht der Pfeil immer ganz rechts. */
+:where(button, summary):has(> .klapppfeil) > :first-child:not(.klapppfeil) { margin-right: auto; }
+summary { list-style: none; }
+summary::-webkit-details-marker { display: none; }
+
 /* Listen im Bogen (Reiter Werte): Zeilen mit Name links und Wert rechts, aufklappbares Detail. */
 .karte > h2, .karte .kopf h2 { margin: 0; font-size: 1.1rem; }
 .zeilen { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }

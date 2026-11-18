@@ -206,6 +206,7 @@
     {:else}
       <strong class="fehler">keine Probe möglich</strong>
     {/if}
+    <span class="klapppfeil" aria-hidden="true">›</span>
   </button>
   {#if aufgeklappt}
     <table class="rechnung">

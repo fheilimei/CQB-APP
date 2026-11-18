@@ -84,8 +84,8 @@
               <span class="name">{c.name || 'ohne Namen'}</span>
               <span class="hinweis">{klassenname(c)}</span>
             </button>
-            <button class="flach pfeil" class:offen aria-label="Aktionen für {c.name}" aria-expanded={offen}
-              onclick={() => (aktionenFuer = offen ? null : c.id)}><span aria-hidden="true">›</span></button>
+            <button class="flach" aria-label="Aktionen für {c.name}" aria-expanded={offen}
+              onclick={() => (aktionenFuer = offen ? null : c.id)}><span class="klapppfeil" aria-hidden="true">›</span></button>
           </li>
           {#if offen}
             <li class="aktionen">
@@ -168,10 +168,6 @@
   .liste li.aktiv { background: var(--flaeche-2); }
   .zeile { flex: 1; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; text-align: left; padding: 6px 12px; }
   .name { font-weight: 600; }
-  /* Pfeil wie bei einem Ordner: zeigt nach rechts, aufgeklappt nach unten. */
-  .pfeil span { display: inline-block; font-size: 1.5rem; line-height: 1; color: var(--text-2); transition: transform 150ms ease-out; }
-  .pfeil.offen span { transform: rotate(90deg); color: var(--akzent); }
-  @media (prefers-reduced-motion: reduce) { .pfeil span { transition: none; } }
   /* Aufgeklappte Aktionen: eingerückt, mit Linie links, damit sie sichtbar zum Charakter darüber gehören. */
   .aktionen { gap: var(--abstand-2); flex-wrap: wrap; margin: var(--abstand-1) 0 var(--abstand-2) var(--abstand-3);
     padding-left: var(--abstand-2); border-left: 2px solid var(--akzent); border-radius: 0; }
