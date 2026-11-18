@@ -181,6 +181,8 @@ export interface Gefecht {
   korrektur: Aktionszahlen;
   /** Break durch Stagger verloren (Schritt 7 setzt das). */
   break_verloren: boolean;
+  /** Verteidigungen gegen Nahkampfangriffe in dieser Runde; fehlt = 0. */
+  verteidigungen?: number;
   protokoll: (Gefechtsereignis | Schussereignis | Aktionsereignis | Trefferereignis)[];
 }
 
@@ -357,6 +359,7 @@ export function gefechtErgaenzt(g: Gefecht): Gefecht {
     konzentration: g.konzentration ?? null,
     verbraucht: g.verbraucht ?? { ...KEINE_AKTIONEN },
     korrektur: g.korrektur ?? { ...KEINE_AKTIONEN },
-    break_verloren: g.break_verloren ?? false
+    break_verloren: g.break_verloren ?? false,
+    verteidigungen: g.verteidigungen ?? 0
   };
 }

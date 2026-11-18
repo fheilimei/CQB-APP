@@ -163,6 +163,23 @@ export function pruefeDaten(d: Spieldaten): string[] {
   if (!r.eingehend?.ausloeser) f('regeln.json', 'eingehend.ausloeser fehlt');
   for (const [k, id] of Object.entries(r.eingehend?.ausloeser ?? {}))
     if (!r.leiter.ausloeser.some((a) => a.id === id)) f('regeln.json', `eingehend.ausloeser.${k}: unbekannter Auslöser „${id}“`);
+  // Nahkampf (Schritt 7)
+  const nk = r.nahkampf;
+  if (!statIds.has(nk.stat)) f('regeln.json', `nahkampf.stat: unbekannter Stat „${nk.stat}“`);
+  if (!skillIds.has(nk.skill)) f('regeln.json', `nahkampf.skill: unbekannter Skill „${nk.skill}“`);
+  for (const [a, b] of Object.entries(nk.stand_schlaegt))
+    if (!staende.has(a) || !staende.has(b)) f('regeln.json', `nahkampf.stand_schlaegt: unbekannter Stand „${staende.has(a) ? b : a}“`);
+  if (!r.leiter.ausloeser.some((a) => a.id === nk.ausloeser)) f('regeln.json', `nahkampf.ausloeser: unbekannter Auslöser „${nk.ausloeser}“`);
+  for (const w of nk.wirkungen ?? [])
+    if (w.stand_danach && !staende.has(w.stand_danach)) f('regeln.json', `nahkampf.wirkungen.${w.id}: unbekannter Stand „${w.stand_danach}“`);
+  const wirkungsNamen = new Set((nk.wirkungen ?? []).map((w) => w.name));
+  for (const p of d.perks.eintraege) {
+    for (const [paar, text] of Object.entries(p.kampfkunst ?? {})) {
+      const [sieger, verlierer] = paar.split('_ueber_');
+      if (nk.stand_schlaegt[sieger!] !== verlierer) f('perks.json', `${p.id}.kampfkunst: „${paar}“ ist kein überlegener Stand`);
+      if (text !== null && !wirkungsNamen.has(text)) f('perks.json', `${p.id}.kampfkunst.${paar}: unbekannte Wirkung „${text}“ (regeln.json nahkampf.wirkungen)`);
+    }
+  }
   if (!r.leiter.ausloeser.some((a) => a.id === r.schiessen.ausloeser)) f('regeln.json', `schiessen.ausloeser: unbekannter Auslöser „${r.schiessen.ausloeser}“`);
   if (r.sprengwirkung.richtungen.length !== 8) f('regeln.json', 'sprengwirkung.richtungen braucht 8 Einträge (W8)');
   for (const k of [...Object.keys(r.breakaction.reaktion.malsteps), ...Object.keys(r.breakaction.antizipation.malsteps_guete), ...Object.keys(r.breakaction.antizipation.malsteps_alter)])

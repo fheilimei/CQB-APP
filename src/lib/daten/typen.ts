@@ -150,6 +150,20 @@ export interface Regeln {
     stat: string;
     haltezahl: { stat: string; skill: string };
   };
+  /** Nahkampf (Kampfsystem, Nahkampf; konzept.md § 3.8b). */
+  nahkampf: {
+    stat: string;
+    skill: string;
+    malsteps_je_weitere_verteidigung: number;
+    lange_waffe_in_armeslaenge: number;
+    ueberlegener_stand_malsteps: number;
+    /** Stand-ID → Stand-ID, den er schlägt. */
+    stand_schlaegt: Record<string, string>;
+    /** Auslöser (leiter.ausloeser) eines eingehenden Nahkampfangriffs, auch wenn er abgewehrt wird. */
+    ausloeser: string;
+    /** Kampfkunst-Wirkungen; `name` wie in perks.json `kampfkunst`. */
+    wirkungen: { id: string; name: string; folge: string; folge_du: string; stand_danach?: string; stagger?: boolean }[];
+  };
   /** Auslöser (leiter.ausloeser), die ein eingehender Treffer setzt (konzept.md § 3.10). */
   eingehend: { ausloeser: { beschossen: string; getroffen: string; verletzt: string; stagger: string } };
   zielen: { stepshields: number };

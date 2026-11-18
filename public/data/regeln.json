@@ -601,7 +601,36 @@
       "liegen": "stehen",
       "stehen": "hocke",
       "hocke": "liegen"
-    }
+    },
+    "ausloeser": "nahkampf",
+    "wirkungen": [
+      {
+        "id": "umreissen",
+        "name": "Umreißen",
+        "folge": "fällt in den Stand Liegen",
+        "stand_danach": "liegen",
+        "folge_du": "Du fällst in den Stand Liegen."
+      },
+      {
+        "id": "erschuettern",
+        "name": "Erschüttern",
+        "folge": "erleidet einen Stagger",
+        "stagger": true,
+        "folge_du": "Du erleidest einen Stagger."
+      },
+      {
+        "id": "fixieren",
+        "name": "Fixieren",
+        "folge": "kann bis zum Ende seines nächsten Zuges den Stand nicht wechseln",
+        "folge_du": "Du kannst bis zum Ende deines nächsten Zuges den Stand nicht wechseln."
+      },
+      {
+        "id": "entwaffnen",
+        "name": "Entwaffnen",
+        "folge": "lässt einen Gegenstand fallen, den er in der Hand hält; der Sieger wählt, welchen",
+        "folge_du": "Du lässt einen Gegenstand fallen, den du in der Hand hältst; der Gegner wählt, welchen."
+      }
+    ]
   },
   "werfen": {
     "stat": "agility",

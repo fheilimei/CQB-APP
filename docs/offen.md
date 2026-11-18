@@ -12,6 +12,14 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 - **Ändern:** Regelkern, Schaden (verdeckte Zonen)
 - **Im Regelwerk klarstellen:** ja
 
+### R34. Erschüttern gegen „Schmerz ignorieren“ (18.11.2026)
+- **Frage:** Die Kampfkunst-Wirkung Erschüttern löst beim Gegner einen Stagger aus. Das Symptom Schmerz ignorieren (ab Adrenalin 1) sagt: „Du erleidest keinen Stagger.“ Gilt das auch für Erschüttern?
+- **Stellen:** (Kampfsystem, Stand im Nahkampf); (Adrenalin, Symptome)
+- **Vorläufig:** ja. Wer Schmerz ignoriert, erleidet durch Erschüttern keinen Stagger; der Bericht sagt das.
+- **Andere Möglichkeit:** Erschüttern wirkt immer, weil es kein Schaden ist, sondern ein Griff oder Stoß.
+- **Ändern:** Regelkern, Nahkampf (Wirkung des Gegners)
+- **Im Regelwerk klarstellen:** ja
+
 ### R7. Kosten des Waffenwechsels (18.11.2026)
 - **Frage:** Ein Wechsel umfasst Wegstecken der alten und Bereitmachen der neuen Waffe. Was kostet er, wenn die beiden Trageorte verschieden viel kosten?
 - **Stellen:** (Kampfsystem, Waffe wechseln)
@@ -312,7 +320,9 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 2. **Deckung beim Getroffen.** Erledigt (18.11.2026): Im Gefecht gilt die Deckung auf der Figur. Außerhalb des Gefechts wählt der Spieler die Deckung weiter im Dialog Getroffen.
 3. **Silhouette** zeigt vorerst nur die Haltung „stehend“; Hocken und Liegen folgen. Prellungen werden nicht je Zone gezeigt, weil die App sie nur als Summe kennt. Antippen einer Zone auf der Figur (Übersicht der Zone mit Versorgen) folgt.
 4. **Rückgängig** gibt es vorerst nur direkt nach dem Treffer (Meldung „Treffer eingetragen“); einzeln aus dem Gefechtsprotokoll folgt mit dem Reiter Verlauf.
-5. **Noch nicht da:** Getroffen durch Nahkampf und Splitter, Ereignis (Beschossen), ballistischer Schild beim Getroffen. Erledigt (18.11.2026): Blutungsfristen und Versorgen.
+5. **Noch nicht da:** Getroffen durch Splitter, Ereignis (Beschossen), ballistischer Schild beim Getroffen, Nahkampfangriff ausgehend. Erledigt (18.11.2026): Blutungsfristen und Versorgen, Getroffen durch Nahkampf.
+11. **Nahkampf eingehend, Stand im Gefecht.** Im Dialog Getroffen → Nahkampf lässt sich der eigene Stand im Gefecht nicht ändern; er kommt aus der Aktionsleiste (Break → Standwechsel vorher). *Vorläufig* so, weil ein Standwechsel als Reaktion eine Breakaction kostet und über ihren Knopf laufen soll.
+12. **Fixieren und Entwaffnen** durch den Gegner erscheinen nur als Satz im Bericht; die App sperrt den Knopf Stand nicht und nimmt keine Waffe aus der Hand.
 6. **Fristen ohne Uhr.** Entschieden (18.11.2026): Die App zählt keine Zeit; der Spieler tippt „Frist abgelaufen“, wenn die SL es sagt.
 7. **Operation im Gefecht.** Sie dauert mehrere Runden (Dauer legt die SL fest). *Vorläufig:* Die App verbraucht nur die Mainaction der Runde, in der gewürfelt wird; die Runden davor trägt der Spieler über Main → Sonderfähigkeit mit voller Konzentration ein. Notoperation und Unter Feuer erscheinen als Hinweis im Fenster.
 8. **Wunde eines Verbündeten versorgen:** Die App würfelt nur die eigene Probe; die Wunde führt der andere Spieler bzw. die SL.

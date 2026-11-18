@@ -288,7 +288,8 @@ export function rundeZuruecksetzen(g: Gefecht, d: Spieldaten): Gefecht {
     bewegungen: 0,
     gehechtet: false,
     konzentration: null,
-    break_verloren: false
+    break_verloren: false,
+    verteidigungen: 0
   };
 }
 

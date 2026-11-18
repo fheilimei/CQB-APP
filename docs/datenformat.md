@@ -210,7 +210,14 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
     "malsteps_je_weitere_verteidigung": 1,
     "lange_waffe_in_armeslaenge": 1,
     "ueberlegener_stand_malsteps": 1,
-    "stand_schlaegt": { "liegen": "stehen", "stehen": "hocke", "hocke": "liegen" }
+    "stand_schlaegt": { "liegen": "stehen", "stehen": "hocke", "hocke": "liegen" },
+    "ausloeser": "nahkampf",
+    "wirkungen": [
+      { "id": "umreissen", "name": "Umreißen", "folge": "fällt in den Stand Liegen", "folge_du": "Du fällst in den Stand Liegen.", "stand_danach": "liegen" },
+      { "id": "erschuettern", "name": "Erschüttern", "folge": "erleidet einen Stagger", "stagger": true },
+      { "id": "fixieren", "name": "Fixieren", "folge": "kann bis zum Ende seines nächsten Zuges den Stand nicht wechseln" },
+      { "id": "entwaffnen", "name": "Entwaffnen", "folge": "lässt einen Gegenstand fallen …" }
+    ]
   },
   "werfen": { "stat": "agility", "ueber_wurfweite_malsteps": 2, "kochen_malsteps": 1 },
   "krit_folgen": [
@@ -308,6 +315,7 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
 - **Zweibein, Vordergriff, Kompensator** wirken über ihre Modifikatoren in `aufsaetze.json` auf die Haltezahl, nicht über `rueckstoss_stepshields`. Die Schlüssel von `rueckstoss_stepshields` sind Stand-IDs aus `staende`.
 - **`schiessen.stat`**: Stat der Trefferprobe; der Skill ist der Waffenskill, dessen `waffenkategorien` (skills.json) die Kategorie der Waffe enthält. **`schiessen.haltezahl`**: Stat und Skill der Haltezahl. **`schiessen.ausloeser`**: Auslöser aus `leiter.ausloeser`, den ein abgegebener Schuss setzt.
 - **`eingehend.ausloeser`**: Auslöser aus `leiter.ausloeser`, die ein eingehender Treffer im Gefecht setzt: `beschossen` (jeder Schuss), `getroffen` (der Treffer bleibt nicht in der Deckung stecken, auch bei 0 Schaden; Regelfrage R25), `verletzt` (Schaden > 0), `stagger`. Schaden direkt (Sonstiges) setzt nur `verletzt`.
+- **`nahkampf`**: Probe (`stat`, `skill`) für Angriff und Verteidigung. `malsteps_je_weitere_verteidigung`, `lange_waffe_in_armeslaenge`, `ueberlegener_stand_malsteps`: Malsteps. `stand_schlaegt`: welcher Stand welchen schlägt (Kreis). `ausloeser`: Auslöser aus `leiter.ausloeser`, den jeder eingehende Nahkampfangriff im Gefecht setzt, auch wenn er abgewehrt wird. `wirkungen`: Kampfkunst-Wirkungen für einen Sieg mit überlegenem Stand; `name` muss zum Text in `perks.json` `kampfkunst` passen; `stand_danach` setzt den Stand des Unterlegenen, `stagger` löst bei ihm einen Stagger aus, `folge` ist der Satzteil für den Bericht an die SL (über den Gegner), `folge_du` der Satz, wenn die Wirkung dich trifft.
 - **`ladehemmung.beheben`**: Stat der Probe für eine einfache Ladehemmung (Skill: Waffenskill). **`ladehemmung.schwer_beheben`**: Probe, Dauer und Zustandsverlust bei einer schweren Ladehemmung (nur außerhalb des Gefechts).
 - **`staende`**: eigener Stand in der Aktionsleiste; der erste ist der Start eines Gefechts. `name` für Knöpfe („Liegen“), `adjektiv` für Sätze („Dein Stand: liegend“). `kein_hechten`: aus diesem Stand ist Hechten gesperrt. `liegend`: zählt als liegend (Atemkontrolle). **`hechten.staende`**: Stände, in die gehechtet wird (entschieden 18.11.2026, R27: nur Liegen). Steht nur einer da, entfällt die Auswahl im Dialog.
 - **`bewegung.reihenfolge`**: Bewegungsarten von langsam nach schnell, für „höchstens Gehen“ (Konzentration, Schutzanzug, Schild) und für Sprint (die schnellere zählt).
@@ -1125,6 +1133,7 @@ IndexedDB-Datenbank `cqb` mit zwei Speichern: `charaktere` (ein Datensatz je Cha
 - **`gefecht.zielen`:** Merker aus Zielen: gilt nur für einen Schuss in Runde `runde` (Break-Zielen: nächste Runde; Main-Zielen mit Ruhige Hand: dieselbe Runde). `stepshields` für den Schuss, `ohne_reichweite` (Gezielter Schuss), `gezielt_in`: Runde des Zielens; bewegt sich der Charakter danach in dieser Runde, entfällt `ohne_reichweite` und es gilt der Stepshield. Jeder Schuss und „Neues Ziel“ löschen den Merker.
 - **`gefecht.konzentration`:** `null`, `leicht` oder `voll` für diese Runde (Break 0; Bewegung bzw. Standwechsel beschränkt).
 - **`gefecht.verbraucht`**, **`gefecht.korrektur`:** verbrauchte Aktionen dieser Runde und Korrektur von Hand (langer Druck, ±1). Die verbleibende Zahl wird berechnet: Höchstzahl (aus `regeln.json` `aktionen`; Sprint, Initiative-Krit, Konzentration) − verbraucht + Korrektur; bei Over the Edge ein gemeinsamer Zähler `over_the_edge_gesamt`. **`break_verloren`**: Breakaction durch Stagger verloren. „Nächste Runde“ setzt alles zurück.
+- **`gefecht.verteidigungen`:** Zahl der Verteidigungen gegen Nahkampfangriffe in dieser Runde (jede weitere bringt `nahkampf.malsteps_je_weitere_verteidigung`). Fehlt das Feld: 0. „Nächste Runde“ setzt es zurück.
 - **`deckung`** (im Spielstand, nicht im Gefecht): aktueller Deckungswert und verdeckte Zonen (`null` = keine Deckung). Gespeichert sind die tatsächlich verdeckten Zonen, nach Anwendung der Regel für die Ansage „Rumpf“ (R31, R32); daraus rechnet die App. Dazu, damit der Dialog Deckung die Eingabe wieder zeigt: `art` (ID aus `schutz.json`, `deckung` oder `fahrzeugpanzerung`; `null` = eigener Wert) und `getippt` (angetippte Zonen). Beide Felder sind optional; fehlt `getippt`, gelten die gespeicherten Zonen als angetippt. Gilt im Gefecht und in Ruhe und bleibt über Gefechtsbeginn und -ende erhalten (18.11.2026).
 - **`gefecht.protokoll`:** Ereignisse des laufenden Gefechts mit Eingabe und den daraus folgenden Änderungen (für Rückgängig). `art`: `treffer`, `schaden_direkt`, `schuss`, `aktion`, `leiter`. Wird bei Gefechtsende gelöscht.
 	- `treffer` bzw. `schaden_direkt`: `runde`, `zeit`, `quelle` (Schuss, Sonstiges), `eingabe` (Zone, DK – `null` = stumpf –, MW, Kugeln, Krit, Deckungswert der Zone oder `null`) bzw. `direkt` (Zone, Schaden, `wunde` oder `prellung`), `ergebnis` (`gestoppt`, `durchschlag`, `wucht`; Schaden, Stagger, tot) und `aenderungen` (neue Wunde, `hp_verlust_wunden` und `prellungen` als [vorher, nachher], `tot` [vorher, nachher], neu gesetzte Auslöser, Breakaction verloren).

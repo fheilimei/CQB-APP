@@ -446,7 +446,7 @@
     {:else if dialog.art === 'ende' && gefecht}
       <GefechtBeenden c={aktiv} d={daten} onfertig={(c) => { void speichern(c); dialog = null; }} onabbrechen={() => (dialog = null)} />
     {:else if dialog.art === 'getroffen'}
-      <Getroffen c={aktiv} d={daten} {zonenModus} onfertig={trefferFertig} onabbrechen={() => (dialog = null)} />
+      <Getroffen c={aktiv} d={daten} {zonenModus} wuerfelModus={probeModus} onaendern={aendern} onfertig={trefferFertig} onabbrechen={() => (dialog = null)} />
     {:else if dialog.art === 'start'}
       <GefechtStarten c={aktiv} d={daten} wuerfelModus={probeModus} onaendern={aendern}
         onfertig={(c) => nachAblauf(c, { art: 'initiative' })} onabbrechen={() => (dialog = null)} />
