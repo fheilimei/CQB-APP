@@ -142,7 +142,8 @@
   .figurbox { display: flex; gap: var(--abstand-2); align-items: stretch; }
   .figurplatz { flex: 1 1 auto; min-width: 0; max-width: 240px; }
   .seite { flex: 0 0 auto; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; gap: var(--abstand-2); margin-left: auto; }
-  .knoepfe { display: flex; flex-direction: column; gap: var(--abstand-2); align-self: stretch; }
+  /* margin-top: auto hält die Knöpfe unten, auch in Ruhe, wenn oben keine Haltungsanzeige steht. */
+  .knoepfe { display: flex; flex-direction: column; gap: var(--abstand-2); align-self: stretch; margin-top: auto; }
   .knoepfe button { width: 100%; padding: 0 var(--abstand-2); }
   .mitte { text-align: center; }
   /* Übersicht der gewählten Zone: eigene Fläche mit Akzentstreifen, passend zum Akzentrahmen der Zone in der Figur. */
