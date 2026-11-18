@@ -314,11 +314,10 @@
   {:else if !aktiv}
     <Start onerstellen={erstellen} onimportieren={importieren} meldung={meldung} {entwuerfe} onfortsetzen={oeffne} />
   {:else}
-    <header class="kopfzeile">
+    <header class="kopfzeile" class:im-gefecht={!!gefecht}>
       <button class="flach" aria-label="Menü öffnen" onclick={() => (menueOffen = true)}>☰</button>
       <div class="titel">
         <strong>{aktiv.name || 'ohne Namen'}</strong>
-        {#if gefecht && gefecht.leiter !== 0}<span class="chip-klein" style:background={daten.darstellung.leiter_farben[String(gefecht.leiter)]}>{standText(gefecht.leiter, daten)}</span>{/if}
         {#if aktiv.spielstand.adrenalinschock.aktiv}
           <button class="chip-klein zustand" onclick={schockFrage}>Adrenalinschock</button>
         {/if}
@@ -340,12 +339,10 @@
       {/if}
       {#if gefecht}
         <div class="gefechtszeile">
-          <span class="status an">Gefecht · Runde {gefecht.runde}</span>
-          {#if gefecht.initiative}
-            <button class="flach initiative" onclick={() => (dialog = { art: 'initiative' })}>Initiative: {ansage(gefecht.initiative.stufe, gefecht.initiative.wurf, gefecht.initiative.zielwert)}</button>
-          {:else}
-            <button class="flach initiative" onclick={() => (dialog = { art: 'initiative' })}>Initiative würfeln</button>
-          {/if}
+          <button class="flach initiative" onclick={() => (dialog = { art: 'initiative' })}>
+            <small>Runde {gefecht.runde} · Initiative</small>
+            <span>{gefecht.initiative ? ansage(gefecht.initiative.stufe, gefecht.initiative.wurf, gefecht.initiative.zielwert) : 'würfeln'}</span>
+          </button>
           <span class="rechts">
             <button class="klein" onclick={() => (dialog = { art: 'runde' })}>Nächste Runde</button>
             <button class="klein" onclick={gefechtEndeFrage}>Gefecht beenden</button>
@@ -354,7 +351,7 @@
       {/if}
     </header>
 
-    <main class="bogen" class:ohne-reiter={einstellungen.reiterEingeklappt}>
+    <main class="bogen">
       {#if reiter === 'figur'}
         <section class="karte">
           <h2>{aktiv.name}</h2>
@@ -372,7 +369,7 @@
       {/if}
     </main>
 
-    <div class="unten">
+    <div class="unten" class:im-gefecht={!!gefecht}>
     {#if rueckgaengigText}
       <div class="toast karte rueck" role="status">
         <span>{rueckgaengigText}</span>
@@ -387,8 +384,8 @@
       <Adrenalinrad stand={gefecht.leiter} d={daten} onsetzen={leiterDrehen} ondetail={() => (dialog = { art: 'detail' })} />
     {/if}
     {#if einstellungen.reiterEingeklappt}
-      <button class="reiter-griff" aria-expanded="false" aria-label="Reiter ausklappen (jetzt: {REITER_NAMEN[reiter]})"
-        onclick={() => reiterKlappen(false)}><span aria-hidden="true">▴</span> {REITER_NAMEN[reiter]}</button>
+      <button class="lasche" aria-expanded="false" aria-label="Reiter ausklappen (jetzt: {REITER_NAMEN[reiter]})"
+        onclick={() => reiterKlappen(false)}><span aria-hidden="true">▴</span></button>
     {:else}
       <nav class="reiter" aria-label="Reiter">
         {#each Object.entries(REITER_NAMEN) as [id, text] (id)}
@@ -473,13 +470,18 @@
     padding-bottom: env(safe-area-inset-bottom); }
   .reiter button { border-radius: 0; padding: 0 4px; font-size: 0.9rem; color: var(--text-2); min-height: 56px; }
   .reiter .einklappen { min-width: 0; font-size: 1.2rem; border-left: 1px solid var(--linie); }
-  /* Eingeklappt: nur ein kleiner Griff unten rechts, der über dem Inhalt schwebt und keinen eigenen Streifen braucht. */
-  .reiter-griff { position: absolute; right: var(--abstand-3); bottom: calc(var(--abstand-2) + env(safe-area-inset-bottom)); z-index: 6;
-    background: var(--flaeche); color: var(--text-2); font-size: 0.85rem; padding: 0 var(--abstand-3); border-radius: 999px;
-    box-shadow: 0 2px 8px rgb(0 0 0 / 0.25); }
-  .unten:has(> :not(.reiter-griff):not(.toast)) .reiter-griff { bottom: calc(100% + var(--abstand-2)); }
-  /* Platz unter dem letzten Inhalt, damit der Griff nichts verdeckt (Höhe des Griffs + Abstand). */
-  .bogen.ohne-reiter { padding-bottom: calc(var(--tipp) + var(--abstand-4)); }
+  /* Eingeklappt: schmale Lasche am rechten Rand, immer direkt über allem, was unten fest steht.
+     Sichtbar nur so breit wie der Rand des Inhalts; die Tippfläche (44 px) reicht unsichtbar nach links. */
+  .lasche { position: absolute; right: 0; bottom: calc(100% + var(--abstand-2)); z-index: 6; width: var(--tipp); height: 56px;
+    padding: 0; border: none; background: transparent; border-radius: 0; }
+  .lasche span { position: absolute; top: 0; bottom: 0; right: 0; width: var(--abstand-3); display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; color: var(--akzent); background: var(--flaeche); border: 1px solid var(--linie); border-right: none;
+    border-radius: var(--radius) 0 0 var(--radius); box-shadow: -2px 0 6px rgb(0 0 0 / 0.2); }
+  /* Ohne feste Leiste unten liegt die Lasche über dem sicheren Bereich am unteren Bildschirmrand. */
+  .unten:not(.im-gefecht) .lasche { bottom: calc(var(--abstand-2) + env(safe-area-inset-bottom)); }
+  /* Gefecht: Kopfzeile und untere Leisten tragen einen Akzentrand statt eines Schriftzugs „Gefecht“. */
+  .kopfzeile.im-gefecht { border-bottom: 2px solid var(--akzent); }
+  .unten.im-gefecht { border-top: 2px solid var(--akzent); }
   .reiter button.an { color: var(--akzent); font-weight: 700; box-shadow: inset 0 3px 0 var(--akzent); }
   .toast { position: absolute; left: 16px; right: 16px; bottom: calc(100% + 8px); z-index: 15; }
   .rueck { display: flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 8px; padding: 4px 4px 4px 16px; }
@@ -491,7 +493,10 @@
   .gefechtszeile { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
   .gefechtszeile .rechts { margin-left: auto; display: flex; gap: 6px; }
   .gefechtszeile .klein { padding: 0 10px; font-size: 0.9rem; }
-  .initiative { padding: 0 6px; font-size: 0.9rem; min-height: 40px; text-decoration: underline; text-underline-offset: 3px; }
+  /* Initiative der Runde als Info links neben den Knöpfen; antippbar (öffnet die Initiative). */
+  .initiative { padding: 0 var(--abstand-1); min-height: 40px; display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
+    line-height: 1.15; text-align: left; font-weight: 600; font-size: 0.9rem; }
+  .initiative small { font-size: 0.75rem; font-weight: 400; color: var(--text-2); }
   .kampfunfaehig { flex-basis: 100%; margin: 0; text-align: right; font-size: 0.85rem; }
   .update { position: fixed; left: 16px; right: 16px; bottom: calc(72px + env(safe-area-inset-bottom)); z-index: 50;
     display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: var(--abstand-3); }

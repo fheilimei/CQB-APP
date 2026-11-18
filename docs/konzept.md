@@ -180,7 +180,7 @@ Unabhängig von den Modi Lesen, Aufstieg und Schreiben ([§ 3.0a](#30a-modi-lese
 
 **Im Gefecht** (nach „Gefecht starten“, [§ 3.7](#37-leiter-m-r)):
 - Am unteren Rand erscheinen das Wählrad „Adrenalin“ ([§ 3.7](#37-leiter-m-r)) und darüber die Aktionsleiste mit **Main · Break · Bewegung · Stand · Getroffen · Ereignis** ([§ 3.7a](#37a-aktionsleiste-m-r)).
-- Das Statusfeld im Kopf zeigt zusätzlich „Gefecht · Runde n“, daneben die kleinen Knöpfe **Nächste Runde** und **Gefecht beenden**.
+- Kopfzeile und untere Leisten (Aktionsleiste, Adrenalin) tragen einen Rand in der Akzentfarbe; ein eigener Schriftzug „Gefecht“ entfällt. In einer zweiten Zeile der Kopfzeile steht links klein „Runde n · Initiative“ mit dem Ergebnis der Initiative dieser Runde, rechts die kleinen Knöpfe **Nächste Runde** und **Gefecht beenden**.
 - Der **Aufstiegsmodus** ist gesperrt (Steigern gehört nicht in die Runde). Der **Schreibmodus** bleibt erreichbar für Korrekturen.
 
 **Kampfunfähig.** Die App sperrt nichts; die Entscheidung der SL geht vor. Sie **markiert** aber deutlich, dass der Charakter nach den Regeln keine Aktionen hat ([§ 4.5](#45-zustände)):
@@ -189,10 +189,10 @@ Unabhängig von den Modi Lesen, Aufstieg und Schreiben ([§ 3.0a](#30a-modi-lese
 - Das Gefecht läuft weiter, auch wenn der Charakter darin kampfunfähig wird; weitere Treffer, Blutungsfristen und Adrenalinschock hängen am Gefechtsende.
 
 ### Aufbau der App
-Die App hat vier Reiter in einer Leiste am unteren Rand: **Figur · Werte · Ausrüstung · Verlauf**. Ganz rechts in der Leiste klappt ein Pfeil ▾ sie ein; dann bleibt nur ein kleiner Griff unten rechts mit dem Namen des aktuellen Reiters („▴ Werte“), der über dem Inhalt schwebt und die Leiste wieder ausklappt. Die App merkt sich die Wahl (Einstellungen). Oben links öffnet **☰** das Menü ([§ 3.0g](#30g-start-charaktere-und-menü-m)).
+Die App hat vier Reiter in einer Leiste am unteren Rand: **Figur · Werte · Ausrüstung · Verlauf**. Ganz rechts in der Leiste klappt ein Pfeil ▾ sie ein; dann bleibt nur eine schmale Lasche ▴ am rechten Bildschirmrand, direkt über allem, was unten fest steht (im Gefecht über der Aktionsleiste). Sie liegt im freien Rand des Inhalts und klappt die Leiste wieder aus. Die App merkt sich die Wahl (Einstellungen). Oben links öffnet **☰** das Menü ([§ 3.0g](#30g-start-charaktere-und-menü-m)).
 
 **Figur** (Startbildschirm). Die Silhouette ([§ 3.0f](#30f-körperbild-silhouette-a-r)) steht groß in der Mitte, damit der Zustand des Charakters immer vor Augen ist.
-- **Darüber:** Kopfzeile mit Name und Statusfeld ([§ 3.0a](#30a-modi-lesen-aufstieg-schreiben-m), [§ 3.0e](#30e-gefecht-und-ruhe-m)), HP als Balken mit Zahl, Adrenalin bzw. Ruhepuls (nur wenn nicht 0), aktive Zustände als Chips (z. B. Geblendet 1, Adrenalinschock).
+- **Darüber:** Kopfzeile mit Name und Statusfeld ([§ 3.0a](#30a-modi-lesen-aufstieg-schreiben-m), [§ 3.0e](#30e-gefecht-und-ruhe-m)), HP als Balken mit Zahl (Adrenalin bzw. Ruhepuls nicht in der Kopfzeile; der Stand steht am Rad unten), aktive Zustände als Chips (z. B. Geblendet 1, Adrenalinschock).
 - **Mitte:** die Silhouette mit Stand, Rüstung, Deckung, Wunden und Folgen; die aktive Waffe in der Hand mit Magazinstand.
 - **Darunter:** in Ruhe die Knöpfe **Getroffen** und **Heilung** (Proben starten über den Reiter Werte; **Gefecht starten** steht oben rechts in der Kopfzeile); im Gefecht Aktionsleiste und Bereich „Adrenalin“ ([§ 3.7](#37-leiter-m-r), [§ 3.7a](#37a-aktionsleiste-m-r)).
 - **Antippen einer Zone** öffnet die Übersicht der Zone: Rüstung, Deckung, Wunden mit Status, andauernde Folgen; von dort Versorgen und Getroffen (Zone vorbelegt).
@@ -320,14 +320,14 @@ Regeln: [§ 4.4](#44-die-leiter). Ziel: höchstens zwei Handgriffe pro Runde; al
 - **Nachbarstufen antippen** dreht ebenfalls um eine Stufe (für alle, die nicht wischen können oder wollen).
 - **Antippen der Mitte** öffnet das **Detail** als Blatt von unten: Steps je Gruppe (mit den Stats), Symptome im Volltext, **Senken**, **Verbündete verschieben**, **Rückgängig** (letzte Änderung, auch aus den Abläufen). Wischen nach unten schließt es.
 - **Rückgängig** nimmt nur den Stand zurück (und ob in der Runde gesenkt wurde), nicht die Rundenzahl. Es reicht zurück bis zum Anfang der laufenden Runde bzw. bis zum gerade abgeschlossenen Rundenende; den Start des Gefechts nimmt es nicht zurück.
-- **Nächste Runde** und **Gefecht beenden** stehen nicht am Rad, sondern als kleine Knöpfe in der Kopfzeile neben „Gefecht · Runde n“ ([§ 3.0e](#30e-gefecht-und-ruhe-m)).
+- **Nächste Runde** und **Gefecht beenden** stehen nicht am Rad, sondern als kleine Knöpfe in der Kopfzeile rechts neben der Angabe „Runde n · Initiative“ ([§ 3.0e](#30e-gefecht-und-ruhe-m)).
 
 **Folgen im Bogen.**
 - **Stats:** In der Step-Reihe jedes Stats ist der Wert hervorgehoben, der mit den Steps der Leiter gilt; die Markierung ♥ zeigt, dass Adrenalin bzw. Ruhepuls mitwirkt ([§ 3.0b](#30b-herkunft-von-werten-a-r)).
 - **Rechner:** Proben- und Schussrechner rechnen die Leiter automatisch ein. Ab Adrenalin 1 bietet der Schussrechner keine Ansage an; die Symptome Empfindlich und Schmerz ignorieren gehen in die Stagger-Prüfung ein ([§ 3.10](#310-treffer-wunden-und-blutung-m-r)).
 - **Over the Edge:** deutliches Banner „Over the Edge: nur 1 Aktion pro Runde“; der Adrenalinschock wird für das Gefechtsende vorgemerkt. Nimmt der Spieler die Änderung auf Over the Edge zurück, entfällt die Vormerkung.
 - **Kopfzeile:** Adrenalin bzw. Ruhepuls als farbiger Chip neben dem Namen (bei 0 nichts); Adrenalinschock als Chip. Antippen des Chips Adrenalinschock fragt, ob die Ruhe aus `regeln.json` (4 Stunden ununterbrochen) erfüllt ist, und beendet ihn.
-- **Initiative:** Bis die Aktionsleiste kommt ([§ 3.7a](#37a-aktionsleiste-m-r)), steht das Ergebnis in der Gefechtszeile der Kopfzeile („Initiative: Erfolg · 54“); Antippen öffnet die Initiative erneut. „Später“ schließt die Initiative ohne Eintrag; dann steht dort „Initiative würfeln“.
+- **Initiative:** Bis die Aktionsleiste kommt ([§ 3.7a](#37a-aktionsleiste-m-r)), steht das Ergebnis in der Gefechtszeile der Kopfzeile links neben Nächste Runde und Gefecht beenden („Runde 2 · Initiative“ klein darüber, „Erfolg · 54“ darunter); Antippen öffnet die Initiative erneut. „Später“ schließt die Initiative ohne Eintrag; dann steht dort „würfeln“.
 
 **Abläufe als Knöpfe.**
 - **Gefecht starten:** Auswahl normal / überrascht → Anzeige von Zielwert und Krit-Schwelle der Nerve-Probe → Ergebnis antippen (Krit / gelungen / misslungen) → Leiter springt auf die Startstufe → weiter zur Initiative der ersten Runde ([§ 3.7b](#37b-initiative-und-breakaction-m-r)). Bei „überrascht“ rechnet die App in Runde 1 je 1 Malstep auf Initiative und Breakaction ein.
