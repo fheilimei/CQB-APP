@@ -1,11 +1,11 @@
 ---
 name: regelwerk-aendern
-description: Entschiedene Regelfragen aus docs/offen.md ins Regelwerk-Repo CQB (GitHub fheilimei/CQB) eintragen und als Pull Request vorschlagen. Laden, wenn der Nutzer sagt „Trag die entschiedenen Regelfragen ins Regelwerk ein“, „Regelwerk ändern“ oder /regelwerk-aendern. Optional mit Nummern (z. B. /regelwerk-aendern R30 R31).
+description: Entschiedene Regelfragen aus docs/offen.md ins Regelwerk-Repo CQB (GitHub fheilimei/CQB) eintragen und direkt auf main hochladen. Laden, wenn der Nutzer sagt „Trag die entschiedenen Regelfragen ins Regelwerk ein“, „Regelwerk ändern“ oder /regelwerk-aendern. Optional mit Nummern (z. B. /regelwerk-aendern R30 R31).
 ---
 
 # Regelwerk ändern
 
-Überträgt entschiedene Regelfragen aus `docs/offen.md` in das Regelwerk im Repo **CQB** (`fheilimei/CQB`, Zweig `main`). Das Regelwerk ist der Text des Nutzers. Deshalb werden Änderungen nur als **Pull Request** vorgeschlagen und nie direkt auf `main` geschrieben.
+Überträgt entschiedene Regelfragen aus `docs/offen.md` in das Regelwerk im Repo **CQB** (`fheilimei/CQB`, Zweig `main`). Änderungen werden direkt auf `main` hochgeladen (so vom Nutzer gewünscht, 18.11.2026).
 
 `regelwerk/` in diesem Repo bleibt unangetastet. Es ist nur eine Kopie.
 
@@ -20,7 +20,6 @@ Gibt es keine Kandidaten, sag das in einem Satz und hör auf.
 ```bash
 D=/home/fritz/Claude/CQB
 [ -d "$D" ] && git -C "$D" checkout main && git -C "$D" pull --rebase || gh repo clone fheilimei/CQB "$D"
-git -C "$D" checkout -b regelfragen-$(date +%Y%m%d-%H%M)
 ```
 
 Ordner, die mit `Sicherungskopie_` beginnen, und `.base`-Dateien nicht anfassen.
@@ -33,23 +32,21 @@ Für jeden Kandidaten:
 - Nur das ändern, was die Entscheidung verlangt. Keine Umformulierungen nebenbei.
 - Ist die passende Stelle unklar oder müsste ein größerer Abschnitt umgebaut werden: den Eintrag auslassen und den Nutzer am Ende fragen.
 
-## 4. Vorschlagen
+## 4. Hochladen
 
 Ein Commit pro Regelfrage, Nachricht auf Deutsch, zum Beispiel „Deckung: Rumpfzonen werden einzeln verdeckt (R31)“. Danach:
 
 ```bash
-git -C "$D" push -u origin HEAD
-gh pr create -R fheilimei/CQB --base main --title "Regelfragen aus der App: R…, R…" --body "<je Regel ein Satz: was steht jetzt wo>"
+git -C "$D" pull --rebase && git -C "$D" push
 ```
 
 ## 5. In der App nachführen
 
-In `docs/offen.md` bei jedem übertragenen Eintrag „noch offen“ ersetzen durch **„vorgeschlagen (PR #<Nummer>, <Datum>)“**. Commit und Push in diesem Repo nach den Regeln in CLAUDE.md.
+In `docs/offen.md` bei jedem übertragenen Eintrag „noch offen“ ersetzen durch **„eingetragen (<Datum>)“**. Commit und Push in diesem Repo nach den Regeln in CLAUDE.md.
 
 ## 6. Bericht an den Nutzer
 
 In einfachem Deutsch:
 - je Regel ein Satz: was jetzt wo im Regelwerk steht
-- der Link zum Pull Request und der Hinweis: „Auf GitHub durchlesen und mit ‚Merge‘ annehmen.“
 - ausgelassene Einträge mit Grund
-- Nach dem Annehmen kann der Nutzer sagen „Übernimm das aktuelle Regelwerk“. Dann bei diesen Einträgen „vorgeschlagen“ durch „eingetragen“ ersetzen.
+- der Hinweis: Mit „Übernimm das aktuelle Regelwerk“ kommt die neue Fassung in die App.
