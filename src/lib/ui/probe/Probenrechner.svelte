@@ -115,6 +115,6 @@
   .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--abstand-2); }
   .stats button { display: flex; flex-direction: column; align-items: flex-start; padding: var(--abstand-1) var(--abstand-2); min-height: 52px; }
   .name { font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
-  .wert { font-weight: 700; font-size: 1.1rem; }
+  .wert { font-weight: 400; font-size: 1.1rem; }
 
 </style>

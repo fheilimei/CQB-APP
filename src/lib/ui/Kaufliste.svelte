@@ -70,5 +70,5 @@
   .zeile { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: var(--abstand-3); text-align: left; padding: var(--abstand-2) var(--abstand-3); }
   .links { display: flex; flex-direction: column; min-width: 0; }
   .links .hinweis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .kosten { white-space: nowrap; font-weight: 600; }
+  .kosten { white-space: nowrap; font-weight: 400; }
 </style>

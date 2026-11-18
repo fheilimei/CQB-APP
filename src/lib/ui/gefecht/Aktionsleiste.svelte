@@ -75,8 +75,8 @@
   .trenner { width: 1px; align-self: stretch; background: var(--linie); }
   .aktion { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px 2px; min-height: 60px; line-height: 1.1;
     touch-action: manipulation; }
-  .aktion .name { font-weight: 700; font-size: 0.95rem; }
-  .aktion .zahl { position: absolute; top: 3px; right: 5px; font-size: 0.8rem; font-weight: 800; background: var(--akzent); color: var(--akzent-text);
+  .aktion .name { font-weight: 400; font-size: 0.95rem; }
+  .aktion .zahl { position: absolute; top: 3px; right: 5px; font-size: 0.8rem; font-weight: 400; background: var(--akzent); color: var(--akzent-text);
     border-radius: 999px; min-width: 1.4em; padding: 0 4px; }
   .aktion small { font-size: 0.7rem; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; min-height: 1em; }
   .aktion.leer { opacity: 0.45; }

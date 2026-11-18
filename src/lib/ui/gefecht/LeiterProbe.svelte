@@ -74,5 +74,5 @@
 {/if}
 
 <style>
-  .ergebnis { font-weight: 700; }
+  .ergebnis { font-weight: 400; }
 </style>

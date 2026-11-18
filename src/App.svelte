@@ -493,7 +493,7 @@
   .titel strong, .banner { font-family: var(--schrift-titel); font-weight: 400; font-synthesis: none; text-transform: uppercase; letter-spacing: 0.03em; }
   .titel strong { font-size: 1.15rem; }
   .modus { margin-left: auto; display: flex; align-items: center; gap: 8px; }
-  .status.an { color: var(--akzent); box-shadow: inset 0 0 0 2px var(--akzent); font-weight: 600; }
+  .status.an { color: var(--akzent); box-shadow: inset 0 0 0 2px var(--akzent); font-weight: 400; }
   .klein { min-height: 40px; padding: 0 12px; }
   .status { font-size: 0.8rem; padding: 2px 8px; border-radius: 999px; background: var(--flaeche-2); color: var(--text-2); }
   .bogen { flex: 1; padding: var(--abstand-3); display: flex; flex-direction: column; gap: var(--abstand-3); }
@@ -503,18 +503,18 @@
   .unten.im-gefecht { border-top: 2px solid var(--akzent); }
   .toast { position: absolute; left: 16px; right: 16px; bottom: calc(100% + 8px); z-index: 15; }
   .rueck { display: flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 8px; padding: 4px 4px 4px 16px; }
-  .banner { background: var(--flaeche); color: var(--gefahr); border-top: 2px solid var(--gefahr); text-align: center; font-weight: 700; padding: var(--abstand-1); }
+  .banner { background: var(--flaeche); color: var(--gefahr); border-top: 2px solid var(--gefahr); text-align: center; font-weight: 400; padding: var(--abstand-1); }
   .kopfzeile { flex-wrap: wrap; }
   .titel { flex-wrap: wrap; }
   .chip-klein { font-size: 0.8rem; padding: 2px 8px; border-radius: 999px; color: #fff; white-space: nowrap; min-height: 0; min-width: 0; }
   .chip-klein.zustand { background: #7d3c98; border: none; min-height: 32px; }
   /* Runde und Initiative als Info oben rechts in der Kopfzeile; antippbar (öffnet die Initiative). */
   .initiative { padding: 0 var(--abstand-1); min-height: 40px; display: flex; flex-direction: column; align-items: flex-end; justify-content: center;
-    line-height: 1.15; text-align: right; font-weight: 600; font-size: 0.9rem; }
+    line-height: 1.15; text-align: right; font-weight: 400; font-size: 0.9rem; }
   .initiative span { font-family: var(--schrift-zahl); }
   .initiative small { font-size: 0.75rem; font-weight: 400; color: var(--text-2); }
   .update { position: fixed; left: 16px; right: 16px; bottom: calc(72px + env(safe-area-inset-bottom)); z-index: 50;
     display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: var(--abstand-3); }
   .datenfehler { margin: var(--abstand-2) var(--abstand-3) 0; border-color: var(--gefahr); display: block; }
-  .datenfehler summary { color: var(--gefahr); font-weight: 600; min-height: 44px; display: flex; align-items: center; }
+  .datenfehler summary { color: var(--gefahr); font-weight: 400; min-height: 44px; display: flex; align-items: center; }
 </style>

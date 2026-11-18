@@ -118,7 +118,7 @@
   .knoepfe { display: flex; align-items: center; gap: var(--abstand-2); }
   .neu { border-top: 1px solid var(--linie); padding-top: var(--abstand-1); }
   .neu[open] > .stapel { padding-bottom: var(--abstand-2); }
-  .neu summary { min-height: 44px; display: flex; align-items: center; justify-content: space-between; font-weight: 600; cursor: pointer; }
+  .neu summary { min-height: 44px; display: flex; align-items: center; justify-content: space-between; font-weight: 400; cursor: pointer; }
   .wahl { display: flex; align-items: center; justify-content: space-between; gap: var(--abstand-2); }
   .breit { width: 100%; }
 </style>

@@ -52,5 +52,5 @@
   .stats { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--abstand-2); }
   .stats li { padding: var(--abstand-3); }
   .kopf, .ergebnis { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-  .statwert { font-size: 1.3rem; font-weight: 700; }
+  .statwert { font-size: 1.3rem; font-weight: 400; }
 </style>

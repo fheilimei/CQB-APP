@@ -365,12 +365,12 @@
 <style>
   .name { display: flex; flex-direction: column; min-width: 0; }
   .stand { text-align: right; font-family: var(--schrift-zahl); font-variant-numeric: tabular-nums; white-space: nowrap; display: flex; flex-direction: column; align-items: flex-end; }
-  .aktiv-text { color: var(--akzent); font-weight: 700; }
+  .aktiv-text { color: var(--akzent); font-weight: 400; }
   li.aktiv .zeile strong { color: var(--akzent); }
-  .lh { color: var(--gefahr); font-size: 0.8rem; font-weight: 700; }
+  .lh { color: var(--gefahr); font-size: 0.8rem; font-weight: 400; }
   .knoepfe { display: flex; flex-wrap: wrap; gap: var(--abstand-2); }
   .bearbeiten { display: flex; flex-direction: column; gap: var(--abstand-3); border-top: 1px dashed var(--linie); padding-top: var(--abstand-3); }
-  .bearbeiten label:not(.schalter) { margin: 0; display: flex; flex-direction: column; gap: var(--abstand-1); font-weight: 600; }
+  .bearbeiten label:not(.schalter) { margin: 0; display: flex; flex-direction: column; gap: var(--abstand-1); font-weight: 400; }
   fieldset { border: 1px solid var(--linie); border-radius: var(--radius); margin: 0; }
   .neu { display: flex; gap: var(--abstand-2); }
   .neu select { flex: 1; min-width: 0; }

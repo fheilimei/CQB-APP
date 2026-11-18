@@ -93,7 +93,7 @@
 
 <style>
   .pool { display: flex; flex-wrap: wrap; gap: var(--abstand-2); min-height: 48px; }
-  .rang { font-weight: 700; font-size: 1.1rem; min-width: 48px; padding: 0 12px; }
+  .rang { font-weight: 400; font-size: 1.1rem; min-width: 48px; padding: 0 12px; }
   .stats { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--abstand-2); }
   .zeile { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 8px; text-align: left; }
   .ohne { margin: 0; font-weight: 400; }

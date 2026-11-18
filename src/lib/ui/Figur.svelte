@@ -64,8 +64,10 @@
 
 <section class="karte">
   <div class="hp" aria-label="Lebenspunkte {hp} von {hpMax}">
-    <span class="zahl"><strong>HP {hp}</strong> / {hpMax}</span>
-    <div class="balken"><div class="fuellung" class:niedrig={hp <= hpMax / 4} style:width="{Math.max(0, Math.min(1, hp / hpMax)) * 100}%"></div></div>
+    <div class="hp-zeile">
+      <span class="zahl"><strong>HP {hp}</strong> / {hpMax}</span>
+      <div class="balken"><div class="fuellung" class:niedrig={hp <= hpMax / 4} style:width="{Math.max(0, Math.min(1, hp / hpMax)) * 100}%"></div></div>
+    </div>
     {#if blutend}
       <small class="warnung">{blutend === 1 ? 'Eine Wunde blutet' : `${blutend} Wunden bluten`}. Tippe die rote Stelle an, um zu versorgen.</small>
     {/if}
@@ -88,11 +90,15 @@
         <Haltungsanzeige g={gefechtVon(c)!} {d} />
       {/if}
       <div class="knoepfe">
+        <!-- Bildzeichen: Mauer für Deckung, Einschlag für Getroffen. Beide in der Textschrift wie Nächste Runde und Gefecht beenden. -->
         <button class:betont={!!deckungJetzt} onclick={ondeckung}
           aria-label={deckungJetzt ? `Deckung mit Schutz ${deckungJetzt.wert} ändern` : 'Deckung eintragen'}>
+          <svg class="zeichen" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3h6v3H1zM8 3h7v3H8zM1 7h3v3H1zM5 7h6v3H5zM12 7h3v3h-3zM1 11h6v3H1zM8 11h7v3H8z" /></svg>
           Deckung{#if deckungJetzt} {deckungJetzt.wert}{/if}
         </button>
-        <button class="betont" onclick={ongetroffen}>Getroffen</button>
+        <button class="betont" onclick={ongetroffen}>
+          <svg class="zeichen" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0l1.4 4.6L13.7 2.3 11.4 6.6 16 8l-4.6 1.4 2.3 4.3-4.3-2.3L8 16l-1.4-4.6-4.3 2.3 2.3-4.3L0 8l4.6-1.4L2.3 2.3l4.3 2.3z" /></svg>
+          Getroffen</button>
       </div>
     </div>
   </div>
@@ -154,7 +160,10 @@
 <style>
   .hp { display: flex; flex-direction: column; gap: var(--abstand-1); }
   .zahl strong { font-size: 1.4rem; }
-  .balken { height: 10px; border-radius: 999px; background: var(--flaeche-2); overflow: hidden; border: 1px solid var(--linie); }
+  /* HP-Zahl links, Balken rechts daneben auf der restlichen Breite. */
+  .hp-zeile { display: flex; align-items: center; gap: var(--abstand-3); }
+  .hp-zeile .zahl { flex: none; }
+  .balken { flex: 1 1 auto; height: 10px; border-radius: 999px; background: var(--flaeche-2); overflow: hidden; border: 1px solid var(--linie); }
   .fuellung { height: 100%; background: var(--ok); }
   .fuellung.niedrig { background: var(--gefahr); }
   .warnung { margin: 0; }
@@ -165,7 +174,8 @@
   .seite { flex: 0 0 auto; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; gap: var(--abstand-2); margin-left: auto; }
   /* margin-top: auto hält die Knöpfe unten, auch in Ruhe, wenn oben keine Haltungsanzeige steht. */
   .knoepfe { display: flex; flex-direction: column; gap: var(--abstand-2); align-self: stretch; margin-top: auto; }
-  .knoepfe button { width: 100%; padding: 0 var(--abstand-2); }
+  .knoepfe button { width: 100%; padding: 0 var(--abstand-2); display: inline-flex; align-items: center; justify-content: center; gap: var(--abstand-2);
+    font-family: var(--schrift-text); text-transform: none; letter-spacing: normal; }
   .mitte { text-align: center; }
   .gefecht-knoepfe { display: flex; gap: var(--abstand-2); }
   .gefecht-knoepfe button { flex: 1 1 0; display: inline-flex; align-items: center; justify-content: center; gap: var(--abstand-2); }

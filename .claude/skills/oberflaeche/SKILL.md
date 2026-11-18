@@ -40,6 +40,8 @@ Rückmeldung des Nutzers vom 17.11.2026:
 - **Nur das Nötigste im Dialog Deckung** (18.11.2026): Deckung entsteht nur durch Antippen der Zonen, keine Deckungskante, kein Knopf „Keine Deckung“ (alle Zonen freigeben genügt). Fehlt der Wert: „Wähle einen Deckungswert oder eine Deckung aus.“
 - **Figur links, Knöpfe rechts daneben** (18.11.2026, Reiter Figur): Silhouette nicht mittig, sondern links; rechts eine Spalte mit Stand über Bewegung (untereinander) oben und Deckung über Getroffen (gleich breit) unten. Beide auch in Ruhe an derselben Stelle (auch außerhalb des Gefechts kann man in Deckung sein; der Dialog Getroffen braucht das).
 - **Schriften** (18.11.2026): Text IBM Plex Mono, Zahlen Share Tech Mono, Überschriften/Ansagen/Hauptknöpfe Saira Stencil One (Großbuchstaben). Nur über die Variablen `--schrift-text`, `--schrift-zahl`, `--schrift-titel` aus `app.css`, nie Schriftnamen in Komponenten. Neue Werte-Anzeigen bekommen die Klasse `.zahl`. Schablonenschrift nie für kleine Knöpfe oder Fließtext.
+- **Vorerst nichts fett** (18.11.2026): Text, Überschriften, Werte und Knöpfe alle in normaler Stärke. Was fett sein soll, sagt der Nutzer einzeln; nicht eigenmächtig Fettschrift einsetzen. Hervorhebung über Rahmen, Fläche, Größe oder Zeichen.
+- **Knöpfe neben der Figur** (18.11.2026): HP-Balken rechts neben der HP-Zahl. Deckung und Getroffen mit kleinem Bildzeichen (Mauer, Einschlag) und in der Textschrift wie Nächste Runde und Gefecht beenden, auch wenn sie betont sind.
 - Besonders aufgefallen: **Waffe wechseln** (`gefecht/WaffeWechseln.svelte`) und **Schießen** (`gefecht/Schiessen.svelte`).
 
 Jede Arbeit an der Oberfläche muss diese Punkte verbessern oder darf sie zumindest nicht verschlimmern.

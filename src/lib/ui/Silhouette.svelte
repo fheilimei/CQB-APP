@@ -117,10 +117,10 @@
   .verdeckt { pointer-events: none; }
   .schraffur { stroke: var(--deckung); stroke-width: 3; }
   text { text-anchor: middle; dominant-baseline: middle; fill: var(--text); pointer-events: none; }
-  .name { font-size: 11px; font-weight: 600; }
-  .zone.gewaehlt .name { font-weight: 800; }
+  .name { font-size: 11px; font-weight: 400; }
+  .zone.gewaehlt .name { font-weight: 400; }
   .schutz { font-size: 10px; fill: var(--text-2); }
-  .zeichen { font-size: 15px; font-weight: 800; }
+  .zeichen { font-size: 15px; font-weight: 400; }
   /* Wunden: rot gefüllt = blutet, grau = versorgt, zusätzlicher roter Ring = kritisch. */
   .wunde.blutet { fill: var(--gefahr); }
   .wunde.versorgt { fill: var(--text-2); }

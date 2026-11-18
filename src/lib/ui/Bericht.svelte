@@ -19,5 +19,5 @@
 </Dialog>
 
 <style>
-  .fett { font-weight: 700; }
+  .fett { font-weight: 400; }
 </style>

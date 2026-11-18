@@ -401,10 +401,10 @@
   .stat { padding: var(--abstand-1) 0; }
   .statname { display: flex; align-items: center; flex-wrap: wrap; gap: var(--abstand-1) var(--abstand-2); min-width: 0; hyphens: auto; overflow-wrap: anywhere; }
   /* Rang: kleine umrandete Marke am Namen, sieht anders aus als Werte und Steps. */
-  .rang { font-size: 0.75rem; font-weight: 700; line-height: 1; padding: 3px 6px; border: 1px solid var(--text-2); border-radius: 6px; color: var(--text-2); }
+  .rang { font-size: 0.75rem; font-weight: 400; line-height: 1; padding: 3px 6px; border: 1px solid var(--text-2); border-radius: 6px; color: var(--text-2); }
   .statwert { font-size: 1.35rem; text-align: right; white-space: nowrap; }
   .step { text-align: right; font-size: 0.85rem; color: var(--text-2); }
-  .gilt { outline: 2px solid var(--akzent); outline-offset: 1px; border-radius: 4px; color: var(--text); font-weight: 700; }
+  .gilt { outline: 2px solid var(--akzent); outline-offset: 1px; border-radius: 4px; color: var(--text); font-weight: 400; }
   .kopfreihe { font-size: 0.75rem; color: var(--text-2); border-bottom: 1px solid var(--linie); padding-bottom: 2px; }
   .kopfreihe > span { text-align: right; }
 

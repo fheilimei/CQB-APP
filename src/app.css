@@ -60,16 +60,18 @@ html, body { margin: 0; height: 100%; }
 body { background: var(--hg); color: var(--text); -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
 /* Monospace-Text ist breit: lange Wörter umbrechen statt über den Rand ragen. */
 body { overflow-wrap: break-word; }
+/* Vorerst nichts fett (Wunsch 18.11.2026); was fett sein soll, legt der Nutzer einzeln fest. */
+h1, h2, h3, h4, h5, h6, strong, b, th, legend, summary { font-weight: 400; }
 /* Zahlen: gleich breite Ziffern, damit Werte untereinander stehen. */
 .zahl, .zeilen .wert, .stepper strong, table.rechnung td:last-child { font-family: var(--schrift-zahl); font-variant-numeric: tabular-nums; }
 .zahl .hinweis { font-family: var(--schrift-text); }
 #app { min-height: 100%; display: flex; flex-direction: column; }
 button { font: inherit; color: inherit; min-height: var(--tipp); min-width: var(--tipp); border-radius: var(--radius);
   border: 1px solid var(--linie); background: var(--flaeche); padding: 0 16px; cursor: pointer; }
-button.haupt { background: var(--akzent); color: var(--akzent-text); border-color: transparent; font-weight: 600; }
+button.haupt { background: var(--akzent); color: var(--akzent-text); border-color: transparent; font-weight: 400; }
 button.gefahr { color: var(--gefahr); border-color: var(--gefahr); }
 /* Hervorgehoben, aber nicht gefüllt: Akzentrahmen und Akzentschrift (z. B. Gefecht starten). */
-button.betont { color: var(--akzent); border: 2px solid var(--akzent); background: transparent; font-weight: 600; }
+button.betont { color: var(--akzent); border: 2px solid var(--akzent); background: transparent; font-weight: 400; }
 button.betont.warnung { color: var(--gefahr); border-color: var(--gefahr); }
 button.flach { border-color: transparent; background: transparent; }
 button:disabled { opacity: 0.45; cursor: default; }
@@ -77,16 +79,16 @@ button:disabled { opacity: 0.45; cursor: default; }
 button:not(:disabled):active { filter: brightness(0.88); transform: scale(0.97); }
 @media (prefers-reduced-motion: reduce) { button:not(:disabled):active { transform: none; } }
 /* Gewählte Auswahl: überall gleich, hängt am Zustand aria-pressed. Rahmen + Fläche + Fettschrift, nicht nur Farbe. */
-button[aria-pressed='true'] { border: 2px solid var(--akzent); background: var(--gewaehlt); font-weight: 700; }
+button[aria-pressed='true'] { border: 2px solid var(--akzent); background: var(--gewaehlt); font-weight: 400; }
 /* Ansage eines Ergebnisses (Krit, Erfolg, Misserfolg, Ladehemmung). */
-.ansage { font-size: 1.8rem; font-weight: 800; text-align: center; margin: 0; padding: var(--abstand-3); border-radius: var(--radius);
+.ansage { font-size: 1.8rem; font-weight: 400; text-align: center; margin: 0; padding: var(--abstand-3); border-radius: var(--radius);
   background: var(--flaeche); }
 .ansage.krit, .ansage.erfolg { color: var(--ok); }
 .ansage.misserfolg, .ansage.fehler { color: var(--gefahr); }
 button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--akzent); outline-offset: 2px; }
 input, textarea, select { font: inherit; color: inherit; background: var(--flaeche); border: 1px solid var(--linie);
   border-radius: var(--radius); padding: 12px; width: 100%; min-height: var(--tipp); }
-label { display: block; font-weight: 600; margin: 16px 0 6px; }
+label { display: block; font-weight: 400; margin: 16px 0 6px; }
 .hinweis { color: var(--text-2); font-size: 0.9rem; }
 .fehler { color: var(--gefahr); }
 .karte { background: var(--flaeche); border: 1px solid var(--linie); border-radius: var(--radius); padding: var(--abstand-3);
@@ -122,21 +124,21 @@ summary::-webkit-details-marker { display: none; }
 .schalter { display: flex; align-items: center; gap: 8px; margin: 0; font-weight: 400; min-height: 44px; }
 .schalter input { width: 22px; height: 22px; min-height: 0; accent-color: var(--akzent); }
 /* Eingeschalteter Schalter: ganze Zeile hervorgehoben, nicht nur das Häkchen. */
-.schalter:has(input:checked) { font-weight: 700; }
+.schalter:has(input:checked) { font-weight: 400; }
 button.link { padding: 0 4px; min-height: 44px; min-width: 0; text-decoration: underline; text-underline-offset: 3px; text-align: left; }
 table.rechnung { width: 100%; border-collapse: collapse; margin: 4px 0 8px; }
 table.rechnung td { padding: 2px 0; }
 table.rechnung td:last-child { text-align: right; white-space: nowrap; }
-table.rechnung tr.summe td { border-top: 1px solid var(--linie); font-weight: 700; padding-top: 6px; }
+table.rechnung tr.summe td { border-top: 1px solid var(--linie); font-weight: 400; padding-top: 6px; }
 
 /* Gliederung eines Bildschirms: Abschnitte mit Überschrift, darin Gruppen (Überschrift + Elemente). */
 .abschnitte { display: flex; flex-direction: column; gap: var(--abstand-4); }
 .abschnitt { display: flex; flex-direction: column; gap: var(--abstand-3); margin: 0; }
 .abschnitt + .abschnitt:not(.wuerfelbereich) { border-top: 1px solid var(--linie); padding-top: var(--abstand-4); }
-.abschnitt-titel { margin: 0; font-size: 1.05rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; gap: var(--abstand-2); }
+.abschnitt-titel { margin: 0; font-size: 1.05rem; font-weight: 400; display: flex; justify-content: space-between; align-items: center; gap: var(--abstand-2); }
 .gruppe { display: flex; flex-direction: column; gap: var(--abstand-2); }
 .gruppe > p, .abschnitt > p { margin: 0; }
-.gruppe-titel { margin: 0; font-size: 0.9rem; font-weight: 600; color: var(--text-2); }
+.gruppe-titel { margin: 0; font-size: 0.9rem; font-weight: 400; color: var(--text-2); }
 /* Auswahl als Reihe von Knöpfen (Chips); optional mit kleiner Unterzeile (small). */
 .auswahlreihe { display: flex; flex-wrap: wrap; gap: var(--abstand-2); }
 .auswahlreihe button { padding: var(--abstand-1) var(--abstand-3); display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.2; }
@@ -154,7 +156,7 @@ table.rechnung tr.summe td { border-top: 1px solid var(--linie); font-weight: 70
 .umschalter { display: flex; border: 1px solid var(--linie); border-radius: var(--radius); overflow: hidden; background: var(--flaeche); }
 .wuerfelbereich .umschalter { border-color: var(--wuerfel-rand); }
 .umschalter button { border: none; border-radius: 0; background: transparent; padding: 0 var(--abstand-3); font-weight: 400; }
-.umschalter button[aria-pressed='true'] { border: none; background: var(--gewaehlt); font-weight: 700; box-shadow: inset 0 -3px 0 var(--akzent); }
+.umschalter button[aria-pressed='true'] { border: none; background: var(--gewaehlt); font-weight: 400; box-shadow: inset 0 -3px 0 var(--akzent); }
 
 /* Liste zum Antippen (Optionen, Waffen): Karten untereinander, Name oben, Unterzeile klein. */
 .auswahlliste { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--abstand-2); }
@@ -165,10 +167,10 @@ table.rechnung tr.summe td { border-top: 1px solid var(--linie); font-weight: 70
 /* Auswahlreihe mit gleich breiten Knöpfen (z. B. drei Stände). */
 .auswahlreihe.gleich { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; }
 .auswahlreihe.gleich button { padding-left: var(--abstand-1); padding-right: var(--abstand-1); }
-.warnung { color: var(--gefahr); font-weight: 700; }
+.warnung { color: var(--gefahr); font-weight: 400; }
 
 /* Eingabefeld mit Beschriftung: Beschriftung umschließt das Feld, beide eng beieinander. */
-label.feld { display: flex; flex-direction: column; gap: var(--abstand-1); margin: 0; font-weight: 600; }
+label.feld { display: flex; flex-direction: column; gap: var(--abstand-1); margin: 0; font-weight: 400; }
 label.feld > :is(input, select, textarea) { font-weight: 400; }
 /* Stapel: Inhalte untereinander mit Gruppenabstand (z. B. Seite der Erstellung, aufgeklappte Karte). */
 .stapel { display: flex; flex-direction: column; gap: var(--abstand-3); }

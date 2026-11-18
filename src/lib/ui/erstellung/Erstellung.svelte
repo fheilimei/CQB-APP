@@ -130,7 +130,7 @@
   .fortschritt { list-style: none; display: grid; grid-template-columns: repeat(7, 1fr); margin: 8px 0 0; padding: 0; }
   .fortschritt button { width: 100%; padding: 0; min-width: 0; }
   .punkt { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%;
-    border: 2px solid var(--linie); font-size: 0.85rem; font-weight: 600; }
+    border: 2px solid var(--linie); font-size: 0.85rem; font-weight: 400; }
   .aktuell .punkt { border-color: var(--akzent); background: var(--akzent); color: var(--akzent-text); }
   .fertig .punkt { border-color: var(--ok); color: var(--ok); }
   h2 { margin: var(--abstand-1) 0 var(--abstand-2); font-size: 1.15rem; }
@@ -138,5 +138,5 @@
   .inhalt > :global(*) { margin: 0; }
   footer { display: grid; grid-template-columns: 1fr 2fr; gap: 12px; padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
     border-top: 1px solid var(--linie); background: var(--flaeche); position: sticky; bottom: 0; z-index: 5; }
-  footer .fehlt { background: var(--flaeche-2); color: var(--text); font-weight: 500; }
+  footer .fehlt { background: var(--flaeche-2); color: var(--text); font-weight: 400; }
 </style>

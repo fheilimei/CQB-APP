@@ -167,7 +167,7 @@
   .liste li { display: flex; align-items: center; border-radius: var(--radius); }
   .liste li.aktiv { background: var(--flaeche-2); }
   .zeile { flex: 1; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; text-align: left; padding: 6px 12px; }
-  .name { font-weight: 600; }
+  .name { font-weight: 400; }
   /* Aufgeklappte Aktionen: eingerückt, mit Linie links, damit sie sichtbar zum Charakter darüber gehören. */
   .aktionen { gap: var(--abstand-2); flex-wrap: wrap; margin: var(--abstand-1) 0 var(--abstand-2) var(--abstand-3);
     padding-left: var(--abstand-2); border-left: 2px solid var(--akzent); border-radius: 0; }
