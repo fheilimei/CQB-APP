@@ -21,7 +21,7 @@
   --wuerfel-flaeche: #e9eef5;
   --wuerfel-rand: #9fb0c8;
   /* Körperbild: leere Zone und Vorschau eines Treffers (gestoppt, Wuchttreffer, Durchschlag). */
-  --zone-leer: #ebebe6; --treffer-gestoppt: #c3c7cf; --treffer-wucht: #f3d36b; --treffer-durchschlag: #ec8a82;
+  --zone-leer: #ebebe6; --deckung: #4f6584; --treffer-gestoppt: #c3c7cf; --treffer-wucht: #f3d36b; --treffer-durchschlag: #ec8a82;
   color-scheme: light;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   font-size: 16px;
@@ -32,7 +32,7 @@
     --hg: #121418; --flaeche: #1c1f25; --flaeche-2: #262a31; --text: #ececec; --text-2: #a4a9b2;
     --linie: #343944; --akzent: #f07a2e; --akzent-text: #16181d; --gefahr: #f2786f; --ok: #6cc070;
     --gewaehlt: #4a2d18; --wuerfel-flaeche: #1d2737; --wuerfel-rand: #4c6284;
-    --zone-leer: #2b3038; --treffer-gestoppt: #4b515c; --treffer-wucht: #8a7224; --treffer-durchschlag: #8e3a33;
+    --zone-leer: #2b3038; --deckung: #a3b4cc; --treffer-gestoppt: #4b515c; --treffer-wucht: #8a7224; --treffer-durchschlag: #8e3a33;
     color-scheme: dark;
   }
 }
@@ -40,7 +40,7 @@
   --hg: #121418; --flaeche: #1c1f25; --flaeche-2: #262a31; --text: #ececec; --text-2: #a4a9b2;
   --linie: #343944; --akzent: #f07a2e; --akzent-text: #16181d; --gefahr: #f2786f; --ok: #6cc070;
   --gewaehlt: #4a2d18; --wuerfel-flaeche: #1d2737; --wuerfel-rand: #4c6284;
-    --zone-leer: #2b3038; --treffer-gestoppt: #4b515c; --treffer-wucht: #8a7224; --treffer-durchschlag: #8e3a33;
+    --zone-leer: #2b3038; --deckung: #a3b4cc; --treffer-gestoppt: #4b515c; --treffer-wucht: #8a7224; --treffer-durchschlag: #8e3a33;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }

@@ -46,8 +46,9 @@
   $effect.pre(() => { if (!typen.includes(typ)) typ = typen[0] ?? ''; });
   const munTyp = $derived(kal?.typen[typ]);
   const deckungen = $derived([...d.schutz.deckung].sort((a, b) => a.wert - b.wert));
-  /** Deckung aus dem Gefecht, sobald sie dort gesetzt ist; sonst die Angabe in diesem Dialog. */
-  const gefechtsDeckung = $derived(!!gefechtVon(c)?.deckung);
+  /** Im Gefecht gilt die Deckung auf der Figur (konzept.md § 3.9); außerhalb die Angabe in diesem Dialog. */
+  const gefechtsDeckung = $derived(imGefecht);
+  const deckungAufFigur = $derived(gefechtVon(c)?.deckung ?? null);
   const handDeckung = $derived(deckungen.find((x) => x.id === deckungId)?.wert ?? null);
 
   const geschoss = $derived(
@@ -244,7 +245,9 @@
             </div>
             <label class="schalter"><input type="checkbox" bind:checked={krit} /> Krit (sagt die SL an)</label>
           </div>
-          {#if !gefechtsDeckung}
+          {#if gefechtsDeckung}
+            <p class="hinweis">{deckungAufFigur ? `Deckung Schutz ${deckungAufFigur.wert} vor den schraffierten Zonen` : 'Keine Deckung eingetragen'}; ändern über den Knopf Deckung auf der Figur.</p>
+          {:else}
             <label class="feld">Deckung vor der getroffenen Zone
               <select bind:value={deckungId}>
                 <option value="">keine</option>
@@ -276,7 +279,7 @@
 
       <section class="abschnitt">
         <h3 class="abschnitt-titel">Wo trifft es dich?</h3>
-        <Silhouette {d} {farben} {zeichen} {ruestung} gewaehlt={zone} onwahl={(z) => (zone = z)} beschriftung="Getroffene Zone wählen" />
+        <Silhouette {d} verdeckt={deckungAufFigur?.zonen ?? []} {farben} {zeichen} {ruestung} gewaehlt={zone} onwahl={(z) => (zone = z)} beschriftung="Getroffene Zone wählen" />
         {#if art === 'schuss'}
           <p class="legende">
             <span class="muster gestoppt"></span>gestoppt

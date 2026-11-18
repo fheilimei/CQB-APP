@@ -279,7 +279,13 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
   "aufstieg": { "statrank_up_kosten": 1, "skill_level_kosten": 1, "skill_min": 0, "skill_max": 5, "rang_max": "S" },
   "wuerfel": { "w100_null_null": 100, "w10_null": 10 },
   "krit": { "schwelle_min": 0, "zielwert_100_zehner": 10 },
-  "deckung": { "arme_mit": "brust", "arme": ["arm_r", "arm_l"] },
+  "deckung": { "arme_mit": "brust", "arme": ["arm_r", "arm_l"],
+               "kante_unten": [ { "name": "Beine", "zonen": ["bein_r", "bein_l"] }, { "name": "Unterleib", "zonen": ["unterleib"] },
+                                { "name": "Bauch", "zonen": ["bauch"] }, { "name": "Brust", "zonen": ["brust"] }, { "name": "Kopf", "zonen": ["kopf"] } ],
+               "kante_seite": { "rechts": [ { "name": "Arm und Bein", "zonen": ["arm_r", "bein_r"] },
+                                            { "name": "Kopf und Rumpf", "zonen": ["kopf", "brust", "bauch", "unterleib"] },
+                                            { "name": "alles", "zonen": ["arm_l", "bein_l"] } ],
+                                "links": [ … ] } },
   "sprengwirkung": {
     "splitter_liegend_anteil": 0.5,
     "landepunkt": { "krit": "genau am Zielpunkt", "erfolg": "bedrängt zum Zielpunkt; die genaue Stelle legt die SL fest",
@@ -301,7 +307,7 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
 - **`initiative.ueberrascht_mit_perk`**: Perks, die die Malsteps der Überraschung auf die Initiative ersetzen (kleinster Wert gilt), z. B. Entschlossen → 0.
 - **`symptome.*.wirkung`**: was das Symptom im Regelkern bewirkt. Erlaubte Werte: `kein_stagger`, `keine_ansage`, `zweite_bewegung`, `keine_antizipation`, `zielen_als_main`, `stagger_ab_gleich`, `weitblick`, `kein_hechten`. Ein neues Symptom mit bekannter Wirkung braucht keine Codeänderung. **`symptome_nur_verluste`** (Over the Edge): Gewinne entfallen.
 - **`zustaende.*.mit_perk`**: Perk-ID → Malsteps, die mit diesem Perk statt des Standards gelten.
-- **`schiessen.schrot_rumpf_start`**: Zone der ersten Schrotkugel nach der Ansage „Rumpf“. **`deckung`**: Ist `arme_mit` verdeckt, gelten auch die Zonen in `arme` als verdeckt (Deckung und Rüstung, Deckung). **`sprengwirkung.splitter_liegend_anteil`**: Anteil der Splitterzahl für Liegende, abgerundet.
+- **`schiessen.schrot_rumpf_start`**: Zone der ersten Schrotkugel nach der Ansage „Rumpf“. **`deckung`**: Ist `arme_mit` von unten verdeckt, gelten auch die Zonen in `arme` als verdeckt (Deckung und Rüstung, Deckung). `kante_unten` und `kante_seite` sind die Stufen der Deckungskante im Dialog Deckung ([konzept.md § 3.9](konzept.md#39-schutz-a-m)): Jede Stufe verdeckt ihre Zonen und die aller Stufen davor; der Schlüssel in `kante_seite` ist die Seite des Charakters und erscheint so in der Oberfläche („Kante von rechts“). Nur eine Kante von unten zieht die Arme mit. **`sprengwirkung.splitter_liegend_anteil`**: Anteil der Splitterzahl für Liegende, abgerundet.
 
 **Leiter:** `name` ist der Text in der Oberfläche; `null` bei 0 heißt: keine Anzeige. Das Wort „Leiter“ erscheint dort nie ([konzept.md § 2](konzept.md#texte-in-der-oberfläche)). **Vorzeichen:** In `gruppe_a`/`gruppe_b` bedeutet eine positive Zahl Stepshields, eine negative Malsteps.
 
@@ -763,7 +769,7 @@ Granaten und Geschosse für Werfer. Beide sind **Vorratsgegenstände**: Der Char
 {
   "version": "2026-11-13",
   "deckung": [
-    { "id": "holztuer_duenn", "name": "dünne Holztür (5 cm)", "wert": 0 },
+    { "id": "holztuer_duenn", "name": "dünne Holztür (5 cm)", "wert": 1 },
     { "id": "autotuer", "name": "Autotür", "wert": 2, "vorlaeufig": true },
     { "id": "panzerglas", "name": "Panzerglas", "wert": 3 }
   ],
@@ -1053,7 +1059,8 @@ Speicherformat eines Charakters, lokal und als Exportdatei (`<name>.cqb.json`). 
       "verbraucht": { "main": 1, "break": 0, "bewegung": 1, "stand": 0 },
       "korrektur": { "main": 0, "break": 0, "bewegung": 0, "stand": 0 },
       "break_verloren": false,
-      "deckung": { "wert": 2, "zonen": ["bein_l", "bein_r", "unterleib", "bauch", "brust", "arm_l", "arm_r"] },
+      "deckung": { "wert": 2, "art": "autotuer", "kante": { "richtung": "unten", "stufe": 3 }, "getippt": [],
+                   "zonen": ["brust", "bauch", "unterleib", "rumpf", "arm_r", "arm_l", "bein_r", "bein_l"] },
       "protokoll": [
         { "id": "g1", "runde": 2, "zeit": "2026-11-20T21:14:00+01:00", "art": "treffer",
           "eingabe": { "zone": "brust", "dk": 2, "mw": 3, "kugeln": 1, "krit": false, "deckung": null },
@@ -1125,7 +1132,7 @@ IndexedDB-Datenbank `cqb` mit zwei Speichern: `charaktere` (ein Datensatz je Cha
 - **`gefecht.zielen`:** Merker aus Zielen: gilt nur für einen Schuss in Runde `runde` (Break-Zielen: nächste Runde; Main-Zielen mit Ruhige Hand: dieselbe Runde). `stepshields` für den Schuss, `ohne_reichweite` (Gezielter Schuss), `gezielt_in`: Runde des Zielens; bewegt sich der Charakter danach in dieser Runde, entfällt `ohne_reichweite` und es gilt der Stepshield. Jeder Schuss und „Neues Ziel“ löschen den Merker.
 - **`gefecht.konzentration`:** `null`, `leicht` oder `voll` für diese Runde (Break 0; Bewegung bzw. Standwechsel beschränkt).
 - **`gefecht.verbraucht`**, **`gefecht.korrektur`:** verbrauchte Aktionen dieser Runde und Korrektur von Hand (langer Druck, ±1). Die verbleibende Zahl wird berechnet: Höchstzahl (aus `regeln.json` `aktionen`; Sprint, Initiative-Krit, Konzentration) − verbraucht + Korrektur; bei Over the Edge ein gemeinsamer Zähler `over_the_edge_gesamt`. **`break_verloren`**: Breakaction durch Stagger verloren. „Nächste Runde“ setzt alles zurück.
-- **`gefecht.deckung`:** aktueller Deckungswert und verdeckte Zonen (`null` = keine Deckung). Gespeichert sind die tatsächlich verdeckten Zonen, nach Anwendung der Regeln für Rumpf und Arme. Wird bei Gefechtsende gelöscht.
+- **`gefecht.deckung`:** aktueller Deckungswert und verdeckte Zonen (`null` = keine Deckung). Gespeichert sind die tatsächlich verdeckten Zonen, nach Anwendung der Regeln für Rumpf und Arme; daraus rechnet die App. Dazu, damit der Dialog Deckung die Eingabe wieder zeigt: `art` (ID aus `schutz.json`, `deckung` oder `fahrzeugpanzerung`; `null` = eigener Wert), `kante` (`richtung`: `unten` oder ein Schlüssel aus `regeln.json` `deckung.kante_seite`; `stufe` ab 0) und `getippt` (einzeln angetippte Zonen). Die drei Felder sind optional; fehlen sie, gelten die gespeicherten Zonen als angetippt. Wird bei Gefechtsende gelöscht.
 - **`gefecht.protokoll`:** Ereignisse des laufenden Gefechts mit Eingabe und den daraus folgenden Änderungen (für Rückgängig). `art`: `treffer`, `schaden_direkt`, `schuss`, `aktion`, `leiter`. Wird bei Gefechtsende gelöscht.
 	- `treffer` bzw. `schaden_direkt`: `runde`, `zeit`, `quelle` (Schuss, Sonstiges), `eingabe` (Zone, DK – `null` = stumpf –, MW, Kugeln, Krit, Deckungswert der Zone oder `null`) bzw. `direkt` (Zone, Schaden, `wunde` oder `prellung`), `ergebnis` (`gestoppt`, `durchschlag`, `wucht`; Schaden, Stagger, tot) und `aenderungen` (neue Wunde, `hp_verlust_wunden` und `prellungen` als [vorher, nachher], `tot` [vorher, nachher], neu gesetzte Auslöser, Breakaction verloren).
 	- `schuss`: `runde`, `zeit`, `waffe` (ID des Waffeneintrags) und `text` (Zeilen des Berichts). `aktion`: `runde`, `zeit`, `text` (Nachladen, Waffe wechseln, Zielen, Hechten …).

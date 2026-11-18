@@ -182,9 +182,24 @@ export interface Gefecht {
   /** Break durch Stagger verloren (Schritt 7 setzt das). */
   break_verloren: boolean;
   /** Aktuelle Deckung: Wert und tatsächlich verdeckte Zonen; fehlt oder null = keine Deckung. */
-  deckung?: { wert: number; zonen: string[] } | null;
+  deckung?: Deckung | null;
   protokoll: (Gefechtsereignis | Schussereignis | Aktionsereignis | Trefferereignis)[];
 }
+
+/** Deckung im Gefecht (datenformat.md § gefecht.deckung). */
+export interface Deckung {
+  wert: number;
+  /** Tatsächlich verdeckte Zonen nach den Regeln für Rumpf und Arme (daraus rechnet die App). */
+  zonen: string[];
+  /** ID aus schutz.json (deckung oder fahrzeugpanzerung), wenn der Wert von dort gewählt wurde; sonst eigener Wert. */
+  art?: string | null;
+  /** Deckungskante: Richtung (unten oder Seite aus regeln.json deckung.kante_seite) und Stufe ab 0. */
+  kante?: Deckungskante | null;
+  /** Einzeln angetippte Zonen. */
+  getippt?: string[];
+}
+
+export interface Deckungskante { richtung: string; stufe: number }
 
 /** Schusswaffe in der Ausrüstung (datenformat.md § Felder im Spielstand). */
 export interface WaffenEintrag {

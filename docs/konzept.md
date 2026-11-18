@@ -538,11 +538,13 @@ Regeln: Kampfsystem (Nahkampf). Zusammenfassung: [§ 4.12](#412-aktionen). Glied
 
 ### 3.9 Schutz (A, M)
 - **Rüstung** je Zone (Wert aus `schutz.json`), aus der Ausrüstung.
-- **Deckung** im Gefecht auf der **Silhouette** ([§ 3.0f](#30f-körperbild-silhouette-a-r), Schicht Deckung, bearbeitbar). Erreichbar über langes Antippen der Figur auf dem Startbildschirm oder den Knopf „Deckung“ über ihr:
+- **Deckung** im Gefecht auf der **Silhouette** ([§ 3.0f](#30f-körperbild-silhouette-a-r), Schicht Deckung, bearbeitbar). Erreichbar über den Knopf **Deckung** oben links neben der Figur (nur im Gefecht; mit Deckung steht der Wert dabei, z. B. „Deckung 2“). Er öffnet den Dialog Deckung mit drei Abschnitten: Figur (Was ist verdeckt?), Deckungskante, Deckungswert. Knöpfe: Abbrechen · Keine Deckung · Eintragen.
+  - *Stand 18.11.2026:* Die Kante wird über Knöpfe gesetzt statt gezogen: „Kante von: keine · unten · rechts · links“, dann die Stufe („Kante von unten bis: Brust“). Ziehen und langes Antippen der Figur folgen vielleicht später ([offen.md](offen.md), Schritt 7).
   - **Deckungskante ziehen:** von unten nach oben (Autotür, Mauer) oder von links bzw. rechts (Hausecke, Türrahmen). Die Kante rastet an Zonengrenzen ein. Stufen von unten: Beine → Unterleib → Bauch → Brust (mit beiden Armen) → Kopf. Stufen von der Seite: Arm und Bein dieser Seite → Kopf und Rumpf → alles.
   - **Zonen antippen:** einzelne Zonen als verdeckt an- oder abwählen (z. B. Fenster: nur Kopf frei). Kombinierbar mit der Kante.
   - **Regeln** ([§ 4.7](#47-schadensablauf)): Ist eine Rumpfzone verdeckt, gilt der ganze Rumpf als verdeckt. Verdeckt die Kante **von unten** die Brust, sind beide Arme verdeckt. Seitliche Kante: nur der Arm dieser Seite. Einzeln angetippte Zonen verdecken die Arme nicht mit; der Spieler tippt sie bei Bedarf selbst an. Deckung von oben gibt es nicht (Regelfrage R3, entschieden). Die App zeigt das auf der Silhouette mit an.
-  - Verdeckte Zonen sind schraffiert; darunter steht der **Deckungswert** (Zahl oder Auswahl aus `schutz.json`).
+  - Verdeckte Zonen sind schraffiert, auch auf der Figur im Reiter und im Dialog Getroffen. Der **Deckungswert** wird aus `schutz.json` (Deckung und Fahrzeugpanzerung) gewählt oder als eigene Zahl eingestellt („Anderer Wert (sagt die SL)“). Die Übersicht einer verdeckten Zone nennt ihn („Deckung: Autotür, Schutz 2“).
+  - Antippen einer Zone, die die Kante verdeckt, ändert nichts; ein Hinweis sagt, dass nur die Kante sie freigibt. Freigeben einer Rumpfzone gibt den ganzen Rumpf frei.
   - Die Deckung bleibt bestehen, bis der Spieler sie ändert oder das Gefecht endet. „Keine Deckung“ ist ein Knopf.
 
 ### 3.10 Treffer, Wunden und Blutung (M, R)
@@ -554,7 +556,7 @@ Regeln: Kampfsystem (Nahkampf). Zusammenfassung: [§ 4.12](#412-aktionen). Glied
 
 Selbst ergänzt: Rüstung der Zone, aktuelle Deckung (nur wenn die Zone verdeckt ist, [§ 3.9](#39-schutz-a-m)), Symptome der Leiter für die Stagger-Prüfung. Der Spieler kann die Deckung für diesen Treffer ändern.
 
-*Stand 18.11.2026:* Solange die Deckung auf der Silhouette ([§ 3.9](#39-schutz-a-m)) noch fehlt, gibt der Spieler im Dialog an, welche Deckung vor der getroffenen Zone liegt (Auswahl aus `schutz.json`, Standard: keine); die Vorschau rechnet dann jede Zone so, als läge die Deckung vor ihr. Die Silhouette zeigt vorerst nur die Haltung „stehend“. Die Zone wird angetippt, als „Rumpf (Ansage)“ gewählt oder über den W8 bestimmt (Würfelstelle Trefferzone). **Getroffen** steht im Gefecht und in Ruhe unter der Figur. Der Bericht erzählt in ganzen Sätzen, was passiert ist (wie beim Schießen): was trifft und wo, was Deckung und Rüstung tun, welche Wunde oder Prellung bleibt, HP vorher und nachher, Stagger, Auslöser. Nach „Weiter“ meldet die App „Treffer eingetragen“ mit **Rückgängig**.
+*Stand 18.11.2026:* Im Gefecht gilt die Deckung auf der Figur ([§ 3.9](#39-schutz-a-m)); verdeckte Zonen sind auch im Dialog schraffiert, ein Hinweis nennt den Wert. Ändern geht über den Knopf Deckung, nicht im Dialog. Außerhalb des Gefechts gibt der Spieler im Dialog an, welche Deckung vor der getroffenen Zone liegt (Auswahl aus `schutz.json`, Standard: keine); die Vorschau rechnet dann jede Zone so, als läge die Deckung vor ihr. Die Silhouette zeigt vorerst nur die Haltung „stehend“. Die Zone wird angetippt, als „Rumpf (Ansage)“ gewählt oder über den W8 bestimmt (Würfelstelle Trefferzone). **Getroffen** steht im Gefecht und in Ruhe unter der Figur. Der Bericht erzählt in ganzen Sätzen, was passiert ist (wie beim Schießen): was trifft und wo, was Deckung und Rüstung tun, welche Wunde oder Prellung bleibt, HP vorher und nachher, Stagger, Auslöser. Nach „Weiter“ meldet die App „Treffer eingetragen“ mit **Rückgängig**.
 
 Dann folgt der **Bericht** ([§ 3.0c](#30c-bericht-was-ist-passiert-a)). „Weiter“ übernimmt:
 - Wunde (Durchschlag) oder Prellung (Wuchttreffer) anlegen, HP abziehen ([§ 4.7](#47-schadensablauf)).

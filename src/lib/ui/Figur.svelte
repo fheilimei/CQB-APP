@@ -1,7 +1,7 @@
 <script lang="ts">
   // Reiter Figur (konzept.md § Aufbau der App): HP, Silhouette mit Rüstung und Wunden. Antippen einer Zone zeigt darunter
   // ihre Übersicht (Rüstung, Deckung, Wunden mit Status, Frist und Folge; Versorgen und „Frist abgelaufen“).
-  // Darunter der Knopf Getroffen, im Gefecht und in Ruhe.
+  // Darunter der Knopf Getroffen, im Gefecht und in Ruhe. Im Gefecht oben links der Knopf Deckung; verdeckte Zonen sind schraffiert.
   import type { Spieldaten } from '../daten/typen';
   import { grundwerte, hpAktuell } from '../regeln/modifikatoren';
   import { gefechtVon, lebenslageDes } from '../regeln/probenrechner';
@@ -16,10 +16,11 @@
     c: Charakter;
     d: Spieldaten;
     ongetroffen: () => void;
+    ondeckung: () => void;
     onversorgen: (wundId: string) => void;
     onfrist: (wundId: string) => void;
   }
-  let { c, d, ongetroffen, onversorgen, onfrist }: Props = $props();
+  let { c, d, ongetroffen, ondeckung, onversorgen, onfrist }: Props = $props();
 
   let zone = $state<string | null>(null);
 
@@ -34,6 +35,8 @@
   /** Wunden der Zone; Wunden am Rumpf (nach Ansage) zeigt die Figur am Bauch, also auch hier. */
   const zonenWunden = $derived(zone ? wunden.filter((w) => w.zone === zone || (w.zone === 'rumpf' && zone === 'bauch')) : []);
   const deckung = $derived(zone && imGefecht ? deckungFuer(zone, c, d) : null);
+  const gefechtsDeckung = $derived(gefechtVon(c)?.deckung ?? null);
+  const deckungName = $derived(gefechtsDeckung?.art ? [...d.schutz.deckung, ...d.schutz.fahrzeugpanzerung].find((x) => x.id === gefechtsDeckung.art)?.name ?? null : null);
   const zonenName = (id: string) => d.koerperzonen.eintraege.find((z) => z.id === id)?.name ?? id;
   /** Nach dem Gefecht laufen die Fristen der blutenden Wunden. Regelfrage R29 (docs/offen.md): vorläufig auch bei Wunden aus einem Treffer in Ruhe sofort. */
   const blutend = $derived(imGefecht ? 0 : wunden.filter(blutet).length);
@@ -72,9 +75,13 @@
     <p class="warnung">kampfunfähig{imGefecht ? ': im Gefecht keine Aktionen' : ''}</p>
   {/if}
   <div class="figurbox">
-    <Silhouette {d} {ruestung} {wunden} gewaehlt={zone} onwahl={(z) => (zone = zone === z ? null : z)}
+    <Silhouette {d} {ruestung} {wunden} verdeckt={gefechtsDeckung?.zonen ?? []} gewaehlt={zone} onwahl={(z) => (zone = zone === z ? null : z)}
       beschriftung="Körperbild mit Rüstung und Wunden; Zone antippen für Einzelheiten" />
     {#if gefechtVon(c)}
+      <button class="deckung" class:betont={!!gefechtsDeckung} onclick={ondeckung}
+        aria-label={gefechtsDeckung ? `Deckung mit Schutz ${gefechtsDeckung.wert} ändern` : 'Deckung eintragen'}>
+        Deckung{#if gefechtsDeckung} {gefechtsDeckung.wert}{/if}
+      </button>
       <div class="haltung"><Haltungsanzeige g={gefechtVon(c)!} {d} /></div>
     {/if}
   </div>
@@ -85,7 +92,7 @@
         <h3 class="abschnitt-titel">{gewaehlt.name}</h3>
         <button class="flach" aria-label="Übersicht der Zone schließen" onclick={() => (zone = null)}>✕</button>
       </div>
-      <p>Rüstung: {ruestung[gewaehlt.id] ? `Schutz ${ruestung[gewaehlt.id]}` : 'keine'}{#if deckung !== null} · Deckung: Schutz {deckung}{/if}</p>
+      <p>Rüstung: {ruestung[gewaehlt.id] ? `Schutz ${ruestung[gewaehlt.id]}` : 'keine'}{#if deckung !== null} · Deckung: {deckungName ? `${deckungName}, ` : ''}Schutz {deckung}{/if}</p>
       {#if zonenWunden.length}
         <ul class="zeilen">
           {#each zonenWunden as w (w.id)}
@@ -129,6 +136,8 @@
   /* Stand und Bewegung oben rechts in der freien Ecke neben dem Kopf der Figur. */
   .figurbox { position: relative; }
   .haltung { position: absolute; top: 0; right: 0; }
+  /* Knopf Deckung in der freien Ecke oben links, Gegenstück zur Haltung oben rechts. */
+  .deckung { position: absolute; top: 0; left: 0; }
   .mitte { text-align: center; }
   /* Übersicht der gewählten Zone: eigene Fläche mit Akzentstreifen, passend zum Akzentrahmen der Zone in der Figur. */
   .zone { background: var(--flaeche-2); border-left: 3px solid var(--akzent); border-radius: 8px; padding: var(--abstand-2) var(--abstand-3); }

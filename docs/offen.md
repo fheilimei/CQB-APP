@@ -109,6 +109,13 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 
 ### Erledigt
 
+### R30. Dünne Holztür als Deckung (18.11.2026)
+- **Entschieden (18.11.2026):** Die dünne Holztür (5 cm) hat Schutz 1, nicht 0. Ein Geschoss mit Durchschlagskraft 1 geht also gerade noch durch und hat danach 0.
+- **Frage:** Das Regelwerk gibt der dünnen Holztür Schutz 0 („hält nichts auf“).
+- **Stellen:** (Deckung und Rüstung, Deckung)
+- **Ändern:** eine Zeile in schutz.json (deckung, holztuer_duenn)
+- **Im Regelwerk klarstellen:** ja, **noch offen**: „dünne Holztür (5 cm): 0 (hält nichts auf)“ durch „1“ ersetzen.
+
 ### R27. Hechten nur ins Liegen (18.11.2026)
 - **Entschieden (18.11.2026):** Man hechtet nur ins Liegen, nicht in die Hocke. Die App fragt nicht mehr nach dem Stand; nach dem Hechten bist du liegend.
 - **Frage:** Das Regelwerk erlaubt Hechten in die Hocke oder ins Liegen.
@@ -279,10 +286,12 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 ## Offen aus Schritt 7 (Treffer, Wunden, 18.11.2026)
 
 1. **Auslöser eines eingehenden Treffers.** → Regelfragen R25.
-2. **Deckung beim Getroffen.** Die Deckung auf der Silhouette (§ 3.9) fehlt noch. *Vorläufig:* Der Spieler wählt im Dialog Getroffen die Deckung vor der getroffenen Zone; die Vorschau nimmt an, dass sie vor jeder Zone liegt.
+2. **Deckung beim Getroffen.** Erledigt (18.11.2026): Im Gefecht gilt die Deckung auf der Figur. Außerhalb des Gefechts wählt der Spieler die Deckung weiter im Dialog Getroffen.
 3. **Silhouette** zeigt vorerst nur die Haltung „stehend“; Hocken und Liegen folgen. Prellungen werden nicht je Zone gezeigt, weil die App sie nur als Summe kennt. Antippen einer Zone auf der Figur (Übersicht der Zone mit Versorgen) folgt.
 4. **Rückgängig** gibt es vorerst nur direkt nach dem Treffer (Meldung „Treffer eingetragen“); einzeln aus dem Gefechtsprotokoll folgt mit dem Reiter Verlauf.
 5. **Noch nicht da:** Getroffen durch Nahkampf und Splitter, Ereignis (Beschossen), ballistischer Schild beim Getroffen. Erledigt (18.11.2026): Blutungsfristen und Versorgen.
 6. **Fristen ohne Uhr.** Entschieden (18.11.2026): Die App zählt keine Zeit; der Spieler tippt „Frist abgelaufen“, wenn die SL es sagt.
 7. **Operation im Gefecht.** Sie dauert mehrere Runden (Dauer legt die SL fest). *Vorläufig:* Die App verbraucht nur die Mainaction der Runde, in der gewürfelt wird; die Runden davor trägt der Spieler über Main → Sonderfähigkeit mit voller Konzentration ein. Notoperation und Unter Feuer erscheinen als Hinweis im Fenster.
 8. **Wunde eines Verbündeten versorgen:** Die App würfelt nur die eigene Probe; die Wunde führt der andere Spieler bzw. die SL.
+9. **Deckungskante ziehen.** Das Konzept sieht vor, die Kante auf der Figur zu ziehen und den Dialog auch über langes Antippen der Figur zu öffnen. *Vorläufig:* Kante über Knöpfe (Richtung, dann Stufe), Dialog nur über den Knopf Deckung. Ziehen ließe sich ergänzen, falls die Knöpfe am Tisch zu umständlich sind.
+10. **Ballistischer Schild** als mitgeführte Deckung fehlt noch (Schalter „Schild gehalten“).

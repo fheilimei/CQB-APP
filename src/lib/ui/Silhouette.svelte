@@ -21,6 +21,8 @@
     zeichen?: Record<string, string>;
     /** Rüstung: Schutzwert je Zone (0 = nichts anzeigen). */
     ruestung?: Record<string, number>;
+    /** Deckung: verdeckte Zonen, schraffiert. */
+    verdeckt?: string[];
     /** Wunden: Punkt je Wunde. */
     wunden?: Wunde[];
     gewaehlt?: string | null;
@@ -28,7 +30,7 @@
     onwahl?: (zone: string) => void;
     beschriftung?: string;
   }
-  let { d, farben = {}, zeichen = {}, ruestung = {}, wunden = [], gewaehlt = null, onwahl, beschriftung = 'Körperzonen' }: Props = $props();
+  let { d, farben = {}, zeichen = {}, ruestung = {}, verdeckt = [], wunden = [], gewaehlt = null, onwahl, beschriftung = 'Körperzonen' }: Props = $props();
 
   // Zeichenfläche 200 × 300; dargestellt mit 240 px Breite (Faktor 1,2), damit jede Zone mindestens 44 × 44 px hat.
   const FLAECHEN: Record<string, { x: number; y: number; b: number; h: number; r: number; kurz: string }> = {
@@ -41,6 +43,9 @@
     bein_r: { x: 63, y: 192, b: 36, h: 104, r: 12, kurz: 'R' },
     bein_l: { x: 101, y: 192, b: 36, h: 104, r: 12, kurz: 'L' }
   };
+  /** Eindeutige ID für das Schraffurmuster, falls mehrere Figuren gleichzeitig zu sehen sind. */
+  const uid = $props.id();
+  const muster = `schraffur-${uid}`;
   const zonen = $derived(d.koerperzonen.eintraege.filter((z) => FLAECHEN[z.id]));
 
   function wundenIn(zone: string): Wunde[] {
@@ -54,6 +59,13 @@
 </script>
 
 <svg class="figur" viewBox="0 0 200 300" role={onwahl ? 'group' : 'img'} aria-label={beschriftung}>
+  {#if verdeckt.length}
+    <defs>
+      <pattern id={muster} width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <line class="schraffur" x1="0" y1="0" x2="0" y2="8" />
+      </pattern>
+    </defs>
+  {/if}
   {#each zonen as z (z.id)}
     {@const f = FLAECHEN[z.id]!}
     {@const farbe = farben[z.id] ?? null}
@@ -61,9 +73,12 @@
     <!-- svelte-ignore a11y_no_noninteractive_tabindex (role ist „button“, sobald die Figur antippbar ist) -->
     <g class="zone {farbe ?? ''}" class:gewaehlt={gewaehlt === z.id} class:tippbar={!!onwahl}
       role={onwahl ? 'button' : undefined} tabindex={onwahl ? 0 : undefined}
-      aria-label="{z.name}{gewaehlt === z.id ? ', gewählt' : ''}" aria-pressed={onwahl ? gewaehlt === z.id : undefined}
+      aria-label="{z.name}{verdeckt.includes(z.id) ? ', verdeckt' : ''}{gewaehlt === z.id ? ', gewählt' : ''}" aria-pressed={onwahl ? gewaehlt === z.id : undefined}
       onclick={() => onwahl?.(z.id)} onkeydown={(e) => { if (onwahl && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); onwahl(z.id); } }}>
       <rect x={f.x} y={f.y} width={f.b} height={f.h} rx={f.r} />
+      {#if verdeckt.includes(z.id)}
+        <rect class="verdeckt" x={f.x} y={f.y} width={f.b} height={f.h} rx={f.r} style:fill="url(#{muster})" style:stroke="none" />
+      {/if}
       <text class="name" x={f.x + f.b / 2} y={f.y + (f.h > 60 ? 18 : f.h / 2 - 2)}>{f.kurz}</text>
       {#if ruestung[z.id]}
         <text class="schutz" x={f.x + f.b / 2} y={f.y + (f.h > 60 ? 34 : f.h / 2 + 12)}>⛨{ruestung[z.id]}</text>
@@ -94,6 +109,9 @@
   .zone:focus-visible rect { stroke: var(--akzent); stroke-width: 3; }
   /* Gewählte Zone: dicker Akzentrahmen, nicht nur Farbe. */
   .zone.gewaehlt rect { stroke: var(--akzent); stroke-width: 4; }
+  /* Deckung: Schraffur über der Zonenfarbe, damit Vorschau-Farben sichtbar bleiben. */
+  .verdeckt { pointer-events: none; }
+  .schraffur { stroke: var(--deckung); stroke-width: 3; }
   text { text-anchor: middle; dominant-baseline: middle; fill: var(--text); pointer-events: none; }
   .name { font-size: 11px; font-weight: 600; }
   .zone.gewaehlt .name { font-weight: 800; }

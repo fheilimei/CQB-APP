@@ -1,10 +1,10 @@
 // Tests für eingehende Treffer (konzept.md § 3.10, § 4.7; Regelwerk: Schaden, Blutung und Verletzungen; Körperzonen).
 import { describe, expect, it } from 'vitest';
-import { gefechtStarten, leiterSetzen } from '../src/lib/regeln/gefecht';
+import { deckungSetzen, deckungZonen, gefechtStarten, leiterSetzen } from '../src/lib/regeln/gefecht';
 import { hpAktuell } from '../src/lib/regeln/modifikatoren';
 import { gefechtVon, lebenslageDes } from '../src/lib/regeln/probenrechner';
 import { bewegen, hechten } from '../src/lib/regeln/aktionen';
-import { ausgang, ausloeserVon, folgeSaetze, schadenDirekt, staggerRegel, trefferUebernehmen, vorschau, type Eingang } from '../src/lib/regeln/wunden';
+import { ausgang, ausloeserVon, deckungFuer, folgeSaetze, schadenDirekt, staggerRegel, trefferUebernehmen, vorschau, type Eingang } from '../src/lib/regeln/wunden';
 import { neuerCharakter, type Charakter, type Gefecht, type Trefferereignis } from '../src/lib/speicher/charakter';
 import { ladeTestdaten } from './hilfen';
 
@@ -222,5 +222,39 @@ describe('Vorschau', () => {
     const v = vorschau(fertig(['weste_einfach']), { dk: null, mw: 2, kugeln: 1, krit: true, deckung: null }, d, (z) => (z === 'kopf' ? 0 : null));
     expect(v.kopf!.art).toBe('gestoppt');
     expect(v.brust!).toMatchObject({ art: 'wucht', schaden: 1, stagger: true });
+  });
+});
+
+describe('Deckung auf der Figur (konzept.md § 3.9)', () => {
+  const unten = (stufe: number) => ({ richtung: 'unten', stufe });
+  it('Kante von unten: jede Stufe nimmt die darunter mit; bis zum Bauch bleiben die Arme frei', () => {
+    expect(deckungZonen(unten(0), [], d)).toEqual(['bein_r', 'bein_l']);
+    expect(deckungZonen(unten(1), [], d)).toEqual(['brust', 'bauch', 'unterleib', 'rumpf', 'bein_r', 'bein_l']);
+    expect(deckungZonen(unten(2), [], d)).not.toContain('arm_r');
+  });
+  it('R3: Kante von unten bis zur Brust verdeckt beide Arme, bis zum Kopf alles', () => {
+    expect(deckungZonen(unten(3), [], d)).toEqual(['brust', 'bauch', 'unterleib', 'rumpf', 'arm_r', 'arm_l', 'bein_r', 'bein_l']);
+    expect(deckungZonen(unten(4), [], d)).toContain('kopf');
+  });
+  it('R3: seitliche Kante verdeckt nur den Arm ihrer Seite, bis „alles“', () => {
+    expect(deckungZonen({ richtung: 'rechts', stufe: 0 }, [], d)).toEqual(['arm_r', 'bein_r']);
+    expect(deckungZonen({ richtung: 'rechts', stufe: 1 }, [], d)).toEqual(['kopf', 'brust', 'bauch', 'unterleib', 'rumpf', 'arm_r', 'bein_r']);
+    expect(deckungZonen({ richtung: 'links', stufe: 2 }, [], d)).toHaveLength(9);
+  });
+  it('R3: angetippte Brust verdeckt den Rumpf, aber nicht die Arme; Kante und Antippen zusammen', () => {
+    expect(deckungZonen(null, ['brust'], d)).toEqual(['brust', 'bauch', 'unterleib', 'rumpf']);
+    expect(deckungZonen(unten(0), ['kopf'], d)).toEqual(['kopf', 'bein_r', 'bein_l']);
+  });
+  it('setzen, im Treffer anwenden und mit „keine“ wieder löschen', () => {
+    let c = deckungSetzen(imGefecht(fertig()), { wert: 2, art: 'autotuer', kante: unten(1), getippt: [] }, d);
+    expect(g(c).deckung).toMatchObject({ wert: 2, art: 'autotuer', kante: unten(1) });
+    expect(deckungFuer('bauch', c, d)).toBe(2);
+    expect(deckungFuer('rumpf', c, d)).toBe(2);
+    expect(deckungFuer('kopf', c, d)).toBeNull();
+    c = deckungSetzen(c, { wert: 2, art: null, kante: null, getippt: [] }, d);
+    expect(g(c).deckung).toBeNull();
+  });
+  it('R30: dünne Holztür hat Schutz 1 (entschieden)', () => {
+    expect(d.schutz.deckung.find((x) => x.id === 'holztuer_duenn')!.wert).toBe(1);
   });
 });
