@@ -380,8 +380,9 @@
       {#if overTheEdge(gefecht.leiter, daten.regeln)}
         <div class="banner" role="status">Over the Edge: nur 1 Aktion pro Runde</div>
       {/if}
-      <Aktionsleiste c={aktiv} d={daten} {kampfunfaehig} onaendern={aendern} onoeffnen={(a) => (dialog = { art: 'aktion', aktion: a })} />
+      <!-- Rad über der Aktionsleiste: am unteren Bildschirmrand fängt Android waagerechtes Wischen als App-Wechsel ab. -->
       <Adrenalinrad stand={gefecht.leiter} d={daten} onsetzen={leiterDrehen} ondetail={() => (dialog = { art: 'detail' })} />
+      <Aktionsleiste c={aktiv} d={daten} {kampfunfaehig} onaendern={aendern} onoeffnen={(a) => (dialog = { art: 'aktion', aktion: a })} />
     {/if}
     <Reiterleiste {reiter} eingeklappt={einstellungen.reiterEingeklappt} onwahl={(r) => (reiter = r)} onklappen={reiterKlappen} />
     </div>

@@ -67,7 +67,7 @@
 {/if}
 
 <style>
-  .leiste { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 6px 8px; background: var(--flaeche); border-top: 1px solid var(--linie);
+  .leiste { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 6px 8px calc(6px + env(safe-area-inset-bottom)); background: var(--flaeche); border-top: 1px solid var(--linie);
     user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
   .aktion { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px 2px; min-height: 60px; line-height: 1.1;
     touch-action: manipulation; }

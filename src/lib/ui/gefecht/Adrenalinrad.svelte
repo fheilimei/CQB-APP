@@ -146,7 +146,7 @@
   /* Fenster des Rads: fester heller Rahmen in der Mitte, darunter läuft das Band. */
   .rad { position: relative; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-select: none;
     background: var(--farbe); border-radius: var(--radius) var(--radius) 0 0; transition: margin-top 0.15s ease-out, padding-bottom 0.15s ease-out, background 0.2s; }
-  /* Aufgeklappt wächst das Rad nach oben (über die Aktionsleiste), ohne dass sich darunter etwas verschiebt;
+  /* Aufgeklappt wächst das Rad nach oben (über den Inhalt), ohne dass sich darunter etwas verschiebt;
      die Namen stehen oben, der Daumen liegt im unteren, leeren Teil. */
   .rad.offen { margin-top: calc(-1 * var(--auf)); padding-bottom: var(--auf); box-shadow: 0 -4px 12px rgb(0 0 0 / 0.25); }
   .rad::before { content: ''; position: absolute; top: 0; bottom: 0; left: calc(100% / 3.6); width: calc(100% * 1.6 / 3.6);
