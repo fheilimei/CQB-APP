@@ -35,7 +35,7 @@ export function staggerRegel(c: Charakter, d: Spieldaten): StaggerRegel {
 
 /**
  * Deckung aus dem laufenden Gefecht für eine Zone (gefecht.deckung, datenformat.md). Gespeichert sind die schon
- * erweiterten Zonen; für die Ansage „Rumpf“ zählt die Deckung, wenn eine Rumpfzone verdeckt ist.
+ * erweiterten Zonen; für die Ansage „Rumpf“ zählt die Deckung, wenn alle Rumpfzonen verdeckt sind (R32).
  */
 export function deckungFuer(zone: string, c: Charakter, d: Spieldaten): number | null {
   const dg = gefechtVon(c)?.deckung;

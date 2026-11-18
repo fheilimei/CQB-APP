@@ -4,6 +4,14 @@
 
 Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. Die App arbeitet bis zur Entscheidung mit der genannten vorläufigen Lösung. Neue Einträge kommen beim Programmieren hinzu (Skill „regelfrage“). Die Regelpunkte aus den Schritten 1 bis 6 sind hierher übertragen (18.11.2026).
 
+### R32. Deckung bei der Ansage „Rumpf“ (18.11.2026)
+- **Frage:** Seit jede Rumpfzone für sich verdeckt wird (R31), steht nicht fest, ob die Deckung bei einem Treffer nach der Ansage „Rumpf“ zählt, wenn nur ein Teil des Rumpfs verdeckt ist.
+- **Stellen:** (Deckung und Rüstung, Deckung); (Kampfsystem, Treffen)
+- **Vorläufig:** Die Deckung zählt nur, wenn Brust, Bauch und Unterleib alle verdeckt sind. Begründung: Wer auf den Rumpf zielt, zielt auf den freien Teil.
+- **Andere Möglichkeit:** Die Deckung zählt schon, wenn eine Rumpfzone verdeckt ist; oder die Trefferzone wird mit dem W8 bestimmt.
+- **Ändern:** Regelkern, Schaden (verdeckte Zonen)
+- **Im Regelwerk klarstellen:** ja
+
 ### R7. Kosten des Waffenwechsels (18.11.2026)
 - **Frage:** Ein Wechsel umfasst Wegstecken der alten und Bereitmachen der neuen Waffe. Was kostet er, wenn die beiden Trageorte verschieden viel kosten?
 - **Stellen:** (Kampfsystem, Waffe wechseln)
@@ -108,6 +116,14 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 - **Im Regelwerk klarstellen:** ja
 
 ### Erledigt
+
+### R31. Rumpfzonen hinter Deckung einzeln (18.11.2026)
+- **Entschieden (18.11.2026):** Jede Rumpfzone (Brust, Bauch, Unterleib) wird für sich verdeckt. Eine Kante bis zum Unterleib verdeckt also nicht mehr Bauch und Brust. Für die Ansage „Rumpf“ siehe R32.
+- **Frage:** Das Regelwerk sagt: „Ist eine Zone des Rumpfs verdeckt, gilt der ganze Rumpf als verdeckt.“
+- **Stellen:** (Deckung und Rüstung, Deckung)
+- **Ändern:** Regelkern, Schaden (verdeckte Zonen)
+- **Im Regelwerk klarstellen:** ja, **noch offen**: Den Punkt „Rumpf“ unter Deckung ändern: Jede Rumpfzone zählt für sich; dazu die Ansage „Rumpf“ (R32) regeln.
+
 
 ### R30. Dünne Holztür als Deckung (18.11.2026)
 - **Entschieden (18.11.2026):** Die dünne Holztür (5 cm) hat Schutz 1, nicht 0. Ein Geschoss mit Durchschlagskraft 1 geht also gerade noch durch und hat danach 0.

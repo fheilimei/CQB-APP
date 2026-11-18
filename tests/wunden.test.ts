@@ -229,7 +229,8 @@ describe('Deckung auf der Figur (konzept.md § 3.9)', () => {
   const unten = (stufe: number) => ({ richtung: 'unten', stufe });
   it('Kante von unten: jede Stufe nimmt die darunter mit; bis zum Bauch bleiben die Arme frei', () => {
     expect(deckungZonen(unten(0), [], d)).toEqual(['bein_r', 'bein_l']);
-    expect(deckungZonen(unten(1), [], d)).toEqual(['brust', 'bauch', 'unterleib', 'rumpf', 'bein_r', 'bein_l']);
+    expect(deckungZonen(unten(1), [], d)).toEqual(['unterleib', 'bein_r', 'bein_l']);
+    expect(deckungZonen(unten(2), [], d)).toEqual(['bauch', 'unterleib', 'bein_r', 'bein_l']);
     expect(deckungZonen(unten(2), [], d)).not.toContain('arm_r');
   });
   it('R3: Kante von unten bis zur Brust verdeckt beide Arme, bis zum Kopf alles', () => {
@@ -241,14 +242,18 @@ describe('Deckung auf der Figur (konzept.md § 3.9)', () => {
     expect(deckungZonen({ richtung: 'rechts', stufe: 1 }, [], d)).toEqual(['kopf', 'brust', 'bauch', 'unterleib', 'rumpf', 'arm_r', 'bein_r']);
     expect(deckungZonen({ richtung: 'links', stufe: 2 }, [], d)).toHaveLength(9);
   });
-  it('R3: angetippte Brust verdeckt den Rumpf, aber nicht die Arme; Kante und Antippen zusammen', () => {
-    expect(deckungZonen(null, ['brust'], d)).toEqual(['brust', 'bauch', 'unterleib', 'rumpf']);
+  it('R3, R31: angetippte Brust verdeckt nur die Brust, nicht Rumpf oder Arme; Kante und Antippen zusammen', () => {
+    expect(deckungZonen(null, ['brust'], d)).toEqual(['brust']);
+    expect(deckungZonen(null, ['bauch'], d)).toEqual(['bauch']);
     expect(deckungZonen(unten(0), ['kopf'], d)).toEqual(['kopf', 'bein_r', 'bein_l']);
   });
   it('setzen, im Treffer anwenden und mit „keine“ wieder löschen', () => {
-    let c = deckungSetzen(imGefecht(fertig()), { wert: 2, art: 'autotuer', kante: unten(1), getippt: [] }, d);
-    expect(g(c).deckung).toMatchObject({ wert: 2, art: 'autotuer', kante: unten(1) });
+    let c = deckungSetzen(imGefecht(fertig()), { wert: 2, art: 'autotuer', kante: unten(2), getippt: [] }, d);
+    expect(g(c).deckung).toMatchObject({ wert: 2, art: 'autotuer', kante: unten(2) });
     expect(deckungFuer('bauch', c, d)).toBe(2);
+    expect(deckungFuer('brust', c, d)).toBeNull();
+    expect(deckungFuer('rumpf', c, d)).toBeNull(); // R32: Ansage Rumpf nur verdeckt, wenn der ganze Rumpf verdeckt ist
+    c = deckungSetzen(c, { wert: 2, art: 'autotuer', kante: unten(3), getippt: [] }, d);
     expect(deckungFuer('rumpf', c, d)).toBe(2);
     expect(deckungFuer('kopf', c, d)).toBeNull();
     c = deckungSetzen(c, { wert: 2, art: null, kante: null, getippt: [] }, d);
