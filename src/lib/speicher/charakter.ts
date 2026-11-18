@@ -4,7 +4,7 @@
 import type { Modifikator, Rang } from '../daten/typen';
 
 /** Aktuelle Schemaversion. Bei jeder inkompatiblen Änderung erhöhen und eine Migration ergänzen (migration.ts). */
-export const SCHEMA = 3;
+export const SCHEMA = 4;
 
 export type Quelle = 'app' | 'hand';
 
@@ -191,13 +191,9 @@ export interface Deckung {
   zonen: string[];
   /** ID aus schutz.json (deckung oder fahrzeugpanzerung), wenn der Wert von dort gewählt wurde; sonst eigener Wert. */
   art?: string | null;
-  /** Deckungskante: Richtung (unten oder Seite aus regeln.json deckung.kante_seite) und Stufe ab 0. */
-  kante?: Deckungskante | null;
-  /** Einzeln angetippte Zonen. */
+  /** Angetippte Zonen. */
   getippt?: string[];
 }
-
-export interface Deckungskante { richtung: string; stufe: number }
 
 /** Schusswaffe in der Ausrüstung (datenformat.md § Felder im Spielstand). */
 export interface WaffenEintrag {

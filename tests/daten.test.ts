@@ -110,7 +110,7 @@ describe('Datenprüfung erkennt Fehler', () => {
   it('unbekannte Perks, Zonen und Symptom-Wirkungen in regeln.json', () => {
     const d = kopie();
     d.regeln.zustaende.adrenalinschock.mit_perk = { gibt_es_nicht: 2 };
-    d.regeln.deckung.arme_mit = 'hals';
+    d.regeln.schiessen.schrot_rumpf_start = 'hals';
     d.regeln.symptome.a1!.wirkung.gewinn = 'fliegen' as never;
     const fehler = pruefeDaten(d).join('\n');
     expect(fehler).toContain('unbekannter Perk „gibt_es_nicht“ in mit_perk');

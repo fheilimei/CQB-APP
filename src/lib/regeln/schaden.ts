@@ -3,20 +3,18 @@
 import type { Spieldaten } from '../daten/typen';
 
 /**
- * Tatsächlich verdeckte Zonen nach den Regeln für Rumpf und Arme:
+ * Tatsächlich verdeckte Zonen nach den Regeln für den Rumpf:
  * Jede Rumpfzone zählt für sich (Regelfrage R31, entschieden). Die Ansage „Rumpf“ (Zone ohne Nummer) gilt als verdeckt,
- * wenn alle Rumpfzonen mit Nummer verdeckt sind (Regelfrage R32, vorläufig). Verdeckt eine Deckung von unten die Zone
- * `deckung.arme_mit` (Brust), gelten auch die Arme als verdeckt. Regelfrage R3 (docs/offen.md), entschieden:
- * nur von unten; seitliche Deckung und einzeln angetippte Zonen verdecken die Arme nicht mit.
+ * wenn alle Rumpfzonen mit Nummer verdeckt sind (Regelfrage R32, vorläufig). Arme werden nur verdeckt, wenn sie
+ * angetippt sind (Deckung nur durch Antippen, 18.11.2026; Regelfrage R3).
  */
-export function verdeckteZonen(zonen: string[], d: Spieldaten, vonUnten: boolean): string[] {
+export function verdeckteZonen(zonen: string[], d: Spieldaten): string[] {
   const menge = new Set(zonen);
   const rumpf = d.koerperzonen.eintraege.filter((z) => z.bereich === 'rumpf');
   const mitNummer = rumpf.filter((z) => z.w8 !== null).map((z) => z.id);
   // Regelfrage R32 (docs/offen.md): vorläufig zählt die Ansage „Rumpf“ nur als verdeckt, wenn der ganze Rumpf verdeckt ist.
   if (mitNummer.length && mitNummer.every((z) => menge.has(z))) for (const z of rumpf) menge.add(z.id);
   else for (const z of rumpf) if (z.w8 === null) menge.delete(z.id);
-  if (vonUnten && zonen.includes(d.regeln.deckung.arme_mit)) for (const z of d.regeln.deckung.arme) menge.add(z);
   return d.koerperzonen.eintraege.map((z) => z.id).filter((z) => menge.has(z));
 }
 

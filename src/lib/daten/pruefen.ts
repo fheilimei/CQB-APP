@@ -118,10 +118,7 @@ export function pruefeDaten(d: Spieldaten): string[] {
   for (const [z, eintrag] of Object.entries(r.zustaende))
     for (const p of Object.keys((eintrag as { mit_perk?: object }).mit_perk ?? {}))
       if (!perkIds.has(p)) f('regeln.json', `Zustand ${z}: unbekannter Perk „${p}“ in mit_perk`);
-  const kanten = [r.deckung.kante_unten, ...Object.values(r.deckung.kante_seite)].flat();
-  if (!r.deckung.kante_unten.length) f('regeln.json', 'deckung.kante_unten ist leer');
-  for (const z of [r.schiessen.schrot_rumpf_start, r.deckung.arme_mit, ...r.deckung.arme, ...kanten.flatMap((k) => k.zonen)])
-    if (!zonenIds.has(z)) f('regeln.json', `unbekannte Körperzone „${z}“`);
+  if (!zonenIds.has(r.schiessen.schrot_rumpf_start)) f('regeln.json', `unbekannte Körperzone „${r.schiessen.schrot_rumpf_start}“`);
   if (!statIds.has(r.initiative.stat)) f('regeln.json', 'initiative.stat unbekannt');
   for (const p of Object.keys(r.initiative.ueberrascht_mit_perk ?? {}))
     if (!perkIds.has(p)) f('regeln.json', `initiative: unbekannter Perk „${p}“ in ueberrascht_mit_perk`);

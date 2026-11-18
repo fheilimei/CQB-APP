@@ -20,6 +20,15 @@ export const MIGRATIONEN: Record<number, (c: Roh) => Roh> = {
     const { deckung, ...rest } = g;
     return { ...c, spielstand: { ...sp, gefecht: rest, deckung: deckung ?? null } };
   },
+  // 3 → 4: Die Deckungskante entfällt; Deckung entsteht nur durch Antippen. Alle bisher verdeckten Zonen gelten als angetippt.
+  3: (c) => {
+    const sp = (c.spielstand ?? {}) as Record<string, unknown>;
+    const dg = sp.deckung as (Record<string, unknown> & { zonen?: string[]; getippt?: string[] }) | null | undefined;
+    if (!dg) return c;
+    const { kante: _kante, ...rest } = dg;
+    const getippt = [...new Set([...(dg.getippt ?? []), ...(dg.zonen ?? [])])];
+    return { ...c, spielstand: { ...sp, deckung: { ...rest, getippt } } };
+  },
 };
 
 export class ImportFehler extends Error {}

@@ -4,6 +4,7 @@ import { Ablage } from '../src/lib/speicher/ablage';
 import { dateiname, exportiereText, importiereText } from '../src/lib/speicher/austausch';
 import { neuerCharakter, SCHEMA, type Charakter } from '../src/lib/speicher/charakter';
 import { ImportFehler, migriere } from '../src/lib/speicher/migration';
+import { deckungZonen } from '../src/lib/regeln/gefecht';
 import { ladeTestdaten } from './hilfen';
 
 const statIds = ladeTestdaten().stats.eintraege.map((s) => s.id);
@@ -97,14 +98,26 @@ describe('Migration', () => {
   it('Schema 2 → 3: Deckung zieht vom Gefecht in den Spielstand', () => {
     const b = beispiel();
     const { deckung: _d, ...sp } = b.spielstand;
-    const deckung = { wert: 2, zonen: ['bein_r', 'bein_l'], art: 'autotuer', kante: { richtung: 'unten', stufe: 0 }, getippt: [] };
-    const imGefecht = migriere({ ...b, schema: 2, spielstand: { ...sp, gefecht: { aktiv: true, stand: 'stehen', deckung } } });
+    const deckung = { wert: 2, zonen: ['bein_r', 'bein_l'], art: 'autotuer', getippt: [] };
+    const imGefecht = migriere({ ...b, schema: 2, spielstand: { ...sp, gefecht: { aktiv: true, stand: 'stehen', deckung } } }, 3);
     expect(imGefecht.schema).toBe(3);
     expect(imGefecht.spielstand.deckung).toEqual(deckung);
     expect(imGefecht.spielstand.gefecht).toEqual({ aktiv: true, stand: 'stehen' });
-    const inRuhe = migriere({ ...b, schema: 2, spielstand: { ...sp, gefecht: { aktiv: false } } });
+    const inRuhe = migriere({ ...b, schema: 2, spielstand: { ...sp, gefecht: { aktiv: false } } }, 3);
     expect(inRuhe.spielstand.deckung).toBeNull();
     expect(inRuhe.spielstand.gefecht).toEqual({ aktiv: false });
+  });
+
+  it('Schema 3 → 4: Deckungskante entfällt, alle verdeckten Zonen gelten als angetippt', () => {
+    const b = beispiel();
+    const alt = { wert: 2, zonen: ['brust', 'bauch', 'unterleib', 'rumpf', 'arm_r', 'arm_l', 'bein_r', 'bein_l'], art: 'autotuer', kante: { richtung: 'unten', stufe: 3 }, getippt: ['kopf'] };
+    const c = migriere({ ...b, schema: 3, spielstand: { ...b.spielstand, deckung: alt } });
+    expect(c.schema).toBe(4);
+    expect(c.spielstand.deckung).toEqual({ wert: 2, zonen: alt.zonen, art: 'autotuer', getippt: ['kopf', ...alt.zonen] });
+    // Die Figur zeigt dieselben Zonen wie vorher, dazu den angetippten Kopf.
+    expect(new Set(deckungZonen(c.spielstand.deckung!.getippt!, ladeTestdaten()))).toEqual(new Set(['kopf', ...alt.zonen]));
+    const ohne = migriere({ ...b, schema: 3, spielstand: { ...b.spielstand, deckung: null } });
+    expect(ohne.spielstand.deckung).toBeNull();
   });
 
   it('für jede ältere Schemaversion gibt es einen Schritt', async () => {

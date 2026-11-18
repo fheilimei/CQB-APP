@@ -40,7 +40,7 @@ export function staggerRegel(c: Charakter, d: Spieldaten): StaggerRegel {
 export function deckungFuer(zone: string, c: Charakter, d: Spieldaten): number | null {
   const dg = c.spielstand.deckung;
   if (!dg) return null;
-  return verdeckteZonen(dg.zonen, d, false).includes(zone) ? dg.wert : null;
+  return verdeckteZonen(dg.zonen, d).includes(zone) ? dg.wert : null;
 }
 
 /** Was ein Treffer auf eine Zone auslösen würde, ohne etwas zu ändern (Vorschau und Bericht). */

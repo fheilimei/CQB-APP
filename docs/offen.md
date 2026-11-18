@@ -201,7 +201,7 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 - **Im Regelwerk klarstellen:** ja, eingetragen (18.11.2026)
 
 ### R3. Arme hinter Deckung (17.11.2026)
-- **Entschieden (18.11.2026):** Wie im Regelwerk: Nur wenn eine Deckung **von unten** die Brust verdeckt, sind auch beide Arme verdeckt. Seitliche Deckung (Hausecke, Türrahmen) verdeckt nur den Arm ihrer Seite. Deckung von oben ist in der Regel nicht vorgesehen. Umgesetzt: Die App merkt sich, ob die Deckungskante von unten gezogen wurde; nur dann kommen die Arme dazu. Einzeln angetippte Zonen ziehen die Arme nicht mit.
+- **Entschieden (18.11.2026):** Wie im Regelwerk: Nur wenn eine Deckung **von unten** die Brust verdeckt, sind auch beide Arme verdeckt. Seitliche Deckung (Hausecke, Türrahmen) verdeckt nur den Arm ihrer Seite. Deckung von oben ist in der Regel nicht vorgesehen. Umgesetzt: Die App merkt sich, ob die Deckungskante von unten gezogen wurde; nur dann kommen die Arme dazu. Einzeln angetippte Zonen ziehen die Arme nicht mit. **Seit 18.11.2026 gibt es keine Deckungskante mehr** (Deckung nur durch Antippen); die Arme tippt der Spieler selbst an.
 - **Frage:** Regelwerk: „Verdeckt eine Deckung **von unten** die Brust, gelten auch beide Arme als verdeckt.“ Die App weiß nicht, von welcher Seite die Deckung verdeckt.
 - **Stellen:** (Deckung und Rüstung, Deckung)
 - **Vorläufig:** Ist die Brust verdeckt, sind auch die Arme verdeckt. Die Richtung prüft die App nicht.
@@ -316,5 +316,5 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 6. **Fristen ohne Uhr.** Entschieden (18.11.2026): Die App zählt keine Zeit; der Spieler tippt „Frist abgelaufen“, wenn die SL es sagt.
 7. **Operation im Gefecht.** Sie dauert mehrere Runden (Dauer legt die SL fest). *Vorläufig:* Die App verbraucht nur die Mainaction der Runde, in der gewürfelt wird; die Runden davor trägt der Spieler über Main → Sonderfähigkeit mit voller Konzentration ein. Notoperation und Unter Feuer erscheinen als Hinweis im Fenster.
 8. **Wunde eines Verbündeten versorgen:** Die App würfelt nur die eigene Probe; die Wunde führt der andere Spieler bzw. die SL.
-9. **Deckungskante ziehen.** Das Konzept sieht vor, die Kante auf der Figur zu ziehen und den Dialog auch über langes Antippen der Figur zu öffnen. *Vorläufig:* Kante über Knöpfe (Richtung, dann Stufe), Dialog nur über den Knopf Deckung. Ziehen ließe sich ergänzen, falls die Knöpfe am Tisch zu umständlich sind.
+9. **Deckungskante ziehen.** Entfallen (18.11.2026): Es gibt keine Deckungskante mehr, Deckung nur durch Antippen der Zonen. Der Dialog öffnet sich nur über den Knopf Deckung.
 10. **Ballistischer Schild** als mitgeführte Deckung fehlt noch (Schalter „Schild gehalten“).

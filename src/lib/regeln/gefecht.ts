@@ -2,7 +2,7 @@
 // Initiative, Rückgängig und Gefecht beenden. Jede Funktion gibt einen neuen Charakter zurück; nichts wird gespeichert.
 
 import type { Spieldaten } from '../daten/typen';
-import { KEINE_AKTIONEN, type Charakter, type Deckung, type Deckungskante, type Gefecht, type Gefechtsereignis, type SlUmstand } from '../speicher/charakter';
+import { KEINE_AKTIONEN, type Charakter, type Deckung, type Gefecht, type Gefechtsereignis, type SlUmstand } from '../speicher/charakter';
 import { rundeZuruecksetzen } from './aktionen';
 import { begrenzen, gefechtsende, overTheEdge, rundenende, senken, startStand } from './leiter';
 import type { Ergebnisstufe } from './probe';
@@ -164,31 +164,15 @@ export function sichtstufeSetzen(c: Charakter, sichtstufe: string): Charakter {
   return mitGefecht(c, { ...laufend(c), sichtstufe });
 }
 
-/** Stufen der Deckungskante einer Richtung ('unten' oder eine Seite aus regeln.json deckung.kante_seite). */
-export function kantenstufen(richtung: string, d: Spieldaten) {
-  return richtung === 'unten' ? d.regeln.deckung.kante_unten : (d.regeln.deckung.kante_seite[richtung] ?? []);
-}
-
-/** Zonen, die eine Deckungskante verdeckt: die Zonen ihrer Stufe und aller Stufen davor. */
-export function kantenZonen(k: Deckungskante, d: Spieldaten): string[] {
-  return kantenstufen(k.richtung, d).slice(0, k.stufe + 1).flatMap((s) => s.zonen);
-}
-
-/**
- * Tatsächlich verdeckte Zonen aus Kante und einzeln angetippten Zonen (konzept.md § 3.9; Deckung und Rüstung, Deckung).
- * Nur eine Kante von unten, die die Brust verdeckt, verdeckt auch die Arme (Regelfrage R3, entschieden);
- * seitliche Kanten und angetippte Zonen nicht.
- */
-export function deckungZonen(kante: Deckungskante | null, getippt: string[], d: Spieldaten): string[] {
-  const kz = kante ? kantenZonen(kante, d) : [];
-  const menge = new Set([...verdeckteZonen(kz, d, kante?.richtung === 'unten'), ...verdeckteZonen(getippt, d, false)]);
-  return d.koerperzonen.eintraege.map((z) => z.id).filter((z) => menge.has(z));
+/** Verdeckte Zonen aus den angetippten Zonen (konzept.md § 3.9; Deckung und Rüstung, Deckung). Jede Zone zählt für sich. */
+export function deckungZonen(getippt: string[], d: Spieldaten): string[] {
+  return verdeckteZonen(getippt, d);
 }
 
 /** Deckung setzen, im Gefecht und in Ruhe; ohne verdeckte Zone gilt „keine Deckung“. */
-export function deckungSetzen(c: Charakter, e: { wert: number; art: string | null; kante: Deckungskante | null; getippt: string[] }, d: Spieldaten): Charakter {
-  const zonen = deckungZonen(e.kante, e.getippt, d);
-  const deckung: Deckung | null = zonen.length ? { wert: e.wert, zonen, art: e.art, kante: e.kante, getippt: [...e.getippt] } : null;
+export function deckungSetzen(c: Charakter, e: { wert: number; art: string | null; getippt: string[] }, d: Spieldaten): Charakter {
+  const zonen = deckungZonen(e.getippt, d);
+  const deckung: Deckung | null = zonen.length ? { wert: e.wert, zonen, art: e.art, getippt: [...e.getippt] } : null;
   return { ...c, geaendert: jetzt(), spielstand: { ...c.spielstand, deckung } };
 }
 

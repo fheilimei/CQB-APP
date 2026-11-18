@@ -5,7 +5,6 @@ export type BandId = 'bedraengt' | 'nah' | 'mittel' | 'weit' | 'sehr_weit' | 'fe
 export type Spanne = { min: number; max: number };
 
 /** Gemeinsames Format für alles, was Werte automatisch verändert (datenformat.md § Modifikator). */
-export interface Kantenstufe { name: string; zonen: string[] }
 
 export interface Modifikator {
   ziel: { art: 'grundwert' | 'stat' | 'skill' | 'probe' | 'alle'; id?: string };
@@ -192,12 +191,6 @@ export interface Regeln {
   grundwerte: { hp: number; schmerzresistenz: number; nahkampfschaden: number; wurfweite_band: BandId };
   aufstieg: { statrank_up_kosten: number; skill_level_kosten: number; skill_min: number; skill_max: number; rang_max: Rang };
   krit: { schwelle_min: number; zielwert_100_zehner: number };
-  /**
-   * Ist die Zone `arme_mit` von unten verdeckt, gelten auch die Zonen `arme` als verdeckt.
-   * Stufen der Deckungskante (Deckung auf der Figur): von unten und von der rechten bzw. linken Seite des Charakters;
-   * jede Stufe nimmt ihre Zonen zu denen der Stufen davor hinzu.
-   */
-  deckung: { arme_mit: string; arme: string[]; kante_unten: Kantenstufe[]; kante_seite: Record<string, Kantenstufe[]> };
   sprengwirkung: {
     splitter_liegend_anteil: number;
     /** Landepunkt je Ergebnis (krit, erfolg, misserfolg). */

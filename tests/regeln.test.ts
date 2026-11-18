@@ -402,16 +402,14 @@ describe('Schadensablauf', () => {
     expect(treffer({ ...t, mw: 5, stagger_regel: 'nie' }, d).stagger).toBe(false);
   });
 
-  it('R3, R31, R32: Deckung: Rumpfzonen einzeln, Ansage Rumpf nur ganz; Arme nur wenn Deckung von unten die Brust verdeckt', () => {
-    expect(verdeckteZonen(['bein_l', 'bein_r', 'unterleib'], d, true)).toEqual(['unterleib', 'bein_r', 'bein_l']);
-    expect(verdeckteZonen(['unterleib', 'bauch'], d, false)).toEqual(['bauch', 'unterleib']);
-    expect(verdeckteZonen(['brust', 'bauch', 'unterleib'], d, false)).toEqual(['brust', 'bauch', 'unterleib', 'rumpf']);
-    expect(verdeckteZonen(['bauch', 'rumpf'], d, false)).toEqual(['bauch']);
-    expect(verdeckteZonen(['bein_l', 'bein_r', 'unterleib', 'bauch'], d, true)).not.toContain('arm_r');
-    expect(verdeckteZonen(['bein_l', 'bein_r', 'unterleib', 'bauch', 'brust'], d, true)).toEqual(['brust', 'bauch', 'unterleib', 'rumpf', 'arm_r', 'arm_l', 'bein_r', 'bein_l']);
-    // seitlich (z. B. Hausecke rechts bis über den Rumpf): nur der Arm dieser Seite
-    expect(verdeckteZonen(['arm_r', 'bein_r', 'brust', 'bauch', 'unterleib', 'kopf'], d, false)).toEqual(['kopf', 'brust', 'bauch', 'unterleib', 'rumpf', 'arm_r', 'bein_r']);
-    expect(verdeckteZonen(['brust'], d, false)).toEqual(['brust']);
+  it('R3, R31, R32: Deckung: Rumpfzonen einzeln, Ansage Rumpf nur ganz; Arme nur, wenn angetippt', () => {
+    expect(verdeckteZonen(['bein_l', 'bein_r', 'unterleib'], d)).toEqual(['unterleib', 'bein_r', 'bein_l']);
+    expect(verdeckteZonen(['unterleib', 'bauch'], d)).toEqual(['bauch', 'unterleib']);
+    expect(verdeckteZonen(['brust', 'bauch', 'unterleib'], d)).toEqual(['brust', 'bauch', 'unterleib', 'rumpf']);
+    expect(verdeckteZonen(['bauch', 'rumpf'], d)).toEqual(['bauch']);
+    expect(verdeckteZonen(['bein_l', 'bein_r', 'unterleib', 'bauch', 'brust'], d)).not.toContain('arm_r');
+    expect(verdeckteZonen(['arm_r', 'bein_r', 'brust', 'bauch', 'unterleib', 'kopf'], d)).toEqual(['kopf', 'brust', 'bauch', 'unterleib', 'rumpf', 'arm_r', 'bein_r']);
+    expect(verdeckteZonen(['brust'], d)).toEqual(['brust']);
   });
 
   it('R2: Rüstungswert: höchster Wert zählt; Ansage Rumpf nimmt die Rüstung am Rumpf', () => {
