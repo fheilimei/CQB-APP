@@ -386,7 +386,7 @@ describe('Schadensablauf', () => {
     expect(treffer({ ...t, mw: 5, stagger_regel: 'nie' }, d).stagger).toBe(false);
   });
 
-  it('Deckung: Rumpf ganz, Arme nur wenn die Brust verdeckt ist', () => {
+  it('R3: Deckung: Rumpf ganz, Arme nur wenn die Brust verdeckt ist (ohne Richtung)', () => {
     expect(verdeckteZonen(['bein_l', 'bein_r', 'unterleib'], d)).toEqual(['brust', 'bauch', 'unterleib', 'rumpf', 'bein_r', 'bein_l']);
     expect(verdeckteZonen(['brust'], d)).toEqual(['brust', 'bauch', 'unterleib', 'rumpf', 'arm_r', 'arm_l']);
   });

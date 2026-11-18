@@ -23,14 +23,6 @@ Die App wird erst entwickelt, wenn die Regeln weitgehend stehen ([[App/docs/konz
 
 Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. Die App arbeitet bis zur Entscheidung mit der genannten vorläufigen Lösung. Neue Einträge kommen beim Programmieren hinzu (Skill „regelfrage“). Die Regelpunkte aus den Schritten 1 bis 6 sind hierher übertragen (18.11.2026).
 
-### R3. Arme hinter Deckung (17.11.2026)
-- **Frage:** Regelwerk: „Verdeckt eine Deckung **von unten** die Brust, gelten auch beide Arme als verdeckt.“ Die App weiß nicht, von welcher Seite die Deckung verdeckt.
-- **Stellen:** (Deckung und Rüstung, Deckung)
-- **Vorläufig:** Ist die Brust verdeckt, sind auch die Arme verdeckt. Die Richtung prüft die App nicht.
-- **Andere Möglichkeit:** Der Spieler gibt an, ob die Deckung von unten kommt; nur dann zählen die Arme.
-- **Ändern:** Regelkern, Schaden (verdeckte Zonen), und die Auswahl der Deckung
-- **Im Regelwerk klarstellen:** nein
-
 ### R4. Stumpfer Krit gegen „Schmerz ignorieren“ (17.11.2026)
 - **Frage:** Ein stumpfer Krit löst „immer“ einen Stagger aus. Das Symptom Schmerz ignorieren sagt „kein Stagger“. Was gilt?
 - **Stellen:** (Schaden, Blutung und Verletzungen, Stumpfe Treffer); (Adrenalin, Symptome)
@@ -152,6 +144,15 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 
 ### Erledigt
 
+### R3. Arme hinter Deckung (17.11.2026)
+- **Entschieden (18.11.2026):** Ist die Brust verdeckt, sind auch beide Arme verdeckt. Von welcher Seite die Deckung kommt, prüft die App nicht. Das war schon die vorläufige Lösung; an der App ändert sich nichts.
+- **Frage:** Regelwerk: „Verdeckt eine Deckung **von unten** die Brust, gelten auch beide Arme als verdeckt.“ Die App weiß nicht, von welcher Seite die Deckung verdeckt.
+- **Stellen:** (Deckung und Rüstung, Deckung)
+- **Vorläufig:** Ist die Brust verdeckt, sind auch die Arme verdeckt. Die Richtung prüft die App nicht.
+- **Andere Möglichkeit:** Der Spieler gibt an, ob die Deckung von unten kommt; nur dann zählen die Arme.
+- **Ändern:** Regelkern, Schaden (verdeckte Zonen), und die Auswahl der Deckung
+- **Im Regelwerk klarstellen:** nein
+
 ### R2. Rüstung bei der Ansage „Rumpf“ (17.11.2026)
 - **Entschieden (18.11.2026):** Rüstung gibt es am Rumpf nur so, dass sie Brust, Bauch und Unterleib mit demselben Wert abdeckt. Bei der Ansage „Rumpf“ zählt deshalb einfach der Schutz der Weste bzw. der Rüstung am Oberkörper. Die Verletzung richtet sich weiter nach der Zeile „Rumpf“ der Körperzonen (Blutung; bei Krit kampfunfähig, verbluten in einer Minute), wie im Regelwerk. Umgesetzt: Die Datenprüfung meldet eine Rüstung, die die drei Rumpfzonen verschieden schützt.
 - **Frage:** Bei der Ansage „Rumpf“ steht nicht fest, welche Rumpfzone für die Rüstung zählt.
@@ -210,7 +211,7 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 3. **Krit eines stumpfen Treffers gegen „Schmerz ignorieren“.** → Regelfragen R4.
 4. **Wuchttreffer mit 0 Schaden.** → Regelfragen R5.
 5. **Perks, deren Wirkung nur als Text vorliegt.** Erledigt für Schritt 6 (18.11.2026): `perk_wirkungen` in `regeln.json` mit festen Wirkungsarten; der Regelkern führt CQB, Feuer in Bewegung, Atemkontrolle, Gezielter Schuss, Triple Tap, Fingerfertig, Schnell nachladen, Schnellzieher, Quickthrow und Schutzreflex selbst aus. Weiter nur als Hinweis: Überfall, Kaltblütig, Geduld, Niederhalten, Lucky Numbers, Korrektur (sie brauchen Wissen, das die App nicht hat, z. B. ob das Ziel dich wahrnimmt).
-6. **Arme hinter Deckung.** → Regelfragen R3.
+6. **Arme hinter Deckung.** → Regelfragen R3 (entschieden).
 
 ## Offen aus Schritt 3 (Erstellung und Modi, 17.11.2026)
 

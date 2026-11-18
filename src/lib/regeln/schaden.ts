@@ -5,7 +5,7 @@ import type { Spieldaten } from '../daten/typen';
 /**
  * Tatsächlich verdeckte Zonen nach den Regeln für Rumpf und Arme:
  * Ist eine Rumpfzone verdeckt, gilt der ganze Rumpf als verdeckt. Ist die Zone `deckung.arme_mit` (Brust) verdeckt,
- * gelten auch die Arme als verdeckt. Regelfrage R3 (docs/offen.md): vorläufig ohne Richtung („von unten“).
+ * gelten auch die Arme als verdeckt. Regelfrage R3 (docs/offen.md), entschieden: ohne Richtung („von unten“ wird nicht geprüft).
  */
 export function verdeckteZonen(zonen: string[], d: Spieldaten): string[] {
   const menge = new Set(zonen);

@@ -541,7 +541,7 @@ Regeln: Kampfsystem (Nahkampf). Zusammenfassung: [§ 4.12](#412-aktionen). Glied
 - **Deckung** im Gefecht auf der **Silhouette** ([§ 3.0f](#30f-körperbild-silhouette-a-r), Schicht Deckung, bearbeitbar). Erreichbar über langes Antippen der Figur auf dem Startbildschirm oder den Knopf „Deckung“ über ihr:
   - **Deckungskante ziehen:** von unten nach oben (Autotür, Mauer) oder von links bzw. rechts (Hausecke, Türrahmen). Die Kante rastet an Zonengrenzen ein. Stufen von unten: Beine → Unterleib → Bauch → Brust (mit beiden Armen) → Kopf. Stufen von der Seite: Arm und Bein dieser Seite → Kopf und Rumpf → alles.
   - **Zonen antippen:** einzelne Zonen als verdeckt an- oder abwählen (z. B. Fenster: nur Kopf frei). Kombinierbar mit der Kante.
-  - **Regeln** ([§ 4.7](#47-schadensablauf)): Ist eine Rumpfzone verdeckt, gilt der ganze Rumpf als verdeckt. Verdeckt die Kante von unten die Brust, sind beide Arme verdeckt. Die App zeigt das auf der Silhouette mit an.
+  - **Regeln** ([§ 4.7](#47-schadensablauf)): Ist eine Rumpfzone verdeckt, gilt der ganze Rumpf als verdeckt. Ist die Brust verdeckt, sind beide Arme verdeckt, gleich von welcher Seite die Deckung kommt (Regelfrage R3, entschieden). Die App zeigt das auf der Silhouette mit an.
   - Verdeckte Zonen sind schraffiert; darunter steht der **Deckungswert** (Zahl oder Auswahl aus `schutz.json`).
   - Die Deckung bleibt bestehen, bis der Spieler sie ändert oder das Gefecht endet. „Keine Deckung“ ist ein Knopf.
 
@@ -738,7 +738,7 @@ Bänder: bedrängt (bis 2 m, Armeslänge), nah (3–15 m), mittel (16–30 m), w
 - Verbraucht werden alle angesagten Schüsse.
 
 ### 4.7 Schadensablauf
-1. **Deckung** (nur wenn die getroffene Zone verdeckt ist): DK < Deckungswert → gestoppt, kein Schaden. Sonst Rest-DK = DK − Deckungswert. Ist eine Rumpfzone verdeckt, gilt der ganze Rumpf als verdeckt. Deckung von unten bis zur Brust verdeckt auch beide Arme; bis Bauch oder Unterleib nicht.
+1. **Deckung** (nur wenn die getroffene Zone verdeckt ist): DK < Deckungswert → gestoppt, kein Schaden. Sonst Rest-DK = DK − Deckungswert. Ist eine Rumpfzone verdeckt, gilt der ganze Rumpf als verdeckt. Ist die Brust verdeckt, sind auch beide Arme verdeckt, gleich von welcher Seite (R3); bis Bauch oder Unterleib nicht.
 2. **Rüstung** der getroffenen Zone: Rest-DK ≥ Rüstung → **Durchschlag**, sonst **Wuchttreffer**. Nach der Ansage „Rumpf“ zählt die Rüstung am Rumpf; sie schützt Brust, Bauch und Unterleib immer gleich (R2).
 3. **Durchschlag:** Schaden = MW × Multiplikator (× Kugeln). Folgen der Zone; bei Krit Spalte „Krit“. Erzeugt eine Wunde.
 4. **Wuchttreffer:** Schaden = max(0, MW − (Rüstung − Rest-DK)) (× Kugeln). Keine Zonenfolgen, kein Krit. Erzeugt eine **Prellung**, keine Wunde.
