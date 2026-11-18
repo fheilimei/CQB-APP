@@ -1,13 +1,13 @@
 ---
 name: regelwerk-aendern
-description: Entschiedene Regelfragen aus docs/offen.md ins Regelwerk-Repo CQB (GitHub fheilimei/CQB) eintragen und direkt auf main hochladen. Laden, wenn der Nutzer sagt „Trag die entschiedenen Regelfragen ins Regelwerk ein“, „Regelwerk ändern“ oder /regelwerk-aendern. Optional mit Nummern (z. B. /regelwerk-aendern R30 R31).
+description: Entschiedene Regelfragen aus docs/offen.md ins Regelwerk-Repo CQB (GitHub fheilimei/CQB) eintragen direkt auf main hochladen und danach die neue Fassung nach regelwerk/ übernehmen. Laden, wenn der Nutzer sagt „Trag die entschiedenen Regelfragen ins Regelwerk ein“, „Regelwerk ändern“ oder /regelwerk-aendern. Optional mit Nummern (z. B. /regelwerk-aendern R30 R31).
 ---
 
 # Regelwerk ändern
 
 Überträgt entschiedene Regelfragen aus `docs/offen.md` in das Regelwerk im Repo **CQB** (`fheilimei/CQB`, Zweig `main`). Änderungen werden direkt auf `main` hochgeladen (so vom Nutzer gewünscht, 18.11.2026).
 
-`regelwerk/` in diesem Repo bleibt unangetastet. Es ist nur eine Kopie.
+`regelwerk/` in diesem Repo wird nicht von Hand bearbeitet, sondern am Ende nach Schritt 5 als Ganzes neu übernommen.
 
 ## 1. Kandidaten finden
 
@@ -42,11 +42,13 @@ git -C "$D" pull --rebase && git -C "$D" push
 
 ## 5. In der App nachführen
 
-In `docs/offen.md` bei jedem übertragenen Eintrag „noch offen“ ersetzen durch **„eingetragen (<Datum>)“**. Commit und Push in diesem Repo nach den Regeln in CLAUDE.md.
+1. In `docs/offen.md` bei jedem übertragenen Eintrag „noch offen“ ersetzen durch **„eingetragen (<Datum>)“**.
+2. Das Regelwerk neu übernehmen nach CLAUDE.md, Abschnitt „Regelwerk neu übernehmen“ (Schritte 1–3). Dieser Skill gilt als Auftrag dafür. Quelle ist das eben hochgeladene `/home/fritz/Claude/CQB`. Die erwarteten Unterschiede sind die eigenen Änderungen; weitere Unterschiede (vom Nutzer im Regelwerk geändert) einzeln prüfen und im Bericht nennen.
+3. Tests grün, dann Commit und Push in diesem Repo nach den Regeln in CLAUDE.md.
 
 ## 6. Bericht an den Nutzer
 
 In einfachem Deutsch:
 - je Regel ein Satz: was jetzt wo im Regelwerk steht
 - ausgelassene Einträge mit Grund
-- der Hinweis: Mit „Übernimm das aktuelle Regelwerk“ kommt die neue Fassung in die App.
+- was sich durch die Übernahme in der App ändert, vor allem durch Unterschiede, die nicht aus diesem Durchlauf stammen

@@ -88,7 +88,7 @@ Keine Skill-, Perk-, Waffen- oder Klassen-ID fest im Code. Neue Einträge in den
 
 ## Regelwerk neu übernehmen
 
-Nur auf Auftrag des Nutzers („Übernimm das aktuelle Regelwerk“):
+Nur auf Auftrag des Nutzers („Übernimm das aktuelle Regelwerk“) oder als letzter Schritt des Skills `regelwerk-aendern`:
 1. Die Ordner `Grundmechanik/`, `Ausrüstung/` und `Charaktererstellung und Aufstieg/` aus dem Repo CQB (Zweig `main`) nach `regelwerk/` kopieren. Ordner, deren Name mit `Sicherungskopie_` beginnt, und `.base`-Dateien nicht übernehmen.
 2. Unterschiede zur bisherigen Kopie auflisten.
 3. Für jeden Unterschied prüfen, ob `public/data/`, der Regelkern, `docs/konzept.md` oder `docs/datenformat.md` angepasst werden müssen, und das tun.
