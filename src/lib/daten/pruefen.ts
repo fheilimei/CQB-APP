@@ -164,6 +164,9 @@ export function pruefeDaten(d: Spieldaten): string[] {
   if (!r.eingehend?.ausloeser) f('regeln.json', 'eingehend.ausloeser fehlt');
   for (const [k, id] of Object.entries(r.eingehend?.ausloeser ?? {}))
     if (!r.leiter.ausloeser.some((a) => a.id === id)) f('regeln.json', `eingehend.ausloeser.${k}: unbekannter Auslöser „${id}“`);
+  if (!r.ereignis?.length) f('regeln.json', 'ereignis fehlt');
+  for (const e of r.ereignis ?? [])
+    if (!r.leiter.ausloeser.some((a) => a.id === e.ausloeser)) f('regeln.json', `ereignis: unbekannter Auslöser „${e.ausloeser}“`);
   // Nahkampf (Schritt 7)
   const nk = r.nahkampf;
   if (!statIds.has(nk.stat)) f('regeln.json', `nahkampf.stat: unbekannter Stat „${nk.stat}“`);

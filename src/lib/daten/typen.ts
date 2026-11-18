@@ -172,6 +172,8 @@ export interface Regeln {
   };
   /** Auslöser (leiter.ausloeser), die ein eingehender Treffer setzt (konzept.md § 3.10). */
   eingehend: { ausloeser: { beschossen: string; getroffen: string; verletzt: string; stagger: string } };
+  /** Knopf Ereignis neben der Figur (konzept.md § 3.7a): Auslöser (leiter.ausloeser) ohne Treffer, je ein Eintrag. */
+  ereignis: { ausloeser: string; name: string; hinweis: string }[];
   zielen: { stepshields: number };
   /** Eigener Stand; der erste ist der Start eines Gefechts. Schlüssel von schiessen.rueckstoss_stepshields sind Stand-IDs. */
   staende: { id: string; name: string; adjektiv: string; /** Verb nach „du“ bzw. „er“ („stehst“, „steht“). */ du: string; er: string; liegend?: boolean; kein_hechten?: boolean }[];

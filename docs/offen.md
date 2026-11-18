@@ -318,7 +318,7 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 6. **Schnelllader und Ladestreifen.** → Regelfragen R11.
 7. **Magazine nach dem Gefecht füllen.** Entschieden (18.11.2026): Knopf „Magazine füllen“ außerhalb des Gefechts; leere Magazine werden gezählt statt verworfen. Dauer und Reihenfolge → Regelfragen R12.
 8. **Ausrüstung ohne Laden.** Im Schreibmodus frei eintragbar, ohne Kassenbuch und ohne Eintrag im Protokoll. Mit dem Laden (§ 3.14) ändert sich das.
-9. **Noch nicht da:** Knöpfe Getroffen und Ereignis, Wurfaktion, Nahkampf (erledigt 18.11.2026), Wunde versorgen (im Menü ausgegraut), Schaden beim Ziel vorrechnen im Schussbericht, Malstep und Waffen-Einschränkung des ballistischen Schilds beim Schießen. Kommen mit Schritt 7 (Treffer, Wunden, Schutz).
+9. **Noch nicht da:** Knöpfe Getroffen und Ereignis (erledigt 18.11.2026), Wurfaktion, Nahkampf (erledigt 18.11.2026), Wunde versorgen (im Menü ausgegraut), Schaden beim Ziel vorrechnen im Schussbericht, Malstep und Waffen-Einschränkung des ballistischen Schilds beim Schießen. Kommen mit Schritt 7 (Treffer, Wunden, Schutz).
 10. **Skill austauschen beim Schießen** (Konzept § 3.6) fehlt noch; der Schussrechner nimmt immer den Waffenskill der Waffe.
 
 ## Offen aus Schritt 7 (Treffer, Wunden, 18.11.2026)
@@ -327,7 +327,7 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 2. **Deckung beim Getroffen.** Erledigt (18.11.2026): Im Gefecht gilt die Deckung auf der Figur. Außerhalb des Gefechts wählt der Spieler die Deckung weiter im Dialog Getroffen.
 3. **Silhouette** zeigt vorerst nur die Haltung „stehend“; Hocken und Liegen folgen. Prellungen werden nicht je Zone gezeigt, weil die App sie nur als Summe kennt. Antippen einer Zone auf der Figur (Übersicht der Zone mit Versorgen) folgt.
 4. **Rückgängig** gibt es vorerst nur direkt nach dem Treffer (Meldung „Treffer eingetragen“); einzeln aus dem Gefechtsprotokoll folgt mit dem Reiter Verlauf.
-5. **Noch nicht da:** Ereignis (Beschossen), ballistischer Schild beim Getroffen. Erledigt (18.11.2026): Blutungsfristen und Versorgen, Getroffen durch Nahkampf, Nahkampfangriff ausgehend, Getroffen durch Explosion (Splitter, Druckwelle) und Schrot über mehrere Zonen.
+5. **Noch nicht da:** ballistischer Schild beim Getroffen, Reaktion auf eine Granate in der Nähe (Hechten, in Deckung, Zurückwerfen). Erledigt (18.11.2026): Ereignis (Beschossen, Verbündeter ausgeschaltet, Sonstiges), Blutungsfristen und Versorgen, Getroffen durch Nahkampf, Nahkampfangriff ausgehend, Getroffen durch Explosion (Splitter, Druckwelle) und Schrot über mehrere Zonen.
 15. **Deckung bei einer Explosion.** Die Deckung auf der Figur steht gegen den Schützen; bei einer Explosion zählt sie vom Explosionspunkt aus. *Vorläufig:* Schalter „Deine Deckung liegt zwischen dir und der Explosion“ (vorbelegt an). Ist er an, gelten die schraffierten Zonen; sonst gilt keine Deckung. Eine andere Seite der Deckung lässt sich nicht eintragen.
 16. **Sonderwirkungen von Granaten** (Blendung, Rauch, Reizgas) stehen im Fenster Explosion nur als Hinweis. Geblendet und Gereizt trägt die App noch nicht ein; der Stagger der Blendgranate im Kern auch nicht. Kommt mit den Zuständen.
 17. **Hohlladung:** Den Strahl trägt der Spieler als Schuss (DK und MW) ein; das Fenster Explosion nennt die Werte. Die Explosion selbst läuft über Explosion.

@@ -1,7 +1,7 @@
 <script lang="ts">
   // Reiter Figur (konzept.md § Aufbau der App): HP, Silhouette mit Rüstung und Wunden. Antippen einer Zone zeigt darunter
   // ihre Übersicht (Rüstung, Deckung, Wunden mit Status, Frist und Folge; Versorgen und „Frist abgelaufen“).
-  // Rechts neben der Figur: oben Stand und Bewegung (Gefecht), unten Deckung über Getroffen (beide im Gefecht und in Ruhe). Verdeckte Zonen sind schraffiert.
+  // Rechts neben der Figur: oben Stand und Bewegung (Gefecht), unten Deckung, Ereignis (nur im Gefecht) und Getroffen (Deckung und Getroffen im Gefecht und in Ruhe). Verdeckte Zonen sind schraffiert.
   import type { Spieldaten } from '../daten/typen';
   import { grundwerte, hpAktuell } from '../regeln/modifikatoren';
   import { gefechtVon, lebenslageDes } from '../regeln/probenrechner';
@@ -17,6 +17,7 @@
     d: Spieldaten;
     ongetroffen: () => void;
     ondeckung: () => void;
+    onereignis: () => void;
     onversorgen: (wundId: string) => void;
     onfrist: (wundId: string) => void;
     kampfunfaehig: boolean;
@@ -24,7 +25,7 @@
     onnaechsteRunde: () => void;
     ongefechtende: () => void;
   }
-  let { c, d, ongetroffen, ondeckung, onversorgen, onfrist, kampfunfaehig, ongefechtstart, onnaechsteRunde, ongefechtende }: Props = $props();
+  let { c, d, ongetroffen, ondeckung, onereignis, onversorgen, onfrist, kampfunfaehig, ongefechtstart, onnaechsteRunde, ongefechtende }: Props = $props();
 
   let zone = $state<string | null>(null);
   /** Bildzeichen Mauer (Deckung), auf dem Knopf Deckung und in der Übersicht der Zone. */
@@ -92,12 +93,18 @@
         <Haltungsanzeige g={gefechtVon(c)!} {d} />
       {/if}
       <div class="knoepfe">
-        <!-- Bildzeichen: Mauer für Deckung, Einschlag für Getroffen. -->
+        <!-- Bildzeichen: Mauer für Deckung, Ausrufezeichen für Ereignis, Einschlag für Getroffen. -->
         <!-- Beide Knöpfe öffnen nur einen Dialog; ob man in Deckung oder getroffen ist, zeigt die Figur (Schraffur mit Mauer und Zahl, Wunden). -->
         <button onclick={ondeckung} aria-label={deckungJetzt ? `Deckung mit Schutz ${deckungJetzt.wert} ändern` : 'Deckung eintragen'}>
           <svg class="zeichen" viewBox="0 0 16 16" aria-hidden="true"><path d={MAUER} /></svg>
           Deckung
         </button>
+        <!-- Ereignis nur im Gefecht: es setzt nur Auslöser für das Rundenende, die es in Ruhe nicht gibt. Zeichen: Ausrufezeichen. -->
+        {#if imGefecht}
+          <button onclick={onereignis}>
+            <svg class="zeichen" viewBox="0 0 16 16" aria-hidden="true"><path d="M6.5 1h3l-.6 9.5H7.1z" /><circle cx="8" cy="13.5" r="1.6" /></svg>
+            Ereignis</button>
+        {/if}
         <button onclick={ongetroffen}>
           <svg class="zeichen" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0l1.4 4.6L13.7 2.3 11.4 6.6 16 8l-4.6 1.4 2.3 4.3-4.3-2.3L8 16l-1.4-4.6-4.3 2.3 2.3-4.3L0 8l4.6-1.4L2.3 2.3l4.3 2.3z" /></svg>
           Getroffen</button>
@@ -177,7 +184,7 @@
   .fuellung.niedrig { background: var(--gefahr); }
   .warnung { margin: 0; }
   p { margin: 0; }
-  /* Figur links, rechts daneben eine Spalte: oben Stand und Bewegung, unten (Daumenbereich) Deckung über Getroffen, beide gleich breit. */
+  /* Figur links, rechts daneben eine Spalte: oben Stand und Bewegung, unten (Daumenbereich) Deckung, Ereignis und Getroffen untereinander, gleich breit. */
   .figurbox { display: flex; gap: var(--abstand-2); align-items: stretch; }
   .figurplatz { flex: 1 1 auto; min-width: 0; max-width: 240px; }
   .seite { flex: 0 0 auto; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; gap: var(--abstand-2); margin-left: auto; }

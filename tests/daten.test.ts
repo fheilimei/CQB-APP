@@ -53,6 +53,12 @@ describe('Datenprüfung erkennt Fehler', () => {
     expect(fehler).toContain('unbekannter Skill „zaubern“');
   });
 
+  it('Ereignis mit unbekanntem Auslöser', () => {
+    const d = kopie();
+    d.regeln.ereignis[0]!.ausloeser = 'gibt_es_nicht';
+    expect(pruefeDaten(d).join('\n')).toContain('ereignis: unbekannter Auslöser „gibt_es_nicht“');
+  });
+
   it('Rank-Vorschlag, der nicht zum Rank-Set passt', () => {
     const d = kopie();
     const stats = d.stats.eintraege.map((s) => s.id);

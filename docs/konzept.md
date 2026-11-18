@@ -182,7 +182,7 @@ Unabhängig von den Modi Lesen, Aufstieg und Schreiben ([§ 3.0a](#30a-modi-lese
 - Im Reiter Figur steht unter der Figur **▶ Gefecht starten** (an der Stelle, an der im Gefecht „Nächste Runde“ und „Gefecht beenden“ stehen; Akzentrahmen, nicht gefüllt; 18.11.2026, vorher in der Kopfzeile).
 
 **Im Gefecht** (nach „Gefecht starten“, [§ 3.7](#37-leiter-m-r)):
-- Im Reiter Figur (nur dort, 18.11.2026) erscheinen am unteren Rand die Aktionsleiste und darüber das Wählrad „Adrenalin“ ([§ 3.7](#37-leiter-m-r)); die Aktionsleiste hat **Main · Bewegung · Stand | Break** (Ereignis am Rand) (Getroffen steht neben der Figur) ([§ 3.7a](#37a-aktionsleiste-m-r)).
+- Im Reiter Figur (nur dort, 18.11.2026) erscheinen am unteren Rand die Aktionsleiste und darüber das Wählrad „Adrenalin“ ([§ 3.7](#37-leiter-m-r)); die Aktionsleiste hat **Main · Bewegung · Stand | Break** (Deckung, Ereignis und Getroffen stehen neben der Figur) ([§ 3.7a](#37a-aktionsleiste-m-r)).
 - Kopfzeile und untere Leisten (Aktionsleiste, Adrenalin) tragen einen Rand in der Akzentfarbe; ein eigener Schriftzug „Gefecht“ entfällt. Oben rechts in der Kopfzeile, auf Höhe des Namens, steht klein „Runde n · Initiative“ mit dem Ergebnis der Initiative dieser Runde darunter. Die Knöpfe **Nächste Runde** (Weiter-Zeichen) und **Gefecht beenden** (Stopp-Zeichen) stehen nebeneinander unter dem Kasten der Figur im Reiter Figur, außerhalb des Kastens (18.11.2026).
 - Der **Aufstiegsmodus** ist gesperrt (Steigern gehört nicht in die Runde). Der **Schreibmodus** bleibt erreichbar für Korrekturen.
 
@@ -341,7 +341,7 @@ Regeln: [§ 4.4](#44-die-leiter). Ziel: höchstens zwei Handgriffe pro Runde; al
 - **Gefecht beenden:** Leiter auf 0, Adrenalinschock setzen, Blutungsfristen starten. Der Bericht enthält die Auswahl „Adrenalinschock: ja · nein“; vorgewählt ist „ja“, wenn im Gefecht Over the Edge erreicht wurde, sonst „nein“. Der Spieler kann sie umstellen, z. B. wenn die SL anders entscheidet oder Over the Edge versehentlich eingestellt war (18.11.2026) ([§ 3.10](#310-treffer-wunden-und-blutung-m-r)).
 
 ### 3.7a Aktionsleiste (M, R)
-Nur im Gefecht ([§ 3.0e](#30e-gefecht-und-ruhe-m)) liegen ganz unten, unter dem Wählrad, die Knöpfe **Main · Bewegung · Stand** und ganz rechts, durch eine dünne Linie abgesetzt, **Break** (18.11.2026: die Breakaction ist etwas anderes als die Aktionen des eigenen Zugs); kleiner am Rand **Ereignis**. **Getroffen** steht nicht hier, sondern wie in Ruhe neben der Figur (18.11.2026). Nach jeder Aktion über einen der vier Knöpfe zeigt die App kurz, was ausgeführt wurde („Standwechsel: kniend · Rückgängig“); Rückgängig stellt den Stand vor der Aktion wieder her, mit Zähler, Munition und Adrenalin (18.11.2026). Die ersten vier bilden die Aktionen der Runde ab ([§ 4.12](#412-aktionen)); so sieht der Spieler jederzeit, was er noch tun kann. Die Namen stehen mittig im Knopf; Stand, Bewegung und Konzentration stehen nicht darunter, sondern beschriftet neben der Figur (18.11.2026).
+Nur im Gefecht ([§ 3.0e](#30e-gefecht-und-ruhe-m)) liegen ganz unten, unter dem Wählrad, die Knöpfe **Main · Bewegung · Stand** und ganz rechts, durch eine dünne Linie abgesetzt, **Break** (18.11.2026: die Breakaction ist etwas anderes als die Aktionen des eigenen Zugs). **Ereignis** und **Getroffen** stehen nicht hier, sondern wie in Ruhe neben der Figur (18.11.2026). Nach jeder Aktion über einen der vier Knöpfe zeigt die App kurz, was ausgeführt wurde („Standwechsel: kniend · Rückgängig“); Rückgängig stellt den Stand vor der Aktion wieder her, mit Zähler, Munition und Adrenalin (18.11.2026). Die ersten vier bilden die Aktionen der Runde ab ([§ 4.12](#412-aktionen)); so sieht der Spieler jederzeit, was er noch tun kann. Die Namen stehen mittig im Knopf; Stand, Bewegung und Konzentration stehen nicht darunter, sondern beschriftet neben der Figur (18.11.2026).
 
 **Zähler.** Jeder der vier Aktionsknöpfe trägt eine kleine Zahl: wie oft die Aktion in dieser Runde noch verfügbar ist. Bei 0 ist der Knopf ausgegraut. „Nächste Runde“ ([§ 3.7](#37-leiter-m-r)) setzt alle Zähler zurück. Die App verfolgt nicht, wer am Zug ist: Main, Bewegung und Standwechsel stehen die ganze Runde bereit und lassen sich so oft ausführen, wie der Zähler erlaubt. Wann der Charakter dran ist, sagt die SL. Die App passt die Zähler selbst an:
 - **Sprint** (Symptom A2): Bewegung 2.
@@ -390,7 +390,7 @@ Unter jedem Knopf steht klein, was gerade gilt (Bewegung dieser Runde, eigener S
 
 Stand, Bewegung, Hechten und Zielen fließen in die Rechner ein: eigene Bewegung und Hechten als Lage-Malsteps, Zielen als Stepshield auf die Trefferprobe, liegend als Stepshield **nur auf die Haltezahl** (Kampfsystem, Treffen, Rückstoß abfangen). Die Werte stehen in `regeln.json`.
 
-**Getroffen** steht im Gefecht wie in Ruhe neben der Figur ([§ 3.7c](#37c-treffer-ausgehend-und-eingehend-m-r)). **Ereignis** ist unabhängig vom Rundenablauf; kein Zähler. Optionen: Beschossen (nur Auslöser), Granate in der Nähe ([§ 3.8a](#38a-werfen-a-m-r)), Verbündeter ausgeschaltet (nur Auslöser).
+**Getroffen** steht im Gefecht wie in Ruhe neben der Figur ([§ 3.7c](#37c-treffer-ausgehend-und-eingehend-m-r)). **Ereignis** (umgesetzt 18.11.2026) steht nur im Gefecht neben der Figur zwischen Deckung und Getroffen, mit Ausrufezeichen, im selben Stil. Es ist unabhängig vom Rundenablauf; kein Zähler. Optionen (aus `regeln.json`, `ereignis`): Beschossen, Verbündeter ausgeschaltet, Sonstiges (SL); jede setzt nur ihren Auslöser für das Rundenende. Ein Tipp setzt sofort, ohne Bericht; die Meldung danach bietet Rückgängig. Was in dieser Runde schon zählt, ist grau. Eine Granate in der Nähe läuft über Getroffen → Explosion (setzt „beschossen“ auch ohne Treffer); die Reaktion auf eine Granate ([§ 3.8a](#38a-werfen-a-m-r)) folgt.
 
 ### 3.7b Initiative und Breakaction (M, R)
 Regeln: Kampfsystem (Action Economy; Die Breakaction benutzen; Reaktion und Antizipation), Würfelmechanik (Contested Rolls). Zusammenfassung: [§ 4.12](#412-aktionen).
@@ -571,7 +571,7 @@ Dann folgt der **Bericht** ([§ 3.0c](#30c-bericht-was-ist-passiert-a)). „Weit
 - Auslöser **getroffen**, **verletzt**, **Stagger** in der Rundenend-Checkliste anhaken.
 - Banner bei Kampfunfähigkeit oder Tod.
 
-**Schnellknopf** (nur im Gefecht, unter Ereignis): „Beschossen“ (nur Auslöser beschossen, ohne Treffer). Kein Bericht nötig, da nur ein Wert sich ändert. Ein Nahkampfangriff auf den Charakter läuft immer über Getroffen → Nahkampf, auch wenn er abgewehrt wird; der Auslöser „im Nahkampf angegriffen“ wird dabei gesetzt.
+**Schnellknopf** (nur im Gefecht, Ereignis neben der Figur): „Beschossen“ (nur Auslöser beschossen, ohne Treffer). Kein Bericht nötig, da nur ein Wert sich ändert; danach Meldung mit Rückgängig. Ein Nahkampfangriff auf den Charakter läuft immer über Getroffen → Nahkampf, auch wenn er abgewehrt wird; der Auslöser „im Nahkampf angegriffen“ wird dabei gesetzt.
 
 **Sonstiges** (direkter Schaden): Schaden und Zone eingeben, Wunde oder Prellung wählen (z. B. Sturz, Falle). Ohne Schadensablauf; mit Bericht.
 

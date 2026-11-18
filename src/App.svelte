@@ -35,6 +35,7 @@
   import Schiessen from './lib/ui/gefecht/Schiessen.svelte';
   import WaffeWechseln from './lib/ui/gefecht/WaffeWechseln.svelte';
   import Deckung from './lib/ui/gefecht/Deckung.svelte';
+  import Ereignis from './lib/ui/gefecht/Ereignis.svelte';
   import Getroffen from './lib/ui/gefecht/Getroffen.svelte';
   import Nahkampfangriff from './lib/ui/gefecht/Nahkampfangriff.svelte';
   import Versorgen from './lib/ui/gefecht/Versorgen.svelte';
@@ -64,7 +65,7 @@
   /** Offener Dialog des Spiels: Probenrechner, Abläufe rund um Gefecht und Adrenalin. */
   type Spieldialog =
     | { art: 'probe'; stat: string | null; skill: string | null; alsMain?: boolean }
-    | { art: 'start' | 'initiative' | 'runde' | 'senken' | 'verschieben' | 'detail' | 'schiessen' | 'wechseln' | 'getroffen' | 'deckung' | 'ende' }
+    | { art: 'start' | 'initiative' | 'runde' | 'senken' | 'verschieben' | 'detail' | 'schiessen' | 'wechseln' | 'getroffen' | 'deckung' | 'ereignis' | 'ende' }
     | { art: 'aktion'; aktion: Aktion }
     | { art: 'nachladen'; id: string; als: 'main' | 'break' | null }
     | { art: 'ladehemmung'; id: string }
@@ -257,6 +258,14 @@
     zeigeRueckgaengig('Treffer eingetragen', async () => { await speichern(vorher); });
   }
 
+  /** Ereignis: ein Auslöser ohne Treffer; die Meldung bietet „Rückgängig“. */
+  async function ereignisFertig(c: Charakter, text: string) {
+    const vorher = $state.snapshot(aktiv) as Charakter;
+    await speichern(c);
+    dialog = null;
+    zeigeRueckgaengig(text, async () => { await speichern(vorher); });
+  }
+
   function gefechtStarten() {
     if (modus === 'aufstieg') modus = 'lesen';
     dialog = { art: 'start' };
@@ -391,6 +400,7 @@
     <main class="bogen">
       {#if reiter === 'figur'}
         <Figur c={aktiv} d={daten} ongetroffen={() => (dialog = { art: 'getroffen' })} ondeckung={() => (dialog = { art: 'deckung' })}
+          onereignis={() => (dialog = { art: 'ereignis' })}
           onversorgen={(id) => (dialog = { art: 'versorgen', wundId: id })} onfrist={fristFrage}
           {kampfunfaehig} ongefechtstart={gefechtStarten} onnaechsteRunde={() => (dialog = { art: 'runde' })} ongefechtende={gefechtEndeFrage} />
       {:else if reiter === 'werte'}
@@ -453,6 +463,8 @@
       <Deckung c={aktiv} d={daten} onfertig={(c) => nachAblauf(c)} onabbrechen={() => (dialog = null)} />
     {:else if dialog.art === 'ende' && gefecht}
       <GefechtBeenden c={aktiv} d={daten} onfertig={(c) => { void speichern(c); dialog = null; }} onabbrechen={() => (dialog = null)} />
+    {:else if dialog.art === 'ereignis' && gefecht}
+      <Ereignis c={aktiv} d={daten} onfertig={ereignisFertig} onabbrechen={() => (dialog = null)} />
     {:else if dialog.art === 'getroffen'}
       <Getroffen c={aktiv} d={daten} {zonenModus} wuerfelModus={probeModus} onaendern={aendern} onfertig={trefferFertig} onabbrechen={() => (dialog = null)} />
     {:else if dialog.art === 'start'}
