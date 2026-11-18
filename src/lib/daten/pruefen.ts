@@ -165,6 +165,7 @@ export function pruefeDaten(d: Spieldaten): string[] {
   for (const [k, id] of Object.entries(r.eingehend?.ausloeser ?? {}))
     if (!r.leiter.ausloeser.some((a) => a.id === id)) f('regeln.json', `eingehend.ausloeser.${k}: unbekannter Auslöser „${id}“`);
   if (!r.ereignis?.length) f('regeln.json', 'ereignis fehlt');
+  if (new Set((r.ereignis ?? []).map((e) => e.id)).size !== (r.ereignis ?? []).length) f('regeln.json', 'ereignis: doppelte ID');
   for (const e of r.ereignis ?? [])
     if (!r.leiter.ausloeser.some((a) => a.id === e.ausloeser)) f('regeln.json', `ereignis: unbekannter Auslöser „${e.ausloeser}“`);
   // Nahkampf (Schritt 7)

@@ -16,16 +16,22 @@
   let { c, d, onfertig, onabbrechen }: Props = $props();
 
   const gesetzt = $derived(gefechtVon(c)?.ausloeser_diese_runde ?? []);
+  /** Meldung nach dem Tipp; heißt der Eintrag anders als sein Auslöser (Explosion → beschossen), nennt sie den Auslöser. */
+  function text(e: Spieldaten['regeln']['ereignis'][number]): string {
+    const name = d.regeln.leiter.ausloeser.find((a) => a.id === e.ausloeser)?.name ?? e.ausloeser;
+    return e.name.toLowerCase() === name.toLowerCase() ? `${e.name} zählt am Rundenende.` : `${e.name} zählt am Rundenende als ${name}.`;
+  }
 </script>
 
 <Dialog titel="Ereignis">
   <div class="gruppe">
     <span class="gruppe-titel">Was passiert?</span>
     <ul class="auswahlliste">
-      {#each d.regeln.ereignis as e (e.ausloeser)}
+      <!-- Explosion in der Nähe setzt denselben Auslöser wie Beschossen (Sprengwirkung, Adrenalin); zählt er schon, sind beide grau. -->
+      {#each d.regeln.ereignis as e (e.id)}
         {@const schon = gesetzt.includes(e.ausloeser)}
         <li>
-          <button disabled={schon} onclick={() => onfertig(ausloeserSetzen(c, [e.ausloeser]), `${e.name} zählt am Rundenende.`)}>
+          <button disabled={schon} onclick={() => onfertig(ausloeserSetzen(c, [e.ausloeser]), text(e))}>
             {e.name}
             <small>{schon ? 'Zählt in dieser Runde schon.' : e.hinweis}</small>
           </button>
@@ -33,7 +39,7 @@
       {/each}
     </ul>
   </div>
-  <p class="hinweis">Wirst du getroffen oder explodiert etwas in deiner Nähe, nimm Getroffen. Das zählt „beschossen“ mit.</p>
+  <p class="hinweis">Wirst du getroffen, auch von Splittern oder der Druckwelle, nimm Getroffen. Das zählt „beschossen“ mit.</p>
 
   {#snippet knoepfe()}
     <button onclick={onabbrechen}>Zurück</button>

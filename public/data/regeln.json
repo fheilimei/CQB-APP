@@ -707,9 +707,10 @@
     }
   },
   "ereignis": [
-    { "ausloeser": "beschossen", "name": "Beschossen", "hinweis": "Auf dich wird geschossen, aber du wirst nicht getroffen." },
-    { "ausloeser": "verbuendeter", "name": "Verbündeter ausgeschaltet", "hinweis": "Ein Verbündeter wird ausgeschaltet." },
-    { "ausloeser": "sonstiges", "name": "Sonstiges", "hinweis": "Die SL wertet ein anderes Ereignis als Auslöser." }
+    { "id": "beschossen", "ausloeser": "beschossen", "name": "Beschossen", "hinweis": "Auf dich wird geschossen, aber du wirst nicht getroffen." },
+    { "id": "explosion", "ausloeser": "beschossen", "name": "Explosion in der Nähe", "hinweis": "Du stehst in einem Bereich der Explosion, wirst aber nicht getroffen." },
+    { "id": "verbuendeter", "ausloeser": "verbuendeter", "name": "Verbündeter ausgeschaltet", "hinweis": "Ein Verbündeter wird ausgeschaltet." },
+    { "id": "sonstiges", "ausloeser": "sonstiges", "name": "Sonstiges", "hinweis": "Die SL wertet ein anderes Ereignis als Auslöser." }
   ],
   "schiessen": {
     "ansage_malsteps": {

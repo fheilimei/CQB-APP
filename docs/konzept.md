@@ -390,7 +390,7 @@ Unter jedem Knopf steht klein, was gerade gilt (Bewegung dieser Runde, eigener S
 
 Stand, Bewegung, Hechten und Zielen fließen in die Rechner ein: eigene Bewegung und Hechten als Lage-Malsteps, Zielen als Stepshield auf die Trefferprobe, liegend als Stepshield **nur auf die Haltezahl** (Kampfsystem, Treffen, Rückstoß abfangen). Die Werte stehen in `regeln.json`.
 
-**Getroffen** steht im Gefecht wie in Ruhe neben der Figur ([§ 3.7c](#37c-treffer-ausgehend-und-eingehend-m-r)). **Ereignis** (umgesetzt 18.11.2026) steht nur im Gefecht neben der Figur zwischen Deckung und Getroffen, mit Ausrufezeichen, im selben Stil. Es ist unabhängig vom Rundenablauf; kein Zähler. Optionen (aus `regeln.json`, `ereignis`): Beschossen, Verbündeter ausgeschaltet, Sonstiges (SL); jede setzt nur ihren Auslöser für das Rundenende. Ein Tipp setzt sofort, ohne Bericht; die Meldung danach bietet Rückgängig. Was in dieser Runde schon zählt, ist grau. Eine Granate in der Nähe läuft über Getroffen → Explosion (setzt „beschossen“ auch ohne Treffer); die Reaktion auf eine Granate ([§ 3.8a](#38a-werfen-a-m-r)) folgt.
+**Getroffen** steht im Gefecht wie in Ruhe neben der Figur ([§ 3.7c](#37c-treffer-ausgehend-und-eingehend-m-r)). **Ereignis** (umgesetzt 18.11.2026) steht nur im Gefecht neben der Figur zwischen Deckung und Getroffen, mit Ausrufezeichen, im selben Stil. Es ist unabhängig vom Rundenablauf; kein Zähler. Optionen (aus `regeln.json`, `ereignis`): Beschossen, Explosion in der Nähe (ohne Treffer und Schaden; setzt „beschossen“, Sprengwirkung, Adrenalin), Verbündeter ausgeschaltet, Sonstiges (SL); jede setzt nur ihren Auslöser für das Rundenende. Ein Tipp setzt sofort, ohne Bericht; die Meldung danach bietet Rückgängig. Was in dieser Runde schon zählt, ist grau. Trifft eine Explosion, läuft sie über Getroffen → Explosion. Die Reaktion auf eine Explosion ist eine Breakaction über Break ([§ 3.8a](#38a-werfen-a-m-r)).
 
 ### 3.7b Initiative und Breakaction (M, R)
 Regeln: Kampfsystem (Action Economy; Die Breakaction benutzen; Reaktion und Antizipation), Würfelmechanik (Contested Rolls). Zusammenfassung: [§ 4.12](#412-aktionen).
@@ -478,10 +478,10 @@ Main → Wurfaktion (Break nur mit Perk Quickthrow). Regeln: Kampfsystem (Werfen
 5. **Bericht:** Wurfwaffe: Treffer, Zone, Krit, DK/MW (Schadensablauf wie beim Schießen). Sprengwaffe: Landepunkt (Krit genau, Erfolg bedrängt, Misserfolg nah + Richtung), Zünder und Verzögerung, Splitterzahlen je Band. Vorrat −1; Block **„Für die SL“**.
 6. **Weiter:** Main −1; Eintrag im Gefechtsprotokoll.
 
-**Eingehend (Ereignis → Granate in der Nähe):**
-1. **Lage:** Bereich, in dem der Charakter steht (aus den `bereiche` der Sprengwaffe), Stand, eigene Deckung vom Explosionspunkt aus (von der Silhouette vorbelegt, [§ 3.9](#39-schutz-a-m)).
-2. **Reaktion:** Hechten, in Deckung, nichts; Zurückwerfen als Wurfaktion im eigenen Zug, als Breakaction nur mit Perk. Breakaction nach den üblichen Regeln; im Moment der Detonation einfache Probe auf Reaktion oder Antizipation (Sprengwirkung, Zündung).
-3. **Schaden:** über „Getroffen“ ([§ 3.10](#310-treffer-wunden-und-blutung-m-r)). Splitterzahl aus dem Bereich; ein W8 für den ersten Splitter, die App verteilt die übrigen fortlaufend auf die Zonen und fasst gleiche Zonen zusammen. Im Kern zusätzlich die Druckwelle als stumpfer Treffer auf den Rumpf; Stehende und Hockende fallen ins Liegen. Regeln: Grundmechanik/Sprengwirkung.
+**Eingehend (Explosion in der Nähe)** (18.11.2026; kein eigener Ablauf, drei bestehende Wege):
+1. **Reaktion:** eine Breakaction über Break ([§ 3.7b](#37b-initiative-und-breakaction-m-r)), nach den üblichen Regeln: Hechten oder Standwechsel (in Deckung gehen ist ein Standwechsel). Zurückwerfen ist eine Wurfaktion: im eigenen Zug über Main → Werfen, als Breakaction nur mit dem Perk Quickthrow (Break → Werfen). Im Moment der Detonation einfache Probe auf Reaktion oder Antizipation (Sprengwirkung, Zündung).
+2. **Ohne Treffer:** Ereignis → Explosion in der Nähe setzt „beschossen“ (Sprengwirkung, Adrenalin).
+3. **Mit Treffer:** Getroffen → Explosion ([§ 3.10](#310-treffer-wunden-und-blutung-m-r)): Bereich, Stand, Deckung zur Explosion, Splitter und Druckwelle. Regeln: Grundmechanik/Sprengwirkung.
 
 ### 3.8c Lage-Auswahl (R)
 Die Lage-Auswahl ist ein Baustein, den Schussrechner ([§ 3.8](#38-waffen-und-schießen-a-m-r)), Werfen ([§ 3.8a](#38a-werfen-a-m-r)) und Probenrechner ([§ 3.6](#36-probenrechner-r)) gemeinsam nutzen. Regeln: Kampfsystem (Lage), Wahrnehmung (Sehen). Werte und Umstände: `regeln.json` (`lage`, `sicht`).
