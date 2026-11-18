@@ -265,7 +265,7 @@
 
       <section class="abschnitt">
         <h3 class="abschnitt-titel">Wo trifft es dich?</h3>
-        <Silhouette {d} verdeckt={deckungAufFigur?.zonen ?? []} {farben} {zeichen} {ruestung} gewaehlt={zone} onwahl={(z) => (zone = z)} beschriftung="Getroffene Zone wählen" />
+        <Silhouette {d} verdeckt={deckungAufFigur?.zonen ?? []} deckungswert={deckungAufFigur?.wert ?? null} {farben} {zeichen} {ruestung} gewaehlt={zone} onwahl={(z) => (zone = z)} beschriftung="Getroffene Zone wählen" />
         {#if art === 'schuss'}
           <p class="legende">
             <span class="muster gestoppt"></span>gestoppt

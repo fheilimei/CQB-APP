@@ -82,7 +82,7 @@
   {/if}
   <div class="figurbox">
     <div class="figurplatz">
-      <Silhouette {d} {ruestung} {wunden} verdeckt={deckungJetzt?.zonen ?? []} gewaehlt={zone} onwahl={(z) => (zone = zone === z ? null : z)}
+      <Silhouette {d} {ruestung} {wunden} verdeckt={deckungJetzt?.zonen ?? []} deckungswert={deckungJetzt?.wert ?? null} gewaehlt={zone} onwahl={(z) => (zone = zone === z ? null : z)}
         knapp beschriftung="Körperbild mit Rüstung und Wunden; Zone antippen für Einzelheiten" />
     </div>
     <div class="seite">
@@ -90,13 +90,13 @@
         <Haltungsanzeige g={gefechtVon(c)!} {d} />
       {/if}
       <div class="knoepfe">
-        <!-- Bildzeichen: Mauer für Deckung, Einschlag für Getroffen. Beide in der Textschrift wie Nächste Runde und Gefecht beenden. -->
-        <button class:betont={!!deckungJetzt} onclick={ondeckung}
-          aria-label={deckungJetzt ? `Deckung mit Schutz ${deckungJetzt.wert} ändern` : 'Deckung eintragen'}>
+        <!-- Bildzeichen: Mauer für Deckung, Einschlag für Getroffen. -->
+        <!-- Beide Knöpfe öffnen nur einen Dialog; ob man in Deckung oder getroffen ist, zeigt die Figur (Schraffur mit Mauer und Zahl, Wunden). -->
+        <button onclick={ondeckung} aria-label={deckungJetzt ? `Deckung mit Schutz ${deckungJetzt.wert} ändern` : 'Deckung eintragen'}>
           <svg class="zeichen" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3h6v3H1zM8 3h7v3H8zM1 7h3v3H1zM5 7h6v3H5zM12 7h3v3h-3zM1 11h6v3H1zM8 11h7v3H8z" /></svg>
-          Deckung{#if deckungJetzt} {deckungJetzt.wert}{/if}
+          Deckung
         </button>
-        <button class="betont" onclick={ongetroffen}>
+        <button onclick={ongetroffen}>
           <svg class="zeichen" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0l1.4 4.6L13.7 2.3 11.4 6.6 16 8l-4.6 1.4 2.3 4.3-4.3-2.3L8 16l-1.4-4.6-4.3 2.3 2.3-4.3L0 8l4.6-1.4L2.3 2.3l4.3 2.3z" /></svg>
           Getroffen</button>
       </div>

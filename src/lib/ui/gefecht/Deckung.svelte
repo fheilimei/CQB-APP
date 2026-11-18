@@ -47,7 +47,7 @@
   <div class="abschnitte">
     <section class="abschnitt">
       <h3 class="abschnitt-titel">Was ist verdeckt?</h3>
-      <Silhouette {d} verdeckt={zonen} onwahl={antippen} beschriftung="Körperbild mit Deckung; Zone antippen, um sie zu verdecken" />
+      <Silhouette {d} verdeckt={zonen} deckungswert={wert} onwahl={antippen} beschriftung="Körperbild mit Deckung; Zone antippen, um sie zu verdecken" />
       <p class="hinweis">Schraffiert ist verdeckt. Tippe eine Zone an, um sie zu verdecken, noch einmal, um sie freizugeben. Ohne verdeckte Zone hast du keine Deckung.</p>
     </section>
 

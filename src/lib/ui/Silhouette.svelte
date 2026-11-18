@@ -23,6 +23,8 @@
     ruestung?: Record<string, number>;
     /** Deckung: verdeckte Zonen, schraffiert. */
     verdeckt?: string[];
+    /** Deckung: Schutzwert, auf jeder verdeckten Zone mit Mauerzeichen angezeigt (null = keine Zahl). */
+    deckungswert?: number | null;
     /** Wunden: Punkt je Wunde. */
     wunden?: Wunde[];
     gewaehlt?: string | null;
@@ -32,7 +34,7 @@
     /** Ohne leeren Rand links und rechts, für eine Figur mit Knöpfen daneben (Reiter Figur). Die Breite gibt dann der Behälter vor. */
     knapp?: boolean;
   }
-  let { d, farben = {}, zeichen = {}, ruestung = {}, verdeckt = [], wunden = [], gewaehlt = null, onwahl, beschriftung = 'Körperzonen', knapp = false }: Props = $props();
+  let { d, farben = {}, zeichen = {}, ruestung = {}, verdeckt = [], deckungswert = null, wunden = [], gewaehlt = null, onwahl, beschriftung = 'Körperzonen', knapp = false }: Props = $props();
 
   // Zeichenfläche 200 × 300; dargestellt mit 240 px Breite (Faktor 1,2), damit jede Zone mindestens 44 × 44 px hat.
   const FLAECHEN: Record<string, { x: number; y: number; b: number; h: number; r: number; kurz: string }> = {
@@ -58,6 +60,19 @@
     const blutet = w.blutung.status === 'offen';
     return `wunde${blutet ? ' blutet' : ' versorgt'}`;
   }
+  /** Zeichenbreite der kleinen Schrift (10 px Monospace) in Einheiten der Zeichenfläche; Mauerzeichen 8 breit. */
+  const ZEICHENBREITE = 6;
+  const MAUER = 8;
+  /** Schutzzeile einer Zone: Rüstung (⛨) und Deckung (Mauer) nebeneinander, zusammen mittig. */
+  function schutzzeile(id: string, mitte: number) {
+    const r = ruestung[id] ? `⛨${ruestung[id]}` : '';
+    const dk = deckungswert !== null && verdeckt.includes(id) ? String(deckungswert) : '';
+    const bR = r.length * ZEICHENBREITE;
+    const bD = dk ? MAUER + 2 + dk.length * ZEICHENBREITE : 0;
+    const luecke = r && dk ? 4 : 0;
+    const start = mitte - (bR + luecke + bD) / 2;
+    return { r, dk, start, xD: start + bR + luecke, breite: bR + luecke + bD };
+  }
 </script>
 
 <svg class="figur" class:knapp viewBox={knapp ? '21 2 158 296' : '0 0 200 300'} role={onwahl ? 'group' : 'img'} aria-label={beschriftung}>
@@ -72,6 +87,8 @@
     {@const f = FLAECHEN[z.id]!}
     {@const farbe = farben[z.id] ?? null}
     {@const ws = wundenIn(z.id)}
+    {@const sz = schutzzeile(z.id, f.x + f.b / 2)}
+    {@const sy = f.y + (f.h > 60 ? 34 : f.h / 2 + 12)}
     <!-- svelte-ignore a11y_no_noninteractive_tabindex (role ist „button“, sobald die Figur antippbar ist) -->
     <g class="zone {farbe ?? ''}" class:gewaehlt={gewaehlt === z.id} class:tippbar={!!onwahl}
       role={onwahl ? 'button' : undefined} tabindex={onwahl ? 0 : undefined}
@@ -82,8 +99,14 @@
         <rect class="verdeckt" x={f.x} y={f.y} width={f.b} height={f.h} rx={f.r} style:fill="url(#{muster})" style:stroke="none" />
       {/if}
       <text class="name" x={f.x + f.b / 2} y={f.y + (f.h > 60 ? 18 : f.h / 2 - 2)}>{f.kurz}</text>
-      {#if ruestung[z.id]}
-        <text class="schutz" x={f.x + f.b / 2} y={f.y + (f.h > 60 ? 34 : f.h / 2 + 12)}>⛨{ruestung[z.id]}</text>
+      {#if sz.dk}
+        <!-- Unterlage, damit Zahl und Mauer auf der Schraffur lesbar bleiben. -->
+        <rect class="unterlage" x={sz.start - 2} y={sy - 6.5} width={sz.breite + 4} height="13" rx="3" />
+        <path class="mauer" transform="translate({sz.xD} {sy - 4})" d="M0 0h3.5v2H0zM4.5 0H8v2H4.5zM0 3h1.5v2H0zM2.5 3h3v2h-3zM6.5 3H8v2H6.5zM0 6h3.5v2H0zM4.5 6H8v2H4.5z" />
+        <text class="schutz deckungszahl" x={sz.xD + MAUER + 2} y={sy}>{sz.dk}</text>
+      {/if}
+      {#if sz.r}
+        <text class="schutz" class:links={!!sz.dk} x={sz.dk ? sz.start : f.x + f.b / 2} y={sy}>{sz.r}</text>
       {/if}
       {#if zeichen[z.id]}
         <text class="zeichen" x={f.x + f.b / 2} y={f.y + f.h - (f.h > 60 ? 12 : 4)}>{zeichen[z.id]}</text>
@@ -120,6 +143,10 @@
   .name { font-size: 11px; font-weight: 400; }
   .zone.gewaehlt .name { font-weight: 400; }
   .schutz { font-size: 10px; fill: var(--text-2); }
+  .schutz.links, .deckungszahl { text-anchor: start; }
+  .deckungszahl { fill: var(--text); }
+  .zone .unterlage { fill: var(--flaeche); stroke: none; opacity: 0.9; pointer-events: none; }
+  .mauer { fill: var(--deckung); pointer-events: none; }
   .zeichen { font-size: 15px; font-weight: 400; }
   /* Wunden: rot gefüllt = blutet, grau = versorgt, zusätzlicher roter Ring = kritisch. */
   .wunde.blutet { fill: var(--gefahr); }
