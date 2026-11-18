@@ -301,7 +301,7 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
 
 - **`aufstieg`**, **`wuerfel`**, **`krit`**: Kosten und Grenzen des Aufstiegs, Lesart der Würfel (0+0 beim W100 = 100, 0 beim W10 = 10), Untergrenze der Krit-Schwelle. **`waffenzustand.preis_viertel`**: Viertel der Geldwertspanne je Zustand (4 = oberstes). **`reizgas`**: Probe und Wolke der Gasgranate (Sprengwirkung, Reizgas).
 
-- **`steps.faktoren`**: ungerundete Faktoren aus den Abschlägen 15 %, 25 %, 35 %, 45 %, 55 % auf die jeweils vorherige Stufe (Regelwerk: Stats, Skills und Perks, Steps). Die gerundeten Werte der Tabelle im Regelwerk (0,638; 0,414 …) treffen dessen Beispiel 35 → 15 nicht ([offen.md](offen.md), Schritt 2).
+- **`steps.faktoren`**: Faktoren auf den Statwert je Malstep, wie in der Tabelle des Regelwerks (Stats, Skills und Perks, Steps): aus den Abschlägen 15 %, 25 %, 35 %, 45 %, 55 % zugunsten des Spielers auf drei Stellen aufgerundet (R1).
 - **`leiter.rundenende`**: Malsteps der Nerve-Probe je Auslöser, Anstieg ohne Probe, Änderung je Ergebnis der Probe. **`leiter.senken`**, **`leiter.verschieben`**: Änderung bzw. Betrag je Ergebnis. Positive Zahl = steigen.
 - **`leiter.proben`**: Stat und Skill der Proben rund um Adrenalin und Ruhepuls (Gefechtsbeginn, Anstieg, Senken, Verbündete verschieben). Der Schlüssel ist die Probenart; sie braucht einen Namen in `darstellung.json` (`proben`), damit Modifikatoren darauf zielen können. Alle vier Einträge sind Pflicht.
 - **`initiative.ueberrascht_mit_perk`**: Perks, die die Malsteps der Überraschung auf die Initiative ersetzen (kleinster Wert gilt), z. B. Entschlossen → 0.

@@ -644,7 +644,7 @@ Probe: W100 (01–100). Gelungen, wenn Ergebnis ≤ Zielwert.
 | Abschlag auf die vorherige Stufe *(v)* | – | 15 % | 25 % | 35 % | 45 % | 55 % |
 | Faktor | 1 | 0,85 | 0,638 | 0,415 | 0,228 | 0,103 |
 
-Gerundet wird immer **zugunsten des Spielers** (Entscheidung R1, `docs/offen.md`): Die Faktoren aus den Abschlägen (0,6375 · 0,414375 · 0,22790625 · 0,1025578125) sind auf drei Stellen **aufgerundet** (`regeln.json`, `steps.faktoren`). Das Regelwerk nennt 0,414 statt 0,415; mit 0,415 stimmen alle Prüfwerte (35 → 15 bei 3 Malsteps).
+Gerundet wird immer **zugunsten des Spielers** (Entscheidung R1, `docs/offen.md`): Die Faktoren aus den Abschlägen (0,6375 · 0,414375 · 0,22790625 · 0,1025578125) sind auf drei Stellen **aufgerundet** (`regeln.json`, `steps.faktoren`). So steht es auch im Regelwerk; mit 0,415 stimmen alle Prüfwerte (35 → 15 bei 3 Malsteps).
 
 Prüfwerte: 79 → 67, 50, 33, 18, 8 · 54 → 46, 34, 22, 12, 6 · 35 → 30, 22, 15, 8, 4.
 

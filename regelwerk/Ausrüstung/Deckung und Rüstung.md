@@ -4,13 +4,13 @@ Deckung und Rüstung haben einen Wert, der gegen die Durchschlagskraft (DK) sch�
 
 Deckung schützt nur die Zonen, die sie verdeckt ([[Körperzonen]]). Trifft ein Schuss eine verdeckte Zone, wird die Deckung geprüft ([[Schaden, Blutung und Verletzungen#1. Schutz prüfen]]); trifft er eine freie Zone, gibt es keine Deckung. Bei Explosionen zählt Deckung vom Explosionspunkt aus ([[Sprengwirkung#Splitter]]).
 
-- **Rumpf:** Ist eine Zone des Rumpfs (Brust, Bauch, Unterleib) verdeckt, gilt der ganze Rumpf als verdeckt. Das gilt für jeden Treffer am Rumpf, auch nach der Ansage „Rumpf“ ([[Kampfsystem#Treffen]]).
+- **Rumpf:** Jede Zone des Rumpfs (Brust, Bauch, Unterleib) zählt für sich. Reicht eine Deckung nur bis zum Unterleib, bleiben Bauch und Brust frei.
 - **Arme:** Verdeckt eine Deckung von unten die Brust, gelten auch beide Arme als verdeckt. Reicht sie nur bis Bauch oder Unterleib, bleiben die Arme frei.
 
 Deckungswerte:
 - Autotür: 2
 - Motorblock: 4
-- dünne Holztür (5 cm): 0 (hält nichts auf)
+- dünne Holztür (5 cm): 1
 - dicke Holztür (10 cm): 2
 - Panzerglas: 3
 
@@ -26,7 +26,7 @@ Rüstung schützt nur die Zonen, die sie bedeckt ([[Körperzonen]]). Mehrere Rü
 
 ## Westen
 
-Westen bedecken den Rumpf (Brust, Bauch, Unterleib). Keine Einschränkung.
+Westen bedecken den Rumpf (Brust, Bauch, Unterleib). Keine Einschränkung. Rüstung am Rumpf schützt immer alle drei Rumpfzonen mit demselben Wert.
 
 | Weste | Schutz | Vorratslevel | Geldwertspanne |
 | --- | --- | --- | --- |

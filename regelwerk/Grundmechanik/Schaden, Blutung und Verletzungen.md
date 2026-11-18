@@ -6,6 +6,8 @@ Jede Munition hat zwei Werte ([[Munitionstypen]]):
 
 Jeder Treffer ([[Kampfsystem#Treffen]]) durchläuft drei Schritte.
 
+**Kein Schaden.** Ein Treffer mit 0 Schaden bewirkt nichts: keinen HP-Abzug, keine Wunde, keine Prellung, keine Folgen der Zone und keinen Stagger, auch nicht als Krit eines stumpfen Treffers.
+
 ## 1. Schutz prüfen
 
 **Schutz** ist Deckung vor der getroffenen Zone und Rüstung auf der getroffenen Zone ([[Deckung und Rüstung]]). Deckung zählt nur, wenn die getroffene Zone verdeckt ist. Ohne Schutz ist jeder Treffer ein Durchschlag (Schritt 2). Ausnahme: stumpfe Treffer ([[#Stumpfe Treffer]]).
@@ -38,7 +40,7 @@ Stumpfe Treffer stammen von Körperwaffen, stumpfen Nahkampfwaffen ([[Kampfsyste
 
 - Ein stumpfer Treffer ist **immer ein Wuchttreffer** (Schritt 3), auch ohne Schutz. Der Restschutz ist der volle Rüstungswert.
 - Deckung prüfst du wie gewohnt (Schritt 1). Ist die getroffene Zone verdeckt, entsteht kein Schaden.
-- **Krit:** Ein stumpfer Treffer, der ein Krit ist, löst immer einen **Stagger** aus ([[#Stagger]]), unabhängig vom Schaden.
+- **Krit:** Ein stumpfer Treffer, der ein Krit ist, löst immer einen **Stagger** aus ([[#Stagger]]), unabhängig von der Schmerzresistenz, sofern er Schaden macht ([[#Schadensablauf]]). Schmerz ignorieren ([[Adrenalin#Symptome]]) verhindert auch diesen Stagger.
 
 ## Stagger
 

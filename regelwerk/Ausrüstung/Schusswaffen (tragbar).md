@@ -227,11 +227,11 @@ Waffenperks/Besonderheiten: genau, etwas störanfälliger als die AK-47
 # M16A4
 Name: Colt M16A4 | Waffenskill: Sturmgewehr | Vorratslevel: 3 | Geldwertspanne: 350 - 600 | Zustand: X
 Kaliber: 5.56x45mm FMJ, 5.56x45mm HP, 5.56x45mm AP
-Feuermodus: Einzelfeuer (EF), Burst (3) | Anschlüsse: Schiene oben, Schiene unten, Schiene seitlich, Mündung (Gewehr), Magazin (Trommel 100)
+Feuermodus: Einzelfeuer (EF), Burst (3) | Anschlüsse: Schiene oben, Schiene unten, Schiene seitlich, Mündung (Gewehr), Magazin (30, Trommel 100)
 Ladehemmungsrate: bei EF: 3% / bei Burst: 4% | LH-Behebenmod.: 1
 Zuverlässigkeit: normal
 Reichweite: bedrängt: -3 / nah: +0 / mittel: +0 / weit: -1 / sehr weit: -3 / fern: -4
-Magazingröße: 30+1 | Feuerrate: bei EF: 4 / bei Burst: 6 (2 × 3) | Rückstoß: EF 1 / Burst 1
+Magazingröße: 20+1 | Feuerrate: bei EF: 4 / bei Burst: 6 (2 × 3) | Rückstoß: EF 1 / Burst 1
 Durchschlagskraft und Mannstoppwirkung: FMJ 2/2 / HP 1/3 / AP 3/2
 Waffenperks/Besonderheiten: genau, langer Lauf; in engen Räumen unhandlicher als die M4.
 

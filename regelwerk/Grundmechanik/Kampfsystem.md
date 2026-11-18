@@ -44,7 +44,7 @@ Die drei verbrauchen sich nicht gegenseitig. Die Reihenfolge ist frei. Bewegung 
 - **Wurfaktion** ([[#Werfen]]).
 - **Adrenalin senken:** Nerve-Probe ([[Adrenalin#Senken]]).
 - **Verbündete verschieben:** Empathy-Probe mit dem Skill **Führung** ([[Adrenalin#Verbündete verschieben]]).
-- **Hechten:** Bis zu 2 m weit in die Hocke oder ins Liegen springen ([[#Bewegung]]). Bis zum Ende der Runde bist du schwerer zu treffen ([[#Lage]]). Aus dem Liegen ist kein Hechten möglich.
+- **Hechten:** Bis zu 2 m weit ins Liegen springen ([[#Bewegung]]). Bis zum Ende der Runde bist du schwerer zu treffen ([[#Lage]]). Aus dem Liegen ist kein Hechten möglich.
 
 ## Konzentration
 
@@ -154,7 +154,7 @@ Im Nahkampf wirkt der Stand zusätzlich ([[#Stand im Nahkampf]]).
 
 ## Breakaction
 - **Schießen**, falls die Waffe bereit ist ([[#Treffen]]).
-- **Zielen:** Wenn du in dieser Runde dein Ziel nicht aus den Augen verlierst und nicht schießt, bekommst du in der nächsten Runde einen Bonus auf Genauigkeit in Form eines Stepshields ([[Stats, Skills und Perks#Steps]]).
+- **Zielen:** Wenn du in dieser Runde dein Ziel nicht aus den Augen verlierst und nicht schießt, bekommst du in der nächsten Runde einen Bonus auf Genauigkeit in Form eines Stepshields ([[Stats, Skills und Perks#Steps]]). Er gilt nur für deinen ersten Schuss in der nächsten Runde; wird er nicht genutzt, verfällt er.
 - **Hechten** ([[#Mainaction]]).
 - **Standwechsel** ([[#Standwechsel]]), z. B. um in Deckung zu gehen.
 - **Nahkampfangriff** mit kurzer Waffe oder **Abfangen** mit langer Waffe ([[#Länge der Waffe]]).
@@ -324,7 +324,7 @@ Die Lage beschreibt die Umstände von Schütze und Ziel. Sie bringt Malsteps (un
 | **Kleines Ziel** (Gegenstand): kopfgroß | 2 |
 | **Kleines Ziel** (Gegenstand): handgroß | 3 |
 
-**Bewegung.** Eine Bewegung zählt vom Beginn der Bewegung bis zum Ende der Runde ([[#Bewegung]]). Das gilt für Schütze und Ziel. Wer erst schießt und sich dann bewegt, hat für diesen Schuss keinen Malstep. Bei Sprint zählt die schnellere der beiden Bewegungen.
+**Bewegung.** Eine Bewegung zählt vom Beginn der Bewegung bis zum Ende der Runde ([[#Bewegung]]). Das gilt für Schütze und Ziel. Wer erst schießt und sich dann bewegt, hat für diesen Schuss keinen Malstep. Bei Sprint zählt die schnellere der beiden Bewegungen. Bewegung und Hechten in derselben Runde zählen nicht zusammen: Es zählt das zuletzt Gewählte.
 - **Ziel im Nahkampf:** Der Malstep ersetzt den Malstep für die Bewegung des Ziels. Bewegt sich das Ziel in dieser Runde schneller, zählt der höhere Wert ([[#Schießen in den Nahkampf]]).
 
 **Stand des Ziels.** Im Band bedrängt bringen Hocke und Liegen keine Malsteps ([[#Standwechsel]]). Ein Ziel, das hechtet, zählt den neuen Stand zusätzlich.

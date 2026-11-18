@@ -21,14 +21,14 @@ Ränge sinken nie. Im Spiel verändern Boni und Mali einen Stat nur vorübergehe
 # Anwendung
 Proben werden mit dem W100 abgelegt; ein Ergebnis bis zum Zielwert gelingt ([[Würfelmechanik#Würfel]]). Der Zielwert ist der Statwert nach Malsteps ([[#Steps]]).
 
-**Runden.** Brüche werden kaufmännisch gerundet: ab 0,5 auf, darunter ab.
+**Runden.** Brüche werden kaufmännisch gerundet: ab 0,5 auf, darunter ab. Wo eine Regel selbst gerundete Werte vorgibt (z. B. die Faktoren in [[#Steps]]), ist zugunsten des Spielers gerundet.
 ## Steps
 Malsteps erschweren eine Probe. Jeder Malstep senkt den Zielwert um einen wachsenden Anteil: Der erste nimmt 15 % vom Statwert, jeder weitere 10 Prozentpunkte mehr von der vorherigen Stufe.
 
 | Malsteps | 0 | 1 | 2 | 3 | 4 | 5 |
 | --- | --- | --- | --- | --- | --- | --- |
 | Abschlag auf die vorherige Stufe | – | 15 % | 25 % | 35 % | 45 % | 55 % |
-| Faktor auf den Statwert | 1 | 0,85 | 0,638 | 0,414 | 0,228 | 0,103 |
+| Faktor auf den Statwert | 1 | 0,85 | 0,638 | 0,415 | 0,228 | 0,103 |
 
 **Ab 6 Malsteps** ist keine Probe möglich: Die Handlung gelingt nicht. Maßgeblich sind die Malsteps, die nach Abzug des Skills übrig bleiben ([[#Skills]]).
 

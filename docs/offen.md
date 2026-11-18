@@ -122,7 +122,7 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 - **Frage:** Das Regelwerk sagt: „Ist eine Zone des Rumpfs verdeckt, gilt der ganze Rumpf als verdeckt.“
 - **Stellen:** (Deckung und Rüstung, Deckung)
 - **Ändern:** Regelkern, Schaden (verdeckte Zonen)
-- **Im Regelwerk klarstellen:** ja, **noch offen**: Den Punkt „Rumpf“ unter Deckung ändern: Jede Rumpfzone zählt für sich; dazu die Ansage „Rumpf“ (R32) regeln.
+- **Im Regelwerk klarstellen:** ja, eingetragen (18.11.2026): Jede Rumpfzone zählt für sich. Die Ansage „Rumpf“ folgt mit R32, sobald entschieden.
 
 
 ### R30. Dünne Holztür als Deckung (18.11.2026)
@@ -130,14 +130,14 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 - **Frage:** Das Regelwerk gibt der dünnen Holztür Schutz 0 („hält nichts auf“).
 - **Stellen:** (Deckung und Rüstung, Deckung)
 - **Ändern:** eine Zeile in schutz.json (deckung, holztuer_duenn)
-- **Im Regelwerk klarstellen:** ja, **noch offen**: „dünne Holztür (5 cm): 0 (hält nichts auf)“ durch „1“ ersetzen.
+- **Im Regelwerk klarstellen:** ja, eingetragen (18.11.2026)
 
 ### R27. Hechten nur ins Liegen (18.11.2026)
 - **Entschieden (18.11.2026):** Man hechtet nur ins Liegen, nicht in die Hocke. Die App fragt nicht mehr nach dem Stand; nach dem Hechten bist du liegend.
 - **Frage:** Das Regelwerk erlaubt Hechten in die Hocke oder ins Liegen.
 - **Stellen:** (Kampfsystem, Mainaction)
 - **Ändern:** eine Zeile in regeln.json (hechten.staende)
-- **Im Regelwerk klarstellen:** ja, **noch offen**: Bei Hechten „in die Hocke oder“ streichen.
+- **Im Regelwerk klarstellen:** ja, eingetragen (18.11.2026)
 
 ### R26. „Sturz, falls im Lauf“ am Bein (18.11.2026)
 - **Entschieden (18.11.2026):** Im Lauf heißt laufend oder rennend. Der Sturz legt dich ohne Aktion hin (Stand Liegen); Rückgängig nach dem Treffer nimmt das mit zurück.
@@ -164,7 +164,7 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 - **Vorläufig:** Es zählt nur eins von beiden, das mit mehr Malsteps (wie bei Sprint die schnellere Bewegung).
 - **Andere Möglichkeit:** Beide zählen.
 - **Ändern:** Regelkern, Aktionen (eigene Bewegung für die Lage)
-- **Im Regelwerk klarstellen:** ja, **noch offen**: Bei der Lage festhalten, dass bei Bewegung und Hechten in derselben Runde nur das zuletzt Gewählte zählt.
+- **Im Regelwerk klarstellen:** ja, eingetragen (18.11.2026)
 
 ### R8. Wie lange gilt Zielen? (18.11.2026)
 - **Entschieden (18.11.2026):** Wie vorläufig: Zielen gilt nur in der nächsten Runde und nur für den nächsten Schuss; ungenutzt verfällt es, ein Schuss in der Runde des Zielens lässt es verfallen, „Neues Ziel“ löscht es. So rechnete die App schon.
@@ -173,7 +173,7 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 - **Vorläufig:** Nur in der nächsten Runde für den nächsten Schuss; wird es nicht genutzt, verfällt es. Ein Schuss in der Runde des Zielens lässt es verfallen. „Neues Ziel“ löscht es.
 - **Andere Möglichkeit:** Das Zielen gilt bis zum nächsten Schuss auf dasselbe Ziel, auch über mehrere Runden.
 - **Ändern:** Regelkern, Aktionen (Zielen)
-- **Im Regelwerk klarstellen:** ja, **noch offen**: Unter Zielen festhalten, dass der Bonus nur für den nächsten Schuss in der nächsten Runde gilt und sonst verfällt.
+- **Im Regelwerk klarstellen:** ja, eingetragen (18.11.2026)
 
 ### R5. Treffer mit 0 Schaden (17.11.2026)
 - **Entschieden (18.11.2026):** Ein Treffer mit 0 Schaden verursacht nichts: keine Prellung, keine Verletzung (Wunde, Blutung, Folge der Zone) keinen Abzug von Lebenspunkten und keinen Stagger (auch nicht durch einen stumpfen Krit). Das gilt für jeden Treffer, nicht nur für Wuchttreffer. Umgesetzt: Auch ein Durchschlag mit 0 Schaden erzeugt keine Wunde und keine Folge.
@@ -182,7 +182,7 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 - **Vorläufig:** keine Prellung, weil nichts zu heilen ist.
 - **Andere Möglichkeit:** Prellung mit 0 Schaden (wichtig nur, wenn eine Prellung außer dem Schaden noch etwas bewirkt).
 - **Ändern:** Regelkern, Schaden
-- **Im Regelwerk klarstellen:** ja, **noch offen**: In Schaden, Blutung und Verletzungen festhalten, dass ein Treffer mit 0 Schaden weder Prellung noch Verletzung noch HP-Abzug noch Stagger verursacht (auch nicht beim stumpfen Krit).
+- **Im Regelwerk klarstellen:** ja, eingetragen (18.11.2026)
 
 ### R4. Stumpfer Krit gegen „Schmerz ignorieren“ (17.11.2026)
 - **Entschieden (18.11.2026):** Schmerz ignorieren gewinnt: auch ein stumpfer Krit löst dann keinen Stagger aus. So rechnete die App schon.
@@ -191,7 +191,7 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 - **Vorläufig:** Schmerz ignorieren gewinnt, kein Stagger.
 - **Andere Möglichkeit:** Der stumpfe Krit gewinnt, Stagger trotz Schmerz ignorieren.
 - **Ändern:** Regelkern, Schaden (eine Zeile)
-- **Im Regelwerk klarstellen:** ja, **noch offen**: Bei den stumpfen Treffern ergänzen, dass Schmerz ignorieren auch den Stagger des stumpfen Krits verhindert.
+- **Im Regelwerk klarstellen:** ja, eingetragen (18.11.2026)
 
 ### R3. Arme hinter Deckung (17.11.2026)
 - **Entschieden (18.11.2026):** Wie im Regelwerk: Nur wenn eine Deckung **von unten** die Brust verdeckt, sind auch beide Arme verdeckt. Seitliche Deckung (Hausecke, Türrahmen) verdeckt nur den Arm ihrer Seite. Deckung von oben ist in der Regel nicht vorgesehen. Umgesetzt: Die App merkt sich, ob die Deckungskante von unten gezogen wurde; nur dann kommen die Arme dazu. Einzeln angetippte Zonen ziehen die Arme nicht mit.
@@ -209,7 +209,7 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 - **Vorläufig:** Es zählt der niedrigste Rüstungswert von Brust, Bauch und Unterleib. Bei allen heutigen Westen sind die drei gleich.
 - **Andere Möglichkeit:** Der Treffer wird mit dem W8 einer Rumpfzone zugeordnet, und deren Rüstung zählt.
 - **Ändern:** Regelkern, Schaden (Rüstungswert)
-- **Im Regelwerk klarstellen:** ja, **noch offen**: In Deckung und Rüstung (Rüstung) festhalten, dass Rüstung am Rumpf immer alle drei Rumpfzonen mit demselben Wert abdeckt.
+- **Im Regelwerk klarstellen:** ja, eingetragen (18.11.2026)
 
 ### R1. Step-Faktoren gerundet oder genau (17.11.2026)
 - **Entschieden (18.11.2026):** Gerundet wird immer zugunsten des Spielers. Umgesetzt: Die Faktoren sind auf drei Stellen aufgerundet (0,85 · 0,638 · 0,415 · 0,228 · 0,103, regeln.json, steps.faktoren); der Zielwert selbst wird weiter kaufmännisch gerundet, wie das Regelwerk es verlangt. Alle Beispiele des Regelwerks stimmen. Gegenüber vorher steigen 10 Zielwerte um 1 (Statwert/Malsteps: 29/2, 34/5, 47/3, 68/4, 73/5, 76/3, 87/2, 88/3, 98/2, 100/3); keiner sinkt.
@@ -218,14 +218,14 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 - **Vorläufig:** Die App rechnet mit den ungerundeten Faktoren (0,6375; 0,414375; 0,22790625; 0,1025578125). Damit stimmen alle Beispiele.
 - **Andere Möglichkeit:** gerundete Faktoren. Dann ändern sich 8 Zielwerte um 1 (Statwert/Malsteps: 29/2, 34/5, 35/3, 64/3, 68/4, 73/5, 87/2, 98/2), und das Beispiel im Regelwerk müsste angepasst werden.
 - **Ändern:** eine Zeile in regeln.json (steps.faktoren)
-- **Im Regelwerk klarstellen:** ja, **noch offen**: In der Tabelle (Stats, Skills und Perks, Steps) 0,414 durch 0,415 ersetzen und den Grundsatz „gerundet wird zugunsten des Spielers“ ergänzen.
+- **Im Regelwerk klarstellen:** ja, eingetragen (18.11.2026)
 
 ### R19. Rank-Vorschlag der Klassen (16.11.2026)
 - **Entschieden (16.11.2026):** kein Vorschlag; der Spieler verteilt das Rank-Set selbst. Konzept § 3.0 angepasst.
 
 ### R20. M4 Carbine und M16A4, Magazingröße (16.11.2026)
 - **Entschieden (16.11.2026):** Die M4 bleibt bei 20+1 (erweitert 30, Trommel 100). Die M16A4 bekommt ebenfalls 20+1 mit erweitertem Magazin 30 und Trommel 100. In waffen.json und aufsaetze.json so eingetragen.
-- **Im Regelwerk klarstellen:** ja, **noch offen**: Im Repo CQB (Schusswaffen, M16A4) steht weiter 30+1 mit Trommel 100 (Stand 17.11.2026). Bis zum Nachtrag weicht die App hier von der Kopie in `regelwerk/` ab.
+- **Im Regelwerk klarstellen:** ja, eingetragen (18.11.2026)
 
 ### R21. Gummi- und Unterschallmunition an Waffen (16.11.2026)
 - **Entschieden (17.11.2026):** Jede Waffe verschießt alle Typen ihres Kalibers (Munitionstypen: Gummi und Unterschall gelten „wie gewöhnliche Munition des Kalibers“).
