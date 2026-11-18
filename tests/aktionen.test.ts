@@ -1,7 +1,7 @@
 // Tests für Aktionen, Waffen und Schussrechner (konzept.md § 3.7a, § 3.8, § 3.8c, § 4.6, § 4.12).
 import { describe, expect, it } from 'vitest';
 import {
-  bewegen, bewegungsarten, hechten, hechtenSperre, konzentrationSetzen, korrigieren, lageWaehlen, neuesZiel, standWechseln,
+  bewegen, bewegungsarten, eigeneBewegungFuerLage, hechten, hechtenSperre, konzentrationSetzen, korrigieren, lageWaehlen, neuesZiel, standWechseln,
   standwechselAls, verbrauchen, verfuegbar, zaehler, zielen, zielenAktiv, zielwirkung
 } from '../src/lib/regeln/aktionen';
 import { gefechtStarten, initiativeEintragen, leiterSetzen, naechsteRunde, senkenEintragen } from '../src/lib/regeln/gefecht';
@@ -115,6 +115,18 @@ describe('Bewegung, Stand, Hechten', () => {
     const c = hechten(imGefecht(), 'hocke', 'main');
     expect(g(c)).toMatchObject({ stand: 'hocke', gehechtet: true });
     expect(verfuegbar(c, 'main', d)).toBe(0);
+  });
+
+  it('R9: Bewegung und Hechten in derselben Runde – für die Lage zählt das zuletzt Gewählte', () => {
+    const gerannt = bewegen(imGefecht(), 'rennen', d);
+    expect(eigeneBewegungFuerLage(g(gerannt))).toBe('rennen');
+    // Rennen, dann Hechten: Hechten zählt (2 statt 4 Malsteps)
+    const danachGehechtet = hechten(gerannt, 'hocke', 'main');
+    expect(eigeneBewegungFuerLage(g(danachGehechtet))).toBe('hechten');
+    // Hechten, dann Gehen: Gehen zählt (1 statt 2 Malsteps)
+    const danachGegangen = bewegen(hechten(imGefecht(), 'hocke', 'main'), 'gehen', d);
+    expect(eigeneBewegungFuerLage(g(danachGegangen))).toBe('gehen');
+    expect(eigeneBewegungFuerLage(g(imGefecht()))).toBeNull();
   });
 });
 

@@ -155,7 +155,8 @@ export function bewegungsarten(c: Charakter, d: Spieldaten): Bewegungsart[] {
   });
 }
 
-/** Bewegung ausführen: Zähler −1; die schnellste Bewegung der Runde zählt für die Lage (Sprint). */
+/** Bewegung ausführen: Zähler −1; die schnellste Bewegung der Runde zählt für die Lage (Sprint).
+ *  Regelfrage R9 (entschieden): Eine Bewegung nach dem Hechten löst das Hechten für die Lage ab. */
 export function bewegen(c: Charakter, art: string, d: Spieldaten): Charakter {
   const g = laufend(c);
   const bewegt = g.bewegt && tempo(g.bewegt, d) >= tempo(art, d) ? g.bewegt : art;
@@ -166,6 +167,7 @@ export function bewegen(c: Charakter, art: string, d: Spieldaten): Charakter {
   return mit(c, {
     ...g,
     bewegt,
+    gehechtet: false,
     bewegungen: g.bewegungen + 1,
     zielen,
     verbraucht: { ...g.verbraucht, bewegung: g.verbraucht.bewegung + 1 }
@@ -195,7 +197,7 @@ export function hechtenSperre(c: Charakter, d: Spieldaten): 'stand' | 'symptom' 
   return null;
 }
 
-/** Hechten (Main oder Break): in Hocke oder Liegen; zählt bis Rundenende als eigene Bewegung für die Lage. */
+/** Hechten (Main oder Break): in Hocke oder Liegen; zählt bis Rundenende bzw. bis zur nächsten Bewegung als eigene Bewegung für die Lage (R9). */
 export function hechten(c: Charakter, zielstand: string, als: 'main' | 'break'): Charakter {
   const g = laufend(c);
   return mit(c, { ...g, stand: zielstand, gehechtet: true, verbraucht: { ...g.verbraucht, [als]: g.verbraucht[als] + 1 } });
@@ -245,7 +247,7 @@ export function zielen(c: Charakter, d: Spieldaten, als: 'main' | 'break', liege
   });
 }
 
-/** Zielen, das für einen Schuss in dieser Runde gilt, sonst null. Regelfrage R8 (docs/offen.md): vorläufig nur die nächste Runde. */
+/** Zielen, das für einen Schuss in dieser Runde gilt, sonst null. Regelfrage R8 (entschieden): nur die nächste Runde, nur der nächste Schuss. */
 export function zielenAktiv(g: Gefecht): Gefecht['zielen'] {
   return g.zielen && g.zielen.runde === g.runde ? g.zielen : null;
 }
@@ -285,12 +287,10 @@ export function rundeZuruecksetzen(g: Gefecht, d: Spieldaten): Gefecht {
   };
 }
 
-/** Eigene Bewegung dieser Runde für die Lage: die mit mehr Malsteps aus Bewegung und Hechten. Regelfrage R9 (docs/offen.md): vorläufig. */
-export function eigeneBewegungFuerLage(g: Gefecht, d: Spieldaten): string | null {
-  const m = d.regeln.lage.eigene_bewegung;
-  const kandidaten = [g.bewegt, g.gehechtet ? 'hechten' : null].filter((x): x is string => !!x);
-  if (!kandidaten.length) return null;
-  return kandidaten.reduce((a, b) => ((m[b] ?? 0) > (m[a] ?? 0) ? b : a));
+/** Eigene Bewegung dieser Runde für die Lage: das zuletzt Gewählte aus Bewegung und Hechten.
+ *  Regelfrage R9 (entschieden): Man rennt oder hechtet, nicht beides; `gehechtet` steht nur, solange danach keine Bewegung kam. */
+export function eigeneBewegungFuerLage(g: Gefecht): string | null {
+  return g.gehechtet ? 'hechten' : g.bewegt;
 }
 
 /** Eintrag „aktion“ im Gefechtsprotokoll. */

@@ -36,7 +36,7 @@
   const unterzeile: Record<Aktion, () => string> = {
     main: () => (g.konzentration ? `Konzentration ${g.konzentration}` : ''),
     break: () => '',
-    bewegung: () => (g.bewegt ? bewegungName(g.bewegt, d) : g.gehechtet ? bewegungName('hechten', d) : ''),
+    bewegung: () => (g.gehechtet ? bewegungName('hechten', d) : g.bewegt ? bewegungName(g.bewegt, d) : ''),
     stand: () => standAdjektiv(eigenerStand(g, d), d)
   };
 </script>

@@ -699,7 +699,7 @@ Adrenalinschock mit Perk Eiserne Nerven: 2 Malsteps. Malsteps aus Geblendet (üb
 **Trefferwert:** Probe auf **Control** mit dem Waffenskill der Waffe ([4.2](#42-steps-und-zielwert)). Malsteps:
 - Reichweitenband der Waffe (Tabelle der Waffe; „n/A“ = Schuss nicht möglich),
 - Ansage: Rumpf 1, einzelne Zone 2 (Adrenalin 1+ und Sichtstufe keine: Ansage nicht möglich),
-- Lage *(v)*: eigene Bewegung (Kriechen, Gehen 1; Laufen, Hechten 2; Rennen 4; Perk Feuer in Bewegung −1), Ziel bewegt sich (Laufen 1; Rennen, Hechten 2), Ziel im Nahkampf 1 (ersetzt den Wert für seine Bewegung, der höhere zählt), Stand des Ziels (Hocke 1, Liegen 2; nicht im Band bedrängt; von oben auf Liegende 0), Sichtstufe (0–3, nur die schlechteste), kleines Ziel (kopfgroß 2, handgroß 3). Bewegung zählt vom Beginn der Bewegung bis Rundenende; bei Sprint die schnellere,
+- Lage *(v)*: eigene Bewegung (Kriechen, Gehen 1; Laufen, Hechten 2; Rennen 4; Perk Feuer in Bewegung −1), Ziel bewegt sich (Laufen 1; Rennen, Hechten 2), Ziel im Nahkampf 1 (ersetzt den Wert für seine Bewegung, der höhere zählt), Stand des Ziels (Hocke 1, Liegen 2; nicht im Band bedrängt; von oben auf Liegende 0), Sichtstufe (0–3, nur die schlechteste), kleines Ziel (kopfgroß 2, handgroß 3). Bewegung zählt vom Beginn der Bewegung bis Rundenende; bei Sprint die schnellere; bewegt sich der Charakter und hechtet in derselben Runde, zählt das zuletzt Gewählte (Regelfrage R9),
 - Leiter und Zustände auf Control.
 
 Stepshields: Zielen (1; Atemkontrolle 2), Lage (Waffe aufgelegt 1, nur ohne eigene Bewegung; großes Ziel 1, nur Gegenstände), Aufsätze (Reflexvisier bedrängt/nah 1; Zielfernrohr ab weit 1, bedrängt 1 Malstep), Leiter, Perks.

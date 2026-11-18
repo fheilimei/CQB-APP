@@ -108,7 +108,7 @@ export function schussStellen(c: Charakter, d: Spieldaten, e: WaffenEintrag, s: 
   const gesetzt = gesetztDurchAufsatz(e, s.schalter, d);
   const schuetze = d.regeln.lage.gruppen.find((x) => x.auswahl === 'schalter')?.id;
   if (schuetze && gesetzt.length) auswahl[schuetze] = [...new Set([...((auswahl[schuetze] as string[]) ?? []), ...gesetzt])];
-  const bewegung = g ? eigeneBewegungFuerLage(g, d) : null;
+  const bewegung = g ? eigeneBewegungFuerLage(g) : null;
   const ablauf = werfer ? 'werfer' : 'schiessen';
   const lage = lageSteps({ auswahl: eg ? { ...auswahl, [eg]: null } : auswahl, band, eigene_bewegung: bewegung, ablauf }, r);
   const umstaende = gewaehlteUmstaende(auswahl, d);

@@ -134,6 +134,7 @@ export interface Gefecht {
   bewegt: string | null;
   /** Zahl der Bewegungen dieser Runde (Sprint erlaubt eine zweite). */
   bewegungen: number;
+  /** In dieser Runde gehechtet und seitdem nicht bewegt (Regelfrage R9: das zuletzt Gewählte zählt für die Lage). */
   gehechtet: boolean;
   zielen: Zielen | null;
   /** Konzentration einer Mainaction in dieser Runde. */

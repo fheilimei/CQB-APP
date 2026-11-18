@@ -39,22 +39,6 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 - **Ändern:** Regelkern, Waffen (Wechselkosten)
 - **Im Regelwerk klarstellen:** ja
 
-### R8. Wie lange gilt Zielen? (18.11.2026)
-- **Frage:** Regelwerk: „in der nächsten Runde einen Bonus“. Gilt er nur in der nächsten Runde und nur für den ersten Schuss?
-- **Stellen:** (Kampfsystem, Breakaction); (Kampfsystem, Treffen)
-- **Vorläufig:** Nur in der nächsten Runde für den nächsten Schuss; wird es nicht genutzt, verfällt es. Ein Schuss in der Runde des Zielens lässt es verfallen. „Neues Ziel“ löscht es.
-- **Andere Möglichkeit:** Das Zielen gilt bis zum nächsten Schuss auf dasselbe Ziel, auch über mehrere Runden.
-- **Ändern:** Regelkern, Aktionen (Zielen)
-- **Im Regelwerk klarstellen:** ja
-
-### R9. Bewegung und Hechten in derselben Runde (18.11.2026)
-- **Frage:** Bewegt sich der Charakter und hechtet in derselben Runde: Zählen für die Lage beide Malsteps?
-- **Stellen:** (Kampfsystem, Malsteps der Lage); (Kampfsystem, Standwechsel)
-- **Vorläufig:** Es zählt nur eins von beiden, das mit mehr Malsteps (wie bei Sprint die schnellere Bewegung).
-- **Andere Möglichkeit:** Beide zählen.
-- **Ändern:** Regelkern, Aktionen (eigene Bewegung für die Lage)
-- **Im Regelwerk klarstellen:** ja
-
 ### R10. Atemkontrolle: wann zählt „liegend oder aufgelegt“? (18.11.2026)
 - **Frage:** Atemkontrolle wirkt nur liegend oder mit aufgelegter Waffe. Zählt der Stand beim Zielen oder beim Schuss?
 - **Stellen:** (Stats, Skills und Perks, Exklusive Perks)
@@ -127,6 +111,24 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 - **Im Regelwerk klarstellen:** ja (Werte ergänzen)
 
 ### Erledigt
+
+### R9. Bewegung und Hechten in derselben Runde (18.11.2026)
+- **Entschieden (18.11.2026):** Es zählt das zuletzt Gewählte. Man rennt gerade oder man hechtet, nicht beides; genauso wie ein Ziel entweder rennt oder hechtet. Umgesetzt: Rennen, dann Hechten → Hechten zählt; Hechten, dann Gehen → Gehen zählt. Mehrere Bewegungen untereinander (Sprint) zählen weiter mit der schnelleren.
+- **Frage:** Bewegt sich der Charakter und hechtet in derselben Runde: Zählen für die Lage beide Malsteps?
+- **Stellen:** (Kampfsystem, Malsteps der Lage); (Kampfsystem, Standwechsel)
+- **Vorläufig:** Es zählt nur eins von beiden, das mit mehr Malsteps (wie bei Sprint die schnellere Bewegung).
+- **Andere Möglichkeit:** Beide zählen.
+- **Ändern:** Regelkern, Aktionen (eigene Bewegung für die Lage)
+- **Im Regelwerk klarstellen:** ja, **noch offen**: Bei der Lage festhalten, dass bei Bewegung und Hechten in derselben Runde nur das zuletzt Gewählte zählt.
+
+### R8. Wie lange gilt Zielen? (18.11.2026)
+- **Entschieden (18.11.2026):** Wie vorläufig: Zielen gilt nur in der nächsten Runde und nur für den nächsten Schuss; ungenutzt verfällt es, ein Schuss in der Runde des Zielens lässt es verfallen, „Neues Ziel“ löscht es. So rechnete die App schon.
+- **Frage:** Regelwerk: „in der nächsten Runde einen Bonus“. Gilt er nur in der nächsten Runde und nur für den ersten Schuss?
+- **Stellen:** (Kampfsystem, Breakaction); (Kampfsystem, Treffen)
+- **Vorläufig:** Nur in der nächsten Runde für den nächsten Schuss; wird es nicht genutzt, verfällt es. Ein Schuss in der Runde des Zielens lässt es verfallen. „Neues Ziel“ löscht es.
+- **Andere Möglichkeit:** Das Zielen gilt bis zum nächsten Schuss auf dasselbe Ziel, auch über mehrere Runden.
+- **Ändern:** Regelkern, Aktionen (Zielen)
+- **Im Regelwerk klarstellen:** ja, **noch offen**: Unter Zielen festhalten, dass der Bonus nur für den nächsten Schuss in der nächsten Runde gilt und sonst verfällt.
 
 ### R5. Treffer mit 0 Schaden (17.11.2026)
 - **Entschieden (18.11.2026):** Ein Treffer mit 0 Schaden verursacht nichts: keine Prellung, keine Verletzung (Wunde, Blutung, Folge der Zone) keinen Abzug von Lebenspunkten und keinen Stagger (auch nicht durch einen stumpfen Krit). Das gilt für jeden Treffer, nicht nur für Wuchttreffer. Umgesetzt: Auch ein Durchschlag mit 0 Schaden erzeugt keine Wunde und keine Folge.
@@ -242,8 +244,8 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 ## Offen aus Schritt 6 (Aktionsleiste, Waffen, Schießen, 18.11.2026)
 
 1. **Kosten des Waffenwechsels.** → Regelfragen R7.
-2. **Wie lange gilt Zielen?** → Regelfragen R8.
-3. **Bewegung und Hechten in derselben Runde.** → Regelfragen R9.
+2. **Wie lange gilt Zielen?** → Regelfragen R8 (entschieden).
+3. **Bewegung und Hechten in derselben Runde.** → Regelfragen R9 (entschieden).
 4. **Atemkontrolle.** → Regelfragen R10.
 5. **Aufsätze im Gefecht anbringen.** Die App führt keine losen Aufsätze. *Vorläufig:* Der Spieler hakt an, was danach an der Waffe ist, und wählt nur, was er dabeihat.
 6. **Schnelllader und Ladestreifen.** → Regelfragen R11.
