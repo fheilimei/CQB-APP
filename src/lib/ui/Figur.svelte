@@ -19,8 +19,12 @@
     ondeckung: () => void;
     onversorgen: (wundId: string) => void;
     onfrist: (wundId: string) => void;
+    kampfunfaehig: boolean;
+    ongefechtstart: () => void;
+    onnaechsteRunde: () => void;
+    ongefechtende: () => void;
   }
-  let { c, d, ongetroffen, ondeckung, onversorgen, onfrist }: Props = $props();
+  let { c, d, ongetroffen, ondeckung, onversorgen, onfrist, kampfunfaehig, ongefechtstart, onnaechsteRunde, ongefechtende }: Props = $props();
 
   let zone = $state<string | null>(null);
 
@@ -72,7 +76,7 @@
   {#if lage === 'tot'}
     <p class="warnung">tot</p>
   {:else if lage === 'kampfunfaehig'}
-    <p class="warnung">kampfunfähig{imGefecht ? ': im Gefecht keine Aktionen' : ''}</p>
+    <p class="warnung">kampfunfähig: im Gefecht keine Aktionen</p>
   {/if}
   <div class="figurbox">
     <div class="figurplatz">
@@ -91,6 +95,23 @@
         <button class="betont" onclick={ongetroffen}>Getroffen</button>
       </div>
     </div>
+  </div>
+
+  <!-- Gefecht starten bzw. Nächste Runde und Gefecht beenden unter der Figur (18.11.2026, vorher in der Kopfzeile).
+       Bildzeichen als SVG statt Unicode (▶ ⏹ ⏭), weil Android diese sonst als bunte Emoji zeigt und ■ ▲ ▼ belegt sind. -->
+  <div class="gefecht-knoepfe">
+    {#if imGefecht}
+      <button onclick={onnaechsteRunde}>
+        <svg class="zeichen" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3l7 5-7 5z" /><rect x="11" y="3" width="2" height="10" /></svg>
+        Nächste Runde</button>
+      <button onclick={ongefechtende}>
+        <svg class="zeichen" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="3" width="10" height="10" rx="1" /></svg>
+        Gefecht beenden</button>
+    {:else}
+      <button class="betont" class:warnung={kampfunfaehig} onclick={ongefechtstart}>
+        {#if kampfunfaehig}⚠{:else}<svg class="zeichen" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5l9 5.5-9 5.5z" /></svg>{/if}
+        Gefecht starten</button>
+    {/if}
   </div>
 
   {#if gewaehlt}
@@ -146,6 +167,9 @@
   .knoepfe { display: flex; flex-direction: column; gap: var(--abstand-2); align-self: stretch; margin-top: auto; }
   .knoepfe button { width: 100%; padding: 0 var(--abstand-2); }
   .mitte { text-align: center; }
+  .gefecht-knoepfe { display: flex; gap: var(--abstand-2); }
+  .gefecht-knoepfe button { flex: 1 1 0; display: inline-flex; align-items: center; justify-content: center; gap: var(--abstand-2); }
+  .zeichen { width: 14px; height: 14px; fill: currentColor; flex: none; }
   /* Übersicht der gewählten Zone: eigene Fläche mit Akzentstreifen, passend zum Akzentrahmen der Zone in der Figur. */
   .zone { background: var(--flaeche-2); border-left: 3px solid var(--akzent); border-radius: 8px; padding: var(--abstand-2) var(--abstand-3); }
   .kopf { display: flex; justify-content: space-between; align-items: center; gap: var(--abstand-2); }

@@ -177,15 +177,15 @@ Unabhängig von den Modi Lesen, Aufstieg und Schreiben ([§ 3.0a](#30a-modi-lese
 **In Ruhe** (Standard):
 - Keine Aktionsleiste, keine Zähler, keine Initiative. Der Bereich „Adrenalin“ ist eingeklappt.
 - Verfügbar: Bogen, Probenrechner, Waffen (Nachladen, Wechsel, Aufsätze frei, ohne Aktion), **Getroffen** ([§ 3.7c](#37c-treffer-ausgehend-und-eingehend-m-r)), Wunden, Versorgen, Heilung, Ausrüstung.
-- Oben rechts in der Kopfzeile steht **Gefecht starten** (an der Stelle, an der im Gefecht „Gefecht beenden“ steht; Akzentrahmen, nicht gefüllt).
+- Im Reiter Figur steht unter der Figur **▶ Gefecht starten** (an der Stelle, an der im Gefecht „Nächste Runde“ und „Gefecht beenden“ stehen; Akzentrahmen, nicht gefüllt; 18.11.2026, vorher in der Kopfzeile).
 
 **Im Gefecht** (nach „Gefecht starten“, [§ 3.7](#37-leiter-m-r)):
-- Am unteren Rand erscheinen die Aktionsleiste und darüber das Wählrad „Adrenalin“ ([§ 3.7](#37-leiter-m-r)); die Aktionsleiste hat **Main · Bewegung · Stand | Break** (Ereignis am Rand) (Getroffen steht neben der Figur) ([§ 3.7a](#37a-aktionsleiste-m-r)).
-- Kopfzeile und untere Leisten (Aktionsleiste, Adrenalin) tragen einen Rand in der Akzentfarbe; ein eigener Schriftzug „Gefecht“ entfällt. Oben rechts in der Kopfzeile, auf Höhe des Namens, steht klein „Runde n · Initiative“ mit dem Ergebnis der Initiative dieser Runde darunter; in der zweiten Zeile rechts die kleinen Knöpfe **Nächste Runde** und **Gefecht beenden**.
+- Im Reiter Figur (nur dort, 18.11.2026) erscheinen am unteren Rand die Aktionsleiste und darüber das Wählrad „Adrenalin“ ([§ 3.7](#37-leiter-m-r)); die Aktionsleiste hat **Main · Bewegung · Stand | Break** (Ereignis am Rand) (Getroffen steht neben der Figur) ([§ 3.7a](#37a-aktionsleiste-m-r)).
+- Kopfzeile und untere Leisten (Aktionsleiste, Adrenalin) tragen einen Rand in der Akzentfarbe; ein eigener Schriftzug „Gefecht“ entfällt. Oben rechts in der Kopfzeile, auf Höhe des Namens, steht klein „Runde n · Initiative“ mit dem Ergebnis der Initiative dieser Runde darunter. Die Knöpfe **Nächste Runde** (Weiter-Zeichen) und **Gefecht beenden** (Stopp-Zeichen) stehen nebeneinander unter der Figur im Reiter Figur (18.11.2026).
 - Der **Aufstiegsmodus** ist gesperrt (Steigern gehört nicht in die Runde). Der **Schreibmodus** bleibt erreichbar für Korrekturen.
 
 **Kampfunfähig.** Die App sperrt nichts; die Entscheidung der SL geht vor. Sie **markiert** aber deutlich, dass der Charakter nach den Regeln keine Aktionen hat ([§ 4.5](#45-zustände)):
-- **Gefecht starten** trägt eine Warnmarkierung (Warnfarbe und Zeichen), darunter in der Kopfzeile der Grund, z. B. „kampfunfähig: 0 HP – im Gefecht keine Aktionen“.
+- **Gefecht starten** trägt eine Warnmarkierung (Warnfarbe und Zeichen ⚠ statt ▶); der Grund steht über der Figur, z. B. „kampfunfähig: 0 HP – im Gefecht keine Aktionen“.
 - **Im Gefecht** tragen die vier Aktionsknöpfe dieselbe Markierung, und über der Aktionsleiste steht ein Banner „kampfunfähig: keine Aktionen“. Die Zähler zählen weiter wie sonst. Wer trotzdem eine Aktion wählt, sieht vorher einen Hinweis und bestätigt „Trotzdem ausführen“; der Bericht vermerkt es.
 - Das Gefecht läuft weiter, auch wenn der Charakter darin kampfunfähig wird; weitere Treffer, Blutungsfristen und Adrenalinschock hängen am Gefechtsende.
 
@@ -195,7 +195,7 @@ Die App hat vier Reiter in einer senkrechten Leiste am rechten Bildschirmrand, u
 **Figur** (Startbildschirm). Die Silhouette ([§ 3.0f](#30f-körperbild-silhouette-a-r)) steht groß links, damit der Zustand des Charakters immer vor Augen ist; rechts daneben eine schmale Spalte mit Stand und Bewegung oben und den Knöpfen unten (18.11.2026).
 - **Darüber:** Kopfzeile mit Name und Statusfeld ([§ 3.0a](#30a-modi-lesen-aufstieg-schreiben-m), [§ 3.0e](#30e-gefecht-und-ruhe-m)), HP als Balken mit Zahl (Adrenalin bzw. Ruhepuls nicht in der Kopfzeile; der Stand steht am Rad unten), aktive Zustände als Chips (z. B. Geblendet 1, Adrenalinschock).
 - **Links:** die Silhouette mit Stand, Rüstung, Deckung, Wunden und Folgen; die aktive Waffe in der Hand mit Magazinstand.
-- **Rechts neben der Figur, unten:** der Knopf **Getroffen**, darüber der gleich breite Knopf **Deckung**; beide im Gefecht und in Ruhe an derselben Stelle, denn auch außerhalb eines Gefechts kann man in Deckung sein (Wunsch des Nutzers, 18.11.2026). In Ruhe zusätzlich **Heilung** (Proben starten über den Reiter Werte; **Gefecht starten** steht oben rechts in der Kopfzeile); im Gefecht Aktionsleiste und Bereich „Adrenalin“ ([§ 3.7](#37-leiter-m-r), [§ 3.7a](#37a-aktionsleiste-m-r)).
+- **Rechts neben der Figur, unten:** der Knopf **Getroffen**, darüber der gleich breite Knopf **Deckung**; beide im Gefecht und in Ruhe an derselben Stelle, denn auch außerhalb eines Gefechts kann man in Deckung sein (Wunsch des Nutzers, 18.11.2026). In Ruhe zusätzlich **Heilung** (Proben starten über den Reiter Werte); im Gefecht Aktionsleiste und Bereich „Adrenalin“ am unteren Rand, nur in diesem Reiter ([§ 3.7](#37-leiter-m-r), [§ 3.7a](#37a-aktionsleiste-m-r)).
 - **Oben rechts neben der Figur** (nur im Gefecht): eigener Stand und Bewegung dieser Runde als Bildzeichen ohne Text, untereinander (18.11.2026). Stand als kleines Strichmännchen (stehend, hockend, liegend über einer Bodenlinie), Bewegung als Pfeile: › Gehen oder Kriechen (der Stand zeigt, welches), ›› Laufen, ››› Rennen, Bogenpfeil Hechten; ohne Bewegung keine Pfeile. Zeichen aus `darstellung.json`. Die Figur selbst bleibt vorerst die stehende Strichfigur.
 - **Antippen einer Zone** öffnet unter der Figur die Übersicht der Zone: Rüstung, Deckung, Wunden mit Status und Folge; erneutes Antippen schließt sie. Eine eigene Wundliste auf dem Reiter Figur gibt es nicht (18.11.2026); Prellungen (ohne Zone) stehen als Zusatz unter dem HP-Balken. Bei jeder Wunde stehen dort **Versorgen** und nach dem Gefecht, solange sie blutet, **Frist abgelaufen** ([§ 3.10](#310-treffer-wunden-und-blutung-m-r)).
 
@@ -322,7 +322,7 @@ Regeln: [§ 4.4](#44-die-leiter). Ziel: höchstens zwei Handgriffe pro Runde; al
 - **Nachbarstufen antippen** dreht ebenfalls um eine Stufe (für alle, die nicht wischen können oder wollen).
 - **Antippen der Mitte** öffnet das **Detail** als Blatt von unten: Steps je Gruppe (mit den Stats), Symptome im Volltext, **Senken**, **Verbündete verschieben**, **Rückgängig** (letzte Änderung, auch aus den Abläufen). Wischen nach unten schließt es.
 - **Rückgängig** nimmt nur den Stand zurück (und ob in der Runde gesenkt wurde), nicht die Rundenzahl. Es reicht zurück bis zum Anfang der laufenden Runde bzw. bis zum gerade abgeschlossenen Rundenende; den Start des Gefechts nimmt es nicht zurück.
-- **Nächste Runde** und **Gefecht beenden** stehen nicht am Rad, sondern als kleine Knöpfe in der zweiten Zeile der Kopfzeile, unter der Angabe „Runde n · Initiative“ ([§ 3.0e](#30e-gefecht-und-ruhe-m)).
+- **Nächste Runde** und **Gefecht beenden** stehen nicht am Rad, sondern unter der Figur im Reiter Figur ([§ 3.0e](#30e-gefecht-und-ruhe-m)).
 
 **Folgen im Bogen.**
 - **Stats:** In der Step-Reihe jedes Stats ist der Wert hervorgehoben, der mit den Steps der Leiter gilt; die Markierung ♥ zeigt, dass Adrenalin bzw. Ruhepuls mitwirkt ([§ 3.0b](#30b-herkunft-von-werten-a-r)).

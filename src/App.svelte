@@ -381,28 +381,14 @@
           <span class="status an">{MODUS_NAME[modus]}</span>
           <button class="betont klein" onclick={() => (modus = 'lesen')}>Fertig</button>
         {/if}
-        {#if !gefecht}
-          <button class="betont klein" class:warnung={kampfunfaehig} onclick={gefechtStarten}>
-            {#if kampfunfaehig}⚠ {/if}Gefecht starten</button>
-        {/if}
       </div>
-      {#if !gefecht && kampfunfaehig}
-        <p class="fehler kampfunfaehig">kampfunfähig: im Gefecht keine Aktionen</p>
-      {/if}
-      {#if gefecht}
-        <div class="gefechtszeile">
-          <span class="rechts">
-            <button class="klein" onclick={() => (dialog = { art: 'runde' })}>Nächste Runde</button>
-            <button class="klein" onclick={gefechtEndeFrage}>Gefecht beenden</button>
-          </span>
-        </div>
-      {/if}
     </header>
 
     <main class="bogen">
       {#if reiter === 'figur'}
         <Figur c={aktiv} d={daten} ongetroffen={() => (dialog = { art: 'getroffen' })} ondeckung={() => (dialog = { art: 'deckung' })}
-          onversorgen={(id) => (dialog = { art: 'versorgen', wundId: id })} onfrist={fristFrage} />
+          onversorgen={(id) => (dialog = { art: 'versorgen', wundId: id })} onfrist={fristFrage}
+          {kampfunfaehig} ongefechtstart={gefechtStarten} onnaechsteRunde={() => (dialog = { art: 'runde' })} ongefechtende={gefechtEndeFrage} />
       {:else if reiter === 'werte'}
         <Werte c={aktiv} d={daten} {modus} {abweichungModus} onaendern={aendern}
           onprobe={(stat, skill) => (dialog = { art: 'probe', stat, skill })} />
@@ -414,14 +400,15 @@
       {/if}
     </main>
 
-    <div class="unten" class:im-gefecht={!!gefecht}>
+    <div class="unten" class:im-gefecht={!!gefecht && reiter === 'figur'}>
     {#if rueckgaengigText}
       <div class="toast karte rueck" role="status">
         <span>{rueckgaengigText}</span>
         <button class="flach link" onclick={zuruecknehmen}>Rückgängig</button>
       </div>
     {:else if meldung}<div class="toast karte" role="status">{meldung}</div>{/if}
-    {#if gefecht}
+    <!-- Rad und Aktionsleiste nur im Reiter Figur (Wunsch des Nutzers, 18.11.2026). -->
+    {#if gefecht && reiter === 'figur'}
       {#if overTheEdge(gefecht.leiter, daten.regeln)}
         <div class="banner" role="status">Over the Edge: nur 1 Aktion pro Runde</div>
       {/if}
@@ -518,14 +505,10 @@
   .titel { flex-wrap: wrap; }
   .chip-klein { font-size: 0.8rem; padding: 2px 8px; border-radius: 999px; color: #fff; white-space: nowrap; min-height: 0; min-width: 0; }
   .chip-klein.zustand { background: #7d3c98; border: none; min-height: 32px; }
-  .gefechtszeile { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
-  .gefechtszeile .rechts { margin-left: auto; display: flex; gap: 6px; }
-  .gefechtszeile .klein { padding: 0 10px; font-size: 0.9rem; }
   /* Runde und Initiative als Info oben rechts in der Kopfzeile; antippbar (öffnet die Initiative). */
   .initiative { padding: 0 var(--abstand-1); min-height: 40px; display: flex; flex-direction: column; align-items: flex-end; justify-content: center;
     line-height: 1.15; text-align: right; font-weight: 600; font-size: 0.9rem; }
   .initiative small { font-size: 0.75rem; font-weight: 400; color: var(--text-2); }
-  .kampfunfaehig { flex-basis: 100%; margin: 0; text-align: right; font-size: 0.85rem; }
   .update { position: fixed; left: 16px; right: 16px; bottom: calc(72px + env(safe-area-inset-bottom)); z-index: 50;
     display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: var(--abstand-3); }
   .datenfehler { margin: var(--abstand-2) var(--abstand-3) 0; border-color: var(--gefahr); display: block; }
