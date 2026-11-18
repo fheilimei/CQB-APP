@@ -52,12 +52,34 @@ export type PerkWirkung =
   | { art: 'nachladen_als_break' }
   | { art: 'ziehen_ohne_aktion'; trageorte: string[] }
   | { art: 'werfen_als_break' }
-  | { art: 'eingreifen_als_break' };
+  | { art: 'eingreifen_als_break' }
+  | { art: 'konzentration_statt'; aktion: string; konzentration: 'leicht' | 'voll' };
 
 export const PERK_WIRKUNGEN: PerkWirkung['art'][] = [
   'reichweite_frei', 'eigene_bewegung_weniger', 'zielen_stepshields', 'zielen_ohne_reichweite', 'folgetreffer_zonen',
-  'einzeln_patronen', 'nachladen_als_break', 'ziehen_ohne_aktion', 'werfen_als_break', 'eingreifen_als_break'
+  'einzeln_patronen', 'nachladen_als_break', 'ziehen_ohne_aktion', 'werfen_als_break', 'eingreifen_als_break',
+  'konzentration_statt'
 ];
+
+export interface Blutungsart {
+  frist_minuten: number;
+  /** schaden: noch einmal ein Anteil des Schadens der Wunde, dann Ende; tod: der Charakter stirbt. */
+  bei_ablauf: 'schaden' | 'tod';
+  schaden_anteil?: number;
+  runden?: 'auf' | 'ab';
+  /** Maßnahme → stoppt die Blutung oder vervielfacht die Frist (einmal). */
+  versorgung: Record<string, 'stoppt' | { frist_faktor: number }>;
+}
+
+export interface Massnahme {
+  name: string;
+  skill: string;
+  konzentration: string;
+  /** Nach dem Gefecht ohne Probe ab dieser Skillstufe (triviale Probe). */
+  trivial_nach_gefecht_ab?: number;
+  /** Dauert mehrere Runden; die Dauer legt die SL fest. */
+  mehrere_runden?: boolean;
+}
 
 /** Kosten eines Waffenwechsels je Trageort: ohne Aktion, Mainaction oder Mainaction mit Konzentration (mehrere Runden). */
 export type Wechselkosten = 'ohne' | 'main' | { aktion: 'main'; konzentration: 'leicht' | 'voll'; runden?: number };
@@ -154,6 +176,10 @@ export interface Regeln {
   perk_wirkungen: Record<string, PerkWirkung[]>;
   aktionen: { main: number; break: number; bewegung: number; stand: number; over_the_edge_gesamt: number; sprint_bewegung: number };
   lebenspunkte: { kampfunfaehig_bei: number; tot_bei: number };
+  /** Blutungsarten (koerperzonen.json verweist darauf): Frist, Folge bei Ablauf, Maßnahmen und ihre Wirkung. */
+  blutung: Record<string, Blutungsart>;
+  /** Maßnahmen zum Versorgen: Skill der Probe, Konzentration (Schlüssel in konzentration.aktionen). */
+  versorgen: Record<string, Massnahme>;
   geld: {
     ersparnisse: number;
     schulden: { klein: number; mittel: number; gross: number; rueckzahlung_faktor: number };

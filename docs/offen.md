@@ -91,6 +91,22 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 - **Ändern:** Regelkern, Wunden (Auslöser eines Treffers)
 - **Im Regelwerk klarstellen:** ja
 
+### R28. Ausgeblutete Wunde nachträglich versorgen (18.11.2026)
+- **Frage:** Eine normale Wunde, deren Frist abläuft, blutet danach nicht mehr, ist aber nicht versorgt. Nur versorgte Wunden heilen. Kann man sie danach noch mit einem Druckverband versorgen, damit sie heilt?
+- **Stellen:** (Schaden, Blutung und Verletzungen, Normale Blutung); (Schaden, Blutung und Verletzungen, Wunden heilen)
+- **Vorläufig:** Ja. Die App bietet bei einer ausgebluteten, unversorgten Wunde den Druckverband an; danach gilt sie als versorgt.
+- **Andere Möglichkeit:** Sie heilt ohne Versorgung, weil sie nicht mehr blutet; oder sie heilt nie ohne Operation.
+- **Ändern:** Regelkern, Blutung (Maßnahmen für ausgeblutete Wunden)
+- **Im Regelwerk klarstellen:** ja
+
+### R29. Wunden außerhalb eines Gefechts (18.11.2026)
+- **Frage:** Die Fristen beginnen mit dem Gefechtsende. Wann beginnen sie bei einer Wunde, die außerhalb eines Gefechts entsteht (Sturz, Falle, Schuss ohne Gefecht)?
+- **Stellen:** (Schaden, Blutung und Verletzungen, Blutung)
+- **Vorläufig:** sofort. Außerhalb des Gefechts zeigt die App die Frist und „Frist abgelaufen“ gleich nach dem Treffer.
+- **Andere Möglichkeit:** keine
+- **Ändern:** nichts in den Daten; nur die Anzeige auf der Figur
+- **Im Regelwerk klarstellen:** ja
+
 ### Erledigt
 
 ### R27. Hechten nur ins Liegen (18.11.2026)
@@ -266,4 +282,7 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 2. **Deckung beim Getroffen.** Die Deckung auf der Silhouette (§ 3.9) fehlt noch. *Vorläufig:* Der Spieler wählt im Dialog Getroffen die Deckung vor der getroffenen Zone; die Vorschau nimmt an, dass sie vor jeder Zone liegt.
 3. **Silhouette** zeigt vorerst nur die Haltung „stehend“; Hocken und Liegen folgen. Prellungen werden nicht je Zone gezeigt, weil die App sie nur als Summe kennt. Antippen einer Zone auf der Figur (Übersicht der Zone mit Versorgen) folgt.
 4. **Rückgängig** gibt es vorerst nur direkt nach dem Treffer (Meldung „Treffer eingetragen“); einzeln aus dem Gefechtsprotokoll folgt mit dem Reiter Verlauf.
-5. **Noch nicht da:** Getroffen durch Nahkampf und Splitter, Ereignis (Beschossen), Blutungsfristen nach dem Gefecht, Versorgen, ballistischer Schild beim Getroffen.
+5. **Noch nicht da:** Getroffen durch Nahkampf und Splitter, Ereignis (Beschossen), ballistischer Schild beim Getroffen. Erledigt (18.11.2026): Blutungsfristen und Versorgen.
+6. **Fristen ohne Uhr.** Entschieden (18.11.2026): Die App zählt keine Zeit; der Spieler tippt „Frist abgelaufen“, wenn die SL es sagt.
+7. **Operation im Gefecht.** Sie dauert mehrere Runden (Dauer legt die SL fest). *Vorläufig:* Die App verbraucht nur die Mainaction der Runde, in der gewürfelt wird; die Runden davor trägt der Spieler über Main → Sonderfähigkeit mit voller Konzentration ein. Notoperation und Unter Feuer erscheinen als Hinweis im Fenster.
+8. **Wunde eines Verbündeten versorgen:** Die App würfelt nur die eigene Probe; die Wunde führt der andere Spieler bzw. die SL.

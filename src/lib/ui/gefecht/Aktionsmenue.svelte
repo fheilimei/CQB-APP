@@ -7,7 +7,8 @@
     | { art: 'ladehemmung' }
     | { art: 'wechseln' }
     | { art: 'senken' }
-    | { art: 'verschieben' };
+    | { art: 'verschieben' }
+    | { art: 'versorgen' };
 </script>
 
 <script lang="ts">
@@ -90,7 +91,8 @@
     ];
     if (zielenAlsMain(c, d)) liste.push({ text: 'Zielen', info: 'Ruhige Hand: schon für den nächsten Schuss dieser Runde', los: () => { ansicht = { art: 'zielen', als: 'main' }; } });
     liste.push(
-      { text: 'Wunde versorgen', sperre: kommt, los: () => {} },
+      { text: 'Wunde versorgen', info: 'Druckverband, Tourniquet oder Operation; mit Konzentration', sperre: !konzentrationMoeglich(c) ? 'schon Breakaction eingesetzt' : null,
+        los: () => onablauf({ art: 'versorgen' }) },
       { text: 'Wurfaktion', sperre: kommt, los: () => {} },
       { text: 'Nahkampfangriff', sperre: kommt, los: () => {} },
       { text: 'Sonderfähigkeit', info: 'z. B. Offangle, Overwatch, eine Aktion über mehrere Runden', los: textOption('Sonderfähigkeit', 'Beschreibe kurz, was du tust. Braucht die Aktion Konzentration, wähle die Stufe.', 'main', { konzentration: true, freitext: true }) }

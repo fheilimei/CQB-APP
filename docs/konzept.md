@@ -196,7 +196,7 @@ Die App hat vier Reiter in einer senkrechten Leiste am rechten Bildschirmrand, u
 - **Mitte:** die Silhouette mit Stand, Rüstung, Deckung, Wunden und Folgen; die aktive Waffe in der Hand mit Magazinstand.
 - **Darunter:** der Knopf **Getroffen**, im Gefecht und in Ruhe an derselben Stelle (Wunsch des Nutzers, 18.11.2026), dazu in Ruhe **Heilung** (Proben starten über den Reiter Werte; **Gefecht starten** steht oben rechts in der Kopfzeile); im Gefecht Aktionsleiste und Bereich „Adrenalin“ ([§ 3.7](#37-leiter-m-r), [§ 3.7a](#37a-aktionsleiste-m-r)).
 - **Oben rechts neben der Figur** (nur im Gefecht): eigener Stand und Bewegung dieser Runde als Bildzeichen ohne Text (18.11.2026). Stand als kleines Strichmännchen (stehend, hockend, liegend über einer Bodenlinie), Bewegung als Pfeile: › Gehen oder Kriechen (der Stand zeigt, welches), ›› Laufen, ››› Rennen, Bogenpfeil Hechten; ohne Bewegung keine Pfeile. Zeichen aus `darstellung.json`. Die Figur selbst bleibt vorerst die stehende Strichfigur.
-- **Antippen einer Zone** öffnet unter der Figur die Übersicht der Zone: Rüstung, Deckung, Wunden mit Status und Folge; erneutes Antippen schließt sie. Eine eigene Wundliste auf dem Reiter Figur gibt es nicht (18.11.2026); Prellungen (ohne Zone) stehen als Zusatz unter dem HP-Balken. Später von dort Versorgen.
+- **Antippen einer Zone** öffnet unter der Figur die Übersicht der Zone: Rüstung, Deckung, Wunden mit Status und Folge; erneutes Antippen schließt sie. Eine eigene Wundliste auf dem Reiter Figur gibt es nicht (18.11.2026); Prellungen (ohne Zone) stehen als Zusatz unter dem HP-Balken. Bei jeder Wunde stehen dort **Versorgen** und nach dem Gefecht, solange sie blutet, **Frist abgelaufen** ([§ 3.10](#310-treffer-wunden-und-blutung-m-r)).
 
 **Werte:** Stammdaten (eingeklappt) · **Stats** · **Skills** · **Perks** · Grundwerte. Stats, Skills und Perks stehen direkt untereinander, weil sie beim Spielen zusammen gebraucht werden ([§ 3.1](#31-stammdaten-a-m) bis [§ 3.5](#35-perks-a-m)). Auch Aufstieg und Klassenwechsel finden hier statt.
 
@@ -363,7 +363,7 @@ Ein **langer Druck** auf einen Knopf erlaubt ±1 von Hand (Sonderregeln, Fehltip
 | | Aufsatz anbringen/abnehmen | Main mit leichter Konzentration (Schusswaffen, Aufsätze) |
 | | Adrenalin senken | Leiter-Ablauf ([§ 3.7](#37-leiter-m-r)) |
 | | Verbündete verschieben | Probe (Empathy + Führung) |
-| | Wunde versorgen | Probe mit voller Konzentration; Wundliste ([§ 3.10](#310-treffer-wunden-und-blutung-m-r)) |
+| | Wunde versorgen | Fenster Versorgen ([§ 3.10](#310-treffer-wunden-und-blutung-m-r)): Wunde, Maßnahme, wer versorgt, Probe; Konzentration voll (Feldversorgung: leicht) |
 | | Wurfaktion | Werfen ([§ 3.8a](#38a-werfen-a-m-r)) |
 | | Nahkampfangriff | Vergleichsprobe ([§ 3.8b](#38b-nahkampf-m-r)) |
 | | Hechten | bis 2 m, danach liegend (R27, 18.11.2026); setzt den Stand und „gehechtet“ für die Lage; gesperrt im Liegen und ab Ruhepuls 2 |
@@ -568,7 +568,13 @@ Dann folgt der **Bericht** ([§ 3.0c](#30c-bericht-was-ist-passiert-a)). „Weit
 
 **Wundliste** (Übersicht der Zone auf der Figur; später auch im Verlauf): Zone, Schaden, kritisch, Blutungsstatus, versorgt (Druckverband / Tourniquet / Operation), Nachsorge-Ergebnis, Rest-Heildauer.
 
-**Fristen nach dem Gefecht:** Countdown je blutender Wunde ([§ 4.8](#48-blutung)). Bei Ablauf: halber Schaden bzw. Tod, mit Bericht.
+**Fristen nach dem Gefecht** ([§ 4.8](#48-blutung); Entscheidung 18.11.2026): Die App zählt keine Zeit. Jede blutende Wunde zeigt in der Übersicht ihrer Zone die Frist („blutet, Frist 10 Minuten“). Der Bericht „Gefecht beenden“ nennt alle Wunden, deren Frist jetzt beginnt. Außerhalb des Gefechts steht unter dem HP-Balken „Eine Wunde blutet …“; die Wunde ist auf der Figur rot. Sagt die SL, dass eine Frist abgelaufen ist, tippt der Spieler in der Übersicht der Zone **Frist abgelaufen**; der Bericht zeigt vorher halben Schaden (zählt zur Wunde) und HP bzw. Tod.
+
+**Versorgen** (Knopf **Versorgen** bei der Wunde in der Übersicht der Zone, im Gefecht auch Main → Wunde versorgen). Ein Fenster mit Abschnitten:
+1. **Welche Wunde?** (nur über Main): versorgbare eigene Wunden oder „eines Verbündeten“ (nur die eigene Probe, die Wunde führt der andere).
+2. **Maßnahme:** nur die, die bei dieser Wunde wirken (normal: Druckverband; kritisch an Armen und Beinen: Tourniquet; kritisch am Rumpf: Druckverband verlängert die Frist einmal, Operation stoppt). Eine ausgeblutete, unversorgte Wunde lässt sich noch versorgen, damit sie heilt.
+3. **Wer versorgt:** du selbst oder jemand anders (Entscheidung 18.11.2026). Selbst: Probe auf Erste Hilfe bzw. Operation; nach dem Gefecht ist der Druckverband ab Erste Hilfe 1 ohne Probe. Im Gefecht Mainaction mit Konzentration (Feldversorgung: leicht), gesperrt nach einer Breakaction. Jemand anders: Der Spieler tippt gelungen oder misslungen.
+4. **Bericht**; eine misslungene Versorgung ändert nichts und darf wiederholt werden, solange die Frist läuft.
 
 **Gefechtsprotokoll:** Jeder übernommene Treffer (und später jeder Schuss) wird mit Runde und Uhrzeit protokolliert. Jeder Eintrag lässt sich einzeln rückgängig machen; Wunde, HP und Auslöser werden dann zurückgesetzt (mit Bericht).
 

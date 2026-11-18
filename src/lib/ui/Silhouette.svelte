@@ -47,7 +47,8 @@
     return wunden.filter((w) => w.zone === zone || (w.zone === 'rumpf' && zone === 'bauch'));
   }
   function wundKlasse(w: Wunde): string {
-    const blutet = w.blutung.status === 'offen' && !w.versorgt;
+    // Rot, solange sie blutet (auch mit Druckverband am Rumpf, der nur die Frist verlängert).
+    const blutet = w.blutung.status === 'offen';
     return `wunde${blutet ? ' blutet' : ' versorgt'}`;
   }
 </script>

@@ -749,15 +749,29 @@
   "blutung": {
     "normal": {
       "frist_minuten": 10,
+      "bei_ablauf": "schaden",
       "schaden_anteil": 0.5,
-      "runden": "auf"
+      "runden": "auf",
+      "versorgung": {
+        "druckverband": "stoppt"
+      }
     },
     "kritisch_glied": {
-      "frist_minuten": 5
+      "frist_minuten": 5,
+      "bei_ablauf": "tod",
+      "versorgung": {
+        "tourniquet": "stoppt"
+      }
     },
     "kritisch_rumpf": {
       "frist_minuten": 1,
-      "druckverband_faktor": 2
+      "bei_ablauf": "tod",
+      "versorgung": {
+        "druckverband": {
+          "frist_faktor": 2
+        },
+        "operation": "stoppt"
+      }
     }
   },
   "heilung": {
@@ -929,6 +943,13 @@
       {
         "art": "eingreifen_als_break"
       }
+    ],
+    "feldversorgung": [
+      {
+        "art": "konzentration_statt",
+        "aktion": "erste_hilfe",
+        "konzentration": "leicht"
+      }
     ]
   },
   "staende": [
@@ -954,5 +975,24 @@
     "staende": [
       "liegen"
     ]
+  },
+  "versorgen": {
+    "druckverband": {
+      "name": "Druckverband",
+      "skill": "erste_hilfe",
+      "konzentration": "erste_hilfe",
+      "trivial_nach_gefecht_ab": 1
+    },
+    "tourniquet": {
+      "name": "Tourniquet",
+      "skill": "erste_hilfe",
+      "konzentration": "erste_hilfe"
+    },
+    "operation": {
+      "name": "Operation",
+      "skill": "operation",
+      "konzentration": "operation",
+      "mehrere_runden": true
+    }
   }
 }

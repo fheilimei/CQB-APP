@@ -141,7 +141,8 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
     "schnell_nachladen": [ { "art": "nachladen_als_break" } ],
     "schnellzieher": [ { "art": "ziehen_ohne_aktion", "trageorte": ["holster", "guertel"] } ],
     "quickthrow": [ { "art": "werfen_als_break" } ],
-    "schutzreflex": [ { "art": "eingreifen_als_break" } ]
+    "schutzreflex": [ { "art": "eingreifen_als_break" } ],
+    "feldversorgung": [ { "art": "konzentration_statt", "aktion": "erste_hilfe", "konzentration": "leicht" } ]
   },
   "bewegung": {
     "arten": {
@@ -251,9 +252,16 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
     "session_punkte": 5
   },
   "blutung": {
-    "normal": { "frist_minuten": 10, "schaden_anteil": 0.5, "runden": "auf" },
-    "kritisch_glied": { "frist_minuten": 5 },
-    "kritisch_rumpf": { "frist_minuten": 1, "druckverband_faktor": 2 }
+    "normal": { "frist_minuten": 10, "bei_ablauf": "schaden", "schaden_anteil": 0.5, "runden": "auf",
+                "versorgung": { "druckverband": "stoppt" } },
+    "kritisch_glied": { "frist_minuten": 5, "bei_ablauf": "tod", "versorgung": { "tourniquet": "stoppt" } },
+    "kritisch_rumpf": { "frist_minuten": 1, "bei_ablauf": "tod",
+                        "versorgung": { "druckverband": { "frist_faktor": 2 }, "operation": "stoppt" } }
+  },
+  "versorgen": {
+    "druckverband": { "name": "Druckverband", "skill": "erste_hilfe", "konzentration": "erste_hilfe", "trivial_nach_gefecht_ab": 1 },
+    "tourniquet": { "name": "Tourniquet", "skill": "erste_hilfe", "konzentration": "erste_hilfe" },
+    "operation": { "name": "Operation", "skill": "operation", "konzentration": "operation", "mehrere_runden": true }
   },
   "heilung": {
     "erholungsprobe": { "stat": "grit", "krit": 2, "gelungen": 1, "misslungen": 0 },
@@ -306,7 +314,9 @@ Alle Zahlen, die eine Regel festlegt. Die App liest sie zur Laufzeit; der Code e
 - **`bewegung.reihenfolge`**: Bewegungsarten von langsam nach schnell, für „höchstens Gehen“ (Konzentration, Schutzanzug, Schild) und für Sprint (die schnellere zählt).
 - **`waffe_wechseln.trageorte`**: Kosten je Trageort: `ohne`, `main` oder `{ aktion, konzentration, runden }`. Ein Wechsel kostet den teureren der beiden Trageorte (alte und neue Waffe). Namen der Trageorte in `darstellung.json` (`trageorte`).
 - **`zielen.stepshields`**: Stepshield des Zielens für den nächsten Schuss in der nächsten Runde.
-- **`perk_wirkungen`**: Perks, deren Wirkung der Regelkern selbst ausführt, Perk-ID → Liste von Wirkungen. Erlaubte `art`: `reichweite_frei` (`baender`: keine Malsteps der Reichweite), `eigene_bewegung_weniger` (`malsteps`), `zielen_stepshields` (`stepshields`, `bedingung`: `liegend_oder_aufgelegt`), `zielen_ohne_reichweite` (`bedingung`: `ohne_bewegung`), `folgetreffer_zonen` (`ansage`: Zone, `zonen`: Zonen der Folgetreffer der Reihe nach, die letzte wiederholt sich), `einzeln_patronen` (`patronen`), `nachladen_als_break`, `ziehen_ohne_aktion` (`trageorte`), `werfen_als_break`, `eingreifen_als_break`. Ein neuer Perk mit bekannter Wirkung braucht keine Codeänderung.
+- **`blutung`**: Blutungsarten, auf die `koerperzonen.json` verweist. `frist_minuten` ab Gefechtsende; `bei_ablauf`: `schaden` (noch einmal `schaden_anteil` des Schadens der Wunde, gerundet nach `runden`, dann Ende) oder `tod`. `versorgung`: Maßnahme → `stoppt` oder `{ "frist_faktor": n }` (verlängert die Frist einmal, die Wunde blutet weiter). Die App zählt keine Zeit; der Spieler trägt „Frist abgelaufen“ ein, wenn die SL es sagt.
+- **`versorgen`**: Maßnahmen. `skill`: Skill der Probe (Stat aus `skills.json`); `konzentration`: Schlüssel in `konzentration.aktionen`; `trivial_nach_gefecht_ab`: nach dem Gefecht ohne Probe ab dieser Skillstufe; `mehrere_runden`: Dauer legt die SL fest. Die Probe hat die Probenart `versorgen` (Name in `darstellung.json` `proben`).
+- **`perk_wirkungen`**: Perks, deren Wirkung der Regelkern selbst ausführt, Perk-ID → Liste von Wirkungen. Erlaubte `art`: `reichweite_frei` (`baender`: keine Malsteps der Reichweite), `eigene_bewegung_weniger` (`malsteps`), `zielen_stepshields` (`stepshields`, `bedingung`: `liegend_oder_aufgelegt`), `zielen_ohne_reichweite` (`bedingung`: `ohne_bewegung`), `folgetreffer_zonen` (`ansage`: Zone, `zonen`: Zonen der Folgetreffer der Reihe nach, die letzte wiederholt sich), `einzeln_patronen` (`patronen`), `nachladen_als_break`, `ziehen_ohne_aktion` (`trageorte`), `werfen_als_break`, `eingreifen_als_break`, `konzentration_statt` (`aktion`: Schlüssel in `konzentration.aktionen`, `konzentration`: Stufe, die stattdessen gilt; z. B. Feldversorgung). Ein neuer Perk mit bekannter Wirkung braucht keine Codeänderung.
 - **`sprengwirkung.landepunkt`**: Landepunkt eines Werfergeschosses bzw. einer Wurfladung je Ergebnis; **`richtungen`**: Richtung bei Misserfolg, Index = W8 − 1 (Sprengwirkung, Landepunkt).
 - **Bänder** in `bewegung`, `sicht` und `lautstaerke` sind IDs aus `schiessen.reichweitenbaender`. `"keins"`: man erkennt niemanden.
 - **Lage:** Die App baut die Lage-Auswahl allein aus `lage.gruppen` und `lage.umstaende` ([konzept.md § 3.8c](konzept.md#38c-lage-auswahl-r)). Ein neuer Umstand ist ein neuer Eintrag, ohne Codeänderung.
@@ -1127,9 +1137,9 @@ IndexedDB-Datenbank `cqb` mit zwei Speichern: `charaktere` (ein Datensatz je Cha
 - **`gefecht.sichtstufe`:** Sichtstufe aus `regeln.json` (`sicht.stufen`); Start ist die erste Stufe.
 - **`tot`:** `true` nach einem Krit mit Folge „Sofort Tod“ (Kopf, Brust) oder bei HP ≤ −1. Die Lebenslage „tot“ gilt dann unabhängig von den HP.
 - **Wunde:** entsteht bei jedem Durchschlag mit Schaden > 0 und bei Schaden direkt als Wunde. `id` (`w1`, `w2` …), `zone` (auch `rumpf` nach Ansage), `schaden`, `kritisch` (Spalte „Krit“ der Zone galt). Ein Wuchttreffer erzeugt keine Wunde, sondern erhöht `prellungen`.
-- **Wunde `blutung.status`:** `offen` (Frist läuft oder Gefecht noch aktiv), `gestoppt`, `abgelaufen` (normale Wunde hat Nachschaden verursacht).
-- **Wunde `blutung.frist_ende`:** Zeitpunkt (ISO 8601), gesetzt bei Gefechtsende. Echtzeit oder Spielzeit ist noch offen; vorerst Spielzeit in Minuten seit Gefechtsende als Zahl erlaubt.
-- **Wunde `versorgt`:** `null`, `druckverband`, `tourniquet`, `operation`.
+- **Wunde `blutung.status`:** `offen` (blutet: Frist läuft oder Gefecht noch aktiv; auch mit Druckverband am Rumpf), `gestoppt` (durch eine Maßnahme), `abgelaufen` (Frist abgelaufen; die normale Wunde hat Nachschaden verursacht und blutet nicht mehr).
+- **Wunde `blutung.frist_ende`:** wird nicht benutzt (immer `null`). Die App zählt keine Zeit; die Frist wird aus `regeln.json` berechnet und der Ablauf vom Spieler eingetragen (Entscheidung 18.11.2026).
+- **Wunde `versorgt`:** `null` oder die letzte gelungene Maßnahme (Schlüssel in `regeln.json` `versorgen`, z. B. `druckverband`). Ist es eine Maßnahme mit `frist_faktor`, blutet die Wunde weiter mit verlängerter Frist.
 - **Wunde `nachsorge`:** `null` (noch nicht erfolgt), `krit`, `gelungen`, `misslungen`, `keine`.
 - **Heildauer** wird berechnet: `schaden` × Tage je Schaden (`regeln.json`) × Nachsorge-Faktor, aufgerundet. Eine Wunde ist geheilt, wenn `ruhetage_geheilt` ≥ Heildauer; dann wird sie aus der Liste entfernt.
 - **Nachschaden normaler Blutung** wird auf `schaden` der Wunde aufgeschlagen und auf `hp_verlust_wunden`.

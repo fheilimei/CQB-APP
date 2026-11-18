@@ -141,7 +141,8 @@ export interface Wunde {
   schaden: number;
   kritisch: boolean;
   blutung: { status: 'offen' | 'gestoppt' | 'abgelaufen'; frist_ende: string | number | null };
-  versorgt: null | 'druckverband' | 'tourniquet' | 'operation';
+  /** Letzte erfolgreiche Maßnahme (regeln.json `versorgen`), null = nicht versorgt. */
+  versorgt: string | null;
   nachsorge: null | 'krit' | 'gelungen' | 'misslungen' | 'keine';
   ruhetage_geheilt: number;
 }

@@ -34,6 +34,9 @@
   import Schiessen from './lib/ui/gefecht/Schiessen.svelte';
   import WaffeWechseln from './lib/ui/gefecht/WaffeWechseln.svelte';
   import Getroffen from './lib/ui/gefecht/Getroffen.svelte';
+  import Versorgen from './lib/ui/gefecht/Versorgen.svelte';
+  import { blutet, blutungsart, fristAblaufen, fristablauf, fristMinuten } from './lib/regeln/blutung';
+  import { wundenText } from './lib/regeln/wunden';
   import Figur from './lib/ui/Figur.svelte';
   import type { Aktion } from './lib/speicher/charakter';
   import { ansage, standText } from './lib/ui/texte';
@@ -60,7 +63,8 @@
     | { art: 'start' | 'initiative' | 'runde' | 'senken' | 'verschieben' | 'detail' | 'schiessen' | 'wechseln' | 'getroffen' }
     | { art: 'aktion'; aktion: Aktion }
     | { art: 'nachladen'; id: string; als: 'main' | 'break' | null }
-    | { art: 'ladehemmung'; id: string };
+    | { art: 'ladehemmung'; id: string }
+    | { art: 'versorgen'; wundId: string | null };
   let dialog = $state<Spieldialog | null>(null);
   /** Kurze Meldung mit „Rückgängig“ nach einer Änderung von Adrenalin bzw. Ruhepuls (konzept.md § 3.7). */
   let rueckgaengigText = $state('');
@@ -221,6 +225,7 @@
       case 'wechseln': dialog = { art: 'wechseln' }; break;
       case 'senken': dialog = { art: 'senken' }; break;
       case 'verschieben': dialog = { art: 'verschieben' }; break;
+      case 'versorgen': dialog = { art: 'versorgen', wundId: null }; break;
     }
   }
 
@@ -248,7 +253,32 @@
       zeilen.push({ text: `Du hast Over the Edge erreicht: Du erleidest einen Adrenalinschock. Alle Proben sind erschwert, bis du ${r.ende_ruhe_stunden} Stunden ununterbrochen ruhst.`, fett: true });
     }
     if (g.lage.sl_gefecht.length) zeilen.push({ text: 'Die Steps der SL für dieses Gefecht entfallen.' });
+    const blutend = c.spielstand.wunden.filter(blutet);
+    if (blutend.length) {
+      zeilen.push({ text: `Jetzt beginnen die Blutungsfristen: ${blutend.map((w) => `${wundenText(w, daten!)}, ${fristMinuten(w, daten!)} ${fristMinuten(w, daten!) === 1 ? 'Minute' : 'Minuten'}`).join('; ')}.`, fett: true });
+      zeilen.push({ text: 'Versorge die Wunden über die Figur. Sagt die SL, dass eine Frist abgelaufen ist, tippe dort „Frist abgelaufen“.' });
+    }
     bericht = { titel: 'Gefecht beenden', zeilen, weiter: () => { void speichern(gefechtBeenden(c)); bericht = null; dialog = null; } };
+  }
+
+  /** Frist einer blutenden Wunde abgelaufen (konzept.md § 3.10, § 4.8): Bericht vor der Änderung. */
+  function fristFrage(wundId: string) {
+    if (!aktiv) return;
+    const c = aktiv;
+    const w = c.spielstand.wunden.find((x) => x.id === wundId);
+    if (!w) return;
+    const f = fristablauf(c, wundId, daten!);
+    const b = blutungsart(w, daten!);
+    const zeilen: Zeile[] = [{ text: `Die Frist der Wunde (${wundenText(w, daten!)}) ist abgelaufen, ohne dass die Blutung gestoppt wurde.` }];
+    if (b?.art.bei_ablauf === 'tod') zeilen.push({ text: 'Du verblutest. Dein Charakter ist tot.', fett: true });
+    else {
+      zeilen.push({ text: `Die Wunde blutet noch einmal: ${f.schaden} Schaden, er zählt zur Wunde (jetzt ${w.schaden + f.schaden}). Danach hört sie auf zu bluten.` });
+      zeilen.push({ text: `HP ${f.hp_vorher} → ${f.hp_nachher}.`, fett: true });
+      if (f.tot) zeilen.push({ text: 'Damit bist du tot.', fett: true });
+      else if (f.kampfunfaehig) zeilen.push({ text: 'Damit bist du kampfunfähig.', fett: true });
+      zeilen.push({ text: 'Die Wunde ist nicht versorgt; sie heilt erst, wenn sie versorgt ist.' });
+    }
+    bericht = { titel: 'Frist abgelaufen', zeilen, weiter: () => { void speichern(fristAblaufen(c, wundId, daten!)); bericht = null; } };
   }
 
   function schockFrage() {
@@ -370,7 +400,8 @@
 
     <main class="bogen">
       {#if reiter === 'figur'}
-        <Figur c={aktiv} d={daten} ongetroffen={() => (dialog = { art: 'getroffen' })} />
+        <Figur c={aktiv} d={daten} ongetroffen={() => (dialog = { art: 'getroffen' })}
+          onversorgen={(id) => (dialog = { art: 'versorgen', wundId: id })} onfrist={fristFrage} />
       {:else if reiter === 'werte'}
         <Werte c={aktiv} d={daten} {modus} {abweichungModus} onaendern={aendern}
           onprobe={(stat, skill) => (dialog = { art: 'probe', stat, skill })} />
@@ -420,6 +451,9 @@
         onfertig={(c) => nachAblauf(c)} onabbrechen={() => (dialog = null)} />
     {:else if dialog.art === 'wechseln' && gefecht}
       <WaffeWechseln c={aktiv} d={daten} onfertig={(c) => nachAblauf(c)} onabbrechen={() => (dialog = null)} />
+    {:else if dialog.art === 'versorgen'}
+      <Versorgen c={aktiv} d={daten} wundId={dialog.wundId} wuerfelModus={probeModus} onaendern={aendern}
+        onfertig={(c) => nachAblauf(c)} onabbrechen={() => (dialog = null)} />
     {:else if dialog.art === 'getroffen'}
       <Getroffen c={aktiv} d={daten} {zonenModus} onfertig={trefferFertig} onabbrechen={() => (dialog = null)} />
     {:else if dialog.art === 'start'}

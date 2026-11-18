@@ -176,6 +176,7 @@ export function pruefeDaten(d: Spieldaten): string[] {
       if (!PERK_WIRKUNGEN.includes(w.art)) f('regeln.json', `perk_wirkungen.${perk}: unbekannte Wirkung „${w.art}“`);
       if (w.art === 'reichweite_frei') for (const b of w.baender) if (!baender.has(b)) f('regeln.json', `perk_wirkungen.${perk}: unbekanntes Band „${b}“`);
       if (w.art === 'folgetreffer_zonen') for (const z of [w.ansage, ...w.zonen]) if (!zonenIds.has(z)) f('regeln.json', `perk_wirkungen.${perk}: unbekannte Zone „${z}“`);
+      if (w.art === 'konzentration_statt' && !r.konzentration.aktionen[w.aktion]) f('regeln.json', `perk_wirkungen.${perk}: unbekannte Aktion „${w.aktion}“`);
       if (w.art === 'ziehen_ohne_aktion') for (const t of w.trageorte) if (!trageorte.includes(t)) f('regeln.json', `perk_wirkungen.${perk}: unbekannter Trageort „${t}“`);
     }
   }
@@ -217,6 +218,17 @@ export function pruefeDaten(d: Spieldaten): string[] {
     modifikatoren(ort, p.modifikatoren);
   }
 
+  for (const [id, b] of Object.entries(r.blutung ?? {})) {
+    pflicht(`regeln.json blutung.${id}`, b, ['frist_minuten', 'bei_ablauf', 'versorgung']);
+    if (b.bei_ablauf === 'schaden' && typeof b.schaden_anteil !== 'number') f('regeln.json', `blutung.${id}: schaden_anteil fehlt`);
+    for (const m of Object.keys(b.versorgung ?? {})) if (!r.versorgen?.[m]) f('regeln.json', `blutung.${id}: unbekannte Maßnahme „${m}“`);
+  }
+  for (const [id, m] of Object.entries(r.versorgen ?? {})) {
+    pflicht(`regeln.json versorgen.${id}`, m, ['name', 'skill', 'konzentration']);
+    if (!d.skills.eintraege.some((s) => s.id === m.skill)) f('regeln.json', `versorgen.${id}: unbekannter Skill „${m.skill}“`);
+    if (!r.konzentration.aktionen[m.konzentration]) f('regeln.json', `versorgen.${id}: unbekannte Konzentration „${m.konzentration}“`);
+  }
+
   // ---------- koerperzonen.json
   const w8 = d.koerperzonen.eintraege.map((z) => z.w8).filter((x): x is number => x !== null);
   for (let i = 1; i <= 8; i++) if (w8.filter((x) => x === i).length !== 1) f('koerperzonen.json', `W8-Ergebnis ${i} muss genau einer Zone gehören`);
@@ -224,7 +236,7 @@ export function pruefeDaten(d: Spieldaten): string[] {
     const ort = `koerperzonen.json ${z.id}`;
     pflicht(ort, z, ['id', 'name', 'ort', 'multiplikator', 'bereich', 'normal', 'krit']);
     if (z.w8 === null && !z.nur_ansage) f(ort, 'ohne W8-Nummer muss „nur_ansage“ gesetzt sein');
-    for (const b of [z.normal.blutung, z.krit.blutung]) if (b && !(r.blutung as Record<string, unknown>)?.[b]) f(ort, `unbekannte Blutung „${b}“`);
+    for (const b of [z.normal.blutung, z.krit.blutung]) if (b && !r.blutung?.[b]) f(ort, `unbekannte Blutung „${b}“`);
     for (const spalte of [z.normal, z.krit]) {
       if (!Array.isArray(spalte?.saetze) || spalte.saetze.length === 0) { f(ort, 'Folge ohne „saetze“'); continue; }
       for (const satz of spalte.saetze) {

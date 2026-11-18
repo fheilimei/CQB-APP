@@ -1,17 +1,25 @@
 <script lang="ts">
   // Reiter Figur (konzept.md § Aufbau der App): HP, Silhouette mit Rüstung und Wunden. Antippen einer Zone zeigt darunter
-  // ihre Übersicht (Rüstung, Deckung, Wunden mit Status und Folge). Darunter der Knopf Getroffen, im Gefecht und in Ruhe.
+  // ihre Übersicht (Rüstung, Deckung, Wunden mit Status, Frist und Folge; Versorgen und „Frist abgelaufen“).
+  // Darunter der Knopf Getroffen, im Gefecht und in Ruhe.
   import type { Spieldaten } from '../daten/typen';
   import { grundwerte, hpAktuell } from '../regeln/modifikatoren';
   import { gefechtVon, lebenslageDes } from '../regeln/probenrechner';
   import { ruestungswert } from '../regeln/schaden';
   import { deckungFuer } from '../regeln/wunden';
+  import { blutet, fristMinuten, fristVerlaengert, massnahmenFuer } from '../regeln/blutung';
   import type { Charakter, Wunde } from '../speicher/charakter';
   import Haltungsanzeige from './Haltungsanzeige.svelte';
   import Silhouette from './Silhouette.svelte';
 
-  interface Props { c: Charakter; d: Spieldaten; ongetroffen: () => void }
-  let { c, d, ongetroffen }: Props = $props();
+  interface Props {
+    c: Charakter;
+    d: Spieldaten;
+    ongetroffen: () => void;
+    onversorgen: (wundId: string) => void;
+    onfrist: (wundId: string) => void;
+  }
+  let { c, d, ongetroffen, onversorgen, onfrist }: Props = $props();
 
   let zone = $state<string | null>(null);
 
@@ -27,10 +35,17 @@
   const zonenWunden = $derived(zone ? wunden.filter((w) => w.zone === zone || (w.zone === 'rumpf' && zone === 'bauch')) : []);
   const deckung = $derived(zone && imGefecht ? deckungFuer(zone, c, d) : null);
   const zonenName = (id: string) => d.koerperzonen.eintraege.find((z) => z.id === id)?.name ?? id;
+  /** Nach dem Gefecht laufen die Fristen der blutenden Wunden. Regelfrage R29 (docs/offen.md): vorläufig auch bei Wunden aus einem Treffer in Ruhe sofort. */
+  const blutend = $derived(imGefecht ? 0 : wunden.filter(blutet).length);
 
   function status(w: Wunde): string {
-    if (w.versorgt) return `versorgt (${w.versorgt === 'druckverband' ? 'Druckverband' : w.versorgt === 'tourniquet' ? 'Tourniquet' : 'Operation'})`;
-    if (w.blutung.status === 'offen') return 'blutet';
+    const mit = w.versorgt ? (d.regeln.versorgen[w.versorgt]?.name ?? w.versorgt) : '';
+    if (blutet(w)) {
+      const frist = fristMinuten(w, d);
+      const fristText = frist === null ? '' : `, Frist ${frist} ${frist === 1 ? 'Minute' : 'Minuten'}${imGefecht ? ' ab Gefechtsende' : ''}`;
+      return `blutet${fristText}${fristVerlaengert(w, d) ? ` (${mit})` : ''}`;
+    }
+    if (w.versorgt) return `versorgt (${mit})`;
     if (w.blutung.status === 'gestoppt') return 'Blutung gestoppt';
     return 'ausgeblutet, unversorgt';
   }
@@ -44,6 +59,9 @@
   <div class="hp" aria-label="Lebenspunkte {hp} von {hpMax}">
     <span class="zahl"><strong>HP {hp}</strong> / {hpMax}</span>
     <div class="balken"><div class="fuellung" class:niedrig={hp <= hpMax / 4} style:width="{Math.max(0, Math.min(1, hp / hpMax)) * 100}%"></div></div>
+    {#if blutend}
+      <small class="warnung">{blutend === 1 ? 'Eine Wunde blutet' : `${blutend} Wunden bluten`}. Tippe die rote Stelle an, um zu versorgen.</small>
+    {/if}
     {#if prellungen}
       <small class="hinweis">davon {prellungen} durch Prellungen, zurück nach einer Nacht Ruhe</small>
     {/if}
@@ -78,9 +96,15 @@
               </span>
               <span class="wert">{w.schaden}</span>
             </li>
+            {#if massnahmenFuer(w, d).length || (!imGefecht && blutet(w))}
+              <li class="wundknoepfe">
+                {#if massnahmenFuer(w, d).length}<button class="betont" onclick={() => onversorgen(w.id)}>Versorgen</button>{/if}
+                {#if !imGefecht && blutet(w)}<button onclick={() => onfrist(w.id)}>Frist abgelaufen</button>{/if}
+              </li>
+            {/if}
           {/each}
         </ul>
-        {#if imGefecht && zonenWunden.some((w) => w.blutung.status === 'offen' && !w.versorgt)}
+        {#if imGefecht && zonenWunden.some(blutet)}
           <p class="hinweis">Im Gefecht blutet niemand; die Fristen beginnen mit dem Gefechtsende.</p>
         {/if}
       {:else}
@@ -111,4 +135,5 @@
   .kopf { display: flex; justify-content: space-between; align-items: center; gap: var(--abstand-2); }
   .wundzeile { display: flex; justify-content: space-between; align-items: center; gap: var(--abstand-2); min-height: 44px; }
   .wundzeile small { display: block; color: var(--text-2); }
+  .wundknoepfe { display: flex; gap: var(--abstand-2); justify-content: flex-end; }
 </style>
