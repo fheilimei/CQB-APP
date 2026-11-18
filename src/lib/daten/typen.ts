@@ -222,6 +222,8 @@ export interface Perk {
 export interface Koerperzone {
   id: string;
   name: string;
+  /** Ortsangabe für Sätze im Bericht („am Kopf“, „an der Brust“). */
+  ort: string;
   w8: number | null;
   nur_ansage?: boolean;
   multiplikator: number;

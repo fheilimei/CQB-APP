@@ -1,6 +1,6 @@
 <script lang="ts">
   // Aktionsleiste (konzept.md § 3.7a): nur im Gefecht, über dem Wählrad. Vier Knöpfe Main · Break · Bewegung · Stand mit
-  // Zähler (bei 0 ausgegraut), dazu Getroffen. Langer Druck: ±1 von Hand. Kampfunfähig: Warnmarkierung, Ausführen nur nach Bestätigung.
+  // Zähler (bei 0 ausgegraut). Getroffen steht im Reiter Figur, wie in Ruhe. Langer Druck: ±1 von Hand. Kampfunfähig: Warnmarkierung, Ausführen nur nach Bestätigung.
   import type { Spieldaten } from '../../daten/typen';
   import { AKTIONEN, eigenerStand, korrigieren, zaehler } from '../../regeln/aktionen';
   import { gefechtVon } from '../../regeln/probenrechner';
@@ -12,10 +12,9 @@
     d: Spieldaten;
     kampfunfaehig: boolean;
     onoeffnen: (a: Aktion) => void;
-    ongetroffen: () => void;
     onaendern: (c: Charakter) => void;
   }
-  let { c, d, kampfunfaehig, onoeffnen, ongetroffen, onaendern }: Props = $props();
+  let { c, d, kampfunfaehig, onoeffnen, onaendern }: Props = $props();
 
   const z = $derived(zaehler(c, d));
   const g = $derived(gefechtVon(c)!);
@@ -53,8 +52,6 @@
       <small>{unterzeile[a]()}</small>
     </button>
   {/each}
-  <!-- Getroffen ist keine Aktion: kein Zähler, immer verfügbar (konzept.md § 3.10). -->
-  <button class="aktion getroffen" onclick={ongetroffen}><span class="name">Getroffen</span><small></small></button>
 </div>
 
 {#if korrektur}
@@ -70,7 +67,7 @@
 {/if}
 
 <style>
-  .leiste { display: grid; grid-template-columns: repeat(4, 1fr) 1.15fr; gap: 6px; padding: 6px 8px calc(6px + env(safe-area-inset-bottom)); background: var(--flaeche); border-top: 1px solid var(--linie);
+  .leiste { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 6px 8px calc(6px + env(safe-area-inset-bottom)); background: var(--flaeche); border-top: 1px solid var(--linie);
     user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
   .aktion { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px 2px; min-height: 60px; line-height: 1.1;
     touch-action: manipulation; }
@@ -81,7 +78,5 @@
   .aktion.leer { opacity: 0.45; }
   .aktion.leer .zahl { background: var(--text-2); }
   .aktion.warnung { border-color: var(--gefahr); }
-  .aktion.getroffen { border: 2px solid var(--gefahr); color: var(--gefahr); }
-  .aktion.getroffen .name { font-size: 0.85rem; }
   .korrektur { position: absolute; left: 8px; right: 8px; bottom: calc(100% + 6px); z-index: 20; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 12px; }
 </style>

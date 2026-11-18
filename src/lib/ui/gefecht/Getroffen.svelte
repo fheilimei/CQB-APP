@@ -80,55 +80,91 @@
     if (z) zone = z.id;
   }
 
+  /** Ortsangabe der Zone im Satz („am Kopf“). */
+  const ortVon = (id: string) => d.koerperzonen.eintraege.find((z) => z.id === id)?.ort ?? `an der Zone ${zonenName(id)}`;
+
+  /** Bericht als kleine Erzählung (wie beim Schießen): was trifft, was hält, was bleibt. */
   function weiter() {
     if (!zone) return;
     const zeilen: Zeile[] = [];
     let nach: Charakter;
+    let hpVorher: number;
+    let hpNachher: number;
     if (art === 'sonstiges') {
       nach = schadenDirekt(c, zone, direktSchaden, direktArt, d);
-      zeilen.push({ text: `${zonenName(zone)}: ${direktSchaden} Schaden als ${direktArt === 'wunde' ? 'Wunde' : 'Prellung'}.`, fett: true });
-      if (direktArt === 'wunde' && direktSchaden > 0) zeilen.push({ text: 'Neue Wunde; sie blutet.' });
-      if (direktArt === 'prellung' && direktSchaden > 0) zeilen.push({ text: 'Die Prellung kommt nach einer Nacht Ruhe als HP zurück.' });
-      const hpV = ausgang(c, { zone, dk: 0, mw: 0, kugeln: 1, krit: false, deckung: null }, d).hp_vorher;
-      zeilen.push({ text: `HP: ${hpV} → ${hpV - direktSchaden}.` });
-      if (imGefecht && direktSchaden > 0) zeilen.push({ text: 'Für das Rundenende angehakt: verletzt.' });
+      hpVorher = ausgang(c, { zone, dk: 0, mw: 0, kugeln: 1, krit: false, deckung: null }, d).hp_vorher;
+      hpNachher = hpVorher - direktSchaden;
+      if (direktSchaden <= 0) {
+        zeilen.push({ text: `Du wirst ${ortVon(zone)} getroffen, erleidest aber keinen Schaden.`, fett: true });
+      } else if (direktArt === 'wunde') {
+        zeilen.push({ text: `Du erleidest ${ortVon(zone)} eine Wunde mit ${direktSchaden} Schaden.`, fett: true });
+        zeilen.push({ text: 'Die Wunde blutet.' });
+      } else {
+        zeilen.push({ text: `Du erleidest ${ortVon(zone)} eine Prellung mit ${direktSchaden} Schaden.`, fett: true });
+        zeilen.push({ text: 'Sie kommt nach einer Nacht Ruhe als HP zurück.' });
+      }
+      if (direktSchaden > 0) zeilen.push({ text: `Deine HP sinken von ${hpVorher} auf ${hpNachher}.` });
+      if (imGefecht && direktSchaden > 0) zeilen.push({ text: 'Für das Rundenende ist angehakt: verletzt.' });
     } else {
       const e = eingang!;
       const a = gewaehlt!;
       nach = trefferUebernehmen(c, e, { quelle: 'Schuss', schuss: true }, d);
-      zeilen.push({ text: `${zonenName(zone)}: ${artText(a)}.`, fett: true });
-      if (e.deckung !== null) {
-        zeilen.push({ text: a.art === 'gestoppt'
-          ? `Die Deckung (${e.deckung}) hält das Geschoss auf.`
-          : e.dk === null ? '' : `Die Deckung (${e.deckung}) senkt die Durchschlagskraft auf ${a.rest_dk}.` });
+      const mehrere = e.kugeln > 1;
+      const er = mehrere ? 'Sie' : 'Er';
+      const was = eingabe === 'kaliber' && kal
+        ? `${kal.name}, ${typ}`
+        : e.dk === null ? `stumpf, Mannstoppwirkung ${e.mw}` : `Durchschlagskraft ${e.dk}, Mannstoppwirkung ${e.mw}`;
+      zeilen.push({ text: `${mehrere ? `${e.kugeln} Kugeln` : 'Ein Schuss'} (${was}) ${mehrere ? 'treffen' : 'trifft'} dich ${ortVon(zone)}.${e.krit ? ' Die SL sagt einen Krit an.' : ''}`, fett: true });
+
+      if (a.art === 'gestoppt') {
+        zeilen.push({ text: `Deine Deckung (Schutz ${e.deckung}) hält ${mehrere ? 'sie' : 'ihn'} auf. Du bleibst unverletzt.`, fett: true });
+      } else {
+        if (e.deckung !== null && e.dk !== null) {
+          zeilen.push({ text: `${er} ${mehrere ? 'durchdringen' : 'durchdringt'} deine Deckung (Schutz ${e.deckung}) und ${mehrere ? 'haben' : 'hat'} danach noch Durchschlagskraft ${a.rest_dk}.` });
+        }
+        if (a.art === 'durchschlag') {
+          const mult = d.koerperzonen.eintraege.find((z) => z.id === zone)!.multiplikator;
+          const durch = a.ruestung > 0
+            ? `${er} ${mehrere ? 'durchschlagen' : 'durchschlägt'} deine Rüstung (Schutz ${a.ruestung})`
+            : `Keine Rüstung hält ${mehrere ? 'sie' : 'ihn'} auf`;
+          const rechnung = `Mannstoppwirkung ${e.mw} × ${mult}${mehrere ? ` × ${e.kugeln} Kugeln` : ''}`;
+          if (a.schaden > 0) {
+            zeilen.push({ text: `${durch}: Du erleidest eine${a.folge === 'krit' ? ' kritische' : ''} Wunde mit ${a.schaden} Schaden (${rechnung}).` });
+            if (a.folge_text) zeilen.push({ text: `Folge: ${a.folge_text}.`, fett: a.folge === 'krit' });
+          } else {
+            zeilen.push({ text: `${durch}, ${mehrere ? 'richten' : 'richtet'} aber keinen Schaden an.` });
+          }
+        } else if (e.dk === null) {
+          // Stumpf: immer Wuchttreffer, die Rüstung fängt ihren vollen Wert ab.
+          if (a.ruestung > 0) zeilen.push({ text: `Deine Rüstung (Schutz ${a.ruestung}) fängt ${Math.min(a.ruestung, e.mw)} der Wucht ab.` });
+          zeilen.push({ text: a.schaden > 0
+            ? `Es bleibt eine Prellung mit ${a.schaden} Schaden; sie kommt nach einer Nacht Ruhe als HP zurück.`
+            : 'Du bleibst unverletzt.' });
+        } else {
+          zeilen.push({ text: a.schaden > 0
+            ? `Deine Rüstung (Schutz ${a.ruestung}) hält, doch die Wucht kommt durch: eine Prellung mit ${a.schaden} Schaden. Sie kommt nach einer Nacht Ruhe als HP zurück.`
+            : `Deine Rüstung (Schutz ${a.ruestung}) hält und fängt die Wucht ganz ab. Du bleibst unverletzt.` });
+          if (e.krit) zeilen.push({ text: 'Die Rüstung schützt dich auch vor dem Krit.' });
+        }
       }
-      if (a.art === 'durchschlag') {
-        const mult = d.koerperzonen.eintraege.find((z) => z.id === zone)!.multiplikator;
-        zeilen.push({ text: `Schaden: Mannstoppwirkung ${e.mw} × ${mult}${e.kugeln > 1 ? ` × ${e.kugeln} Kugeln` : ''} = ${a.schaden}.` });
-        if (a.schaden > 0) zeilen.push({ text: `Neue Wunde${a.folge === 'krit' ? ', kritisch' : ''}. Folge: ${a.folge_text}.` });
-      } else if (a.art === 'wucht') {
-        zeilen.push({ text: e.dk === null
-          ? `Stumpf: Die Rüstung (${a.ruestung}) fängt ${Math.min(a.ruestung, e.mw)} ab.`
-          : `Die Rüstung (${a.ruestung}) hält; die Wucht wirkt.` });
-        if (a.schaden > 0) zeilen.push({ text: `Prellung: ${a.schaden} Schaden. Sie kommt nach einer Nacht Ruhe als HP zurück.` });
-        if (e.krit && e.dk !== null) zeilen.push({ text: 'Die Rüstung schützt vor dem Krit.' });
-      }
-      if (a.schaden > 0) zeilen.push({ text: `HP: ${a.hp_vorher} → ${a.hp_nachher}.` });
+      hpVorher = a.hp_vorher;
+      hpNachher = a.hp_nachher;
+      if (a.schaden > 0) zeilen.push({ text: `Deine HP sinken von ${hpVorher} auf ${hpNachher}.` });
       if (a.stagger) zeilen.push({ text: imGefecht
-        ? 'Stagger: Deine Breakaction dieser Runde verfällt; eine Aktion mit Konzentration ist unterbrochen.'
-        : 'Stagger.', fett: true });
+        ? 'Der Treffer bringt dich ins Wanken (Stagger): Deine Breakaction dieser Runde verfällt, und eine Aktion mit Konzentration ist unterbrochen.'
+        : 'Der Treffer bringt dich ins Wanken (Stagger).', fett: true });
       if (imGefecht) {
         const g = gefechtVon(c)!;
         const neu = ausloeserVon(a, true, d).filter((x) => !g.ausloeser_diese_runde.includes(x));
         const name = (id: string) => d.regeln.leiter.ausloeser.find((x) => x.id === id)?.name ?? id;
-        if (neu.length) zeilen.push({ text: `Für das Rundenende angehakt: ${neu.map(name).join(', ')}.` });
+        if (neu.length) zeilen.push({ text: `Für das Rundenende ist angehakt: ${neu.map(name).join(', ')}.` });
       }
     }
     const vorher = lebenslageDes(c, d);
     const danach = lebenslageDes(nach, d);
     if (danach === 'tot' && vorher !== 'tot') zeilen.push({ text: 'Du bist tot.', fett: true });
     else if (danach === 'kampfunfaehig' && vorher === 'einsatzfaehig') zeilen.push({ text: 'Du bist kampfunfähig.', fett: true });
-    bericht = { zeilen: zeilen.filter((z) => z.text), nach };
+    bericht = { zeilen, nach };
   }
 </script>
 

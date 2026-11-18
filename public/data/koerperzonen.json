@@ -4,6 +4,7 @@
     {
       "id": "kopf",
       "name": "Kopf",
+      "ort": "am Kopf",
       "w8": 8,
       "multiplikator": 3,
       "bereich": "kopf",
@@ -20,6 +21,7 @@
     {
       "id": "brust",
       "name": "Brust",
+      "ort": "an der Brust",
       "w8": 7,
       "multiplikator": 2,
       "bereich": "rumpf",
@@ -36,6 +38,7 @@
     {
       "id": "bauch",
       "name": "Bauch",
+      "ort": "am Bauch",
       "w8": 6,
       "multiplikator": 2,
       "bereich": "rumpf",
@@ -53,6 +56,7 @@
     {
       "id": "unterleib",
       "name": "Unterleib",
+      "ort": "am Unterleib",
       "w8": 5,
       "multiplikator": 2,
       "bereich": "rumpf",
@@ -70,6 +74,7 @@
     {
       "id": "rumpf",
       "name": "Rumpf",
+      "ort": "am Rumpf",
       "w8": null,
       "multiplikator": 2,
       "bereich": "rumpf",
@@ -88,6 +93,7 @@
     {
       "id": "arm_r",
       "name": "R. Arm",
+      "ort": "am rechten Arm",
       "w8": 4,
       "multiplikator": 1,
       "bereich": "glied",
@@ -105,6 +111,7 @@
     {
       "id": "arm_l",
       "name": "L. Arm",
+      "ort": "am linken Arm",
       "w8": 3,
       "multiplikator": 1,
       "bereich": "glied",
@@ -122,6 +129,7 @@
     {
       "id": "bein_r",
       "name": "R. Bein",
+      "ort": "am rechten Bein",
       "w8": 2,
       "multiplikator": 1,
       "bereich": "glied",
@@ -141,6 +149,7 @@
     {
       "id": "bein_l",
       "name": "L. Bein",
+      "ort": "am linken Bein",
       "w8": 1,
       "multiplikator": 1,
       "bereich": "glied",

@@ -1,21 +1,30 @@
 <script lang="ts">
-  // Reiter Figur (konzept.md § Aufbau der App): HP, Silhouette mit Rüstung und Wunden, Wundliste; in Ruhe der Knopf
-  // Getroffen (im Gefecht steht er an der Aktionsleiste).
+  // Reiter Figur (konzept.md § Aufbau der App): HP, Silhouette mit Rüstung und Wunden. Antippen einer Zone zeigt darunter
+  // ihre Übersicht (Rüstung, Deckung, Wunden mit Status und Folge). Darunter der Knopf Getroffen, im Gefecht und in Ruhe.
   import type { Spieldaten } from '../daten/typen';
   import { grundwerte, hpAktuell } from '../regeln/modifikatoren';
   import { gefechtVon, lebenslageDes } from '../regeln/probenrechner';
   import { ruestungswert } from '../regeln/schaden';
+  import { deckungFuer } from '../regeln/wunden';
   import type { Charakter, Wunde } from '../speicher/charakter';
   import Silhouette from './Silhouette.svelte';
 
   interface Props { c: Charakter; d: Spieldaten; ongetroffen: () => void }
   let { c, d, ongetroffen }: Props = $props();
 
+  let zone = $state<string | null>(null);
+
   const hp = $derived(hpAktuell(c, d));
   const hpMax = $derived(grundwerte(c, d).hp);
   const lage = $derived(lebenslageDes(c, d));
+  const imGefecht = $derived(!!gefechtVon(c));
   const ruestung = $derived(Object.fromEntries(d.koerperzonen.eintraege.map((z) => [z.id, ruestungswert(z.id, c.ausruestung.ruestung, d)])));
   const wunden = $derived(c.spielstand.wunden);
+  const prellungen = $derived(c.spielstand.prellungen);
+  const gewaehlt = $derived(d.koerperzonen.eintraege.find((z) => z.id === zone) ?? null);
+  /** Wunden der Zone; Wunden am Rumpf (nach Ansage) zeigt die Figur am Bauch, also auch hier. */
+  const zonenWunden = $derived(zone ? wunden.filter((w) => w.zone === zone || (w.zone === 'rumpf' && zone === 'bauch')) : []);
+  const deckung = $derived(zone && imGefecht ? deckungFuer(zone, c, d) : null);
   const zonenName = (id: string) => d.koerperzonen.eintraege.find((z) => z.id === id)?.name ?? id;
 
   function status(w: Wunde): string {
@@ -24,48 +33,59 @@
     if (w.blutung.status === 'gestoppt') return 'Blutung gestoppt';
     return 'ausgeblutet, unversorgt';
   }
+  function folge(w: Wunde): string {
+    const z = d.koerperzonen.eintraege.find((x) => x.id === w.zone);
+    return (w.kritisch ? z?.krit.text : z?.normal.text) ?? '';
+  }
 </script>
 
 <section class="karte">
   <div class="hp" aria-label="Lebenspunkte {hp} von {hpMax}">
     <span class="zahl"><strong>HP {hp}</strong> / {hpMax}</span>
     <div class="balken"><div class="fuellung" class:niedrig={hp <= hpMax / 4} style:width="{Math.max(0, Math.min(1, hp / hpMax)) * 100}%"></div></div>
+    {#if prellungen}
+      <small class="hinweis">davon {prellungen} durch Prellungen, zurück nach einer Nacht Ruhe</small>
+    {/if}
   </div>
   {#if lage === 'tot'}
     <p class="warnung">tot</p>
   {:else if lage === 'kampfunfaehig'}
-    <p class="warnung">kampfunfähig{gefechtVon(c) ? ': im Gefecht keine Aktionen' : ''}</p>
+    <p class="warnung">kampfunfähig{imGefecht ? ': im Gefecht keine Aktionen' : ''}</p>
   {/if}
-  <Silhouette {d} {ruestung} {wunden} beschriftung="Körperbild mit Rüstung und Wunden" />
-  {#if !gefechtVon(c)}
-    <button class="betont" onclick={ongetroffen}>Getroffen</button>
-  {/if}
-</section>
+  <Silhouette {d} {ruestung} {wunden} gewaehlt={zone} onwahl={(z) => (zone = zone === z ? null : z)}
+    beschriftung="Körperbild mit Rüstung und Wunden; Zone antippen für Einzelheiten" />
 
-<section class="karte">
-  <h3 class="abschnitt-titel">Wunden</h3>
-  {#if !wunden.length && !c.spielstand.prellungen}
-    <p class="hinweis">Keine Wunden.</p>
-  {:else}
-    <ul class="zeilen">
-      {#each wunden as w (w.id)}
-        <li class="wundzeile">
-          <span><strong>{zonenName(w.zone)}</strong>{#if w.kritisch} <span class="warnung">kritisch</span>{/if}
-            <small class="hinweis">{status(w)}</small></span>
-          <span class="wert">{w.schaden}</span>
-        </li>
-      {/each}
-      {#if c.spielstand.prellungen}
-        <li class="wundzeile">
-          <span><strong>Prellungen</strong> <small class="hinweis">zurück nach einer Nacht Ruhe</small></span>
-          <span class="wert">{c.spielstand.prellungen}</span>
-        </li>
+  {#if gewaehlt}
+    <div class="zone gruppe" aria-live="polite">
+      <div class="kopf">
+        <h3 class="abschnitt-titel">{gewaehlt.name}</h3>
+        <button class="flach" aria-label="Übersicht der Zone schließen" onclick={() => (zone = null)}>✕</button>
+      </div>
+      <p>Rüstung: {ruestung[gewaehlt.id] ? `Schutz ${ruestung[gewaehlt.id]}` : 'keine'}{#if deckung !== null} · Deckung: Schutz {deckung}{/if}</p>
+      {#if zonenWunden.length}
+        <ul class="zeilen">
+          {#each zonenWunden as w (w.id)}
+            <li class="wundzeile">
+              <span>
+                <strong>Wunde{w.zone !== gewaehlt.id ? ` (${zonenName(w.zone)})` : ''}</strong>{#if w.kritisch} <span class="warnung">kritisch</span>{/if}
+                <small>{status(w)}{#if folge(w)} · Folge: {folge(w)}{/if}</small>
+              </span>
+              <span class="wert">{w.schaden}</span>
+            </li>
+          {/each}
+        </ul>
+        {#if imGefecht && zonenWunden.some((w) => w.blutung.status === 'offen' && !w.versorgt)}
+          <p class="hinweis">Im Gefecht blutet niemand; die Fristen beginnen mit dem Gefechtsende.</p>
+        {/if}
+      {:else}
+        <p class="hinweis">Keine Wunden.</p>
       {/if}
-    </ul>
-    {#if gefechtVon(c) && wunden.some((w) => w.blutung.status === 'offen' && !w.versorgt)}
-      <p class="hinweis">Im Gefecht blutet niemand; die Fristen beginnen mit dem Gefechtsende.</p>
-    {/if}
+    </div>
+  {:else if wunden.length}
+    <p class="hinweis mitte">Tippe eine Zone an, um ihre Wunden zu sehen.</p>
   {/if}
+
+  <button class="betont" onclick={ongetroffen}>Getroffen</button>
 </section>
 
 <style>
@@ -75,6 +95,11 @@
   .fuellung { height: 100%; background: var(--ok); }
   .fuellung.niedrig { background: var(--gefahr); }
   .warnung { margin: 0; }
+  p { margin: 0; }
+  .mitte { text-align: center; }
+  /* Übersicht der gewählten Zone: eigene Fläche mit Akzentstreifen, passend zum Akzentrahmen der Zone in der Figur. */
+  .zone { background: var(--flaeche-2); border-left: 3px solid var(--akzent); border-radius: 8px; padding: var(--abstand-2) var(--abstand-3); }
+  .kopf { display: flex; justify-content: space-between; align-items: center; gap: var(--abstand-2); }
   .wundzeile { display: flex; justify-content: space-between; align-items: center; gap: var(--abstand-2); min-height: 44px; }
-  .wundzeile small { display: block; }
+  .wundzeile small { display: block; color: var(--text-2); }
 </style>

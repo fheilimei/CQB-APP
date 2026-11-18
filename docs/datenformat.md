@@ -461,22 +461,23 @@ Die **Quelle** steht nicht im Modifikator; sie ergibt sich aus dem Ort (Perk, An
 {
   "version": "2026-11-13",
   "eintraege": [
-    { "id": "kopf", "name": "Kopf", "w8": 8, "multiplikator": 3, "bereich": "kopf",
+    { "id": "kopf", "name": "Kopf", "ort": "am Kopf", "w8": 8, "multiplikator": 3, "bereich": "kopf",
       "normal": { "text": "Blutung", "blutung": "normal", "dauerhaft": [] },
       "krit": { "text": "Sofort Tod", "tot": true } },
-    { "id": "bauch", "name": "Bauch", "w8": 6, "multiplikator": 2, "bereich": "rumpf",
+    { "id": "bauch", "name": "Bauch", "ort": "am Bauch", "w8": 6, "multiplikator": 2, "bereich": "rumpf",
       "normal": { "text": "Blutung", "dauerhaft": [] },
       "krit": { "text": "Kampfunfähig; verbluten innerhalb einer Minute", "blutung": "kritisch_rumpf" } },
-    { "id": "rumpf", "name": "Rumpf", "w8": null, "nur_ansage": true, "multiplikator": 2, "bereich": "rumpf",
+    { "id": "rumpf", "name": "Rumpf", "ort": "am Rumpf", "w8": null, "nur_ansage": true, "multiplikator": 2, "bereich": "rumpf",
       "normal": { "text": "Blutung", "dauerhaft": [] },
       "krit": { "text": "Kampfunfähig; verbluten innerhalb einer Minute", "blutung": "kritisch_rumpf" } },
-    { "id": "bein_r", "name": "R. Bein", "w8": 2, "multiplikator": 1, "bereich": "glied",
+    { "id": "bein_r", "name": "R. Bein", "ort": "am rechten Bein", "w8": 2, "multiplikator": 1, "bereich": "glied",
       "normal": { "text": "Blutung; Sturz, falls im Lauf; humpeln", "dauerhaft": ["humpeln"] },
       "krit": { "text": "Kampfunfähig; verbluten innerhalb fünf Minuten", "blutung": "kritisch_glied" } }
   ]
 }
 ```
 
+- `ort` ist die Ortsangabe der Zone in Sätzen („Ein Schuss trifft dich am Kopf.“); reiner Anzeigetext.
 - `bereich` bestimmt, welche Rüstung schützt (Westen: `rumpf`) und welche Blutungsregel gilt.
 - `normal.blutung` und `krit.blutung` verweisen auf `regeln.json` (`blutung`). `krit.tot`: sofort tot; `krit.kampfunfaehig`: kampfunfähig ab dem Treffer.
 - `dauerhaft` sind Folgen, die bestehen bleiben, solange die Wunde offen ist.

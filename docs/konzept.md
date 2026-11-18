@@ -179,7 +179,7 @@ Unabhängig von den Modi Lesen, Aufstieg und Schreiben ([§ 3.0a](#30a-modi-lese
 - Oben rechts in der Kopfzeile steht **Gefecht starten** (an der Stelle, an der im Gefecht „Gefecht beenden“ steht; Akzentrahmen, nicht gefüllt).
 
 **Im Gefecht** (nach „Gefecht starten“, [§ 3.7](#37-leiter-m-r)):
-- Am unteren Rand erscheinen die Aktionsleiste und darüber das Wählrad „Adrenalin“ ([§ 3.7](#37-leiter-m-r)); die Aktionsleiste hat **Main · Break · Bewegung · Stand · Getroffen · Ereignis** ([§ 3.7a](#37a-aktionsleiste-m-r)).
+- Am unteren Rand erscheinen die Aktionsleiste und darüber das Wählrad „Adrenalin“ ([§ 3.7](#37-leiter-m-r)); die Aktionsleiste hat **Main · Break · Bewegung · Stand · Ereignis** (Getroffen steht unter der Figur) ([§ 3.7a](#37a-aktionsleiste-m-r)).
 - Kopfzeile und untere Leisten (Aktionsleiste, Adrenalin) tragen einen Rand in der Akzentfarbe; ein eigener Schriftzug „Gefecht“ entfällt. Oben rechts in der Kopfzeile, auf Höhe des Namens, steht klein „Runde n · Initiative“ mit dem Ergebnis der Initiative dieser Runde darunter; in der zweiten Zeile rechts die kleinen Knöpfe **Nächste Runde** und **Gefecht beenden**.
 - Der **Aufstiegsmodus** ist gesperrt (Steigern gehört nicht in die Runde). Der **Schreibmodus** bleibt erreichbar für Korrekturen.
 
@@ -194,8 +194,8 @@ Die App hat vier Reiter in einer senkrechten Leiste am rechten Bildschirmrand, u
 **Figur** (Startbildschirm). Die Silhouette ([§ 3.0f](#30f-körperbild-silhouette-a-r)) steht groß in der Mitte, damit der Zustand des Charakters immer vor Augen ist.
 - **Darüber:** Kopfzeile mit Name und Statusfeld ([§ 3.0a](#30a-modi-lesen-aufstieg-schreiben-m), [§ 3.0e](#30e-gefecht-und-ruhe-m)), HP als Balken mit Zahl (Adrenalin bzw. Ruhepuls nicht in der Kopfzeile; der Stand steht am Rad unten), aktive Zustände als Chips (z. B. Geblendet 1, Adrenalinschock).
 - **Mitte:** die Silhouette mit Stand, Rüstung, Deckung, Wunden und Folgen; die aktive Waffe in der Hand mit Magazinstand.
-- **Darunter:** in Ruhe die Knöpfe **Getroffen** und **Heilung** (Proben starten über den Reiter Werte; **Gefecht starten** steht oben rechts in der Kopfzeile); im Gefecht Aktionsleiste und Bereich „Adrenalin“ ([§ 3.7](#37-leiter-m-r), [§ 3.7a](#37a-aktionsleiste-m-r)).
-- **Antippen einer Zone** öffnet die Übersicht der Zone: Rüstung, Deckung, Wunden mit Status, andauernde Folgen; von dort Versorgen und Getroffen (Zone vorbelegt).
+- **Darunter:** der Knopf **Getroffen**, im Gefecht und in Ruhe an derselben Stelle (Wunsch des Nutzers, 18.11.2026), dazu in Ruhe **Heilung** (Proben starten über den Reiter Werte; **Gefecht starten** steht oben rechts in der Kopfzeile); im Gefecht Aktionsleiste und Bereich „Adrenalin“ ([§ 3.7](#37-leiter-m-r), [§ 3.7a](#37a-aktionsleiste-m-r)).
+- **Antippen einer Zone** öffnet unter der Figur die Übersicht der Zone: Rüstung, Deckung, Wunden mit Status und Folge; erneutes Antippen schließt sie. Eine eigene Wundliste auf dem Reiter Figur gibt es nicht (18.11.2026); Prellungen (ohne Zone) stehen als Zusatz unter dem HP-Balken. Später von dort Versorgen.
 
 **Werte:** Stammdaten (eingeklappt) · **Stats** · **Skills** · **Perks** · Grundwerte. Stats, Skills und Perks stehen direkt untereinander, weil sie beim Spielen zusammen gebraucht werden ([§ 3.1](#31-stammdaten-a-m) bis [§ 3.5](#35-perks-a-m)). Auch Aufstieg und Klassenwechsel finden hier statt.
 
@@ -337,7 +337,7 @@ Regeln: [§ 4.4](#44-die-leiter). Ziel: höchstens zwei Handgriffe pro Runde; al
 - **Gefecht beenden:** Leiter auf 0, Adrenalinschock setzen (falls Adrenalin 4 erreicht), Blutungsfristen starten ([§ 3.10](#310-treffer-wunden-und-blutung-m-r)).
 
 ### 3.7a Aktionsleiste (M, R)
-Nur im Gefecht ([§ 3.0e](#30e-gefecht-und-ruhe-m)) liegen ganz unten, unter dem Wählrad, die Knöpfe **Main · Break · Bewegung · Stand**, daneben groß **Getroffen** und kleiner am Rand **Ereignis**. Die ersten vier bilden die Aktionen der Runde ab ([§ 4.12](#412-aktionen)); so sieht der Spieler jederzeit, was er noch tun kann.
+Nur im Gefecht ([§ 3.0e](#30e-gefecht-und-ruhe-m)) liegen ganz unten, unter dem Wählrad, die Knöpfe **Main · Break · Bewegung · Stand** und kleiner am Rand **Ereignis**. **Getroffen** steht nicht hier, sondern wie in Ruhe unter der Figur (18.11.2026). Die ersten vier bilden die Aktionen der Runde ab ([§ 4.12](#412-aktionen)); so sieht der Spieler jederzeit, was er noch tun kann.
 
 **Zähler.** Jeder der vier Aktionsknöpfe trägt eine kleine Zahl: wie oft die Aktion in dieser Runde noch verfügbar ist. Bei 0 ist der Knopf ausgegraut. „Nächste Runde“ ([§ 3.7](#37-leiter-m-r)) setzt alle Zähler zurück. Die App verfolgt nicht, wer am Zug ist: Main, Bewegung und Standwechsel stehen die ganze Runde bereit und lassen sich so oft ausführen, wie der Zähler erlaubt. Wann der Charakter dran ist, sagt die SL. Die App passt die Zähler selbst an:
 - **Sprint** (Symptom A2): Bewegung 2.
@@ -386,7 +386,7 @@ Unter jedem Knopf steht klein, was gerade gilt (Bewegung dieser Runde, eigener S
 
 Stand, Bewegung, Hechten und Zielen fließen in die Rechner ein: eigene Bewegung und Hechten als Lage-Malsteps, Zielen als Stepshield auf die Trefferprobe, liegend als Stepshield **nur auf die Haltezahl** (Kampfsystem, Treffen, Rückstoß abfangen). Die Werte stehen in `regeln.json`.
 
-**Getroffen** steht als eigener großer Knopf neben der Aktionsleiste ([§ 3.7c](#37c-treffer-ausgehend-und-eingehend-m-r)). **Ereignis** ist unabhängig vom Rundenablauf; kein Zähler. Optionen: Beschossen (nur Auslöser), Granate in der Nähe ([§ 3.8a](#38a-werfen-a-m-r)), Verbündeter ausgeschaltet (nur Auslöser).
+**Getroffen** steht im Gefecht wie in Ruhe unter der Figur ([§ 3.7c](#37c-treffer-ausgehend-und-eingehend-m-r)). **Ereignis** ist unabhängig vom Rundenablauf; kein Zähler. Optionen: Beschossen (nur Auslöser), Granate in der Nähe ([§ 3.8a](#38a-werfen-a-m-r)), Verbündeter ausgeschaltet (nur Auslöser).
 
 ### 3.7b Initiative und Breakaction (M, R)
 Regeln: Kampfsystem (Action Economy; Die Breakaction benutzen; Reaktion und Antizipation), Würfelmechanik (Contested Rolls). Zusammenfassung: [§ 4.12](#412-aktionen).
@@ -547,14 +547,14 @@ Regeln: Kampfsystem (Nahkampf). Zusammenfassung: [§ 4.12](#412-aktionen). Glied
 
 ### 3.10 Treffer, Wunden und Blutung (M, R)
 
-**„Getroffen“** ist die eingehende Richtung des Treffer-Dialogs ([§ 3.7c](#37c-treffer-ausgehend-und-eingehend-m-r)). Der Knopf steht **immer** zur Verfügung: im Gefecht groß an der Aktionsleiste, in Ruhe im Bereich Wunden. Zuerst die **Art**: Schuss · Nahkampf ([§ 3.8b](#38b-nahkampf-m-r)) · Splitter/Explosion ([§ 3.8a](#38a-werfen-a-m-r), eingehend) · Sonstiges. Für einen **Schuss** in der Reihenfolge, in der die SL ansagt:
+**„Getroffen“** ist die eingehende Richtung des Treffer-Dialogs ([§ 3.7c](#37c-treffer-ausgehend-und-eingehend-m-r)). Der Knopf steht **immer** zur Verfügung: im Gefecht und in Ruhe an derselben Stelle unter der Figur. Zuerst die **Art**: Schuss · Nahkampf ([§ 3.8b](#38b-nahkampf-m-r)) · Splitter/Explosion ([§ 3.8a](#38a-werfen-a-m-r), eingehend) · Sonstiges. Für einen **Schuss** in der Reihenfolge, in der die SL ansagt:
 1. **Geschoss** (zuerst, damit die Vorschau rechnen kann, [§ 3.0f](#30f-körperbild-silhouette-a-r)): Kaliber und Typ aus `munition.json` oder DK/MW direkt als zwei Zahlen. Schalter **stumpf** (Gummigeschoss, stumpfe Nahkampfwaffe, Körperwaffe, Druckwelle): keine DK, immer Wuchttreffer mit vollem Rüstungswert als Restschutz; Krit löst immer Stagger aus (Schaden, Blutung und Verletzungen, Stumpfe Treffer).
 2. **Kugeln:** Standard 1, ± für Folgetreffer. **Krit:** Schalter.
 3. **Zone:** auf der Silhouette mit Vorschau antippen oder W8-Zahl eingeben.
 
 Selbst ergänzt: Rüstung der Zone, aktuelle Deckung (nur wenn die Zone verdeckt ist, [§ 3.9](#39-schutz-a-m)), Symptome der Leiter für die Stagger-Prüfung. Der Spieler kann die Deckung für diesen Treffer ändern.
 
-*Stand 18.11.2026:* Solange die Deckung auf der Silhouette ([§ 3.9](#39-schutz-a-m)) noch fehlt, gibt der Spieler im Dialog an, welche Deckung vor der getroffenen Zone liegt (Auswahl aus `schutz.json`, Standard: keine); die Vorschau rechnet dann jede Zone so, als läge die Deckung vor ihr. Die Silhouette zeigt vorerst nur die Haltung „stehend“. Die Zone wird angetippt, als „Rumpf (Ansage)“ gewählt oder über den W8 bestimmt (Würfelstelle Trefferzone). Im Gefecht steht **Getroffen** als fünfter Knopf rechts in der Aktionsleiste (rot umrandet, ohne Zähler); in Ruhe unter der Figur. Nach „Weiter“ meldet die App „Treffer eingetragen“ mit **Rückgängig**.
+*Stand 18.11.2026:* Solange die Deckung auf der Silhouette ([§ 3.9](#39-schutz-a-m)) noch fehlt, gibt der Spieler im Dialog an, welche Deckung vor der getroffenen Zone liegt (Auswahl aus `schutz.json`, Standard: keine); die Vorschau rechnet dann jede Zone so, als läge die Deckung vor ihr. Die Silhouette zeigt vorerst nur die Haltung „stehend“. Die Zone wird angetippt, als „Rumpf (Ansage)“ gewählt oder über den W8 bestimmt (Würfelstelle Trefferzone). **Getroffen** steht im Gefecht und in Ruhe unter der Figur. Der Bericht erzählt in ganzen Sätzen, was passiert ist (wie beim Schießen): was trifft und wo, was Deckung und Rüstung tun, welche Wunde oder Prellung bleibt, HP vorher und nachher, Stagger, Auslöser. Nach „Weiter“ meldet die App „Treffer eingetragen“ mit **Rückgängig**.
 
 Dann folgt der **Bericht** ([§ 3.0c](#30c-bericht-was-ist-passiert-a)). „Weiter“ übernimmt:
 - Wunde (Durchschlag) oder Prellung (Wuchttreffer) anlegen, HP abziehen ([§ 4.7](#47-schadensablauf)).
@@ -566,7 +566,7 @@ Dann folgt der **Bericht** ([§ 3.0c](#30c-bericht-was-ist-passiert-a)). „Weit
 
 **Sonstiges** (direkter Schaden): Schaden und Zone eingeben, Wunde oder Prellung wählen (z. B. Sturz, Falle). Ohne Schadensablauf; mit Bericht.
 
-**Wundliste:** Zone, Schaden, kritisch, Blutungsstatus, versorgt (Druckverband / Tourniquet / Operation), Nachsorge-Ergebnis, Rest-Heildauer.
+**Wundliste** (Übersicht der Zone auf der Figur; später auch im Verlauf): Zone, Schaden, kritisch, Blutungsstatus, versorgt (Druckverband / Tourniquet / Operation), Nachsorge-Ergebnis, Rest-Heildauer.
 
 **Fristen nach dem Gefecht:** Countdown je blutender Wunde ([§ 4.8](#48-blutung)). Bei Ablauf: halber Schaden bzw. Tod, mit Bericht.
 

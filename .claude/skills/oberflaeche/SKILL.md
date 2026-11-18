@@ -29,6 +29,9 @@ Rückmeldung des Nutzers vom 17.11.2026:
 - **Farben müssen in hell und dunkel erkennbar sein** (18.11.2026): Over the Edge war fast schwarz und auf dunklem Grund unsichtbar; Farben aus `darstellung.json` nie so dunkel wählen.
 - **Nichts zum Wischen am unteren Bildschirmrand** (18.11.2026, Adrenalin-Rad): Android fängt waagerechtes Wischen dort als App-Wechsel ab. Ganz unten nur Knöpfe zum Antippen; darunter `env(safe-area-inset-bottom)` freihalten.
 - **Vollfarbe nur für Weiter und Ausführen** (18.11.2026): Gefüllt (`button.haupt`) ist nur der Knopf, der einen Schritt bestätigt oder eine Handlung ausführt (Weiter, Ausführen, Eintragen, Hinzufügen, Steigern, Anlegen). Schließen, Fertig, Knöpfe, die etwas öffnen (Probe auf, Statrank-Up), und Würfeln sind `button.betont` oder normal. Auch Leisten und Banner sind nicht vollfarbig; Zustände zeigen Rahmen, Streifen oder Tönung (Beispiel: Adrenalinrad mit Skala und farbigem Rahmen in der Mitte).
+- **Gleicher Knopf, gleiche Stelle** (18.11.2026, Getroffen): Ein Knopf, den es im Gefecht und in Ruhe gibt, steht in beiden an derselben Stelle (Getroffen unter der Figur, nicht in der Aktionsleiste).
+- **Einzelheiten beim Antippen statt eigener Liste** (18.11.2026, Wunden): Was zu einer Stelle der Figur gehört, erscheint beim Antippen dieser Stelle, nicht in einer zusätzlichen Liste darunter.
+- **Berichte als kleine Erzählung** (18.11.2026): Der Bericht nach einem Ablauf erzählt in ganzen Sätzen, was passiert ist („Ein Schuss trifft dich an der Brust. Er durchschlägt deine Rüstung …“), nicht als Stichpunkte mit Doppelpunkt.
 - Besonders aufgefallen: **Waffe wechseln** (`gefecht/WaffeWechseln.svelte`) und **Schießen** (`gefecht/Schiessen.svelte`).
 
 Jede Arbeit an der Oberfläche muss diese Punkte verbessern oder darf sie zumindest nicht verschlimmern.

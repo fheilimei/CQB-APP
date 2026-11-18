@@ -217,7 +217,7 @@ export function pruefeDaten(d: Spieldaten): string[] {
   for (let i = 1; i <= 8; i++) if (w8.filter((x) => x === i).length !== 1) f('koerperzonen.json', `W8-Ergebnis ${i} muss genau einer Zone gehören`);
   for (const z of d.koerperzonen.eintraege) {
     const ort = `koerperzonen.json ${z.id}`;
-    pflicht(ort, z, ['id', 'name', 'multiplikator', 'bereich', 'normal', 'krit']);
+    pflicht(ort, z, ['id', 'name', 'ort', 'multiplikator', 'bereich', 'normal', 'krit']);
     if (z.w8 === null && !z.nur_ansage) f(ort, 'ohne W8-Nummer muss „nur_ansage“ gesetzt sein');
     for (const b of [z.normal.blutung, z.krit.blutung]) if (b && !(r.blutung as Record<string, unknown>)?.[b]) f(ort, `unbekannte Blutung „${b}“`);
   }
