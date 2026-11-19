@@ -4,6 +4,14 @@
 
 Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. Die App arbeitet bis zur Entscheidung mit der genannten vorläufigen Lösung. Neue Einträge kommen beim Programmieren hinzu (Skill „regelfrage“). Die Regelpunkte aus den Schritten 1 bis 6 sind hierher übertragen (18.11.2026).
 
+### R50. Leeres Magazin einsetzen, Magazin herausnehmen (19.11.2026)
+- **Frage:** Das Regelwerk beschreibt nur das Nachladen mit einem Magazin. Ob man außerhalb des Gefechts ein leeres Magazin einsetzen oder das Magazin herausnehmen kann und was dann mit der Patrone im Lauf geschieht, sagt es nicht.
+- **Stellen:** (Kampfsystem, Nachladen); (Schusswaffen (tragbar), Begriffserklärung: Magazingröße, „+1“)
+- **Vorläufig:** Beides geht (Wunsch des Nutzers). Beim Herausnehmen bleibt die Patrone im Lauf in der Waffe; die Waffe kann dann noch diesen einen Schuss abgeben, sich aber nicht befüllen lassen, bis ein Magazin eingesetzt ist. Setzt man ein leeres Magazin ein, behält die Patrone im Lauf ihren Munitionstyp. Im Gefecht bietet Nachladen weiter nur gefüllte Magazine an.
+- **Andere Möglichkeit:** Die Patrone im Lauf kommt beim Herausnehmen zur losen Munition (Waffe ganz leer).
+- **Ändern:** Regelkern, Waffen (Magazin herausnehmen)
+- **Im Regelwerk klarstellen:** nein
+
 ### R49. Magazine als eigene Gegenstände, gemeinsame Magazine (19.11.2026)
 - **Entschieden (19.11.2026, Nutzer):** Magazine sind keine Aufsätze mehr. Erweiterte Magazine und Trommelmagazine stehen bei den Magazinen; Schnelllader und Ladestreifen gelten als Magazin. Waffen können dieselben Magazine nutzen, z. B. M4 und M16A4. Die App führt Magazine beim Charakter; jede passende Waffe kann sie laden.
 - **Frage:** Das Regelwerk führt erweiterte Magazine als Aufsatz am Anschluss „Magazin“ und Schnelllader und Ladestreifen als Zubehör; ob zwei Waffen dieselben Magazine nutzen, sagt es nicht.

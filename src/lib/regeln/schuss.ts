@@ -336,6 +336,7 @@ export function schussUebernehmen(c: Charakter, d: Spieldaten, e: WaffenEintrag,
 export function magazinText(e: WaffenEintrag, d: Spieldaten): string {
   const w = waffeVon(e, d);
   const k = kapazitaet(e, d);
+  if (w.ladeart === 'wechselmagazin' && !e.magazin) return e.im_magazin > 0 ? `${e.im_magazin} im Lauf, kein Magazin` : 'kein Magazin';
   return w.patrone_im_lauf ? `${e.im_magazin} / ${k - 1}+1` : `${e.im_magazin} / ${k}`;
 }
 

@@ -8,7 +8,7 @@
   import {
     aufsatzAbnehmen, aufsatzAnbringen, eintragErsetzen, freieId, istWerfer, kaliberName, kaliberVon,
     kapazitaet, loseAufsaetzeFuer, loseTypen, magazineFuellen, magazineFuer, magazinLeeren, magazinPlatz, magazinSorte,
-    magazinsorteSetzen, magazinWechseln, mitLaderLaden, munitionstypen, munitionswerte, nachladearten, neuerWaffenEintrag,
+    magazinHerausnehmen, magazinsorteSetzen, magazinWechseln, mitLaderLaden, munitionstypen, munitionswerte, nachladearten, neuerWaffenEintrag,
     passendeAufsaetze, passendeMagazine, platzFuer, sprengwaffe, waffeAktivieren, waffeLeeren, waffeVon, type Fuellziel
   } from '../../regeln/waffen';
   import Bericht from '../Bericht.svelte';
@@ -96,7 +96,7 @@
     if (w.ladeart === 'wechselmagazin') {
       nach = magazinWechseln(c, e, index, d);
       const imLauf = w.patrone_im_lauf && vorher > 0 ? 1 : 0;
-      zeilen.push({ text: `Du setzt das ${sorteName(m.id)} mit ${patronenText(m.inhalt)} ${m.typ} ein.`, fett: true });
+      zeilen.push({ text: m.inhalt > 0 ? `Du setzt das ${sorteName(m.id)} mit ${patronenText(m.inhalt)} ${m.typ} ein.` : `Du setzt das ${sorteName(m.id)} leer ein.`, fett: true });
       zeilen.push({ text: `In der Waffe: ${vorher} → ${nach.ausruestung.waffen.find((x) => x.id === e.id)!.im_magazin}.` });
       if (vorher - imLauf > 0) zeilen.push({ text: `Das alte Magazin steckst du mit ${patronenText(vorher - imLauf)} ${e.munitionstyp} ein.` });
       else if (e.magazin) zeilen.push({ text: 'Das alte Magazin steckst du leer ein.' });
@@ -108,6 +108,18 @@
       if (vorher) zeilen.push({ text: `${patronenText(vorher)} ${e.munitionstyp} aus der Waffe kommen zur losen Munition.` });
     }
     bericht = { titel: 'Laden', zeilen, nach };
+    wahl = null;
+  }
+
+  /** Eingesetztes Magazin herausnehmen: Bericht vorher (Waffe und Magazine ändern sich). */
+  function herausnehmenFrage(e: WaffenEintrag) {
+    if (!e.magazin) return;
+    const nach = magazinHerausnehmen(c, e, d);
+    const imLauf = nach.ausruestung.waffen.find((x) => x.id === e.id)!.im_magazin;
+    const rest = e.im_magazin - imLauf;
+    const zeilen: Zeile[] = [{ text: `Du nimmst das ${sorteName(e.magazin.id)} aus der Waffe und steckst es ${rest > 0 ? `mit ${patronenText(rest)} ${e.munitionstyp}` : 'leer'} ein.`, fett: true }];
+    zeilen.push({ text: imLauf > 0 ? `Die Patrone im Lauf (${e.munitionstyp}) bleibt in der Waffe.` : 'Die Waffe ist jetzt leer und hat kein Magazin.' });
+    bericht = { titel: 'Herausnehmen', zeilen, nach };
     wahl = null;
   }
 
@@ -206,18 +218,22 @@
   {@const x = zielInhalt(e, z)}
   {@const typen = fuellTypen(e, z)}
   <div class="gruppe mag-menue" role="group" aria-label="Magazin">
-    <span class="gruppe-titel">{z.art === 'waffe' ? 'In der Waffe' : sorteName(c.ausruestung.magazine[z.index]!.id)}: {x.inhalt > 0 ? `${x.inhalt} ${x.typ}` : 'leer'}</span>
+    <span class="gruppe-titel">{z.art === 'waffe' ? (wechsel && !e.magazin ? 'Ohne Magazin' : 'In der Waffe') : sorteName(c.ausruestung.magazine[z.index]!.id)}: {x.inhalt > 0 ? `${x.inhalt} ${x.typ}` : 'leer'}</span>
     {#if imGefecht}
       <p class="hinweis">Im Gefecht lädst du über Main → Nachladen. Befüllen und Leeren gehen erst nach dem Gefecht.</p>
     {:else}
       <div class="auswahlreihe">
         {#if z.art === 'magazin'}
-          <button disabled={x.inhalt <= 0} onclick={() => ladenFrage(e, z.index)}>{wechsel ? 'Einsetzen' : 'Laden'}</button>
+          <button disabled={!wechsel && x.inhalt <= 0} onclick={() => ladenFrage(e, z.index)}>{wechsel ? 'Einsetzen' : 'Laden'}</button>
+        {:else if wechsel && e.magazin}
+          <button onclick={() => herausnehmenFrage(e)}>Herausnehmen</button>
         {/if}
         <button disabled={!typen.length} aria-expanded={wahl?.typen ?? false} onclick={() => (wahl = wahl && { ...wahl, typen: !wahl.typen })}>Befüllen <span class="klapppfeil" aria-hidden="true">›</span></button>
         <button disabled={x.inhalt <= 0} onclick={() => leeren(e, z)}>Leeren</button>
       </div>
-      {#if !typen.length}
+      {#if z.art === 'waffe' && wechsel && !e.magazin}
+        <p class="hinweis">Die Waffe hat kein Magazin. Tippe ein Magazin daneben an, um es einzusetzen.</p>
+      {:else if !typen.length}
         <p class="hinweis">{x.inhalt > 0 && platzFuer(c, e, z, x.typ, d) <= 0 ? 'Es ist voll.' : 'Keine passende lose Munition zum Befüllen (kaufen im Laden).'}</p>
       {:else if wahl?.typen}
         <div class="auswahlreihe" role="group" aria-label="Befüllen mit">
@@ -300,7 +316,7 @@
               {/each}
             {:else}
               <div class="mag-reihe">
-                {@render magKnopf(e, { art: 'waffe' }, kapazitaet(e, d), 'in der Waffe')}
+                {@render magKnopf(e, { art: 'waffe' }, kapazitaet(e, d), wechsel && !e.magazin ? 'kein Magazin' : 'in der Waffe')}
                 {#each dabei as { m, index } (index)}
                   {@render magKnopf(e, { art: 'magazin', index }, magazinPlatz(m.id, d), '')}
                 {/each}
@@ -308,7 +324,7 @@
               {#if wahl?.waffe === e.id}
                 {@render magMenue(e, wahl.ziel)}
               {:else}
-                <p class="hinweis">Tippe auf ein Magazin, um es zu {wechsel ? 'einzusetzen' : 'laden'}, zu befüllen oder zu leeren.</p>
+                <p class="hinweis">{wechsel ? 'Tippe auf ein Magazin, um es einzusetzen, herauszunehmen, zu befüllen oder zu leeren.' : 'Tippe auf einen Schnelllader bzw. Ladestreifen, um ihn zu laden, zu befüllen oder zu leeren.'}</p>
               {/if}
               {#if !dabei.length && passendeMagazine(e.waffe, d).length}
                 <p class="hinweis">{wechsel ? 'Keine weiteren passenden Magazine dabei.' : 'Keine passenden Schnelllader bzw. Ladestreifen dabei.'}</p>
@@ -324,7 +340,8 @@
                 </label>
                 {#if wechsel}
                   <label>Eingesetztes Magazin
-                    <select value={e.magazin?.id ?? ''} onchange={(ev) => onaendern(magazinsorteSetzen(c, e, (ev.target as HTMLSelectElement).value, d))}>
+                    <select value={e.magazin?.id ?? ''} onchange={(ev) => { const v = (ev.target as HTMLSelectElement).value; onaendern(v ? magazinsorteSetzen(c, e, v, d) : magazinHerausnehmen(c, e, d)); }}>
+                      <option value="">kein Magazin</option>
                       {#each passendeMagazine(e.waffe, d) as m (m.id)}<option value={m.id}>{m.name}</option>{/each}
                     </select>
                   </label>

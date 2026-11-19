@@ -249,7 +249,26 @@ export function magazinWechseln(c: Charakter, e: WaffenEintrag, index: number, d
   const rest = e.im_magazin - imLauf;
   const magazine = c.ausruestung.magazine.filter((_, i) => i !== index);
   if (e.magazin) magazine.push({ id: e.magazin.id, zustand: e.magazin.zustand, inhalt: rest, typ: rest > 0 ? e.munitionstyp : '' });
-  const eintrag: WaffenEintrag = { ...e, munitionstyp: neu.typ, im_magazin: neu.inhalt + imLauf, magazin: { id: neu.id, zustand: neu.zustand } };
+  // Regelfrage R50 (docs/offen.md): vorläufig darf das neue Magazin leer sein; dann behält die Patrone im Lauf ihren Typ.
+  const typ = neu.inhalt > 0 ? neu.typ : imLauf ? e.munitionstyp : '';
+  const eintrag: WaffenEintrag = { ...e, munitionstyp: typ, im_magazin: neu.inhalt + imLauf, magazin: { id: neu.id, zustand: neu.zustand } };
+  return eintragErsetzen({ ...c, ausruestung: { ...c.ausruestung, magazine } }, eintrag);
+}
+
+/**
+ * Magazin herausnehmen (außerhalb des Gefechts): Das eingesetzte Magazin kommt mit Rest und Typ zu den Magazinen des
+ * Charakters; die Waffe hat danach kein Magazin. Regelfrage R50 (docs/offen.md): vorläufig bleibt die Patrone im Lauf
+ * in der Waffe.
+ */
+export function magazinHerausnehmen(c: Charakter, e: WaffenEintrag, d: Spieldaten): Charakter {
+  const w = waffeVon(e, d);
+  if (w.ladeart !== 'wechselmagazin' || !e.magazin) return c;
+  const imLauf = w.patrone_im_lauf && e.im_magazin > 0 ? 1 : 0;
+  const rest = e.im_magazin - imLauf;
+  const magazine = [...c.ausruestung.magazine, { id: e.magazin.id, zustand: e.magazin.zustand, inhalt: rest, typ: rest > 0 ? e.munitionstyp : '' }];
+  const { magazin: _raus, ...ohne } = e;
+  void _raus;
+  const eintrag: WaffenEintrag = { ...ohne, im_magazin: imLauf, munitionstyp: imLauf ? e.munitionstyp : '' };
   return eintragErsetzen({ ...c, ausruestung: { ...c.ausruestung, magazine } }, eintrag);
 }
 
@@ -391,6 +410,8 @@ function zielInhalt(c: Charakter, e: WaffenEintrag, z: Fuellziel): { inhalt: num
 export function platzFuer(c: Charakter, e: WaffenEintrag, z: Fuellziel, typ: string, d: Spieldaten): number {
   const x = zielInhalt(c, e, z);
   if (!x || (x.inhalt > 0 && x.typ && x.typ !== typ)) return 0;
+  // Ohne eingesetztes Magazin lässt sich die Waffe nicht befüllen (nur ein Magazin einsetzen).
+  if (z.art === 'waffe' && waffeVon(e, d).ladeart === 'wechselmagazin' && !e.magazin) return 0;
   const groesse = z.art === 'waffe' ? kapazitaet(e, d) : magazinPlatz(c.ausruestung.magazine[z.index]!.id, d);
   return Math.max(0, groesse - x.inhalt);
 }

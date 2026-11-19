@@ -8,7 +8,7 @@ import { gefechtStarten, initiativeEintragen, leiterSetzen, naechsteRunde, senke
 import { gefechtVon } from '../src/lib/regeln/probenrechner';
 import { lageAuswahl, schussAuswerten, schussStellen, schussUebernehmen, type Schusseinstellung } from '../src/lib/regeln/schuss';
 import {
-  aufsatzAbnehmen, aufsatzAnbringen, einzelnLaden, einzelnProAktion, einzelnTypen, loseAufsaetzeFuer, magazineFuellen, magazineFuer, kapazitaet, magazinLeeren, magazinsorteSetzen, ladehemmungBeheben, lhBehebenAnfrage, magazinWechseln, mitLaderLaden, nachladearten, trommelmagazin,
+  aufsatzAbnehmen, aufsatzAnbringen, einzelnLaden, einzelnProAktion, einzelnTypen, loseAufsaetzeFuer, magazineFuellen, magazineFuer, kapazitaet, magazinLeeren, magazinsorteSetzen, ladehemmungBeheben, lhBehebenAnfrage, magazinWechseln, magazinHerausnehmen, platzFuer, mitLaderLaden, nachladearten, trommelmagazin,
   nachladenAlsBreak, neuerWaffenEintrag, passendeAufsaetze, waffenskill, wechselkosten, werferLaden
 } from '../src/lib/regeln/waffen';
 import { neuerCharakter, type Charakter, type Gefecht, type WaffenEintrag } from '../src/lib/speicher/charakter';
@@ -224,6 +224,33 @@ describe('Waffen', () => {
     expect(t.ausruestung.waffen[0]).toMatchObject({ im_magazin: 76, magazin: { id: 'trommel_ak47_75' } });
     expect(kapazitaet(t.ausruestung.waffen[0]!, d)).toBe(76);
     expect(t.ausruestung.magazine).toEqual([mag(0)]);
+  });
+
+  it('R50: leeres Magazin einsetzen; die Patrone im Lauf behält ihren Typ', () => {
+    const e = waffe('ak47', { im_magazin: 12, munitionstyp: 'HP' });
+    const c = magazinWechseln(mitAusr(fertig(), [e], [mag(0)]), e, 0, d);
+    expect(c.ausruestung.waffen[0]).toMatchObject({ im_magazin: 1, munitionstyp: 'HP', magazin: { id: 'magazin_ak47_30' } });
+    expect(c.ausruestung.magazine).toEqual([mag(11, 'HP')]);
+    const leer = waffe('ak47', { im_magazin: 0 });
+    expect(magazinWechseln(mitAusr(fertig(), [leer], [mag(0)]), leer, 0, d).ausruestung.waffen[0]).toMatchObject({ im_magazin: 0, munitionstyp: '' });
+  });
+
+  it('R50: Magazin herausnehmen; Rest zu den Magazinen, Patrone im Lauf bleibt, Waffe ohne Magazin', () => {
+    const e = waffe('ak47', { im_magazin: 26, munitionstyp: 'FMJ' });
+    const c = magazinHerausnehmen(mitAusr(fertig(), [e], []), e, d);
+    const w = c.ausruestung.waffen[0]!;
+    expect(w).toMatchObject({ im_magazin: 1, munitionstyp: 'FMJ' });
+    expect(w.magazin).toBeUndefined();
+    expect(c.ausruestung.magazine).toEqual([mag(25)]);
+    expect(kapazitaet(w, d)).toBe(1);
+    expect(platzFuer(c, w, { art: 'waffe' }, 'FMJ', d)).toBe(0);
+    expect(nachladearten(c, w, d)).toEqual([{ art: 'magazin', vorwahl: 0 }]);
+    // Wieder einsetzen
+    const z = magazinWechseln(c, w, 0, d);
+    expect(z.ausruestung.waffen[0]).toMatchObject({ im_magazin: 26, magazin: { id: 'magazin_ak47_30' } });
+    expect(z.ausruestung.magazine).toEqual([]);
+    // Ohne Magazin ändert Herausnehmen nichts
+    expect(magazinHerausnehmen(c, w, d)).toBe(c);
   });
 
   it('Magazin wechseln: ein Magazin, das nicht passt, ändert nichts', () => {
