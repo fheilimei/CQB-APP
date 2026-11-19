@@ -205,7 +205,7 @@ Die App hat fünf Reiter in einer senkrechten Leiste am rechten Bildschirmrand, 
 
 **Werte:** Stammdaten (eingeklappt) · **Stats** · **Skills** · **Perks** · Grundwerte. Stats, Skills und Perks stehen direkt untereinander, weil sie beim Spielen zusammen gebraucht werden ([§ 3.1](#31-stammdaten-a-m) bis [§ 3.5](#35-perks-a-m)). Auch Aufstieg und Klassenwechsel finden hier statt.
 
-**Ausrüstung:** Silhouette mit Trageorten ([§ 3.0f](#30f-körperbild-silhouette-a-r), Schicht Ausrüstung), darunter die Listen: Waffen mit eingesetztem Magazin und Aufsätzen, lose Munition, Magazine (auch Schnelllader und Ladestreifen), lose Aufsätze, Nahkampfwaffen, Vorrat, Rüstung, Schild. Kein Geld (19.11.2026: Kontostand und Schulden stehen im Reiter Laden).
+**Ausrüstung:** Silhouette mit Trageorten ([§ 3.0f](#30f-körperbild-silhouette-a-r), Schicht Ausrüstung), darunter die Listen: Waffen mit eingesetztem Magazin und Aufsätzen, lose Munition, Magazine (auch Schnelllader und Ladestreifen), lose Aufsätze, Nahkampfwaffen, Vorrat, Rüstung, Schild. Jedes dauerhafte Stück zeigt seinen Zustand (neu, gebraucht …; bei Nicht-Waffen nur für den Preis, R42). Kein Geld (19.11.2026: Kontostand und Schulden stehen im Reiter Laden).
 
 **Laden:** Geld (Kontostand, Schulden; [§ 3.13](#313-geld-und-aufträge-m-r)), Kaufen und Verkaufen ([§ 3.14](#314-laden-kaufen-und-verkaufen-m-r)).
 

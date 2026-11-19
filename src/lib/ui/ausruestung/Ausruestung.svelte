@@ -406,6 +406,7 @@
                 {#each trageorte as t (t)}<option value={t}>{trageortName(t, d)}</option>{/each}
               </select>
             {:else}<span class="hinweis">{trageortName(n.trageort, d)}</span>{/if}
+            <span class="hinweis">Zustand {zustandName(n.zustand, d)}</span>
           </span>
           <span class="stepper">
             <button aria-label="eine weniger" disabled={!schreiben || (n.anzahl ?? 1) <= 0} onclick={() => nkAnzahl(n.id, (n.anzahl ?? 1) - 1)}>−</button>
@@ -476,12 +477,12 @@
   {#if c.ausruestung.ruestung.length || c.ausruestung.schild}
     <ul class="zeilen">
       {#each c.ausruestung.ruestung as t (t.id)}
-        <li class="anzahl-zeile"><span class="name"><strong>{d.schutz.ruestung.find((r) => r.id === t.id)?.name ?? t.id}</strong></span>
+        <li class="anzahl-zeile"><span class="name"><strong>{d.schutz.ruestung.find((r) => r.id === t.id)?.name ?? t.id}</strong><span class="hinweis">Zustand {zustandName(t.zustand, d)}</span></span>
           {#if schreiben}<button class="flach klein gefahr-text" onclick={() => ausr({ ruestung: c.ausruestung.ruestung.filter((x) => x !== t) })}>entfernen</button>{/if}
         </li>
       {/each}
       {#if c.ausruestung.schild}
-        <li class="anzahl-zeile"><span class="name"><strong>{d.schutz.schilde.find((s) => s.id === c.ausruestung.schild!.id)?.name}</strong></span>
+        <li class="anzahl-zeile"><span class="name"><strong>{d.schutz.schilde.find((s) => s.id === c.ausruestung.schild!.id)?.name}</strong><span class="hinweis">Zustand {zustandName(c.ausruestung.schild.zustand, d)}</span></span>
           {#if schreiben}<button class="flach klein gefahr-text" onclick={() => ausr({ schild: null })}>entfernen</button>{/if}
         </li>
       {/if}

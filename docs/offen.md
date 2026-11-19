@@ -481,6 +481,6 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 
 1. **Gefechtsprotokoll nur im laufenden Gefecht.** Es wird beim Gefechtsende gelöscht (datenformat.md); frühere Gefechte stehen deshalb nicht im Verlauf. Soll es eine Rückschau geben, braucht das ein neues Speicherfeld.
 2. **Rückgängig einzeln aus dem Gefechtsprotokoll** (Schritt 7, Punkt 4) fehlt weiter; der Verlauf zeigt die Einträge nur an.
-3. **Kontostand** steht vorerst im Verlauf unter Geld. Entschieden (19.11.2026): Er kommt in den neuen Reiter Laden, nicht in den Reiter Ausrüstung (§ 3.14).
+3. **Kontostand.** Erledigt (19.11.2026): Er steht im Reiter Laden (§ 3.14); das Kassenbuch bleibt im Verlauf unter Geld.
 4. **Notizen** sind aus den Stammdaten (Reiter Werte) in den Reiter Verlauf gezogen, wie im Aufbau der App beschrieben; sie stehen nicht mehr doppelt.
 
