@@ -206,46 +206,46 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 - **Frage:** Gewöhnliche Munition (FMJ, HP, AP, Buckshot, Slug, Unterschall), Ersatzmagazine und alle Aufsätze haben im Regelwerk keine Geldwertspanne und meist kein Vorratslevel. Der Laden braucht sie.
 - **Stellen:** (Munitionstypen); (Schusswaffen (tragbar), Aufsätze; Begriffserklärung)
 - **Ändern:** munition.json (`preis_10`, `vorratslevel` je Typ), magazine.json (`preis`, `vorratslevel` je Sorte, seit R49), aufsaetze.json (`preis`, `vorratslevel`)
-- **Im Regelwerk klarstellen:** ja (Werte ergänzen)
+- **Im Regelwerk klarstellen:** ja, eingetragen (19.11.2026)
 
 ### R42. Zustand für Ausrüstung außer Schusswaffen (19.11.2026)
 - **Entschieden (19.11.2026):** Alles Dauerhafte hat einen Zustand A–D: Waffen, Rüstung, Schild, Nahkampfwaffen, Aufsätze, Zubehör, Magazine. Außer bei Schusswaffen wirkt er nur auf den Preis (Viertel der Geldwertspanne wie bei Waffen). Neu gekaufte Ware wählt man im Laden in A–D.
 - **Frage:** Das Regelwerk kennt den Zustand nur bei Schusswaffen; „Zustand beeinflusst den Preis“ steht aber auch bei Nahkampf- und Sprengwaffen, Rüstung nennt Geldwertspanne „wie bei Waffen“.
 - **Stellen:** (Schusswaffen (tragbar), Zustand); (Nahkampfwaffen, Begriffserklärung); (Deckung und Rüstung, Rüstung)
 - **Ändern:** Speicherformat (Zustand je Gegenstand), Regelkern Laden
-- **Im Regelwerk klarstellen:** ja
+- **Im Regelwerk klarstellen:** ja, eingetragen (19.11.2026)
 
 ### R43. Preis von Verbrauchsware (19.11.2026)
 - **Entschieden (19.11.2026):** Munition, Granaten und Geschosse haben keinen Zustand; sie sind immer neu. Preisrahmen ist die ganze Spanne. Verhandeln: Käufer gewinnt → Untergrenze, Händler gewinnt → Obergrenze, unentschieden oder nicht verhandelt → Mitte. Ein Krit kann nicht weiter verschieben als bis zur Grenze.
 - **Stellen:** (Schusswaffen (tragbar), Zustand, Preis); (Sprengwaffen, Begriffserklärung)
 - **Ändern:** Regelkern Laden
-- **Im Regelwerk klarstellen:** ja
+- **Im Regelwerk klarstellen:** ja, eingetragen (19.11.2026)
 
 ### R44. Verhandeln über den ganzen Einkauf (19.11.2026)
 - **Entschieden (19.11.2026):** Verhandelt wird einmal am Schluss über den ganzen Korb (ein Geschäft, ein Versuch). Das Ergebnis gilt für jeden Posten in seinem Viertel: gewonnen → Untergrenze, verloren → Obergrenze, unentschieden → Mitte; Krit des Siegers: ein Viertel der Spanne weiter, höchstens bis zur Grenze. Beim Verkauf ebenso mit vertauschten Rollen. Ware, die über ⬢ Beschaffen kommt, hat den Preis der SL und verhandelt nicht mit.
 - **Stellen:** (Schusswaffen (tragbar), Zustand, Preis, Verhandeln)
 - **Ändern:** Regelkern Laden
-- **Im Regelwerk klarstellen:** ja
+- **Im Regelwerk klarstellen:** ja, eingetragen (19.11.2026)
 
 ### R45. Wert einer Waffe mit Aufsätzen (19.11.2026)
 - **Entschieden (19.11.2026):** Wer eine Waffe mit angebrachten Aufsätzen verkauft, bekommt den Preis der Waffe plus den jedes Aufsatzes, jeweils nach seinem Zustand.
 - **Stellen:** (Schusswaffen (tragbar), Zustand, Preis; Aufsätze)
 - **Ändern:** Regelkern Laden
-- **Im Regelwerk klarstellen:** ja
+- **Im Regelwerk klarstellen:** ja, eingetragen (19.11.2026)
 
 ### R35. Kampfkunst nur ohne Nahkampfwaffe (18.11.2026)
 **Entschieden (18.11.2026):** Kampfkunst-Wirkungen gibt es nur, wenn man ohne Nahkampfwaffe kämpft. Im Fenster Nahkampfangriff ist jede eigene Kampfkunst eine eigene Wahl unter „Womit greifst du an?“; sie hat die Werte von Faust und Tritt, und nur mit ihr erscheinen ihre Wirkungen. Bei der Verteidigung (Getroffen → Nahkampf) weist die App darauf hin.
 - **Frage:** Darf man eine Kampfkunst-Wirkung auch mit Messer, Knüppel oder Gewehrkolben auslösen?
 - **Stellen:** (Kampfsystem, Stand im Nahkampf); (Stats, Skills und Perks, Kampfkunst-Perks)
 - **Ändern:** eine Zeile in regeln.json (nahkampf.kampfkunst_waffe); Regelkern, Nahkampf (angriffsWaffen)
-- **Im Regelwerk klarstellen:** ja
+- **Im Regelwerk klarstellen:** ja, eingetragen (19.11.2026)
 
 ### R33. Erst rennen, dann Hocke oder Liegen (18.11.2026)
 - **Entschieden (18.11.2026):** Wer sich bewegt und danach in die Hocke geht oder sich hinlegt (auch durch Hechten), verlangsamt auf das, was der neue Stand erlaubt: in der Hocke Gehen, im Liegen Kriechen. Für die Lage zählt dann diese langsamere Bewegung. Steht man danach wieder auf, wird die Bewegung nicht wieder schneller.
 - **Frage:** Das Regelwerk sagt, dass in der Hocke nur Gehen und im Liegen nur Kriechen möglich ist, und dass eine Bewegung bis zum Ende der Runde zählt. Offen war, was mit einer schnelleren Bewegung geschieht, wenn danach der Stand wechselt.
 - **Stellen:** (Kampfsystem, Standwechsel); (Kampfsystem, Bewegung); (Kampfsystem, Malsteps der Lage)
 - **Ändern:** Regelkern, Aktionen (Bewegung nach dem Standwechsel)
-- **Im Regelwerk klarstellen:** ja
+- **Im Regelwerk klarstellen:** ja, eingetragen (19.11.2026)
 
 ### R31. Rumpfzonen hinter Deckung einzeln (18.11.2026)
 - **Entschieden (18.11.2026):** Jede Rumpfzone (Brust, Bauch, Unterleib) wird für sich verdeckt. Eine Kante bis zum Unterleib verdeckt also nicht mehr Bauch und Brust. Für die Ansage „Rumpf“ siehe R32.
@@ -276,7 +276,7 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 - **Vorläufig:** Im Lauf ist, wer sich in dieser Runde mit Laufen oder Rennen bewegt hat (nicht Gehen, Kriechen, nicht nach Hechten). Der Bericht sagt „Du stürzt, weil du im Lauf getroffen wurdest.“ Den Stand ändert die App nicht; das macht der Spieler.
 - **Andere Möglichkeit:** Nur Rennen zählt; der Sturz setzt den Stand selbst auf Liegen, ohne Aktion.
 - **Ändern:** eine Zeile in koerperzonen.json (`nur_bei_bewegung` bei den Beinen); für Liegen nach dem Sturz der Regelkern, Wunden
-- **Im Regelwerk klarstellen:** ja
+- **Im Regelwerk klarstellen:** ja, eingetragen (19.11.2026)
 
 ### R6. Offene kritische Wunde und Kampfunfähigkeit (17.11.2026)
 - **Entschieden (18.11.2026):** Jede kritische Wunde, bei der in den Körperzonen als Folge „kampfunfähig“ steht (Bauch, Unterleib, Rumpf, Arme, Beine), macht kampfunfähig, unabhängig von der Blutung, bis sie geheilt ist. So steht es auch im Regelwerk (Schaden, Blutung und Verletzungen, Kampfunfähigkeit und Wunden heilen). Umgesetzt: Gestoppte Blutung beendet die Kampfunfähigkeit nicht mehr.

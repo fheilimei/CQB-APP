@@ -150,6 +150,8 @@ Außerhalb des Gefechts ist der Wechsel frei.
 
 Ein Standwechsel ist auch als Breakaction möglich und verbraucht dann diese. Pro Runde sind so höchstens zwei Standwechsel möglich.
 
+**Erst bewegen, dann Hocke oder Liegen.** Wer sich bewegt und danach in die Hocke geht oder sich hinlegt (auch durch Hechten), verlangsamt auf das, was der neue Stand erlaubt: in der Hocke Gehen, im Liegen Kriechen. Für die Lage zählt diese langsamere Bewegung ([[#Lage]]). Steht er danach wieder auf, wird die Bewegung nicht wieder schneller.
+
 Im Nahkampf wirkt der Stand zusätzlich ([[#Stand im Nahkampf]]).
 
 ## Breakaction
@@ -409,6 +411,7 @@ Bei gleichem Stand hat keiner einen Vorteil.
 **Stand wechseln.** Mit dem Standwechsel während deines Zuges oder als Breakaction ([[#Standwechsel]]). Auf einen Nahkampfangriff reagierst du mit dem Standwechsel als Breakaction im Unterbrechungsmoment ([[#Die Breakaction benutzen]]).
 
 **Kampfkunst-Wirkungen.** Kampfkunst-Perks ([[Stats, Skills und Perks#Kampfkunst-Perks]]) ordnen einem Sieg mit überlegenem Stand eine Wirkung zu. Ohne passenden Perk hat der Sieg keine Wirkung über den Malstep hinaus.
+- **Nur ohne Nahkampfwaffe:** Kampfkunst-Wirkungen gibt es nur, wenn du ohne Nahkampfwaffe kämpfst (mit Werten von Faust und Tritt, [[Nahkampfwaffen]]); mit Messer, Knüppel oder Gewehrkolben nicht.
 - **Wer sie erhält:** der Sieger des Contested Rolls, wenn er den überlegenen Stand hatte. Der Angreifer erhält sie zusätzlich zum Treffer, der Verteidiger statt eines Treffers.
 - **Höchstens eine Wirkung** pro Sieg. Decken mehrere Perks denselben Fall ab, wählst du eine.
 

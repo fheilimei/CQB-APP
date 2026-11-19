@@ -2,6 +2,8 @@ Die Trefferzone bestimmt der W8 oder die Ansage ([[Kampfsystem#Treffen]]). Die *
 
 Die Spalten „Normal“ und „Krit“ gelten nur bei einem Durchschlag. Bei einem Wuchttreffer gilt keine von beiden ([[Schaden, Blutung und Verletzungen#3. Wuchttreffer]]). Wann ein Treffer kritisch ist: [[Würfelmechanik#Krit]].
 
+**Sturz, falls im Lauf.** Im Lauf ist, wer sich laufend oder rennend bewegt ([[Kampfsystem#Bewegung]]). Der Sturz legt ihn ohne Aktion hin: Er ist danach liegend ([[Kampfsystem#Standwechsel]]).
+
 
 | Körperzone | Zonennummer | Zonenmultiplikator | Normal | Krit |
 | ---------- | ----------- | ------------------ | ------ | ---- |

@@ -20,7 +20,7 @@ Die tragbaren Schusswaffen werden hier aufgelistet. Erklärung der Begriffe:
 
 # Zustand
 
-**Stufen.** Jede Waffe hat einen Zustand. Eine neue Waffe ist in Zustand A.
+**Stufen.** Jede Waffe hat einen Zustand. Eine neue Waffe ist in Zustand A. Auch Rüstung, Schild, Nahkampfwaffen, Aufsätze und Magazine haben einen Zustand A bis D; bei ihnen wirkt er nur auf den Preis (unten, *Preis*).
 
 | Zustand | Bedeutung |
 | --- | --- |
@@ -52,13 +52,16 @@ Sinkt der Zustand unter D, ist die Waffe unbrauchbar.
 | C | zweites Viertel |
 | D | unterstes Viertel |
 
-- **Verhandeln:** Contested Roll ([[Würfelmechanik#Contested Rolls]]) zwischen Käufer und Händler. Beide würfeln auf **Empathy** mit dem Skill **Verhandeln** ([[Stats, Skills und Perks#Sozial]]). Es zählt der Abschnitt, den der Zustand vorgibt:
+- **Verbrauchsware:** Munition, Granaten und Geschosse haben keinen Zustand; sie sind immer neu. Statt eines Abschnitts gilt die ganze Geldwertspanne; ohne Verhandeln die Mitte.
+- **Verhandeln:** Contested Roll ([[Würfelmechanik#Contested Rolls]]) zwischen Käufer und Händler. Beide würfeln auf **Empathy** mit dem Skill **Verhandeln** ([[Stats, Skills und Perks#Sozial]]). Es zählt der Abschnitt, den der Zustand vorgibt (bei Verbrauchsware die ganze Spanne):
 	- **Käufer gewinnt:** untere Grenze des Abschnitts.
 	- **Händler gewinnt:** obere Grenze des Abschnitts.
 	- **Unentschieden:** Mitte des Abschnitts.
 	- **Krit des Siegers:** Der Preis rutscht um ein Viertel der Spanne weiter in seine Richtung, höchstens bis zur Grenze der Spanne.
 	- Beim Verkauf gilt dasselbe mit vertauschten Rollen.
 	- **Ein Versuch pro Geschäft.** Neu verhandeln lässt sich nur aus neuem Anlass (anderes Angebot, späterer Tag).
+	- **Mehrere Gegenstände:** Wer mehrere Gegenstände auf einmal kauft oder verkauft, verhandelt einmal über alle zusammen. Das Ergebnis gilt für jeden Gegenstand in seinem Abschnitt. Ware, die über Beschaffen kommt ([[Stats, Skills und Perks#Skillproben]]), hat den Preis der SL und wird nicht mitverhandelt.
+- **Waffe mit Aufsätzen:** Wer eine Waffe mit angebrachten Aufsätzen verkauft, bekommt den Preis der Waffe plus den jedes Aufsatzes, jeweils nach seinem Zustand ([[#Aufsätze]]).
 - **Unbrauchbar:** Die Waffe ist nur noch ihre Teile wert. Den Preis legt die SL fest, höchstens die Untergrenze der Spanne.
 
 **Reinigung.** Etwa 15 Minuten, ohne Probe, außerhalb des Gefechts. Wer die Waffe nach einem Gefecht vor dem nächsten Gefecht reinigt, verhindert die Verschlechterung durch das Gefecht.
@@ -81,17 +84,17 @@ Sinkt der Zustand unter D, ist die Waffe unbrauchbar.
 
 **Wirkungen.** *Vorläufige Werte.*
 
-| Aufsatz | Anschluss | Wirkung |
-| --- | --- | --- |
-| Reflexvisier | Schiene oben | 1 Stepshield auf die Trefferprobe in den Bändern bedrängt und nah ([[Kampfsystem#Treffen]]). |
-| Zielfernrohr | Schiene oben | 1 Stepshield auf die Trefferprobe ab dem Band weit; 1 Malstep im Band bedrängt. |
-| Zweibein | Schiene unten | Aufgesetzt: 1 Stepshield auf die Haltezahl ([[Kampfsystem#Treffen]], Rückstoß abfangen); die Waffe gilt als aufgelegt ([[Kampfsystem#Stepshields der Lage]]). |
-| Vordergriff | Schiene unten | 1 Stepshield auf die Haltezahl. |
-| Unterlaufwerfer | Schiene unten | Ein Werfer unter dem Lauf, z. B. [[#M203]]. |
-| Lampe | Schiene unten oder seitlich | Eingeschaltet: Ein Ziel in den Bändern bedrängt und nah, das du anleuchtest, siehst du mit Sichtstufe klar ([[Wahrnehmung#Sehen]]). Du selbst bist dabei für andere sichtbar, auch bei schlechter Sicht. |
-| Schalldämpfer | Mündung | Der Schuss ist 1 Stufe leiser ([[Wahrnehmung#Lautstärken]]). |
-| Kompensator | Mündung | 1 Stepshield auf die Haltezahl. |
-| Bajonett | Mündung (Gewehr) | Nahkampfwaffe am Gewehr ([[Nahkampfwaffen]]). |
+| Aufsatz | Anschluss | Vorratslevel | Geldwertspanne | Wirkung |
+| --- | --- | --- | --- | --- |
+| Reflexvisier | Schiene oben | 2 | 100–400 | 1 Stepshield auf die Trefferprobe in den Bändern bedrängt und nah ([[Kampfsystem#Treffen]]). |
+| Zielfernrohr | Schiene oben | 2 | 150–600 | 1 Stepshield auf die Trefferprobe ab dem Band weit; 1 Malstep im Band bedrängt. |
+| Zweibein | Schiene unten | 1 | 30–120 | Aufgesetzt: 1 Stepshield auf die Haltezahl ([[Kampfsystem#Treffen]], Rückstoß abfangen); die Waffe gilt als aufgelegt ([[Kampfsystem#Stepshields der Lage]]). |
+| Vordergriff | Schiene unten | 1 | 20–80 | 1 Stepshield auf die Haltezahl. |
+| Unterlaufwerfer | Schiene unten | wie Waffe | wie Waffe | Ein Werfer unter dem Lauf, z. B. [[#M203]]. |
+| Lampe | Schiene unten oder seitlich | 1 | 20–100 | Eingeschaltet: Ein Ziel in den Bändern bedrängt und nah, das du anleuchtest, siehst du mit Sichtstufe klar ([[Wahrnehmung#Sehen]]). Du selbst bist dabei für andere sichtbar, auch bei schlechter Sicht. |
+| Schalldämpfer | Mündung | 4 | Pistole 200–600, Gewehr 400–1200 | Der Schuss ist 1 Stufe leiser ([[Wahrnehmung#Lautstärken]]). |
+| Kompensator | Mündung | 2 | Pistole 40–120, Gewehr 60–200 | 1 Stepshield auf die Haltezahl. |
+| Bajonett | Mündung (Gewehr) | wie Nahkampfwaffe | wie Nahkampfwaffe | Nahkampfwaffe am Gewehr ([[Nahkampfwaffen]]). |
 
 **Anbringen und Abnehmen.**
 - **Außerhalb des Gefechts:** frei.
@@ -100,13 +103,13 @@ Sinkt der Zustand unter D, ist die Waffe unbrauchbar.
 
 # Magazine
 
-Magazine sind keine Aufsätze, sondern eigene Ausrüstung: Sie werden mitgeführt, jedes mit seinem Inhalt. Ein Magazin passt an jede Waffe, die es nennt; manche Waffen teilen sich ihre Magazine (z. B. [[#M4 Carbine]] und [[#M16A4]]). In einer Waffe mit Wechselmagazin steckt genau ein Magazin; seine Größe ist die Magazingröße der Waffe. Es gelten Geldwertspanne und Vorratslevel wie bei Waffen ([[#Begriffserklärung]]).
+Magazine sind keine Aufsätze, sondern eigene Ausrüstung: Sie werden mitgeführt, jedes mit seinem Inhalt. Ein Magazin passt an jede Waffe, die es nennt; manche Waffen teilen sich ihre Magazine (z. B. [[#M4 Carbine]] und [[#M16A4]]). In einer Waffe mit Wechselmagazin steckt genau ein Magazin; seine Größe ist die Magazingröße der Waffe. Geldwertspanne und Vorratslevel gelten je Stück ([[#Begriffserklärung]]).
 
-| Magazin | Passt zu | Wirkung |
-| --- | --- | --- |
-| Magazin | Waffen mit Wechselmagazin | Standardgröße der Waffe. |
-| Erweitertes Magazin | Waffen, die es nennen | Größere Magazingröße. |
-| Trommelmagazin | Waffen, die es nennen | Größere Magazingröße; +2 auf die Ladehemmungsrate, solange es in der Waffe steckt ([[Kampfsystem#Ladehemmung]]). |
+| Magazin | Passt zu | Vorratslevel | Geldwertspanne | Wirkung |
+| --- | --- | --- | --- | --- |
+| Magazin | Waffen mit Wechselmagazin | wie Waffe | Pistolen 10–40, Gewehre und Schrotflinten 15–50, FN Five-seveN 30–70 | Standardgröße der Waffe. |
+| Erweitertes Magazin | Waffen, die es nennen | Waffe +1 (höchstens 5) | 30–80 | Größere Magazingröße. |
+| Trommelmagazin | Waffen, die es nennen | 4 | 100–300 | Größere Magazingröße; +2 auf die Ladehemmungsrate, solange es in der Waffe steckt ([[Kampfsystem#Ladehemmung]]). |
 
 Schnelllader und Ladestreifen gelten als Magazin für Waffen ohne Wechselmagazin:
 

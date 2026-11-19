@@ -20,7 +20,7 @@ Deckungswerte:
 
 # Rüstung
 
-Rüstung schützt nur die Zonen, die sie bedeckt ([[Körperzonen]]). Mehrere Rüstungen auf derselben Zone zählen nicht zusammen; es gilt der höchste Wert. Vorratslevel und Geldwertspanne wie bei Waffen ([[Schusswaffen (tragbar)#Begriffserklärung]]). *Vorläufige Werte.*
+Rüstung schützt nur die Zonen, die sie bedeckt ([[Körperzonen]]). Mehrere Rüstungen auf derselben Zone zählen nicht zusammen; es gilt der höchste Wert. Vorratslevel, Geldwertspanne und Zustand wie bei Waffen ([[Schusswaffen (tragbar)#Begriffserklärung]]); der Zustand wirkt nur auf den Preis ([[Schusswaffen (tragbar)#Zustand]], *Preis*). *Vorläufige Werte.*
 
 **Einschränkung.** Rüstung am Rumpf schränkt nicht ein. Damit ist der Rumpf zwar leichter zu treffen ([[Kampfsystem#Treffen]], Ansage Rumpf), aber auch die Zone, die am besten geschützt ist. Helme und Schutzanzug schränken ein; die Einschränkung steht beim Gegenstand. Für Arme und Beine gibt es keine eigene Rüstung, nur den Schutzanzug.
 

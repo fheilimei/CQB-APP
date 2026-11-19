@@ -10,7 +10,7 @@ Die Sprengwaffen werden hier aufgelistet, unterteilt in **Granaten** (geworfen o
 **Strahl** = Nur bei Hohlladungen: DK/MW des Strahls ([[Sprengwirkung#Hohlladung]]).
 **Sonderwirkung** = Nur bei Blend-, Rauch- und Gasgranaten: Blendung, Rauch oder Reizgas ([[Sprengwirkung#Sonderwirkungen]]).
 **Verwendet in** = Nur bei Geschossen: Waffen, die das Geschoss verschießen.
-**Geldwertspanne** = In dieser Preisspanne wird der Gegenstand üblicherweise gehandelt. Zustand beeinflusst den Preis maßgeblich.
+**Geldwertspanne** = In dieser Preisspanne wird der Gegenstand üblicherweise gehandelt. Granaten und Geschosse sind Verbrauchsware ohne Zustand; es gilt die ganze Spanne ([[Schusswaffen (tragbar)#Zustand]], *Preis*).
 **Vorratslevel** = Dieser Wert gibt an, wie schwierig der Gegenstand zu beschaffen ist. Die Werte reichen von 1 (leicht zu beschaffen: An diesen Gegenstand kommen selbst Zivilisten) bis 5 (sehr schwierig zu beschaffen: An diesen Gegenstand kommen nur mächtige Regierungen und hochkarätige Schmuggler mit Draht zum Hersteller).
 **Waffenperks**/**Besonderheiten** = Hier ist Platz für die Auflistung von Perks, welche die vorliegende Waffe betreffen. Außerdem können hier Besonderheiten der Waffe beschrieben werden.
 

@@ -69,3 +69,28 @@ Wie beide Werte verrechnet werden, regelt der Schadensablauf ([[Schaden, Blutung
 | Pistolen | 9x18mm, 9x19 Parabellum, .38 Special, 45 ACP | – | 1 | 2 | 10–30 |
 | Gewehre | 5.56x45mm, 7.62x39mm | – | 2 | 3 | 25–60 |
 | Schrotflinten | 12 Gauge, 20 Gauge | – | 3 | 2 | 15–40 |
+
+## Preise
+
+**Geldwertspanne** je 10 Schuss ([[Schusswaffen (tragbar)#Begriffserklärung]]), dahinter in Klammern das **Vorratslevel**. Munition hat keinen Zustand ([[Schusswaffen (tragbar)#Zustand]], *Preis*). Gummigeschosse: oben. *Vorläufige Werte.*
+
+| Kaliber | FMJ | HP | AP | Unterschall |
+| --- | --- | --- | --- | --- |
+| 9x18mm | 5–15 (1) | 8–20 (2) | 20–50 (3) | – |
+| 9x19 Parabellum | 5–15 (1) | 8–20 (2) | 20–50 (3) | 15–35 (3) |
+| 45 ACP | 5–15 (1) | 8–20 (2) | 20–50 (3) | – |
+| .38 Special | 5–15 (1) | 8–20 (2) | n/A | – |
+| .357 Magnum | 8–20 (2) | 10–25 (2) | 25–60 (3) | 15–35 (3) |
+| 5,7x28mm | 15–35 (3) | 20–40 (3) | 40–90 (4) | 20–45 (3) |
+| .50 Action Express | n/A | 25–60 (3) | n/A | n/A |
+| 7.62x39mm | 8–20 (2) | 15–35 (3) | 35–80 (4) | 30–70 (4) |
+| 5.56x45mm | 10–25 (2) | 15–35 (3) | 30–70 (4) | 30–70 (4) |
+| 7.62x51mm/.308 WIN | 15–35 (3) | n/A | 40–90 (4) | 30–70 (4) |
+| 7.62x54mmR | 8–20 (2) | n/A | 35–80 (4) | 30–70 (4) |
+| .50 BMG | 80–200 (4) | 100–250 (5) | 150–400 (5) | 150–300 (5) |
+
+„–“: Das Kaliber ist von Haus aus Unterschall ([[#Unterschall]]).
+
+| Gauge | Buckshot | Slug |
+| --- | --- | --- |
+| 28 Gauge, 20 Gauge, 12 Gauge | 8–20 (1) | 10–25 (1) |
