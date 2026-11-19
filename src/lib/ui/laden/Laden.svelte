@@ -66,6 +66,21 @@
       const m = magazinSorte(w.id, d);
       return m ? `${m.groesse} Schuss${m.trommel ? ' · Trommel' : ''}${m.art === 'lader' ? ' · füllt auf einmal' : ''}` : '';
     }
+    if (w.art === 'nahkampf') {
+      const n = d.nahkampfwaffen.eintraege.find((x) => x.id === w.id);
+      if (!n) return '';
+      return n.art === 'stumpf' ? dkMw(null, n.mw, true) : `DK ${n.dk ?? '–'} / MW ${n.mw ?? '–'}`;
+    }
+    if (w.art === 'spreng') {
+      const s = d.wurf_und_sprengwaffen.eintraege.find((x) => x.id === w.id);
+      if (!s) return '';
+      const teile: string[] = [];
+      if (s.splitter?.mw != null) teile.push(`Splitter ${dkMw(s.splitter.dk ?? 0, s.splitter.mw)}`);
+      if (s.druckwelle?.mw != null) teile.push(`Druckwelle MW ${s.druckwelle.mw}`);
+      if (s.strahl) teile.push(`Strahl ${dkMw(s.strahl.dk, s.strahl.mw)}`);
+      if (s.sonderwirkung) teile.push(s.sonderwirkung.art.charAt(0).toUpperCase() + s.sonderwirkung.art.slice(1));
+      return teile.join(' · ');
+    }
     return '';
   }
 
@@ -223,6 +238,10 @@
   }
 </script>
 
+{#snippet spanne(sp: { min: number; max: number })}
+  {#if sp.min === sp.max}{geld(sp.min)}{:else}<span class="ganz">{sp.min.toLocaleString('de-DE')}–</span><wbr /><span class="ganz">{geld(sp.max)}</span>{/if}
+{/snippet}
+
 <section class="karte geld">
   <h2>{erstellung ? 'Startgeld' : 'Geld'}</h2>
   <p class="kontostand zahl">{geld(stand)}</p>
@@ -270,7 +289,7 @@
                       <span>{w.name}</span>
                       <span class="hinweis">{#if kernwerte(w)}{kernwerte(w)} · {/if}Vorratslevel {w.vorratslevel}{#if z.art === 'beschaffen'} · nur über Beschaffen{:else if z.art === 'nicht'} · nicht erhältlich{/if}</span>
                     </span>
-                    <span class="wert">{spanneText(w.preis)}</span>
+                    <span class="wert preis">{@render spanne(w.preis)}</span>
                   </button>
                   {#if auf}
                     {@const p = posten(w)}
@@ -283,7 +302,7 @@
                           <div class="auswahlreihe gleich">
                             {#each zustaende as s (s)}
                               {@const r = preisrahmen(w.preis, s, d)}
-                              <button aria-pressed={wahlZustand === s} onclick={() => (wahlZustand = s)}>{s}<small class="zahl">{r.min}–{r.max}</small></button>
+                              <button aria-pressed={wahlZustand === s} onclick={() => (wahlZustand = s)}>{s}<small class="zahl"><span class="ganz">{r.min}–</span><wbr /><span class="ganz">{r.max}</span></small></button>
                             {/each}
                           </div>
                         </div>
@@ -330,7 +349,7 @@
                 <li>
                   <button class="zeile flach" aria-expanded={auf} onclick={() => aufklappenV(x)}>
                     <span class="name"><span>{x.name}</span><span class="hinweis">{x.unter}</span></span>
-                    <span class="wert">{spanneText(verkaufRahmen(c, [x.p], d))}</span>
+                    <span class="wert preis">{@render spanne(verkaufRahmen(c, [x.p], d))}</span>
                   </button>
                   {#if auf}
                     {@const schritt = x.p.art === 'munition' ? je : 1}
@@ -439,5 +458,8 @@
   .kontostand { font-size: 2rem; margin: 0; }
   .zeilen .name { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
   .gesperrt .zeile .name > span:first-child { color: var(--text-2); }
+  /* Preisspanne darf nach dem Strich umbrechen, statt über den Rand zu ragen. */
+  .zeilen .wert.preis { white-space: normal; font-size: 1rem; flex-shrink: 0; max-width: 45%; }
+  .ganz { white-space: nowrap; }
   .posten { display: flex; justify-content: space-between; align-items: center; gap: var(--abstand-2); min-height: var(--tipp); }
 </style>
