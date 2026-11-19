@@ -2,6 +2,8 @@
   // Reizgas im Gefecht (konzept.md § 3.11; Regelwerk: Sprengwirkung, Reizgas). Wer zu Beginn seines Zuges in der Wolke steht,
   // legt eine Grit-Probe ab; misslingt sie, ist er Gereizt. Gereizt hält an, solange er in der Wolke steht, und endet am Ende
   // der Runde, in der er sie verlässt. Mit Gasmaske keine Probe. Geöffnet über Ereignis → Reizgas oder den Zustand oben.
+  // Wer das Fenster öffnet, steht in der Wolke (19.11.2026: keine Frage „Wo bist du?“). Erst wenn Reizgas schon eingetragen
+  // ist, gibt es den Schalter „Du hast die Wolke verlassen“ (Gereizt endet dann am Rundenende, sonst fällt Reizgas weg).
   // Es ändert sich nur der Zustand Reizgas; kein Bericht nötig.
   import { untrack } from 'svelte';
   import type { Spieldaten } from '../../daten/typen';
@@ -22,7 +24,8 @@
   let { c, d, wuerfelModus, onaendern, onfertig, onabbrechen }: Props = $props();
 
   const alt = untrack(() => gefechtVon(c)?.reizgas ?? null);
-  let inWolke = $state(alt?.in_wolke ?? true);
+  let verlassen = $state(alt ? !alt.in_wolke : false);
+  const inWolke = $derived(!verlassen);
   let gasmaske = $state(alt?.gasmaske ?? false);
   let ergebnis = $state<ProbenErgebnis | null>(null);
 
@@ -36,22 +39,19 @@
 <Dialog titel="Reizgas">
   <div class="abschnitte">
     <section class="abschnitt">
-      <h3 class="abschnitt-titel">Wo bist du?</h3>
-      <div class="gruppe">
-        <span class="gruppe-titel">Du stehst</span>
-        <div class="umschalter" role="group" aria-label="Du stehst">
-          <button aria-pressed={inWolke} onclick={() => (inWolke = true)}>in der Wolke</button>
-          <button aria-pressed={!inWolke} onclick={() => (inWolke = false)}>außerhalb</button>
-        </div>
-      </div>
-      <label class="schalter"><input type="checkbox" bind:checked={gasmaske} /> Du trägst eine Gasmaske</label>
+      <h3 class="abschnitt-titel">Wolke und Gasmaske</h3>
+      <label class="schalter"><input type="checkbox" bind:checked={gasmaske} disabled={verlassen} /> Du trägst eine Gasmaske</label>
       {#if gasmaske && inWolke && !schonGereizt}<p class="hinweis">Mit Gasmaske legst du keine Probe ab.</p>{/if}
+      {#if alt}
+        <label class="schalter"><input type="checkbox" bind:checked={verlassen} /> Du hast die Wolke verlassen</label>
+        {#if verlassen}<p class="hinweis">{schonGereizt ? 'Am Ende dieser Runde bist du nicht mehr gereizt.' : 'Das Reizgas wird ausgetragen.'}</p>{/if}
+      {/if}
     </section>
 
     {#if probeNoetig}
       <section class="abschnitt">
         <h3 class="abschnitt-titel">Probe zu Beginn deines Zuges</h3>
-        <p class="hinweis">Misslingt sie, bist du gereizt ({malsteps} Malsteps auf alle Proben). Kommt dein Zug erst noch, trag jetzt nur ein, dass du in der Wolke stehst, und würfle zu Beginn deines Zuges über den Zustand oben.</p>
+        <p class="hinweis">Misslingt sie, bist du gereizt ({malsteps} Malsteps auf alle Proben). Kommt dein Zug erst noch, tipp jetzt nur auf Eintragen und würfle zu Beginn deines Zuges über den Zustand oben.</p>
         <ProbeKern {c} {d} anfrage={{ stat: d.regeln.zustaende.gereizt.probe, skill: null, probe: 'reizgas' }} hinweise={['probe']} {wuerfelModus}
           mitAusgang bind:ergebnis {onaendern} />
       </section>
