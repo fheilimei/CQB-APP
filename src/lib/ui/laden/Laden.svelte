@@ -20,8 +20,12 @@
   import { dkMw, geld, mitZeichen, trageortName, type Zeile } from '../texte';
   import { korb, korbFuer, korbLeeren, verkaufSchluessel } from './korb.svelte';
 
-  interface Props { c: Charakter; d: Spieldaten; wuerfelModus: Quelle; onaendern: (c: Charakter) => void }
-  let { c, d, wuerfelModus, onaendern }: Props = $props();
+  interface Props {
+    c: Charakter; d: Spieldaten; wuerfelModus: Quelle; onaendern: (c: Charakter) => void;
+    /** Schritt 7 der Erstellung: nur Kaufen; der Korb wird erst mit „Abschließen“ gebucht (konzept.md § 3.0). */
+    erstellung?: boolean;
+  }
+  let { c, d, wuerfelModus, onaendern, erstellung = false }: Props = $props();
 
   $effect.pre(() => korbFuer(c.id));
 
@@ -221,8 +225,11 @@
 </script>
 
 <section class="karte geld">
-  <h2>Geld</h2>
+  <h2>{erstellung ? 'Startgeld' : 'Geld'}</h2>
   <p class="kontostand zahl">{geld(stand)}</p>
+  {#if erstellung}
+    <p class="hinweis">Was im Korb liegt, kaufst du mit „Abschließen“. Bis dahin kannst du den Korb ändern.</p>
+  {/if}
   {#if c.schulden && c.schulden.rest > 0}
     <p class="hinweis">Schulden: noch <span class="zahl">{geld(c.schulden.rest)}</span>, Frist {c.schulden.frist_auftraege} {c.schulden.frist_auftraege === 1 ? 'Auftrag' : 'Aufträge'}</p>
   {/if}
@@ -231,10 +238,12 @@
 {#if imGefecht}
   <p class="warnung">Im Gefecht wird nicht gehandelt.</p>
 {:else}
-  <div class="umschalter" role="group" aria-label="Kaufen oder Verkaufen">
-    <button aria-pressed={kauf} onclick={() => artWechseln('kauf')}>Kaufen</button>
-    <button aria-pressed={!kauf} onclick={() => artWechseln('verkauf')}>Verkaufen</button>
-  </div>
+  {#if !erstellung}
+    <div class="umschalter" role="group" aria-label="Kaufen oder Verkaufen">
+      <button aria-pressed={kauf} onclick={() => artWechseln('kauf')}>Kaufen</button>
+      <button aria-pressed={!kauf} onclick={() => artWechseln('verkauf')}>Verkaufen</button>
+    </div>
+  {/if}
 
   {#if kauf}
     <div class="stapel">
@@ -413,12 +422,17 @@
           oninput={(e) => (korb.preisSl = Number((e.target as HTMLInputElement).value) || 0)} />
       </label>
       <p class="hinweis">Errechnet: <span class="zahl">{geld(errechnet)}</span> (Rahmen <span class="zahl">{spanneText(rahmen)}</span>)</p>
-      <p>Kontostand: <span class="zahl">{geld(stand)} → {geld(nachher)}</span></p>
+      <p>{erstellung ? 'Startgeld' : 'Kontostand'}: <span class="zahl">{geld(stand)} → {geld(nachher)}</span></p>
       {#each fehler as f (f)}<p class="warnung">{f}</p>{/each}
+      {#if erstellung}<p class="hinweis">Gekauft wird mit „Abschließen“ am Ende der Erstellung.</p>{/if}
     </div>
     {#snippet knoepfe()}
-      <button onclick={() => (korb.offen = false)}>Schließen</button>
-      <button class="haupt" disabled={fehler.length > 0} onclick={abschliessen}>{kauf ? 'Kaufen' : 'Verkaufen'}</button>
+      {#if erstellung}
+        <button class="betont" onclick={() => (korb.offen = false)}>Fertig</button>
+      {:else}
+        <button onclick={() => (korb.offen = false)}>Schließen</button>
+        <button class="haupt" disabled={fehler.length > 0} onclick={abschliessen}>{kauf ? 'Kaufen' : 'Verkaufen'}</button>
+      {/if}
     {/snippet}
   </Dialog>
   {#if verhandelnProbe}

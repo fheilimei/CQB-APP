@@ -1,18 +1,34 @@
 <script lang="ts">
-  // Schritt 7: Ausrüstung. Der Laden (konzept.md § 3.14) folgt in einer späteren Version; bis dahin wird nur
-  // das Startgeld gebucht, und Ausrüstung wird später im Reiter Ausrüstung gekauft.
+  // Schritt 7: Ausrüstung (konzept.md § 3.0, § 3.14). Derselbe Laden wie im Reiter, nur Kaufen, mit dem
+  // Startgeld. Der Korb steht im Entwurf (erstellung.korb), bleibt also auch über „Später“ erhalten, und wird
+  // erst mit „Abschließen“ gebucht. Der Laden arbeitet mit der Vorschau (fertiger Charakter mit Startgeld).
+  import { onDestroy, untrack } from 'svelte';
   import type { Spieldaten } from '../../daten/typen';
-  import { erstellungsklasse, startgeld } from '../../regeln/erstellung';
-  import type { Charakter } from '../../speicher/charakter';
-  import { geld } from '../texte';
+  import type { KaufPosten, Verhandlung } from '../../regeln/laden';
+  import type { Charakter, Quelle } from '../../speicher/charakter';
+  import Laden from '../laden/Laden.svelte';
+  import { korb, korbFuer } from '../laden/korb.svelte';
 
-  interface Props { c: Charakter; d: Spieldaten }
-  let { c, d }: Props = $props();
-  const k = $derived(erstellungsklasse(c.erstellung!, d));
+  interface Props { c: Charakter; d: Spieldaten; vorschau: Charakter; wuerfelModus: Quelle }
+  let { c = $bindable(), d, vorschau, wuerfelModus }: Props = $props();
+
+  // Korb aus dem Entwurf in den gemeinsamen Korb des Ladens holen …
+  untrack(() => {
+    const k = $state.snapshot(c.erstellung!.korb);
+    korbFuer(c.id);
+    korb.art = 'kauf';
+    korb.kauf = k.kauf as KaufPosten[];
+    korb.verhandlung = k.verhandlung as Verhandlung;
+    korb.preisSl = k.preis_sl;
+  });
+  // … jede Änderung in den Entwurf zurückschreiben (wird von der Erstellung gespeichert) …
+  $effect(() => {
+    if (korb.charakter !== untrack(() => c.id)) return; // schon verlassen: den Entwurf nicht überschreiben
+    const neu = { kauf: $state.snapshot(korb.kauf) as KaufPosten[], verhandlung: $state.snapshot(korb.verhandlung) as Verhandlung, preis_sl: korb.preisSl };
+    untrack(() => { c.erstellung!.korb = neu; });
+  });
+  // … und beim Verlassen des Schritts den gemeinsamen Korb wieder leeren.
+  onDestroy(() => korbFuer(''));
 </script>
 
-<div class="karte">
-  <p>Startgeld: <strong>{geld(startgeld(c, d).summe)}</strong></p>
-  <p>Vorratslevel: <strong>{k?.vorratslevel ?? c.vorratslevel_manuell ?? '–'}</strong></p>
-  <p class="hinweis">Der Laden kommt in einer der nächsten Versionen. Mit „Abschließen“ wird dein Startgeld ins Kassenbuch gebucht; deine Ausrüstung kaufst du dann im Reiter Ausrüstung.</p>
-</div>
+<Laden c={vorschau} {d} {wuerfelModus} erstellung onaendern={() => {}} />

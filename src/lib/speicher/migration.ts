@@ -2,7 +2,7 @@
 // Für jeden Schritt n → n+1 steht hier eine Funktion; die Liste wird der Reihe nach angewandt.
 
 import type { Spieldaten } from '../daten/typen';
-import { neueErstellung, SCHEMA, type Charakter, type MunitionEintrag } from './charakter';
+import { leererKorb, neueErstellung, SCHEMA, type Charakter, type MunitionEintrag } from './charakter';
 
 type Roh = Record<string, unknown> & { schema?: unknown };
 
@@ -34,6 +34,11 @@ export const MIGRATIONEN: Record<number, (c: Roh, d?: Spieldaten) => Roh> = {
   4: (c) => benenneUm(c, 'decisiveness', 'decision') as Roh,
   // 5 → 6: Munition je Magazin, lose Munition und Aufsätze, Zustand für alles Dauerhafte (konzept.md § 3.8, R42).
   5: (c, d) => auf6(c, d),
+  // 6 → 7: Ein Entwurf bekommt den Korb für Schritt 7 (Laden bei der Erstellung), anfangs leer.
+  6: (c) => {
+    const e = c.erstellung as Record<string, unknown> | null | undefined;
+    return e ? { ...c, erstellung: { ...e, korb: e.korb ?? leererKorb() } } : c;
+  }
 };
 
 type Alt5Waffe = Record<string, unknown> & {

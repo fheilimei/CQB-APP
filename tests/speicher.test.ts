@@ -2,7 +2,7 @@ import 'fake-indexeddb/auto';
 import { describe, expect, it } from 'vitest';
 import { Ablage } from '../src/lib/speicher/ablage';
 import { dateiname, exportiereText, importiereText } from '../src/lib/speicher/austausch';
-import { neuerCharakter, SCHEMA, type Charakter } from '../src/lib/speicher/charakter';
+import { neueErstellung, neuerCharakter, SCHEMA, type Charakter } from '../src/lib/speicher/charakter';
 import { ImportFehler, migriere } from '../src/lib/speicher/migration';
 import { deckungZonen } from '../src/lib/regeln/gefecht';
 import { ladeTestdaten } from './hilfen';
@@ -93,7 +93,7 @@ describe('Migration', () => {
     expect(fertig.skills).toEqual(beispiel().skills);
 
     const entwurf = migriere({ ...rest, status: 'erstellung', schema: 1 }, d, 2);
-    expect(entwurf.erstellung).toEqual({ schritt: 1, ohne_klasse: false, klasse: null, stufe4: null, meister_skills: [], freie_punkte_start: 0, kaeufe: [] });
+    expect(entwurf.erstellung).toEqual({ schritt: 1, ohne_klasse: false, klasse: null, stufe4: null, meister_skills: [], freie_punkte_start: 0, kaeufe: [], korb: neueErstellung().korb });
   });
 
   it('Schema 2 → 3: Deckung zieht vom Gefecht in den Spielstand', () => {
@@ -173,6 +173,15 @@ describe('Migration', () => {
     expect(c.ausruestung.ruestung).toEqual([{ id: 'schutzanzug', zustand: 'A' }]);
     expect(c.ausruestung.schild).toEqual({ id: 'ballistischer_schild', zustand: 'A' });
     expect(JSON.stringify(c)).not.toMatch(/lose_patronen|leere_magazine|reserve|gefuellt/);
+  });
+
+  it('Schema 6 → 7: ein Entwurf bekommt einen leeren Korb, ein fertiger Charakter bleibt gleich', () => {
+    const b = beispiel();
+    const { korb: _k, ...alt } = neueErstellung();
+    const entwurf = migriere({ ...b, schema: 6, status: 'erstellung', erstellung: alt }, d, 7);
+    expect(entwurf.erstellung!.korb).toEqual({ kauf: [], verhandlung: { ergebnis: 'keine', krit: false }, preis_sl: null });
+    const fertig = migriere({ ...b, schema: 6 }, d, 7);
+    expect(fertig).toEqual({ ...b, schema: 7 });
   });
 
   it('Schema 5 → 6 braucht die Spieldaten', () => {

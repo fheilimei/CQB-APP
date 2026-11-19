@@ -3,11 +3,13 @@
   // unten Zurück und Weiter. „Weiter“ nennt, was noch fehlt. Jede Änderung wird sofort gespeichert.
   import { untrack } from 'svelte';
   import type { Spieldaten } from '../../daten/typen';
-  import { erstellungAbschliessen, erstellungAnwenden, erstellungsklasse, postenText, rueckzahlung, schrittFehlt, startgeld } from '../../regeln/erstellung';
+  import { erstellungAbschliessen, erstellungAnwenden, erstellungKorbPreis, erstellungsklasse, erstellungVorschau, postenText, rueckzahlung, schrittFehlt, startgeld } from '../../regeln/erstellung';
+  import { postenText as kaufText, wareVon } from '../../regeln/laden';
   import { statwert } from '../../regeln/probe';
   import type { Charakter, Quelle } from '../../speicher/charakter';
   import Bericht from '../Bericht.svelte';
-  import { fehltText, geld, type Zeile, klasseName, laufbahnName, perkName, punkte, skillName, statName, stufeName } from '../texte';
+  import KorbLeiste from '../laden/KorbLeiste.svelte';
+  import { fehltText, geld, trageortName, type Zeile, klasseName, laufbahnName, perkName, punkte, skillName, statName, stufeName } from '../texte';
   import SchrittAbweichung from './SchrittAbweichung.svelte';
   import SchrittAusruestung from './SchrittAusruestung.svelte';
   import SchrittHintergrund from './SchrittHintergrund.svelte';
@@ -20,6 +22,7 @@
     start: Charakter;
     d: Spieldaten;
     abweichungModus: Quelle;
+    probeModus: Quelle;
     onspeichern: (c: Charakter) => void;
     onverlassen: () => void;
     onfertig: (c: Charakter) => void;
@@ -35,6 +38,8 @@
   /** Ein Schritt ist erreichbar, wenn alle davor erledigt sind. */
   const erreichbar = (s: number) => erledigt.slice(0, s - 1).every(Boolean);
   let bericht = $state<Zeile[] | null>(null);
+  /** Schritt 7: der Charakter nach dem Abschluss ohne Einkauf (Startgeld gebucht); Grundlage für den Laden. */
+  const vorschau = $derived(schritt === SCHRITTE.length ? erstellungVorschau(c, d) : null);
   let inhalt: HTMLElement | undefined = $state();
 
   $effect(() => {
@@ -71,9 +76,20 @@
       { text: `◆ Perks: ${x.perks.length ? x.perks.map((id) => perkName(id, d)).join(', ') : 'keine'}.` },
       { text: `Freie Punkte übrig: ${punkte(x.freie_punkte)}. Sie bleiben dir erhalten.` },
       { text: `Startgeld ${geld(sg.summe)} (${sg.posten.map(postenText).join(' + ')}) wird ins Kassenbuch gebucht.` },
+      ...einkauf(sg.summe),
       ...(s ? [{ text: `Du schuldest ${s.glaeubiger || 'deinem Gläubiger'} ${geld(rueckzahlung(s.groesse, d))}; Frist: ${s.frist_auftraege} Aufträge.` }] : []),
       { text: 'Danach änderst du Werte nur noch im Aufstiegs- oder Schreibmodus (Menü).' }
     ];
+  }
+  /** Sätze zum Einkauf aus Schritt 7 (Laden). */
+  function einkauf(start: number): Zeile[] {
+    const korb = c.erstellung!.korb.kauf;
+    if (!korb.length) return [{ text: 'Du kaufst nichts; deine Ausrüstung kannst du später im Reiter Laden kaufen.' }];
+    const preis = erstellungKorbPreis(c, d);
+    const z: Zeile[] = [{ text: `Du kaufst ${korb.map((p) => kaufText(p, d)).join(', ')} für ${geld(preis)}. Vom Startgeld bleiben ${geld(start - preis)}.` }];
+    if (korb.some((p) => wareVon(p.ware, d)?.art === 'waffe'))
+      z.push({ text: `Die Waffen liegen ungeladen im Trageort ${trageortName(d.regeln.laden.trageort, d)}; ihre Magazine sind leer.` });
+    return z;
   }
   function abschliessen() {
     const fertig = erstellungAbschliessen($state.snapshot(c) as Charakter, d);
@@ -107,10 +123,13 @@
     {:else if schritt === 4}<SchrittSkills bind:c {d} />
     {:else if schritt === 5}<SchrittPunkte bind:c {d} abweichungModus={p.abweichungModus} />
     {:else if schritt === 6}<SchrittHintergrund bind:c {d} />
-    {:else}<SchrittAusruestung {c} {d} />{/if}
+    {:else}<SchrittAusruestung bind:c {d} vorschau={vorschau!} wuerfelModus={p.probeModus} />{/if}
   </main>
 
   <footer>
+    {#if schritt === SCHRITTE.length && vorschau}
+      <div class="korb"><KorbLeiste c={vorschau} {d} /></div>
+    {/if}
     <button onclick={zurueck}>{schritt === 1 ? 'Später' : 'Zurück'}</button>
     <button class="haupt" class:fehlt={fehlt.length > 0} aria-disabled={fehlt.length > 0} onclick={weiter}>
       {fehlt.length ? fehltText(fehlt[0]!, d) : schritt === SCHRITTE.length ? 'Abschließen' : 'Weiter'}
@@ -138,5 +157,8 @@
   .inhalt > :global(*) { margin: 0; }
   footer { display: grid; grid-template-columns: 1fr 2fr; gap: 12px; padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
     border-top: 1px solid var(--linie); background: var(--flaeche); position: sticky; bottom: 0; z-index: 5; }
+  /* Korbleiste über Zurück und Abschließen, über die ganze Breite (Ränder des footer ausgeglichen). */
+  .korb { grid-column: 1 / -1; margin: -12px -16px 0; }
+  .korb :global(.korbleiste) { margin-bottom: 0; }
   footer .fehlt { background: var(--flaeche-2); color: var(--text); font-weight: 400; }
 </style>

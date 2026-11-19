@@ -5,6 +5,7 @@
 import type { Klasse, Rang, Spieldaten } from '../daten/typen';
 import type { Charakter, Erstellungskauf, Erstellungsstand, Klassenschritt } from '../speicher/charakter';
 import { perkKaufenSperre, skillSteigernSperre, statrankUpSperre, zugangDerKlasse, type Sperre } from './aufstieg';
+import { kaufAnwenden, kaufPruefen, korbPreis } from './laden';
 import { naechsterRang } from './probe';
 
 function klasseOder(id: string | null, d: Spieldaten): Klasse | null {
@@ -308,7 +309,8 @@ export type Fehlt =
   | { art: 'meister_exklusiv' }
   | { art: 'kaeufe_ungueltig'; anzahl: number }
   | { art: 'punkte_negativ' }
-  | { art: 'frist' };
+  | { art: 'frist' }
+  | { art: 'korb'; text: string };
 
 /** Was in einem Schritt (1–7) noch fehlt. Leer = der Schritt ist erledigt. */
 export function schrittFehlt(c: Charakter, schritt: number, d: Spieldaten): Fehlt[] {
@@ -361,18 +363,22 @@ export function schrittFehlt(c: Charakter, schritt: number, d: Spieldaten): Fehl
       if (s && !(Number.isInteger(s.frist_auftraege) && s.frist_auftraege >= 1)) f.push({ art: 'frist' });
       break;
     }
+    case 7: {
+      const k = e.korb;
+      if (k.kauf.length) for (const text of kaufPruefen(erstellungVorschau(c, d), k.kauf, erstellungKorbPreis(c, d), d)) f.push({ art: 'korb', text });
+      break;
+    }
   }
   return f;
 }
 
 // ---------- Abschluss
 
-/** Schließt die Erstellung ab: Werte fest eintragen, Startgeld buchen, Schulden anlegen. Wirft, solange etwas fehlt. */
-export function erstellungAbschliessen(c: Charakter, d: Spieldaten, jetzt: Date = new Date()): Charakter {
-  for (let s = 1; s <= 6; s++) {
-    const f = schrittFehlt(c, s, d);
-    if (f.length) throw new Error(`Schritt ${s} ist nicht erledigt: ${f.map((x) => x.art).join(', ')}`);
-  }
+/**
+ * Der Charakter, wie er nach dem Abschluss aussähe, aber noch ohne den Einkauf aus Schritt 7: Werte fest
+ * eingetragen, Startgeld im Kassenbuch, Schulden angelegt. Grundlage für den Laden in Schritt 7.
+ */
+export function erstellungVorschau(c: Charakter, d: Spieldaten, jetzt: Date = new Date()): Charakter {
   const zeit = jetzt.toISOString();
   const x = erstellungAnwenden(c, d).charakter;
   const geld = startgeld(c, d);
@@ -387,4 +393,24 @@ export function erstellungAbschliessen(c: Charakter, d: Spieldaten, jetzt: Date 
     schulden: h.schulden ? { rest: rueckzahlung(h.schulden.groesse, d), frist_auftraege: h.schulden.frist_auftraege } : null,
     protokoll: [...c.protokoll, { zeit, art: 'erstellung_abgeschlossen' }]
   };
+}
+
+/** Preis des Korbs aus Schritt 7: Preis der SL, sonst der errechnete Preis nach der Verhandlung. */
+export function erstellungKorbPreis(c: Charakter, d: Spieldaten): number {
+  const k = c.erstellung!.korb;
+  return k.preis_sl ?? korbPreis(k.kauf, k.verhandlung, d);
+}
+
+/**
+ * Schließt die Erstellung ab: Werte fest eintragen, Startgeld buchen, Schulden anlegen, danach den Korb aus
+ * Schritt 7 kaufen (eine Buchung „Kauf“). Wirft, solange etwas fehlt.
+ */
+export function erstellungAbschliessen(c: Charakter, d: Spieldaten, jetzt: Date = new Date()): Charakter {
+  for (let s = 1; s <= 7; s++) {
+    const f = schrittFehlt(c, s, d);
+    if (f.length) throw new Error(`Schritt ${s} ist nicht erledigt: ${f.map((x) => x.art).join(', ')}`);
+  }
+  const x = erstellungVorschau(c, d, jetzt);
+  const korb = c.erstellung!.korb.kauf;
+  return korb.length ? kaufAnwenden(x, korb, erstellungKorbPreis(c, d), d, jetzt) : x;
 }

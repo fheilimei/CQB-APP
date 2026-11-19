@@ -398,7 +398,7 @@
 
   {#if inErstellung}
     {#key inErstellung.id}
-      <Erstellung start={inErstellung} d={daten} {abweichungModus} onspeichern={entwurfSpeichern}
+      <Erstellung start={inErstellung} d={daten} {abweichungModus} {probeModus} onspeichern={entwurfSpeichern}
         onverlassen={erstellungVerlassen} onfertig={erstellungFertig} />
     {/key}
   {:else if !aktiv}

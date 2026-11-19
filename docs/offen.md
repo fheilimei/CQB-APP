@@ -390,7 +390,7 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 2. **Meister mit zweiter Spezialisierung bei der Erstellung.** → Regelfragen R15.
 3. **Mindestskills der Spezialisierung beim Einstieg als erweiterte Form.** → Regelfragen R16.
 4. **Klasse wechseln nach einem Statrank-Up in Schritt 5.** → Regelfragen R17.
-5. **Laden in Schritt 7** fehlt noch (§ 3.14). Bis dahin wird nur das Startgeld gebucht.
+5. **Laden in Schritt 7.** Erledigt (19.11.2026): Einkauf im Laden mit dem Startgeld, gebucht mit „Abschließen“.
 6. **Noch nicht im Schreibmodus:** Klasse/Klassenweg, Geld, Optionen des Hintergrunds (Schulden, Coup, Vertrag). Ausrüstung: erledigt in Schritt 6. Kommen mit den Schritten 7 und 8. Klassenwechsel-Dialog kommt mit Schritt 8. Erledigt in Schritt 4: Grundwerte, Anpassungen der SL, Name, Aussehen, Freitexte des Hintergrunds.
 
 ## Offen aus Schritt 4 (Bogen, 17.11.2026)
@@ -417,7 +417,7 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 5. **Aufsätze im Gefecht anbringen.** Die App führt keine losen Aufsätze. *Vorläufig:* Der Spieler hakt an, was danach an der Waffe ist, und wählt nur, was er dabeihat.
 6. **Schnelllader und Ladestreifen.** → Regelfragen R11.
 7. **Magazine nach dem Gefecht füllen.** Entschieden (18.11.2026): Knopf „Magazine füllen“ außerhalb des Gefechts; leere Magazine werden gezählt statt verworfen. Dauer und Reihenfolge → Regelfragen R12.
-8. **Ausrüstung ohne Laden.** Im Schreibmodus frei eintragbar, ohne Kassenbuch und ohne Eintrag im Protokoll. Mit dem Laden (§ 3.14) ändert sich das.
+8. **Ausrüstung ohne Laden.** Erledigt (19.11.2026): Gekauft wird im Laden mit Kassenbuch; im Schreibmodus bleibt freies Eintragen ohne Geld.
 9. **Noch nicht da:** Knöpfe Getroffen und Ereignis (erledigt 18.11.2026), Wurfaktion (erledigt 18.11.2026), Nahkampf (erledigt 18.11.2026), Wunde versorgen (im Menü ausgegraut), Schaden beim Ziel vorrechnen im Schussbericht. Erledigt (18.11.2026): Malstep und Waffen-Einschränkung des ballistischen Schilds beim Schießen. Kommen mit Schritt 7 (Treffer, Wunden, Schutz).
 10. **Skill austauschen beim Schießen** (Konzept § 3.6) fehlt noch; der Schussrechner nimmt immer den Waffenskill der Waffe.
 

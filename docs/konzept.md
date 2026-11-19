@@ -78,7 +78,7 @@ Ein geführter Ablauf in Schritten. Er folgt der Reihenfolge des Regelwerks ([§
 	- Oben läuft das **Startgeld** live mit: Ersparnisse + gewählte Optionen + Einstiegsgehalt (Klasse ab Stufe 2 und Vertrag). Beträge aus `regeln.json` (`geld`).
 	- Darunter Freitext: Geburtsort, wichtige Personen, Lebensmittelpunkt.
 	- Mit Abschluss der Erstellung bucht die App das Startgeld ins Kassenbuch und legt die Schulden an ([§ 3.13](#313-geld-und-aufträge-m-r)).
-7. **Ausrüstung:** Einkauf im **Laden** ([§ 3.14](#314-laden-kaufen-und-verkaufen-m-r)) mit dem Startgeld; danach Trageorte zuweisen (Reiter Ausrüstung, [§ 3.0f](#30f-körperbild-silhouette-a-r)). *Bis der Laden gebaut ist, zeigt der Schritt nur Startgeld und Vorratslevel.*
+7. **Ausrüstung:** Einkauf im **Laden** ([§ 3.14](#314-laden-kaufen-und-verkaufen-m-r)) mit dem Startgeld (umgesetzt 19.11.2026): derselbe Inhalt wie der Reiter Laden, nur Kaufen; oben steht das Startgeld statt des Kontostands. Der Korb liegt als Leiste über Zurück und Abschließen, wird mit dem Entwurf gespeichert (bleibt also auch über „Später“ erhalten) und bleibt bis „Abschließen“ änderbar; das Fenster Korb hat statt „Kaufen“ nur „Fertig“. Reicht das Startgeld nicht, nennt der Knopf Abschließen den Fehlbetrag. Der Abschluss-Bericht nennt den Einkauf und was vom Startgeld bleibt; gebucht werden erst das Startgeld, dann eine Buchung „Kauf“. Trageorte weist der Spieler danach im Reiter Ausrüstung zu ([§ 3.0f](#30f-körperbild-silhouette-a-r)).
 
 **Stat-Voraussetzung bei der Erstellung:** Spezialisierung und erweiterte Form verlangen ihren Stat auf Rang A, die erweiterte Form auch den Stat ihrer Spezialisierung (Regelwerk: Klassen). „Weiter“ in Schritt 2 nennt den fehlenden Rang. Der Meister hat keine Stat-Voraussetzung.
 
@@ -477,7 +477,7 @@ Alles, was Schaden austeilt oder einsteckt, läuft über **einen Dialog in zwei 
 
 **Vorrat.** Granaten und Geschosse werden als Anzahl geführt. Sie sinkt automatisch beim Werfen und beim Laden eines Werfers. Von Hand lässt sie sich jederzeit wieder erhöhen. Nahkampfwaffen tragen ebenfalls eine Anzahl (meist 1); eine geworfene Nahkampfwaffe zieht 1 ab, eingesammelte Wurfmesser nach dem Gefecht werden von Hand wieder dazugezählt.
 
-**Ausrüstung eintragen.** Bis der Laden ([§ 3.14](#314-laden-kaufen-und-verkaufen-m-r)) fertig ist, trägt der Spieler Waffen, Munition, Aufsätze, Nahkampfwaffen, Vorrat und Rüstung im **Schreibmodus** im Reiter Ausrüstung ein, ohne Geld. Außerhalb des Gefechts sind dort aktive Waffe, Nachladen und Ladehemmung beheben frei (ohne Aktion).
+**Ausrüstung eintragen.** Gekauft wird im Laden ([§ 3.14](#314-laden-kaufen-und-verkaufen-m-r)); frei, ohne Geld, trägt der Spieler Waffen, Munition, Aufsätze, Nahkampfwaffen, Vorrat und Rüstung im **Schreibmodus** im Reiter Ausrüstung ein. Außerhalb des Gefechts sind dort aktive Waffe, Nachladen und Ladehemmung beheben frei (ohne Aktion).
 
 **Ladehemmung beheben** (Main): einfache Ladehemmung per Probe auf Control mit Waffenskill, Malsteps LH-Behebenmod. + Sichtstufe + Leiter (Krit: Main nicht verbraucht); schwere Ladehemmung ist im Gefecht nicht behebbar (nur Hinweis; außerhalb: Intellect-Probe, Zustand −1).
 
@@ -642,7 +642,7 @@ Regeln: Schulden, Coups und Verträge; Klassen (Gehalt).
 **Kauf und Verkauf** laufen über den Laden ([§ 3.14](#314-laden-kaufen-und-verkaufen-m-r)) und buchen automatisch.
 
 ### 3.14 Laden: Kaufen und Verkaufen (M, R)
-Regeln: Schusswaffen (Begriffserklärung: Geldwertspanne, Vorratslevel; Zustand: Preis, Verhandeln); Stats, Skills und Perks (Skillproben: Beschaffen). Abgestimmt mit dem Nutzer am 19.11.2026; Regelfragen R18, R42–R45, R47, R48. Umgesetzt am 19.11.2026 bis auf die Einbettung in Schritt 7 der Erstellung.
+Regeln: Schusswaffen (Begriffserklärung: Geldwertspanne, Vorratslevel; Zustand: Preis, Verhandeln); Stats, Skills und Perks (Skillproben: Beschaffen). Abgestimmt mit dem Nutzer am 19.11.2026; Regelfragen R18, R42–R45, R47, R48. Umgesetzt am 19.11.2026, auch in Schritt 7 der Erstellung ([§ 3.0](#30-charaktererstellung-m-r)).
 
 **Ort.** Eigener **fünfter Reiter „Laden“** (Bildzeichen Einkaufstasche, dünne Linien wie die anderen), zwischen Ausrüstung und Verlauf. Im Gefecht sichtbar, Handeln gesperrt („Im Gefecht wird nicht gehandelt.“), der Kontostand bleibt lesbar. Bei der Erstellung ist derselbe Inhalt Schritt 7.
 

@@ -247,6 +247,31 @@ describe('Abschluss der Erstellung', () => {
     expect(f.protokoll).toEqual([{ zeit: JETZT.toISOString(), art: 'erstellung_abgeschlossen' }]);
   });
 
+  it('kauft den Korb aus Schritt 7 nach dem Startgeld (eine Buchung „Kauf“)', () => {
+    const c = entwurf('rekrut', LEHRLING);
+    c.hintergrund.schulden = { groesse: 'mittel', glaeubiger: '', frist_auftraege: 6, sicherheit: '' };
+    c.erstellung!.korb = {
+      kauf: [{ ware: 'waffe:ak47', zustand: 'B', menge: 1 }, { ware: 'munition:762x39:HP', zustand: null, menge: 30 }],
+      verhandlung: { ergebnis: 'gewonnen', krit: false }, preis_sl: null
+    };
+    expect(schrittFehlt(c, 7, d)).toEqual([]);
+    const f = erstellungAbschliessen(c, d, JETZT);
+    expect(f.kassenbuch.map((b) => [b.art, b.betrag])).toEqual([['startgeld', 1300], ['kauf', -(325 + 45)]]);
+    expect(f.ausruestung.waffen).toHaveLength(1);
+    expect(f.ausruestung.waffen[0]).toMatchObject({ waffe: 'ak47', zustand: 'B' });
+    expect(f.ausruestung.munition).toEqual([{ kaliber: '762x39', typ: 'HP', anzahl: 30 }]);
+    expect(f.erstellung).toBeNull();
+  });
+
+  it('Preis der SL gilt für den Korb; reicht das Startgeld nicht, nennt Schritt 7 den Fehlbetrag', () => {
+    const c = entwurf('rekrut', LEHRLING);
+    c.erstellung!.korb = { kauf: [{ ware: 'waffe:ak47', zustand: 'A', menge: 1 }], verhandlung: { ergebnis: 'keine', krit: false }, preis_sl: 250 };
+    expect(erstellungAbschliessen(c, d, JETZT).kassenbuch.at(-1)).toMatchObject({ art: 'kauf', betrag: -250 });
+    c.erstellung!.korb.preis_sl = 400;
+    expect(schrittFehlt(c, 7, d)).toEqual([{ art: 'korb', text: 'Es fehlen 100 $.' }]);
+    expect(() => erstellungAbschliessen(c, d, JETZT)).toThrow('Schritt 7');
+  });
+
   it('verweigert den Abschluss, solange etwas fehlt', () => {
     expect(() => erstellungAbschliessen(entwurf('rekrut', ['C']), d)).toThrow('Schritt 2');
   });

@@ -2,9 +2,10 @@
 // Gespeichert werden nur Eingaben und Spielstand; alles Berechenbare entsteht im Regelkern.
 
 import type { Modifikator, Rang } from '../daten/typen';
+import type { KaufPosten, Verhandlung } from '../regeln/laden';
 
 /** Aktuelle Schemaversion. Bei jeder inkompatiblen Änderung erhöhen und eine Migration ergänzen (migration.ts). */
-export const SCHEMA = 6;
+export const SCHEMA = 7;
 
 export type Quelle = 'app' | 'hand';
 
@@ -55,6 +56,15 @@ export interface Erstellungsstand {
   /** Nur ohne Klasse: freie Punkte zu Beginn. */
   freie_punkte_start: number;
   kaeufe: Erstellungskauf[];
+  /** Schritt 7: Korb des Ladens; wird mit dem Abschluss zusammen mit dem Startgeld gebucht (konzept.md § 3.14). */
+  korb: Erstellungskorb;
+}
+
+export interface Erstellungskorb {
+  kauf: KaufPosten[];
+  verhandlung: Verhandlung;
+  /** Preis der SL für den ganzen Korb; null = der errechnete Preis. */
+  preis_sl: number | null;
 }
 
 /** Steps der SL für das ganze Gefecht (konzept.md § 3.8c, Block 3). */
@@ -342,7 +352,11 @@ function neueId(): string {
 }
 
 export function neueErstellung(): Erstellungsstand {
-  return { schritt: 1, ohne_klasse: false, klasse: null, stufe4: null, meister_skills: [], freie_punkte_start: 0, kaeufe: [] };
+  return { schritt: 1, ohne_klasse: false, klasse: null, stufe4: null, meister_skills: [], freie_punkte_start: 0, kaeufe: [], korb: leererKorb() };
+}
+
+export function leererKorb(): Erstellungskorb {
+  return { kauf: [], verhandlung: { ergebnis: 'keine', krit: false }, preis_sl: null };
 }
 
 /** Leerer Charakter im Status „erstellung“. statIds kommen aus stats.json, nie aus dem Code. */
