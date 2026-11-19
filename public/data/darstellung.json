@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-18",
+  "version": "2026-11-19",
   "herkunft": {
     "perk": {
       "zeichen": "◆",
@@ -137,5 +137,14 @@
   },
   "statgruppen": {
     "C": "Zum Ruhigbleiben"
+  },
+  "munitionsfarben": {
+    "FMJ": "#c9a227",
+    "HP": "#e0782a",
+    "AP": "#8e96a3",
+    "Unterschall": "#3fa7a0",
+    "Gummi": "#a07a58",
+    "Buckshot": "#7f9a3a",
+    "Slug": "#c3c8d0"
   }
 }

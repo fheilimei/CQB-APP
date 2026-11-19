@@ -971,7 +971,8 @@ Zeichen und Farben der Herkunftsmarkierung ([konzept.md § 3.0b](konzept.md#30b-
   "informationen": { "gesehen": "gesehen", "gehoert": "nur gehört", "funk": "per Funk gemeldet", "diese_runde": "diese Runde", "letzte_runde": "letzte Runde", "aelter": "älter" },
   "stand_bilder": { "stehen": "M10.2 4.2a2.2 2.2 0 1 0-4.4 0a2.2 2.2 0 1 0 4.4 0M8.0 6.6L8.0 14.5 …", "hocke": "…", "liegen": "…" },
   "zustand_bilder": { "geblendet": "M2 12Q12 3 22 12Q12 21 2 12 …", "adrenalinschock": "…", "gereizt": "…" },
-  "bewegung_pfeile": { "kriechen": 1, "gehen": 1, "laufen": 2, "rennen": 3, "hechten": "sprung" }
+  "bewegung_pfeile": { "kriechen": 1, "gehen": 1, "laufen": 2, "rennen": 3, "hechten": "sprung" },
+  "munitionsfarben": { "FMJ": "#c9a227", "HP": "#e0782a", "AP": "#8e96a3", "Unterschall": "#3fa7a0", "Gummi": "#a07a58", "Buckshot": "#7f9a3a", "Slug": "#c3c8d0" }
 }
 ```
 
@@ -983,6 +984,7 @@ Zeichen und Farben der Herkunftsmarkierung ([konzept.md § 3.0b](konzept.md#30b-
 - `bewegung_pfeile`: Anzeige der Bewegung dieser Runde neben der Figur: Zahl der Pfeile (›, ›› …) oder `"sprung"` für einen Bogenpfeil. Jede Bewegungsart und Hechten braucht einen Eintrag (Datenprüfung).
 - `leiter_pfeile`: Farbe der Pfeile ▲ ▼, wenn die Steps aus Adrenalin bzw. Ruhepuls kommen (Pflicht).
 - `statgruppen` (optional): Überschrift einer Statgruppe im Reiter Werte, auf die Adrenalin und Ruhepuls nicht wirken (Schlüssel wie `gruppe` in `stats.json`). Für die übrigen Gruppen rechnet die App die Überschrift aus `regeln.json` `leiter.stufen` („▲ Adrenalin · ▼ Ruhepuls“). Fehlt ein Eintrag, steht „Gruppe C“.
+- `munitionsfarben`: Farbe des Füllstands im Magazinsymbol (Reiter Ausrüstung) je Munitionstyp; Schlüssel wie die Typen in `munition.json`. Jeder Typ braucht eine Farbe (Datenprüfung). Mittlere Helligkeit wählen, damit sie auf hellem und dunklem Grund sichtbar ist; nicht das Rot von Adrenalin oder das Blau von Ruhepuls.
 - `informationen`: Anzeigenamen für Wahrnehmung, Güte und Alter einer Information (Schlüssel aus `regeln.json` `breakaction`); der Hinweis zur Breakaction baut daraus die Malsteps.
 
 Leiter, Zustand und Lage erscheinen nur in den Rechnern, nicht am Wert im Bogen.

@@ -107,6 +107,12 @@ describe('Datenprüfung erkennt Fehler', () => {
     expect(fehler).toContain('aufsaetze.json bajonett: Preis und Vorratslevel kommen von der Waffe');
   });
 
+  it('Munitionstyp ohne Farbe für das Magazinsymbol', () => {
+    const d = kopie();
+    delete d.darstellung.munitionsfarben!['HP'];
+    expect(pruefeDaten(d).join('\n')).toContain('Munitionstyp „HP“ ohne Farbe (munitionsfarben)');
+  });
+
   it('fehlende oder ungültige Wurf-Reichweite einer Nahkampfwaffe', () => {
     const d = kopie();
     const [a, b] = d.nahkampfwaffen.eintraege;

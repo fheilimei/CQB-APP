@@ -54,6 +54,7 @@ Rückmeldung des Nutzers vom 17.11.2026:
 - **Nicht nach dem Offensichtlichen fragen** (19.11.2026, Reizgas): Wer ein Fenster für eine Lage öffnet, steckt in dieser Lage (Reizgas → in der Wolke). Eine Gegenfrage („außerhalb“) nur dort, wo sie etwas ändert, und erst, wenn der Zustand schon besteht.
 - **Nichts ragt über den Rand** (19.11.2026, Laden): Zahlenspannen („1.125–1.500 $“) dürfen nach dem Strich umbrechen; nie langen Zahlentext ohne Umbruch in eine schmale Spalte oder einen gleich breiten Knopf setzen.
 - **Waren mit ihren Kernwerten** (19.11.2026, Laden): Alles, was Schaden macht (Munition, Nahkampfwaffen, Sprengmittel, Werfergeschosse), nennt DK und MW in der Zeile.
+- **Magazine als Bild** (19.11.2026, Reiter Ausrüstung): Magazine erscheinen als kleine Symbole mit Füllstand in der Farbe des Munitionstyps (`Magazinsymbol.svelte`, Farben aus `darstellung.json` `munitionsfarben`). Aufgeklappte Waffe: oben Werte, dann Magazine, dann Aufsätze; die beiden unteren Bereiche jeweils auf eigener Fläche.
 - Besonders aufgefallen: **Waffe wechseln** (`gefecht/WaffeWechseln.svelte`) und **Schießen** (`gefecht/Schiessen.svelte`).
 
 Jede Arbeit an der Oberfläche muss diese Punkte verbessern oder darf sie zumindest nicht verschlimmern.

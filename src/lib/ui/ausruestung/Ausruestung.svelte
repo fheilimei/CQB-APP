@@ -12,6 +12,7 @@
     sprengwaffe, waffeAktivieren, waffeVon, type Fuellziel
   } from '../../regeln/waffen';
   import Bericht from '../Bericht.svelte';
+  import Magazinsymbol from './Magazinsymbol.svelte';
   import type { Charakter, Magazin, WaffenEintrag } from '../../speicher/charakter';
   import { dkMw, patronenText, trageortName, zustandName, type Modus, type Zeile } from '../texte';
 
@@ -59,7 +60,8 @@
     return [voll ? `${voll} gefüllt` : '', p.length - voll ? `${p.length - voll} leer` : ''].filter(Boolean).join(', ');
   }
   const aufsatzName = (id: string) => d.aufsaetze.eintraege.find((a) => a.id === id)?.name ?? id;
-  const magText = (m: { inhalt: number; typ: string }) => (m.inhalt > 0 ? `${m.inhalt} ${m.typ}` : 'leer');
+  /** Farbe des Munitionstyps im Magazinsymbol (darstellung.json `munitionsfarben`). */
+  const mfarbe = (typ: string) => d.darstellung.munitionsfarben?.[typ] ?? null;
   const kaliberText = (id: string) => d.munition.eintraege.find((m) => m.id === id)?.name ?? id;
 
   function zielName(z: Fuellziel): string {
@@ -148,12 +150,24 @@
   </select>
 {/snippet}
 
+{#snippet magKachel(inhalt: number, groesse: number, typ: string, unter: string, eingesetzt = false)}
+  <div class="mag-kachel" class:eingesetzt>
+    <Magazinsymbol {inhalt} {groesse} farbe={inhalt > 0 ? mfarbe(typ) : null} />
+    <span class="zahl">{inhalt}</span>
+    <small>{inhalt > 0 ? typ : 'leer'}</small>
+    {#if unter}<small class="unter">{unter}</small>{/if}
+  </div>
+{/snippet}
+
 {#snippet waffe(e: WaffenEintrag)}
   {@const w = waffeVon(e, d)}
   {@const mun = munitionswerte(e, d)}
   {@const aktiv = c.ausruestung.aktive_waffe === e.id}
   {@const auf = offen === e.id}
   {@const wechsel = w.ladeart === 'wechselmagazin'}
+  {@const werfer = istWerfer(w)}
+  {@const dabei = magazineFuer(c, e, d)}
+  {@const aufsatzTeil = passendeAufsaetze(w, d).length > 0 || e.aufsaetze.length > 0}
   <li class:aktiv>
     <button class="zeile flach" aria-expanded={auf} onclick={() => (offen = auf ? null : e.id)}>
       <span class="name">
@@ -162,102 +176,134 @@
       </span>
       <span class="stand">
         {#if e.ladehemmung}<span class="lh">Ladehemmung</span>{/if}
-        {#if istWerfer(w)}{e.munitionstyp ? (sprengwaffe(e.munitionstyp, d)?.name ?? e.munitionstyp) : 'leer'}{:else}{magazinText(e, d)}{#if e.im_magazin > 0 && e.munitionstyp}<span class="hinweis">{e.munitionstyp}</span>{/if}{/if}
+        {#if werfer}{e.munitionstyp ? (sprengwaffe(e.munitionstyp, d)?.name ?? e.munitionstyp) : 'leer'}{:else}
+          <span class="stand-mag">
+            <Magazinsymbol klein inhalt={e.im_magazin} groesse={kapazitaet(e, d)} farbe={e.im_magazin > 0 ? mfarbe(e.munitionstyp) : null} />
+            <span class="stand-text">{magazinText(e, d)}{#if e.im_magazin > 0 && e.munitionstyp}<span class="hinweis">{e.munitionstyp}</span>{/if}</span>
+          </span>
+        {/if}
       </span>
       <span class="klapppfeil" aria-hidden="true">›</span>
     </button>
     {#if auf}
-      <div class="detail">
-        {#if istWerfer(w)}
-          <p>Geschosse: {kaliberName(w, d)}. Geladen wird aus dem Vorrat.</p>
-        {:else}
-          <p>{kaliberName(w, d)}{#if e.im_magazin > 0}, geladen {e.munitionstyp}{#if mun}: {dkMw(mun.dk, mun.mw, mun.stumpf)}{/if}{:else}, leer{/if}</p>
-          {#if wechsel && e.magazin}
-            <p>Eingesetzt: {sorteName(e.magazin.id)} <span class="hinweis">· Zustand {zustandName(e.magazin.zustand, d)}</span></p>
+      <div class="detail abschnitte">
+        <section class="abschnitt">
+          {#if werfer}
+            <p>Geschosse: {kaliberName(w, d)}. Geladen wird aus dem Vorrat.</p>
+          {:else}
+            <p>{kaliberName(w, d)}{#if e.im_magazin > 0}, geladen {e.munitionstyp}{#if mun}: {dkMw(mun.dk, mun.mw, mun.stumpf)}{/if}{:else}, leer{/if}</p>
           {/if}
-          {#if passendeMagazine(e.waffe, d).length}
-            <p>{wechsel ? 'Passende Magazine' : 'Schnelllader bzw. Ladestreifen'}: {magazinBestand(e)} <span class="hinweis">(Karte Magazine)</span></p>
-          {/if}
-        {/if}
-        <p>Zustand {zustandName(e.zustand, d)}</p>
-        {#if e.ladehemmung}<p class="fehler">{e.ladehemmung === 'schwer' ? 'Schwere Ladehemmung: nur außerhalb des Gefechts behebbar.' : 'Einfache Ladehemmung: Die Waffe ist blockiert.'}</p>{/if}
-        {#if w.besonderheiten}<p class="hinweis">{w.besonderheiten}</p>{/if}
-
-        {#if !schreiben && (e.aufsaetze.length || loseAufsaetzeFuer(c, e, d).length)}
-          <div class="gruppe">
-            <span class="gruppe-titel">Aufsätze</span>
-            {#each e.aufsaetze as t (t.id)}
-              <div class="mag-zeile"><span>{aufsatzName(t.id)} <span class="hinweis">· Zustand {zustandName(t.zustand, d)}</span></span>
-                {#if !imGefecht}<button class="flach klein" onclick={() => onaendern(aufsatzAbnehmen(c, e, t.id, d))}>abnehmen</button>{/if}
-              </div>
-            {/each}
-            {#if !imGefecht}
-              {#each loseAufsaetzeFuer(c, e, d) as l (l.index)}
-                <div class="mag-zeile"><span class="hinweis">{l.aufsatz.name} (lose)</span>
-                  <button class="flach klein" onclick={() => onaendern(aufsatzAnbringen(c, e, l.index, d))}>anbringen</button>
-                </div>
-              {/each}
-            {:else}
-              <p class="hinweis">Im Gefecht: Main → Aufsatz anbringen oder abnehmen.</p>
-            {/if}
-          </div>
-        {/if}
-
-        {#if !imGefecht}
-          <div class="knoepfe">
-            {#if !aktiv}<button onclick={() => onaendern(waffeAktivieren(c, e.id))}>Als aktive Waffe nehmen</button>{/if}
-            {#if nachladearten(c, e, d).length}<button onclick={() => onnachladen(e.id)}>Nachladen</button>{/if}
-            {#if fuellTypen(e).length}<button aria-expanded={fuellen === e.id} onclick={() => (fuellen = fuellen === e.id ? null : e.id)}>Magazine füllen</button>{/if}
-            {#if e.ladehemmung}<button onclick={() => onladehemmung(e.id)}>Ladehemmung beheben</button>{/if}
-          </div>
-          {#if fuellen === e.id}
-            <div class="gruppe" role="group" aria-label="Füllen mit">
-              <span class="gruppe-titel">Füllen mit</span>
-              <div class="auswahlreihe">
-                {#each fuellTypen(e) as t (t.typ)}<button onclick={() => fuellenFrage(e, t.typ)}>{t.typ} ({t.anzahl})</button>{/each}
-              </div>
-              <p class="hinweis">Gefüllt wird {wechsel ? 'erst die Waffe, dann angebrochene, dann leere passende Magazine' : 'jeder leere passende Schnelllader bzw. Ladestreifen'}; was schon einen anderen Typ enthält, bleibt, wie es ist.</p>
+          <p>Zustand {zustandName(e.zustand, d)}</p>
+          {#if e.ladehemmung}<p class="fehler">{e.ladehemmung === 'schwer' ? 'Schwere Ladehemmung: nur außerhalb des Gefechts behebbar.' : 'Einfache Ladehemmung: Die Waffe ist blockiert.'}</p>{/if}
+          {#if w.besonderheiten}<p class="hinweis">{w.besonderheiten}</p>{/if}
+          {#if schreiben}
+            <div class="bearbeiten">
+              <label>Zustand
+                <select value={e.zustand} onchange={(ev) => setze({ ...e, zustand: (ev.target as HTMLSelectElement).value })}>
+                  {#each d.regeln.waffenzustand.stufen as z (z)}<option value={z}>{zustandName(z, d)}</option>{/each}
+                </select>
+              </label>
+              <label>Trageort
+                <select value={e.trageort} onchange={(ev) => setze({ ...e, trageort: (ev.target as HTMLSelectElement).value })}>
+                  {#each trageorte as t (t)}<option value={t}>{trageortName(t, d)}</option>{/each}
+                </select>
+              </label>
             </div>
           {/if}
+        </section>
+
+        {#if !werfer}
+          <section class="abschnitt teil">
+            <h3 class="abschnitt-titel">Magazine</h3>
+            <div class="mag-reihe">
+              {@render magKachel(e.im_magazin, kapazitaet(e, d), e.munitionstyp, 'in der Waffe', true)}
+              {#each dabei as { m, index } (index)}
+                {@render magKachel(m.inhalt, magazinPlatz(m.id, d), m.typ, '')}
+              {/each}
+            </div>
+            {#if wechsel && e.magazin}
+              <p class="hinweis">Eingesetzt: {sorteName(e.magazin.id)} · Zustand {zustandName(e.magazin.zustand, d)}</p>
+            {/if}
+            {#if dabei.length}
+              <p class="hinweis">{wechsel ? 'Daneben die passenden Magazine' : 'Daneben die passenden Schnelllader bzw. Ladestreifen'} ({magazinBestand(e)}).</p>
+            {:else if passendeMagazine(e.waffe, d).length}
+              <p class="hinweis">{wechsel ? 'Keine weiteren passenden Magazine dabei.' : 'Keine passenden Schnelllader bzw. Ladestreifen dabei.'}</p>
+            {/if}
+            {#if !imGefecht && (nachladearten(c, e, d).length || fuellTypen(e).length)}
+              <div class="knoepfe">
+                {#if nachladearten(c, e, d).length}<button onclick={() => onnachladen(e.id)}>Nachladen</button>{/if}
+                {#if fuellTypen(e).length}<button aria-expanded={fuellen === e.id} onclick={() => (fuellen = fuellen === e.id ? null : e.id)}>Magazine füllen <span class="klapppfeil" aria-hidden="true">›</span></button>{/if}
+              </div>
+              {#if fuellen === e.id}
+                <div class="gruppe" role="group" aria-label="Füllen mit">
+                  <span class="gruppe-titel">Füllen mit</span>
+                  <div class="auswahlreihe">
+                    {#each fuellTypen(e) as t (t.typ)}<button onclick={() => fuellenFrage(e, t.typ)}><span class="typpunkt" style:--mfarbe={mfarbe(t.typ)}></span>{t.typ} ({t.anzahl})</button>{/each}
+                  </div>
+                  <p class="hinweis">Gefüllt wird {wechsel ? 'erst die Waffe, dann angebrochene, dann leere passende Magazine' : 'jeder leere passende Schnelllader bzw. Ladestreifen'}; was schon einen anderen Typ enthält, bleibt, wie es ist.</p>
+                </div>
+              {/if}
+            {/if}
+            {#if schreiben}
+              <div class="bearbeiten">
+                <label>Munition in der Waffe
+                  {@render typWahl(munitionstypen(w, d), e.munitionstyp, (t) => setze({ ...e, munitionstyp: t }))}
+                </label>
+                {#if wechsel}
+                  <label>Eingesetztes Magazin
+                    <select value={e.magazin?.id ?? ''} onchange={(ev) => onaendern(magazinsorteSetzen(c, e, (ev.target as HTMLSelectElement).value, d))}>
+                      {#each passendeMagazine(e.waffe, d) as m (m.id)}<option value={m.id}>{m.name}</option>{/each}
+                    </select>
+                  </label>
+                {/if}
+                <label>In der Waffe (höchstens {kapazitaet(e, d)})
+                  <input type="number" inputmode="numeric" min="0" max={kapazitaet(e, d)} value={e.im_magazin}
+                    onchange={(ev) => setze({ ...e, im_magazin: Math.min(kapazitaet(e, d), zahl((ev.target as HTMLInputElement).value)), munitionstyp: e.munitionstyp || (munitionstypen(w, d)[0] ?? '') })} />
+                </label>
+              </div>
+            {/if}
+          </section>
+        {:else if !imGefecht && nachladearten(c, e, d).length}
+          <div class="knoepfe"><button onclick={() => onnachladen(e.id)}>Nachladen</button></div>
         {/if}
 
-        {#if schreiben}
-          <div class="bearbeiten">
-            {#if !istWerfer(w)}
-              <label>Munition in der Waffe
-                {@render typWahl(munitionstypen(w, d), e.munitionstyp, (t) => setze({ ...e, munitionstyp: t }))}
-              </label>
-              {#if wechsel}
-                <label>Eingesetztes Magazin
-                  <select value={e.magazin?.id ?? ''} onchange={(ev) => onaendern(magazinsorteSetzen(c, e, (ev.target as HTMLSelectElement).value, d))}>
-                    {#each passendeMagazine(e.waffe, d) as m (m.id)}<option value={m.id}>{m.name}</option>{/each}
-                  </select>
-                </label>
-              {/if}
-              <label>In der Waffe (höchstens {kapazitaet(e, d)})
-                <input type="number" inputmode="numeric" min="0" max={kapazitaet(e, d)} value={e.im_magazin}
-                  onchange={(ev) => setze({ ...e, im_magazin: Math.min(kapazitaet(e, d), zahl((ev.target as HTMLInputElement).value)), munitionstyp: e.munitionstyp || (munitionstypen(w, d)[0] ?? '') })} />
-              </label>
-            {/if}
-            <label>Zustand
-              <select value={e.zustand} onchange={(ev) => setze({ ...e, zustand: (ev.target as HTMLSelectElement).value })}>
-                {#each d.regeln.waffenzustand.stufen as z (z)}<option value={z}>{zustandName(z, d)}</option>{/each}
-              </select>
-            </label>
-            <label>Trageort
-              <select value={e.trageort} onchange={(ev) => setze({ ...e, trageort: (ev.target as HTMLSelectElement).value })}>
-                {#each trageorte as t (t)}<option value={t}>{trageortName(t, d)}</option>{/each}
-              </select>
-            </label>
-            {#if passendeAufsaetze(w, d).length}
-              <fieldset>
-                <legend>Aufsätze</legend>
-                {#each passendeAufsaetze(w, d) as a (a.id)}
-                  <label class="schalter"><input type="checkbox" checked={e.aufsaetze.some((t) => t.id === a.id)}
-                    onchange={(ev) => aufsatzUmschalten(e, a.id, (ev.target as HTMLInputElement).checked)} /> {a.name}</label>
+        {#if aufsatzTeil}
+          <section class="abschnitt teil">
+            <h3 class="abschnitt-titel">Aufsätze</h3>
+            {#if schreiben}
+              {#each passendeAufsaetze(w, d) as a (a.id)}
+                <label class="schalter"><input type="checkbox" checked={e.aufsaetze.some((t) => t.id === a.id)}
+                  onchange={(ev) => aufsatzUmschalten(e, a.id, (ev.target as HTMLInputElement).checked)} /> {a.name}</label>
+              {/each}
+            {:else}
+              {#each e.aufsaetze as t (t.id)}
+                <div class="mag-zeile"><span>{aufsatzName(t.id)} <span class="hinweis">· Zustand {zustandName(t.zustand, d)}</span></span>
+                  {#if !imGefecht}<button class="flach klein" onclick={() => onaendern(aufsatzAbnehmen(c, e, t.id, d))}>abnehmen</button>{/if}
+                </div>
+              {:else}
+                <p class="hinweis">Kein Aufsatz angebracht.</p>
+              {/each}
+              {#if !imGefecht}
+                {#each loseAufsaetzeFuer(c, e, d) as l (l.index)}
+                  <div class="mag-zeile"><span class="hinweis">{l.aufsatz.name} (lose)</span>
+                    <button class="flach klein" onclick={() => onaendern(aufsatzAnbringen(c, e, l.index, d))}>anbringen</button>
+                  </div>
                 {/each}
-              </fieldset>
+              {:else}
+                <p class="hinweis">Im Gefecht: Main → Aufsatz anbringen oder abnehmen.</p>
+              {/if}
             {/if}
+          </section>
+        {/if}
+
+        {#if !imGefecht && (!aktiv || e.ladehemmung)}
+          <div class="knoepfe">
+            {#if !aktiv}<button onclick={() => onaendern(waffeAktivieren(c, e.id))}>Als aktive Waffe nehmen</button>{/if}
+            {#if e.ladehemmung}<button onclick={() => onladehemmung(e.id)}>Ladehemmung beheben</button>{/if}
+          </div>
+        {/if}
+        {#if schreiben}
+          <div class="knoepfe">
             {#if e.ladehemmung}<button onclick={() => setze({ ...e, ladehemmung: null })}>Ladehemmung von Hand entfernen</button>{/if}
             <button class="gefahr" onclick={() => waffeEntfernen(e)}>Waffe entfernen</button>
           </div>
@@ -332,20 +378,26 @@
         {#each magazinGruppen as g (g.sorte.id)}
           <li class="mag-gruppe">
             <span class="name"><strong>{g.sorte.name}</strong><span class="hinweis">{magazinName(g.sorte, d).slice(g.sorte.name.length + 1)} · {g.sorte.groesse} Schuss</span></span>
-            {#each g.stuecke as { m, index } (index)}
-              {#if schreiben}
+            {#if schreiben}
+              {#each g.stuecke as { m, index } (index)}
                 <div class="mag-bearbeiten">
+                  <Magazinsymbol inhalt={m.inhalt} groesse={g.sorte.groesse} farbe={m.inhalt > 0 ? mfarbe(m.typ) : null} klein />
                   <input type="number" inputmode="numeric" min="0" max={g.sorte.groesse} value={m.inhalt} aria-label="Inhalt"
                     onchange={(ev) => magazinSetzen(index, { inhalt: zahl((ev.target as HTMLInputElement).value) })} />
                   {#if m.inhalt > 0}{@render typWahl(sorteTypen(m.id), m.typ, (t) => magazinSetzen(index, { typ: t }))}{:else}<span class="hinweis">leer</span>{/if}
                   <button class="flach klein gefahr-text" aria-label="Magazin entfernen" onclick={() => ausr({ magazine: c.ausruestung.magazine.filter((_, j) => j !== index) })}>✕</button>
                 </div>
-              {:else}
-                <div class="mag-zeile"><span class="zahl">{magText(m)}</span>
-                  {#if !imGefecht && m.inhalt > 0}<button class="flach klein" onclick={() => onaendern(magazinLeeren(c, index, d))}>leeren</button>{/if}
-                </div>
-              {/if}
-            {/each}
+              {/each}
+            {:else}
+              <div class="mag-reihe">
+                {#each g.stuecke as { m, index } (index)}
+                  <div class="mag-spalte">
+                    {@render magKachel(m.inhalt, g.sorte.groesse, m.typ, '')}
+                    {#if !imGefecht && m.inhalt > 0}<button class="flach klein" onclick={() => onaendern(magazinLeeren(c, index, d))}>leeren</button>{/if}
+                  </div>
+                {/each}
+              </div>
+            {/if}
           </li>
         {/each}
       </ul>
@@ -526,14 +578,28 @@
 
 <style>
   .name { display: flex; flex-direction: column; min-width: 0; }
+  /* Magazine und Aufsätze als eigene Fläche, damit sie sich von den Werten oben abheben (Wunsch 19.11.2026). */
+  .detail .abschnitt.teil { background: var(--flaeche-2); border-radius: var(--radius); padding: var(--abstand-3); border-top: none; }
+  .detail.abschnitte { gap: var(--abstand-3); }
+  .abschnitt h3.abschnitt-titel { font-size: 0.95rem; }
+  .mag-reihe { display: flex; flex-wrap: wrap; gap: var(--abstand-2); align-items: flex-start; }
+  .mag-spalte { display: flex; flex-direction: column; align-items: center; gap: var(--abstand-1); }
+  .mag-kachel { display: flex; flex-direction: column; align-items: center; gap: var(--abstand-1); min-width: 52px;
+    padding: var(--abstand-2) var(--abstand-1); border: 1px solid var(--linie); border-radius: var(--radius); background: var(--flaeche); }
+  .mag-kachel.eingesetzt { border: 2px solid var(--akzent); }
+  .mag-kachel .zahl { font-size: 1.1rem; line-height: 1; }
+  .mag-kachel small { font-size: 0.75rem; color: var(--text-2); line-height: 1.1; text-align: center; }
+  .mag-kachel .unter { color: var(--akzent); }
+  .stand-mag { display: flex; align-items: center; gap: var(--abstand-2); }
+  .stand-text { display: flex; flex-direction: column; align-items: flex-end; }
+  .typpunkt { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--mfarbe); margin-right: var(--abstand-1); vertical-align: middle; }
   .stand { text-align: right; font-family: var(--schrift-zahl); font-variant-numeric: tabular-nums; white-space: nowrap; display: flex; flex-direction: column; align-items: flex-end; }
   .aktiv-text { color: var(--akzent); font-weight: 400; }
   li.aktiv .zeile strong { color: var(--akzent); }
   .lh { color: var(--gefahr); font-size: 0.8rem; font-weight: 400; }
   .knoepfe { display: flex; flex-wrap: wrap; gap: var(--abstand-2); }
-  .bearbeiten { display: flex; flex-direction: column; gap: var(--abstand-3); border-top: 1px dashed var(--linie); padding-top: var(--abstand-3); }
+  .bearbeiten { display: flex; flex-direction: column; gap: var(--abstand-3); }
   .bearbeiten label:not(.schalter) { margin: 0; display: flex; flex-direction: column; gap: var(--abstand-1); font-weight: 400; }
-  fieldset { border: 1px solid var(--linie); border-radius: var(--radius); margin: 0; }
   .neu { display: flex; gap: var(--abstand-2); }
   .neu select { flex: 1; min-width: 0; }
   .anzahl-zeile { display: flex; align-items: center; gap: var(--abstand-2); justify-content: space-between; padding: var(--abstand-1) 0; min-height: 52px; }
@@ -543,7 +609,7 @@
   .mag-gruppe { display: flex; flex-direction: column; gap: var(--abstand-1); padding: var(--abstand-2) 0; }
   .mag-zeile { display: flex; align-items: center; justify-content: space-between; gap: var(--abstand-2); min-height: 44px; }
   .mag-bearbeiten { display: flex; align-items: center; gap: var(--abstand-2); }
-  .mag-bearbeiten input { width: 5em; }
+  .mag-bearbeiten input { width: 5em; flex: none; }
   .mag-bearbeiten select { flex: 1; min-width: 0; }
   .anzahl-feld { width: 6em; }
 </style>

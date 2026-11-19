@@ -531,6 +531,8 @@ export function pruefeDaten(d: Spieldaten): string[] {
 
   // ---------- darstellung.json
   for (const t of ['stat', 'skill', 'perk'] as const) if (!d.darstellung.typen[t]) f('darstellung.json', `Typ „${t}“ fehlt`);
+  for (const t of new Set(d.munition.eintraege.flatMap((m) => Object.keys(m.typen))))
+    if (!d.darstellung.munitionsfarben?.[t]) f('darstellung.json', `Munitionstyp „${t}“ ohne Farbe (munitionsfarben)`);
   for (const [name, h] of [...Object.entries(d.darstellung.herkunft), ...Object.entries(d.darstellung.typen)])
     if (NUR_STEPS.includes(h.zeichen)) f('darstellung.json', `„${name}“ nutzt ${h.zeichen}; ▲ und ▼ sind für Steps reserviert`);
   for (const id of Object.keys(r.grundwerte))

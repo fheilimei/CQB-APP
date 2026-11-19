@@ -557,6 +557,8 @@ export interface Darstellung {
   bewegung_pfeile: Record<string, number | 'sprung'>;
   /** Überschrift einer Statgruppe, auf die Adrenalin und Ruhepuls nicht wirken (Schlüssel wie `gruppe` in stats.json). */
   statgruppen?: Record<string, string>;
+  /** Farbe des Füllstands im Magazinsymbol je Munitionstyp (Schlüssel wie die Typen in munition.json). */
+  munitionsfarben?: Record<string, string>;
 }
 
 /** Alle Spieldaten zusammen, wie der Regelkern und die Oberfläche sie bekommen. */
