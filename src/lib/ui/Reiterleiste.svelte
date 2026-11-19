@@ -82,19 +82,18 @@
       <button class="flach" class:an={reiter === r.id} aria-current={reiter === r.id ? 'page' : undefined}
         aria-label={r.name} title={r.name} onclick={() => tipp(() => onwahl(r.id))}>
         <svg viewBox="0 0 24 24" aria-hidden="true">
+          <!-- Gleicher Stil wie Stand, Bewegung und Zustände: dünne Linien (1,5), offene Formen, runde Enden. -->
           {#if r.id === 'figur'}
-            <circle cx="12" cy="7" r="3.5" />
-            <path d="M4.5 21v-2.5a7.5 7.5 0 0 1 15 0V21" />
+            <path d="M14.2 4.4a2.2 2.2 0 1 0-4.4 0a2.2 2.2 0 1 0 4.4 0M12 6.8V14.5M9 21.5L12 14.5L15 21.5M8 13L12 8.6L16 13" />
           {:else if r.id === 'werte'}
-            <rect x="3.5" y="4.5" width="17" height="15" rx="1.5" />
-            <path d="M3.5 9.5h17M3.5 14.5h17M10 4.5v15" />
+            <rect x="4" y="5" width="16" height="14" rx="1.5" />
+            <path d="M4 9.7H20M4 14.3H20M9.5 5V19" />
           {:else if r.id === 'ausruestung'}
-            <path d="M9 6V4.5a3 3 0 0 1 6 0V6" />
-            <rect x="5" y="6" width="14" height="15" rx="3" />
-            <path d="M8.5 13h7v4h-7z M5 11h14" />
+            <path d="M9.5 6.5V5a2.5 2.5 0 0 1 5 0v1.5" />
+            <rect x="6" y="6.5" width="12" height="14" rx="3" />
+            <path d="M6 11Q12 13.5 18 11M9.5 15h5v3h-5z" />
           {:else}
-            <path d="M12 6.5C10 5 7 4.5 3 5v13.5c4-.5 7 0 9 1.5 2-1.5 5-2 9-1.5V5c-4-.5-7 0-9 1.5z" />
-            <path d="M12 6.5V20" />
+            <path d="M12 7C10 5.5 7 5 3.5 5.5V18.5C7 18 10 18.5 12 20C14 18.5 17 18 20.5 18.5V5.5C17 5 14 5.5 12 7ZM12 7V20" />
           {/if}
         </svg>
       </button>
@@ -119,10 +118,9 @@
   .leiste button { border-radius: 0; padding: 0; min-width: 0; width: 100%; color: var(--text-2);
     display: flex; align-items: center; justify-content: center; }
   .leiste button + button { border-top: 1px solid var(--linie); }
-  svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
   /* Gewählter Reiter: Akzentfarbe, Fläche und Balken am linken Rand, nicht nur Farbe. */
   .leiste button.an { color: var(--akzent); background: var(--gewaehlt); box-shadow: inset 3px 0 0 var(--akzent); }
-  .leiste button.an svg { stroke-width: 2.3; }
   .einklappen { min-height: 40px; font-size: 0.9rem; }
 
   /* Eingeklappt: Lasche, flacher und breiter (Wunsch 18.11.2026): sichtbar 32 × 52 px, ragt in den Inhalt.
