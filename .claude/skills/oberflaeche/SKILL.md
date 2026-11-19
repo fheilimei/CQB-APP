@@ -55,6 +55,7 @@ Rückmeldung des Nutzers vom 17.11.2026:
 - **Nichts ragt über den Rand** (19.11.2026, Laden): Zahlenspannen („1.125–1.500 $“) dürfen nach dem Strich umbrechen; nie langen Zahlentext ohne Umbruch in eine schmale Spalte oder einen gleich breiten Knopf setzen.
 - **Waren mit ihren Kernwerten** (19.11.2026, Laden): Alles, was Schaden macht (Munition, Nahkampfwaffen, Sprengmittel, Werfergeschosse), nennt DK und MW in der Zeile.
 - **Magazine als Bild** (19.11.2026, Reiter Ausrüstung): Magazine erscheinen als kleine Symbole mit Füllstand in der Farbe des Munitionstyps (`Magazinsymbol.svelte`, Farben aus `darstellung.json` `munitionsfarben`). Aufgeklappte Waffe: oben Werte, dann Magazine, dann Aufsätze; die beiden unteren Bereiche jeweils auf eigener Fläche.
+- **Handlung am Gegenstand statt allgemeiner Knopf** (20.11.2026, Magazine): Man tippt das Magazin an und bekommt dort Einsetzen · Befüllen · Leeren, statt Knöpfe „Nachladen“ / „Magazine füllen“, die immer dastehen. Kleine Knöpfe in Listen (Aufsatz abnehmen ✕, anbringen ✓) sind normale Knöpfe mit Rahmen und Fläche, nicht flach, und tragen ein Zeichen statt eines Worts (Name für Vorleseprogramme im `aria-label`).
 - Besonders aufgefallen: **Waffe wechseln** (`gefecht/WaffeWechseln.svelte`) und **Schießen** (`gefecht/Schiessen.svelte`).
 
 Jede Arbeit an der Oberfläche muss diese Punkte verbessern oder darf sie zumindest nicht verschlimmern.
