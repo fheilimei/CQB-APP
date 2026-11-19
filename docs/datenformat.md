@@ -562,7 +562,7 @@ Die **Quelle** steht nicht im Modifikator; sie ergibt sich aus dem Ort (Perk, An
 - `schrotzahl`: nur Buckshot. Kugeln je Treffer und Band; fehlendes Band = keine Kugel (Regelwerk: Munitionstypen, Schrotflinten).
 - `stumpf`: Gummigeschosse. Keine DK (`null`), immer Wuchttreffer (Regelwerk: Schaden, Blutung und Verletzungen, Stumpfe Treffer). Bei Schrot wie Slug, ohne Schrotzahl.
 - `unterschall`: von Haus aus (9x18, .38 Special, 45 ACP: Feld beim Kaliber, `"unterschall": true`) oder als eigener Typ „Unterschall“ (Sonderladung). Wirkt nur mit Schalldämpfer auf die Lautstärke.
-- `vorratslevel`, `preis_10` (Preis je 10 Schuss): nur bei Typen, für die das Regelwerk sie nennt.
+- `vorratslevel`, `preis_10` (Geldwertspanne je 10 Schuss): Pflicht bei jedem Typ (Laden). Das Regelwerk nennt sie nur für Gummi und das Vorratslevel der Unterschall-Sonderladung; alle anderen sind vorläufig (`"vorlaeufig": true`, Regelfrage R18 in offen.md).
 
 ---
 
@@ -619,6 +619,7 @@ Die **Quelle** steht nicht im Modifikator; sie ergibt sich aus dem Ort (Perk, An
 - `ladeart`: `wechselmagazin`, `trommel`, `roehrenmagazin`, `fest` oder `einzelschuss` (Werfer). Bestimmt den Ablauf beim Nachladen (Regelwerk: Kampfsystem, Nachladen). `zubehoer`: passendes Zubehör (`schnelllader`, `ladestreifen`), falls die Ladeart es erlaubt.
 - `betriebsarten`: umschaltbare Bauart ohne eigenen Feuermodus (SPAS-12: Pump-Action). Überschreibt `feuerrate` und `lh_prozent` des Modus `EF`, solange sie gewählt ist; Umschalten ohne Aktion.
 - `lauter`, `leiser`: Abweichung der Lautstärke in Bändern, wenn die Waffe lauter oder leiser als üblich ist (Regelwerk: Wahrnehmung, Lautstärken). Sonst fehlt das Feld.
+- `ersatzmagazin`: nur bei `ladeart: wechselmagazin`, Pflicht. `preis`: Geldwertspanne eines Ersatzmagazins in Standardgröße; Vorratslevel wie die Waffe. Vorläufig (R18). Erweiterte Magazine stehen mit eigenem Preis in `aufsaetze.json`.
 - `anschluesse`: `schiene_oben`, `schiene_unten`, `schiene_seitlich`, `muendung_pistole`, `muendung_gewehr`, `magazin` (Regelwerk: Schusswaffen, Aufsätze). `magazine`: Größen der erweiterten Magazine, wenn `magazin` angegeben ist. Ein Aufsatz passt, wenn sein Anschluss hier steht oder er die Waffe ausdrücklich nennt ([§ aufsaetze.json](#aufsaetzejson)).
 
 ---
@@ -707,7 +708,7 @@ Die Wirkung eines Aufsatzes steht hier, nicht bei der Waffe, weil ein Aufsatz an
 - `waffe`: Aufsatz, der selbst eine Waffe ist (Unterlaufwerfer M203 → `waffen.json`). `nahkampfwaffe`: Aufsatz, der eine Nahkampfwaffe ist (Bajonett → `nahkampfwaffen.json`).
 - Mündungsaufsätze gibt es je Kaliberklasse (`schalldaempfer_pistole`, `schalldaempfer_gewehr`, `kompensator_pistole`, `kompensator_gewehr`; Kompensator für beide Klassen entschieden 16.11.2026). Erweiterte Magazine heißen `magazin_<waffe>_<größe>` bzw. `trommel_<waffe>_<größe>`.
 - **`zubehoer`** (zweite Liste in der Datei): mitgeführtes Zubehör mit `id`, `name`, `passt_zu` (Text), `vorratslevel`, `preis`, `wirkung`. Waffen nennen passendes Zubehör im Feld `zubehoer`.
-- Aufsätze haben noch keinen `preis` und kein `vorratslevel`; das Regelwerk nennt keine. Geklärt wird das, wenn der Laden gebaut wird (offen.md).
+- `vorratslevel`, `preis` (Geldwertspanne je Stück): Pflicht, vorläufig (R18). Ausnahme: Aufsätze mit `waffe` oder `nahkampfwaffe` tragen keine eigenen Werte; es gelten die der Waffe (M203: `waffen.json`, Bajonett: `nahkampfwaffen.json`).
 - `setzt`: Umstand der Lage, den der eingeschaltete Aufsatz auslöst (Zweibein: Waffe gilt als aufgelegt).
 - `hinweis`: Text für Wirkungen, die die App nicht rechnet.
 

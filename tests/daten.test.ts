@@ -83,6 +83,19 @@ describe('Datenprüfung erkennt Fehler', () => {
     expect(fehler).toContain('Garbenfaktor 3 passt nicht');
   });
 
+  it('fehlende Preise und Vorratslevel für den Laden', () => {
+    const d = kopie();
+    delete d.munition.eintraege.find((m) => m.id === '9x19')!.typen.FMJ!.preis_10;
+    delete d.waffen.eintraege.find((w) => w.id === 'ak47')!.ersatzmagazin;
+    d.aufsaetze.eintraege.find((a) => a.id === 'zweibein')!.vorratslevel = 6;
+    d.aufsaetze.eintraege.find((a) => a.id === 'bajonett')!.preis = { min: 1, max: 2 };
+    const fehler = pruefeDaten(d).join('\n');
+    expect(fehler).toContain('munition.json 9x19 FMJ: Geldwertspanne fehlt');
+    expect(fehler).toContain('waffen.json ak47 ersatzmagazin: Geldwertspanne fehlt');
+    expect(fehler).toContain('aufsaetze.json zweibein: Vorratslevel fehlt oder liegt nicht bei 1–5');
+    expect(fehler).toContain('aufsaetze.json bajonett: Preis und Vorratslevel kommen von der Waffe');
+  });
+
   it('fehlende oder ungültige Wurf-Reichweite einer Nahkampfwaffe', () => {
     const d = kopie();
     const [a, b] = d.nahkampfwaffen.eintraege;

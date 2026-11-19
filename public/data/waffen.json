@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-16",
+  "version": "2026-11-19",
   "eintraege": [
     {
       "id": "makarov",
@@ -32,7 +32,14 @@
       "lh_beheben_mod": 0,
       "zuverlaessigkeit": "zuverlaessig",
       "anschluesse": [],
-      "besonderheiten": "ungenau, zuverlässig. Makarov PB: Schalldämpfer eingebaut."
+      "besonderheiten": "ungenau, zuverlässig. Makarov PB: Schalldämpfer eingebaut.",
+      "ersatzmagazin": {
+        "preis": {
+          "min": 10,
+          "max": 40
+        },
+        "vorlaeufig": true
+      }
     },
     {
       "id": "five_seven",
@@ -73,7 +80,14 @@
         20,
         30
       ],
-      "besonderheiten": "genau, zuverlässig."
+      "besonderheiten": "genau, zuverlässig.",
+      "ersatzmagazin": {
+        "preis": {
+          "min": 30,
+          "max": 70
+        },
+        "vorlaeufig": true
+      }
     },
     {
       "id": "m1911",
@@ -106,7 +120,14 @@
       "lh_beheben_mod": 1,
       "zuverlaessigkeit": "normal",
       "anschluesse": [],
-      "besonderheiten": ""
+      "besonderheiten": "",
+      "ersatzmagazin": {
+        "preis": {
+          "min": 10,
+          "max": 40
+        },
+        "vorlaeufig": true
+      }
     },
     {
       "id": "beretta_92",
@@ -142,7 +163,14 @@
         "schiene_unten",
         "muendung_pistole"
       ],
-      "besonderheiten": ""
+      "besonderheiten": "",
+      "ersatzmagazin": {
+        "preis": {
+          "min": 10,
+          "max": 40
+        },
+        "vorlaeufig": true
+      }
     },
     {
       "id": "sw_model_10",
@@ -213,7 +241,14 @@
       "zuverlaessigkeit": "normal",
       "anschluesse": [],
       "besonderheiten": "billige Straßenpistole, schwer und klobig, neigt zu Ladehemmungen.",
-      "vorlaeufig": true
+      "vorlaeufig": true,
+      "ersatzmagazin": {
+        "preis": {
+          "min": 10,
+          "max": 40
+        },
+        "vorlaeufig": true
+      }
     },
     {
       "id": "beretta_93r",
@@ -254,7 +289,14 @@
       "anschluesse": [
         "muendung_pistole"
       ],
-      "besonderheiten": "Maschinenpistole auf Basis der Beretta 92; klappbarer Vordergriff, sehr hohe Kadenz im Burst."
+      "besonderheiten": "Maschinenpistole auf Basis der Beretta 92; klappbarer Vordergriff, sehr hohe Kadenz im Burst.",
+      "ersatzmagazin": {
+        "preis": {
+          "min": 10,
+          "max": 40
+        },
+        "vorlaeufig": true
+      }
     },
     {
       "id": "ak47",
@@ -299,7 +341,14 @@
       "magazine": [
         75
       ],
-      "besonderheiten": "ungenau, zuverlässig"
+      "besonderheiten": "ungenau, zuverlässig",
+      "ersatzmagazin": {
+        "preis": {
+          "min": 15,
+          "max": 50
+        },
+        "vorlaeufig": true
+      }
     },
     {
       "id": "m4",
@@ -348,7 +397,14 @@
         30,
         100
       ],
-      "besonderheiten": "genau, etwas störanfälliger als die AK-47"
+      "besonderheiten": "genau, etwas störanfälliger als die AK-47",
+      "ersatzmagazin": {
+        "preis": {
+          "min": 15,
+          "max": 50
+        },
+        "vorlaeufig": true
+      }
     },
     {
       "id": "m16a4",
@@ -397,7 +453,14 @@
         30,
         100
       ],
-      "besonderheiten": "genau, langer Lauf; in engen Räumen unhandlicher als die M4."
+      "besonderheiten": "genau, langer Lauf; in engen Räumen unhandlicher als die M4.",
+      "ersatzmagazin": {
+        "preis": {
+          "min": 15,
+          "max": 50
+        },
+        "vorlaeufig": true
+      }
     },
     {
       "id": "scar_mk17",
@@ -439,7 +502,14 @@
       "magazine": [
         20
       ],
-      "besonderheiten": ""
+      "besonderheiten": "",
+      "ersatzmagazin": {
+        "preis": {
+          "min": 15,
+          "max": 50
+        },
+        "vorlaeufig": true
+      }
     },
     {
       "id": "mosin_nagant",
@@ -590,7 +660,14 @@
         12,
         20
       ],
-      "besonderheiten": "halbautomatisch, Bauweise der AK-47, schnelles Nachladen über Kastenmagazin. Wählerisch bei schwacher Munition. Sehr weit nur mit Slug."
+      "besonderheiten": "halbautomatisch, Bauweise der AK-47, schnelles Nachladen über Kastenmagazin. Wählerisch bei schwacher Munition. Sehr weit nur mit Slug.",
+      "ersatzmagazin": {
+        "preis": {
+          "min": 15,
+          "max": 50
+        },
+        "vorlaeufig": true
+      }
     },
     {
       "id": "rpg7",

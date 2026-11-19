@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-16",
+  "version": "2026-11-19",
   "eintraege": [
     {
       "id": "9x18",
@@ -9,15 +9,33 @@
       "typen": {
         "FMJ": {
           "dk": 0,
-          "mw": 1
+          "mw": 1,
+          "vorratslevel": 1,
+          "preis_10": {
+            "min": 5,
+            "max": 15
+          },
+          "vorlaeufig": true
         },
         "HP": {
           "dk": 0,
-          "mw": 2
+          "mw": 2,
+          "vorratslevel": 2,
+          "preis_10": {
+            "min": 8,
+            "max": 20
+          },
+          "vorlaeufig": true
         },
         "AP": {
           "dk": 1,
-          "mw": 1
+          "mw": 1,
+          "vorratslevel": 3,
+          "preis_10": {
+            "min": 20,
+            "max": 50
+          },
+          "vorlaeufig": true
         },
         "Gummi": {
           "dk": null,
@@ -39,21 +57,44 @@
       "typen": {
         "FMJ": {
           "dk": 1,
-          "mw": 1
+          "mw": 1,
+          "vorratslevel": 3,
+          "preis_10": {
+            "min": 15,
+            "max": 35
+          },
+          "vorlaeufig": true
         },
         "HP": {
           "dk": 0,
-          "mw": 2
+          "mw": 2,
+          "vorratslevel": 3,
+          "preis_10": {
+            "min": 20,
+            "max": 40
+          },
+          "vorlaeufig": true
         },
         "AP": {
           "dk": 2,
-          "mw": 1
+          "mw": 1,
+          "vorratslevel": 4,
+          "preis_10": {
+            "min": 40,
+            "max": 90
+          },
+          "vorlaeufig": true
         },
         "Unterschall": {
           "dk": 0,
           "mw": 1,
           "unterschall": true,
-          "vorratslevel": 3
+          "vorratslevel": 3,
+          "preis_10": {
+            "min": 20,
+            "max": 45
+          },
+          "vorlaeufig": true
         }
       }
     },
@@ -64,21 +105,44 @@
       "typen": {
         "FMJ": {
           "dk": 1,
-          "mw": 1
+          "mw": 1,
+          "vorratslevel": 1,
+          "preis_10": {
+            "min": 5,
+            "max": 15
+          },
+          "vorlaeufig": true
         },
         "HP": {
           "dk": 1,
-          "mw": 2
+          "mw": 2,
+          "vorratslevel": 2,
+          "preis_10": {
+            "min": 8,
+            "max": 20
+          },
+          "vorlaeufig": true
         },
         "AP": {
           "dk": 2,
-          "mw": 1
+          "mw": 1,
+          "vorratslevel": 3,
+          "preis_10": {
+            "min": 20,
+            "max": 50
+          },
+          "vorlaeufig": true
         },
         "Unterschall": {
           "dk": 0,
           "mw": 1,
           "unterschall": true,
-          "vorratslevel": 3
+          "vorratslevel": 3,
+          "preis_10": {
+            "min": 15,
+            "max": 35
+          },
+          "vorlaeufig": true
         },
         "Gummi": {
           "dk": null,
@@ -101,15 +165,33 @@
       "typen": {
         "FMJ": {
           "dk": 1,
-          "mw": 2
+          "mw": 2,
+          "vorratslevel": 1,
+          "preis_10": {
+            "min": 5,
+            "max": 15
+          },
+          "vorlaeufig": true
         },
         "HP": {
           "dk": 0,
-          "mw": 3
+          "mw": 3,
+          "vorratslevel": 2,
+          "preis_10": {
+            "min": 8,
+            "max": 20
+          },
+          "vorlaeufig": true
         },
         "AP": {
           "dk": 2,
-          "mw": 2
+          "mw": 2,
+          "vorratslevel": 3,
+          "preis_10": {
+            "min": 20,
+            "max": 50
+          },
+          "vorlaeufig": true
         },
         "Gummi": {
           "dk": null,
@@ -132,11 +214,23 @@
       "typen": {
         "FMJ": {
           "dk": 0,
-          "mw": 1
+          "mw": 1,
+          "vorratslevel": 1,
+          "preis_10": {
+            "min": 5,
+            "max": 15
+          },
+          "vorlaeufig": true
         },
         "HP": {
           "dk": 0,
-          "mw": 2
+          "mw": 2,
+          "vorratslevel": 2,
+          "preis_10": {
+            "min": 8,
+            "max": 20
+          },
+          "vorlaeufig": true
         },
         "Gummi": {
           "dk": null,
@@ -158,21 +252,44 @@
       "typen": {
         "FMJ": {
           "dk": 2,
-          "mw": 2
+          "mw": 2,
+          "vorratslevel": 2,
+          "preis_10": {
+            "min": 8,
+            "max": 20
+          },
+          "vorlaeufig": true
         },
         "HP": {
           "dk": 1,
-          "mw": 3
+          "mw": 3,
+          "vorratslevel": 2,
+          "preis_10": {
+            "min": 10,
+            "max": 25
+          },
+          "vorlaeufig": true
         },
         "AP": {
           "dk": 3,
-          "mw": 1
+          "mw": 1,
+          "vorratslevel": 3,
+          "preis_10": {
+            "min": 25,
+            "max": 60
+          },
+          "vorlaeufig": true
         },
         "Unterschall": {
           "dk": 1,
           "mw": 1,
           "unterschall": true,
-          "vorratslevel": 3
+          "vorratslevel": 3,
+          "preis_10": {
+            "min": 15,
+            "max": 35
+          },
+          "vorlaeufig": true
         }
       }
     },
@@ -183,7 +300,13 @@
       "typen": {
         "HP": {
           "dk": 2,
-          "mw": 4
+          "mw": 4,
+          "vorratslevel": 3,
+          "preis_10": {
+            "min": 25,
+            "max": 60
+          },
+          "vorlaeufig": true
         }
       }
     },
@@ -194,21 +317,44 @@
       "typen": {
         "FMJ": {
           "dk": 2,
-          "mw": 3
+          "mw": 3,
+          "vorratslevel": 2,
+          "preis_10": {
+            "min": 8,
+            "max": 20
+          },
+          "vorlaeufig": true
         },
         "HP": {
           "dk": 1,
-          "mw": 4
+          "mw": 4,
+          "vorratslevel": 3,
+          "preis_10": {
+            "min": 15,
+            "max": 35
+          },
+          "vorlaeufig": true
         },
         "AP": {
           "dk": 3,
-          "mw": 3
+          "mw": 3,
+          "vorratslevel": 4,
+          "preis_10": {
+            "min": 35,
+            "max": 80
+          },
+          "vorlaeufig": true
         },
         "Unterschall": {
           "dk": 1,
           "mw": 2,
           "unterschall": true,
-          "vorratslevel": 4
+          "vorratslevel": 4,
+          "preis_10": {
+            "min": 30,
+            "max": 70
+          },
+          "vorlaeufig": true
         },
         "Gummi": {
           "dk": null,
@@ -230,21 +376,44 @@
       "typen": {
         "FMJ": {
           "dk": 2,
-          "mw": 2
+          "mw": 2,
+          "vorratslevel": 2,
+          "preis_10": {
+            "min": 10,
+            "max": 25
+          },
+          "vorlaeufig": true
         },
         "HP": {
           "dk": 1,
-          "mw": 3
+          "mw": 3,
+          "vorratslevel": 3,
+          "preis_10": {
+            "min": 15,
+            "max": 35
+          },
+          "vorlaeufig": true
         },
         "AP": {
           "dk": 3,
-          "mw": 2
+          "mw": 2,
+          "vorratslevel": 4,
+          "preis_10": {
+            "min": 30,
+            "max": 70
+          },
+          "vorlaeufig": true
         },
         "Unterschall": {
           "dk": 1,
           "mw": 1,
           "unterschall": true,
-          "vorratslevel": 4
+          "vorratslevel": 4,
+          "preis_10": {
+            "min": 30,
+            "max": 70
+          },
+          "vorlaeufig": true
         },
         "Gummi": {
           "dk": null,
@@ -266,17 +435,34 @@
       "typen": {
         "FMJ": {
           "dk": 2,
-          "mw": 3
+          "mw": 3,
+          "vorratslevel": 3,
+          "preis_10": {
+            "min": 15,
+            "max": 35
+          },
+          "vorlaeufig": true
         },
         "AP": {
           "dk": 3,
-          "mw": 3
+          "mw": 3,
+          "vorratslevel": 4,
+          "preis_10": {
+            "min": 40,
+            "max": 90
+          },
+          "vorlaeufig": true
         },
         "Unterschall": {
           "dk": 1,
           "mw": 2,
           "unterschall": true,
-          "vorratslevel": 4
+          "vorratslevel": 4,
+          "preis_10": {
+            "min": 30,
+            "max": 70
+          },
+          "vorlaeufig": true
         }
       }
     },
@@ -287,17 +473,34 @@
       "typen": {
         "FMJ": {
           "dk": 3,
-          "mw": 2
+          "mw": 2,
+          "vorratslevel": 2,
+          "preis_10": {
+            "min": 8,
+            "max": 20
+          },
+          "vorlaeufig": true
         },
         "AP": {
           "dk": 4,
-          "mw": 2
+          "mw": 2,
+          "vorratslevel": 4,
+          "preis_10": {
+            "min": 35,
+            "max": 80
+          },
+          "vorlaeufig": true
         },
         "Unterschall": {
           "dk": 2,
           "mw": 1,
           "unterschall": true,
-          "vorratslevel": 4
+          "vorratslevel": 4,
+          "preis_10": {
+            "min": 30,
+            "max": 70
+          },
+          "vorlaeufig": true
         }
       }
     },
@@ -308,21 +511,44 @@
       "typen": {
         "FMJ": {
           "dk": 4,
-          "mw": 5
+          "mw": 5,
+          "vorratslevel": 4,
+          "preis_10": {
+            "min": 80,
+            "max": 200
+          },
+          "vorlaeufig": true
         },
         "HP": {
           "dk": 3,
-          "mw": 6
+          "mw": 6,
+          "vorratslevel": 5,
+          "preis_10": {
+            "min": 100,
+            "max": 250
+          },
+          "vorlaeufig": true
         },
         "AP": {
           "dk": 5,
-          "mw": 4
+          "mw": 4,
+          "vorratslevel": 5,
+          "preis_10": {
+            "min": 150,
+            "max": 400
+          },
+          "vorlaeufig": true
         },
         "Unterschall": {
           "dk": 3,
           "mw": 4,
           "unterschall": true,
-          "vorratslevel": 5
+          "vorratslevel": 5,
+          "preis_10": {
+            "min": 150,
+            "max": 300
+          },
+          "vorlaeufig": true
         }
       }
     },
@@ -338,11 +564,23 @@
           "schrotzahl": {
             "bedraengt": 2,
             "nah": 1
-          }
+          },
+          "vorratslevel": 1,
+          "preis_10": {
+            "min": 8,
+            "max": 20
+          },
+          "vorlaeufig": true
         },
         "Slug": {
           "dk": 1,
-          "mw": 2
+          "mw": 2,
+          "vorratslevel": 1,
+          "preis_10": {
+            "min": 10,
+            "max": 25
+          },
+          "vorlaeufig": true
         }
       }
     },
@@ -359,11 +597,23 @@
             "bedraengt": 3,
             "nah": 2,
             "mittel": 1
-          }
+          },
+          "vorratslevel": 1,
+          "preis_10": {
+            "min": 8,
+            "max": 20
+          },
+          "vorlaeufig": true
         },
         "Slug": {
           "dk": 1,
-          "mw": 3
+          "mw": 3,
+          "vorratslevel": 1,
+          "preis_10": {
+            "min": 10,
+            "max": 25
+          },
+          "vorlaeufig": true
         },
         "Gummi": {
           "dk": null,
@@ -392,11 +642,23 @@
             "nah": 3,
             "mittel": 2,
             "weit": 1
-          }
+          },
+          "vorratslevel": 1,
+          "preis_10": {
+            "min": 8,
+            "max": 20
+          },
+          "vorlaeufig": true
         },
         "Slug": {
           "dk": 2,
-          "mw": 4
+          "mw": 4,
+          "vorratslevel": 1,
+          "preis_10": {
+            "min": 10,
+            "max": 25
+          },
+          "vorlaeufig": true
         },
         "Gummi": {
           "dk": null,

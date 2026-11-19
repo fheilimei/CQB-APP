@@ -140,13 +140,6 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 - **Ändern:** Regelkern, Erstellung
 - **Im Regelwerk klarstellen:** nein
 
-### R18. Aufsätze ohne Preis und Vorratslevel (16.11.2026)
-- **Frage:** Reflexvisier, Zielfernrohr, Zweibein, Vordergriff, Lampe, Schalldämpfer, Kompensator und erweiterte Magazine haben im Regelwerk keine Geldwertspanne und kein Vorratslevel. Für den Laden werden sie gebraucht.
-- **Stellen:** (Schusswaffen (tragbar), Aufsätze)
-- **Vorläufig:** noch keine; zurückgestellt, bis der Laden gebaut wird (Konzept § 3.14). Dann schlage ich Werte vor, falls das Regelwerk sie bis dahin nicht nennt.
-- **Ändern:** aufsaetze.json (Geldwert und Vorratslevel je Aufsatz)
-- **Im Regelwerk klarstellen:** ja (Werte ergänzen)
-
 ### R25. Welche Auslöser setzt ein eingehender Treffer? (18.11.2026)
 - **Frage:** Adrenalin nennt „du wirst beschossen“, „du wirst getroffen“ und „du wirst verletzt“. Gilt ein Schuss, der in der Deckung stecken bleibt, als getroffen? Und ein Wuchttreffer mit 0 Schaden?
 - **Stellen:** (Adrenalin, Anstieg); (Schaden, Blutung und Verletzungen, Schutz prüfen)
@@ -172,6 +165,41 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 - **Im Regelwerk klarstellen:** ja
 
 ### Erledigt
+
+### R18. Preise und Vorratslevel für Munition, Ersatzmagazine und Aufsätze (16.11.2026)
+- **Entschieden (19.11.2026):** Der Nutzer hat die vorgeschlagenen Werte freigegeben. Sie stehen als vorläufig in den Daten, bis sie im Regelwerk stehen.
+	- **Munition (je 10 Schuss):** 9x18, 9x19, .45 ACP, .38 Special: FMJ 5–15 (VL 1), HP 8–20 (VL 2), AP 20–50 (VL 3), Unterschall 15–35 (VL 3). .357 Magnum: FMJ 8–20 (VL 2), HP 10–25 (VL 2), AP 25–60 (VL 3), Unterschall 15–35 (VL 3). 5,7x28: FMJ 15–35 (VL 3), HP 20–40 (VL 3), AP 40–90 (VL 4), Unterschall 20–45 (VL 3). .50 AE: HP 25–60 (VL 3). 7.62x39 und 7.62x54R: FMJ 8–20 (VL 2), HP 15–35 (VL 3), AP 35–80 (VL 4), Unterschall 30–70 (VL 4). 5.56x45: FMJ 10–25 (VL 2), HP 15–35 (VL 3), AP 30–70 (VL 4), Unterschall 30–70 (VL 4). 7.62x51: FMJ 15–35 (VL 3), AP 40–90 (VL 4), Unterschall 30–70 (VL 4). .50 BMG: FMJ 80–200 (VL 4), HP 100–250 (VL 5), AP 150–400 (VL 5), Unterschall 150–300 (VL 5). Schrot (28, 20, 12 Gauge): Buckshot 8–20, Slug 10–25 (VL 1).
+	- **Ersatzmagazine (Standardgröße, je Stück, Vorratslevel der Waffe):** Pistolen 10–40, Sturmgewehre und Saiga 15–50, Five-seveN 30–70. Erweitertes Magazin 30–80 (Vorratslevel der Waffe +1, höchstens 5), Trommelmagazin 100–300 (VL 4).
+	- **Aufsätze (je Stück):** Reflexvisier 100–400 (VL 2), Zielfernrohr 150–600 (VL 2), Zweibein 30–120 (VL 1), Vordergriff 20–80 (VL 1), Lampe 20–100 (VL 1), Kompensator Pistole 40–120 / Gewehr 60–200 (VL 2), Schalldämpfer Pistole 200–600 / Gewehr 400–1200 (VL 4). Bajonett und Unterlaufwerfer M203 haben ihre Werte schon als Nahkampfwaffe bzw. Waffe.
+- **Frage:** Gewöhnliche Munition (FMJ, HP, AP, Buckshot, Slug, Unterschall), Ersatzmagazine und alle Aufsätze haben im Regelwerk keine Geldwertspanne und meist kein Vorratslevel. Der Laden braucht sie.
+- **Stellen:** (Munitionstypen); (Schusswaffen (tragbar), Aufsätze; Begriffserklärung)
+- **Ändern:** munition.json (`preis_10`, `vorratslevel` je Typ), waffen.json (`ersatzmagazin`), aufsaetze.json (`preis`, `vorratslevel`)
+- **Im Regelwerk klarstellen:** ja (Werte ergänzen)
+
+### R42. Zustand für Ausrüstung außer Schusswaffen (19.11.2026)
+- **Entschieden (19.11.2026):** Alles Dauerhafte hat einen Zustand A–D: Waffen, Rüstung, Schild, Nahkampfwaffen, Aufsätze, Zubehör, Magazine. Außer bei Schusswaffen wirkt er nur auf den Preis (Viertel der Geldwertspanne wie bei Waffen). Neu gekaufte Ware wählt man im Laden in A–D.
+- **Frage:** Das Regelwerk kennt den Zustand nur bei Schusswaffen; „Zustand beeinflusst den Preis“ steht aber auch bei Nahkampf- und Sprengwaffen, Rüstung nennt Geldwertspanne „wie bei Waffen“.
+- **Stellen:** (Schusswaffen (tragbar), Zustand); (Nahkampfwaffen, Begriffserklärung); (Deckung und Rüstung, Rüstung)
+- **Ändern:** Speicherformat (Zustand je Gegenstand), Regelkern Laden
+- **Im Regelwerk klarstellen:** ja
+
+### R43. Preis von Verbrauchsware (19.11.2026)
+- **Entschieden (19.11.2026):** Munition, Granaten und Geschosse haben keinen Zustand; sie sind immer neu. Preisrahmen ist die ganze Spanne. Verhandeln: Käufer gewinnt → Untergrenze, Händler gewinnt → Obergrenze, unentschieden oder nicht verhandelt → Mitte. Ein Krit kann nicht weiter verschieben als bis zur Grenze.
+- **Stellen:** (Schusswaffen (tragbar), Zustand, Preis); (Sprengwaffen, Begriffserklärung)
+- **Ändern:** Regelkern Laden
+- **Im Regelwerk klarstellen:** ja
+
+### R44. Verhandeln über den ganzen Einkauf (19.11.2026)
+- **Entschieden (19.11.2026):** Verhandelt wird einmal am Schluss über den ganzen Korb (ein Geschäft, ein Versuch). Das Ergebnis gilt für jeden Posten in seinem Viertel: gewonnen → Untergrenze, verloren → Obergrenze, unentschieden → Mitte; Krit des Siegers: ein Viertel der Spanne weiter, höchstens bis zur Grenze. Beim Verkauf ebenso mit vertauschten Rollen. Ware, die über ⬢ Beschaffen kommt, hat den Preis der SL und verhandelt nicht mit.
+- **Stellen:** (Schusswaffen (tragbar), Zustand, Preis, Verhandeln)
+- **Ändern:** Regelkern Laden
+- **Im Regelwerk klarstellen:** ja
+
+### R45. Wert einer Waffe mit Aufsätzen (19.11.2026)
+- **Entschieden (19.11.2026):** Wer eine Waffe mit angebrachten Aufsätzen verkauft, bekommt den Preis der Waffe plus den jedes Aufsatzes, jeweils nach seinem Zustand.
+- **Stellen:** (Schusswaffen (tragbar), Zustand, Preis; Aufsätze)
+- **Ändern:** Regelkern Laden
+- **Im Regelwerk klarstellen:** ja
 
 ### R35. Kampfkunst nur ohne Nahkampfwaffe (18.11.2026)
 **Entschieden (18.11.2026):** Kampfkunst-Wirkungen gibt es nur, wenn man ohne Nahkampfwaffe kämpft. Im Fenster Nahkampfangriff ist jede eigene Kampfkunst eine eigene Wahl unter „Womit greifst du an?“; sie hat die Werte von Faust und Tritt, und nur mit ihr erscheinen ihre Wirkungen. Bei der Verteidigung (Getroffen → Nahkampf) weist die App darauf hin.
@@ -317,7 +345,7 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 2. **M4 Carbine und M16A4, Magazingröße.** → Regelfragen R20.
 3. **Gummi- und Unterschallmunition an Waffen.** → Regelfragen R21.
 4. **Kompensator.** → Regelfragen R22.
-5. **Aufsätze ohne Preis und Vorratslevel.** → Regelfragen R18.
+5. **Aufsätze ohne Preis und Vorratslevel.** → Regelfragen R18 (entschieden 19.11.2026).
 6. **Gewehrkolben und Gewehrlauf „mit jeder Langwaffe“.** → Regelfragen R23.
 7. **Wurfwaffen.** → Regelfragen R24.
 8. **Exklusive Skills ohne Gruppe.** → Regelfragen R13.
@@ -421,6 +449,6 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 
 1. **Gefechtsprotokoll nur im laufenden Gefecht.** Es wird beim Gefechtsende gelöscht (datenformat.md); frühere Gefechte stehen deshalb nicht im Verlauf. Soll es eine Rückschau geben, braucht das ein neues Speicherfeld.
 2. **Rückgängig einzeln aus dem Gefechtsprotokoll** (Schritt 7, Punkt 4) fehlt weiter; der Verlauf zeigt die Einträge nur an.
-3. **Kontostand im Reiter Ausrüstung** (Konzept „Aufbau der App“) fehlt noch; er steht vorerst im Verlauf unter Geld. Kommt mit Laden, Auftrag abschließen und Rate zahlen (§ 3.13, § 3.14).
+3. **Kontostand** steht vorerst im Verlauf unter Geld. Entschieden (19.11.2026): Er kommt in den neuen Reiter Laden, nicht in den Reiter Ausrüstung (§ 3.14).
 4. **Notizen** sind aus den Stammdaten (Reiter Werte) in den Reiter Verlauf gezogen, wie im Aufbau der App beschrieben; sie stehen nicht mehr doppelt.
 

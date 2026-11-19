@@ -350,6 +350,8 @@ export interface Waffe {
   patrone_im_lauf: boolean;
   ladeart: 'wechselmagazin' | 'trommel' | 'roehrenmagazin' | 'fest' | 'einzelschuss';
   zubehoer?: string[];
+  /** Ersatzmagazin in Standardgröße (nur Ladeart wechselmagazin); Vorratslevel wie die Waffe. */
+  ersatzmagazin?: { preis: Spanne; vorlaeufig?: boolean };
   feuermodi: Partial<Record<'EF' | 'Burst' | 'VA', Feuermodus>>;
   betriebsarten?: Record<string, { name: string; feuerrate?: number; lh_prozent?: number }>;
   reichweite: Record<BandId, number | null>;
@@ -374,6 +376,9 @@ export interface Aufsatz {
   setzt?: { aufgelegt?: boolean };
   waffe?: string;
   nahkampfwaffe?: string;
+  /** Fehlen bei Aufsätzen, die selbst Waffe oder Nahkampfwaffe sind: dann gelten deren Werte. */
+  vorratslevel?: number;
+  preis?: Spanne;
   hinweis: string | null;
   vorlaeufig?: boolean;
 }

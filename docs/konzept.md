@@ -194,7 +194,7 @@ Unabhängig von den Modi Lesen, Aufstieg und Schreiben ([§ 3.0a](#30a-modi-lese
 - Das Gefecht läuft weiter, auch wenn der Charakter darin kampfunfähig wird; weitere Treffer, Blutungsfristen und Adrenalinschock hängen am Gefechtsende.
 
 ### Aufbau der App
-Die App hat vier Reiter in einer senkrechten Leiste am rechten Bildschirmrand, unten im Daumenbereich direkt über allem, was unten fest steht (im Gefecht über dem Wählrad „Adrenalin“): **Figur · Werte · Ausrüstung · Verlauf**, als Bildzeichen ohne Text (Figur: Silhouette, Werte: Tabelle, Ausrüstung: Rucksack, Verlauf: aufgeschlagenes Buch). Der gewählte Reiter ist farbig hinterlegt mit einem Balken am linken Rand. Unter den Zeichen klappt der Klapp-Pfeil (nach unten gedreht, weil offen) die Leiste ein; dann bleibt eine Lasche mit dem Klapp-Pfeil › am rechten Rand (flach und etwas breiter, ragt in den Inhalt), die die Leiste wieder ausklappt. Leiste und Lasche lassen sich mit senkrechtem Wischen am Rand nach oben und unten schieben (zwischen Kopfzeile und unteren Leisten); die App merkt sich die Stelle. Beide teilen sich diese Stelle: Die Leiste geht dort auf, wo die Lasche hängt. Die App merkt sich die Wahl (Einstellungen). Die Leiste schwebt über dem Inhalt; wer etwas darunter lesen will, scrollt oder klappt sie ein. Oben links öffnet **☰** das Menü ([§ 3.0g](#30g-start-charaktere-und-menü-m)).
+Die App hat fünf Reiter in einer senkrechten Leiste am rechten Bildschirmrand, unten im Daumenbereich direkt über allem, was unten fest steht (im Gefecht über dem Wählrad „Adrenalin“): **Figur · Werte · Ausrüstung · Laden · Verlauf**, als Bildzeichen ohne Text (Figur: Silhouette, Werte: Tabelle, Ausrüstung: Rucksack, Laden: Einkaufstasche, Verlauf: aufgeschlagenes Buch; Laden ab 19.11.2026 geplant, [§ 3.14](#314-laden-kaufen-und-verkaufen-m-r)). Der gewählte Reiter ist farbig hinterlegt mit einem Balken am linken Rand. Unter den Zeichen klappt der Klapp-Pfeil (nach unten gedreht, weil offen) die Leiste ein; dann bleibt eine Lasche mit dem Klapp-Pfeil › am rechten Rand (flach und etwas breiter, ragt in den Inhalt), die die Leiste wieder ausklappt. Leiste und Lasche lassen sich mit senkrechtem Wischen am Rand nach oben und unten schieben (zwischen Kopfzeile und unteren Leisten); die App merkt sich die Stelle. Beide teilen sich diese Stelle: Die Leiste geht dort auf, wo die Lasche hängt. Die App merkt sich die Wahl (Einstellungen). Die Leiste schwebt über dem Inhalt; wer etwas darunter lesen will, scrollt oder klappt sie ein. Oben links öffnet **☰** das Menü ([§ 3.0g](#30g-start-charaktere-und-menü-m)).
 
 **Figur** (Startbildschirm). Die Silhouette ([§ 3.0f](#30f-körperbild-silhouette-a-r)) steht groß links, damit der Zustand des Charakters immer vor Augen ist; rechts daneben eine schmale Spalte mit Stand und Bewegung oben, darunter den aktiven Zuständen (19.11.2026) und den Knöpfen unten (18.11.2026).
 - **Darüber:** Kopfzeile mit Name und Statusfeld ([§ 3.0a](#30a-modi-lesen-aufstieg-schreiben-m), [§ 3.0e](#30e-gefecht-und-ruhe-m)), HP als Balken mit Zahl (Adrenalin bzw. Ruhepuls nicht in der Kopfzeile; der Stand steht am Rad unten), aktive Zustände nicht in der Kopfzeile, sondern neben der Figur (19.11.2026, [§ 3.11](#311-zustände-a-m)).
@@ -205,7 +205,9 @@ Die App hat vier Reiter in einer senkrechten Leiste am rechten Bildschirmrand, u
 
 **Werte:** Stammdaten (eingeklappt) · **Stats** · **Skills** · **Perks** · Grundwerte. Stats, Skills und Perks stehen direkt untereinander, weil sie beim Spielen zusammen gebraucht werden ([§ 3.1](#31-stammdaten-a-m) bis [§ 3.5](#35-perks-a-m)). Auch Aufstieg und Klassenwechsel finden hier statt.
 
-**Ausrüstung:** Silhouette mit Trageorten ([§ 3.0f](#30f-körperbild-silhouette-a-r), Schicht Ausrüstung), darunter die Listen: Waffen mit Munition und Aufsätzen, Nahkampfwaffen, Vorrat, Rüstung, Schild, Zubehör, **Geld** (Kontostand, Schulden; [§ 3.13](#313-geld-und-aufträge-m-r)).
+**Ausrüstung:** Silhouette mit Trageorten ([§ 3.0f](#30f-körperbild-silhouette-a-r), Schicht Ausrüstung), darunter die Listen: Waffen mit Munition und Aufsätzen, Nahkampfwaffen, Vorrat, Rüstung, Schild, Zubehör, lose Munition und lose Aufsätze. Kein Geld (19.11.2026: Kontostand und Schulden stehen im Reiter Laden).
+
+**Laden:** Geld (Kontostand, Schulden; [§ 3.13](#313-geld-und-aufträge-m-r)), Kaufen und Verkaufen ([§ 3.14](#314-laden-kaufen-und-verkaufen-m-r)).
 
 **Verlauf:** Gefechtsprotokoll, Aufstiegsprotokoll, **Kassenbuch**, Wundliste mit Heildauer, Notizen. Umsetzung (19.11.2026): Karten untereinander, neueste Einträge oben. **Gefecht** (nur im laufenden Gefecht, aufgeklappt; Einträge nach Runden, z. B. „Rundenende: Adrenalin 2 → Ruhepuls 1“, Schüsse, Aktionen, Treffer; das Protokoll wird beim Gefechtsende gelöscht). **Aufstieg** (zugeklappt; Sessions, Käufe mit freien Punkten, Statrank-Ups, Klassenwechsel, Änderungen im Schreibmodus, je mit Datum). **Geld** (zugeklappt, Kontostand in der Kopfzeile; Schulden mit Frist, Kassenbuch mit Betrag ±). **Wunden** (zugeklappt; Zone, Schaden, Blutung bzw. Versorgung und restliche Ruhetage; Versorgen und Nachsorge bleiben auf der Figur). **Notizen** (Textfeld, in jedem Modus änderbar).
 
@@ -463,6 +465,16 @@ Alles, was Schaden austeilt oder einsteckt, läuft über **einen Dialog in zwei 
 - **Mit Schnelllader oder Ladestreifen** (Zubehör im Charakter): füllt auf einmal wie ein Magazin. Leere Schnelllader und Ladestreifen werden einzeln gefüllt.
 - **Werfer** (Magazingröße 1): Main mit voller Konzentration. Der Magazinstand ist das geladene Geschoss. Nachladen nimmt ein passendes Geschoss aus dem **Vorrat** (Anzahl −1, Auswahl nach Typ, z. B. OG-7V oder PG-7V); Schießen verbraucht es. Der Bericht nennt statt Zone den Landepunkt ([§ 3.8a](#38a-werfen-a-m-r)).
 
+**Munition je Magazin** (entschieden 19.11.2026, Umsetzung mit dem Laden, [§ 3.14](#314-laden-kaufen-und-verkaufen-m-r)). Der Munitionstyp hängt am **Magazin**, nicht an der Waffe:
+- **Lose Munition** führt der Charakter nach Kaliber und Typ („9x19 · FMJ 40 · HP 15“), nicht je Waffe.
+- **Magazine** einer Waffe: jedes mit Füllstand und Typ („30 FMJ“, „12 HP“, „leer“); erweiterte und Trommelmagazine sind Magazinsorten.
+- **Magazine füllen** (außerhalb des Gefechts): je Magazin den Typ wählen; gefüllt wird aus der losen Munition.
+- **Nachladen** (Wechselmagazin): Der Spieler tippt das Magazin, das in die Waffe soll (mit Typ und Füllstand). Vorbelegt: das vollste vom bisherigen Typ.
+- **Ohne Wechselmagazin** (Trommel, Röhre, fest): nur **ein Typ je Ladung**; ein anderer Typ erst, wenn die Waffe leer ist. Schnelllader und Ladestreifen tragen ihren Typ wie ein Magazin.
+- Der Schuss nimmt DK und MW vom Typ der geladenen Munition.
+
+**Lose Aufsätze** (entschieden 19.11.2026, Umsetzung mit dem Laden). Aufsätze gibt es auch lose (Abschnitt Aufsätze im Reiter Ausrüstung, mit Zustand). Bei jeder Waffe je Anschluss: angebrachter Aufsatz mit **Abnehmen**, freier Anschluss mit **Anbringen** (Auswahl aus den losen passenden Aufsätzen). Außerhalb des Gefechts frei, im Gefecht Mainaction mit leichter Konzentration (Schusswaffen, Aufsätze).
+
 **Vorrat.** Granaten und Geschosse werden als Anzahl geführt. Sie sinkt automatisch beim Werfen und beim Laden eines Werfers. Von Hand lässt sie sich jederzeit wieder erhöhen. Nahkampfwaffen tragen ebenfalls eine Anzahl (meist 1); eine geworfene Nahkampfwaffe zieht 1 ab, eingesammelte Wurfmesser nach dem Gefecht werden von Hand wieder dazugezählt.
 
 **Ausrüstung eintragen.** Bis der Laden ([§ 3.14](#314-laden-kaufen-und-verkaufen-m-r)) fertig ist, trägt der Spieler Waffen, Munition, Aufsätze, Nahkampfwaffen, Vorrat und Rüstung im **Schreibmodus** im Reiter Ausrüstung ein, ohne Geld. Außerhalb des Gefechts sind dort aktive Waffe, Nachladen und Ladehemmung beheben frei (ohne Aktion).
@@ -617,7 +629,7 @@ Umsetzung (18.11.2026): Knopf **Ruhe** (Mondsichel) im Reiter Figur neben „Gef
 ### 3.13 Geld und Aufträge (M, R)
 Regeln: Schulden, Coups und Verträge; Klassen (Gehalt).
 
-**Kassenbuch.** Der Kontostand ist die Summe aller Buchungen; er wird nie direkt gesetzt. Jede Buchung hat Datum, Betrag (±), Art und Grund (Freitext). Arten: **Startgeld**, **Auftrag**, **Kauf**, **Verkauf**, **Rate** (Schuldenrückzahlung), **Korrektur** (nur im Schreibmodus, [§ 3.0a](#30a-modi-lesen-aufstieg-schreiben-m)). Das Kassenbuch steht im Reiter Verlauf; der Kontostand im Reiter Ausrüstung.
+**Kassenbuch.** Der Kontostand ist die Summe aller Buchungen; er wird nie direkt gesetzt. Jede Buchung hat Datum, Betrag (±), Art und Grund (Freitext). Arten: **Startgeld**, **Auftrag**, **Kauf**, **Verkauf**, **Rate** (Schuldenrückzahlung), **Korrektur** (nur im Schreibmodus, [§ 3.0a](#30a-modi-lesen-aufstieg-schreiben-m)). Das Kassenbuch steht im Reiter Verlauf; der Kontostand im Reiter Laden.
 
 **Einnahmen** kommen nach der Erstellung nur aus **Aufträgen** (und aus Verkäufen eigener Ausrüstung). **Auftrag abschließen** (Menü):
 1. Gehalt der aktuellen Klasse, wenn ein Vertrag besteht (vorbelegt, änderbar).
@@ -630,22 +642,34 @@ Regeln: Schulden, Coups und Verträge; Klassen (Gehalt).
 **Kauf und Verkauf** laufen über den Laden ([§ 3.14](#314-laden-kaufen-und-verkaufen-m-r)) und buchen automatisch.
 
 ### 3.14 Laden: Kaufen und Verkaufen (M, R)
-Regeln: Schusswaffen (Begriffserklärung: Geldwertspanne, Vorratslevel; Zustand: Preis, Verhandeln); Stats, Skills und Perks (Skillproben: Beschaffen). Erreichbar bei der Erstellung (Schritt 7) und im Spiel über den Reiter Ausrüstung („Kaufen“, „Verkaufen“). Im Gefecht nicht verfügbar.
+Regeln: Schusswaffen (Begriffserklärung: Geldwertspanne, Vorratslevel; Zustand: Preis, Verhandeln); Stats, Skills und Perks (Skillproben: Beschaffen). Abgestimmt mit dem Nutzer am 19.11.2026; Regelfragen R18, R42–R45. *Umsetzung folgt.*
 
-**Aufbau.** Oben der **Kontostand**, der bei jeder Auswahl mitläuft (Stand nach dem Kauf). Darunter Reiter: **Waffen · Munition · Nahkampf · Sprengmittel · Rüstung · Zubehör und Aufsätze**. Je Eintrag: Name, wichtigste Werte, Vorratslevel, Geldwertspanne.
+**Ort.** Eigener **fünfter Reiter „Laden“** (Bildzeichen Einkaufstasche, dünne Linien wie die anderen), zwischen Ausrüstung und Verlauf. Im Gefecht sichtbar, Handeln gesperrt („Im Gefecht wird nicht gehandelt.“), der Kontostand bleibt lesbar. Bei der Erstellung ist derselbe Inhalt Schritt 7.
 
-**Vorratslevel.** Ware bis zum Vorratslevel der Klasse ist frei kaufbar. Ware darüber ist ausgegraut mit dem Hinweis „nur über ⬢ Beschaffen“; Perk ◆ Kontakte wird berücksichtigt. Hat der Charakter Beschaffen, öffnet Antippen die Probe (Probenrechner, 2 Malsteps je Stufe über dem Vorratslevel, höchstens 2 Stufen darüber). Gelingt sie, ist der Kauf frei; Preis und Lieferzeit nennt die SL.
+**Aufbau** (von oben nach unten):
+- **Geld:** Kontostand groß, Schulden mit Restschuld und Frist. Das Kassenbuch bleibt im Verlauf. Geld steht nicht im Reiter Ausrüstung.
+- Umschalter **Kaufen · Verkaufen**.
+- **Kategorien als Karten** zum Auf- und Zuklappen wie im Reiter Verlauf: **Waffen · Munition · Magazine · Nahkampf · Sprengmittel · Rüstung · Aufsätze · Zubehör**. Je Ware eine Zeile: Name, ein bis zwei Kernwerte, Vorratslevel, Geldwertspanne. Oben ein Schalter „Nur, was ich bekomme“ (Vorratslevel der Klasse).
+- **Korb:** feste Leiste unten im Daumenbereich („Korb · 3 Posten · 610–720 $“), antippen klappt ihn auf.
 
-**Kaufen.**
-1. Eintrag wählen; bei Waffen den **Zustand** A–D. Die App zeigt das zugehörige Viertel der Geldwertspanne als Preisrahmen.
-2. **Preis** eintragen, wie ihn die SL nennt (vorbelegt: Mitte des Viertels). Optional **Verhandeln**: Probe Empathy + ⬢ Verhandeln anzeigen; der Spieler tippt den Ausgang (gewonnen · verloren · unentschieden, Krit des Siegers), die App setzt den Preis nach der Regel.
-3. Menge (bei Munition, Vorrat und Zubehör).
-4. **In den Korb.** Mehrere Käufe sammeln sich; der Korb zeigt Summe und Kontostand danach. Reicht das Geld nicht, ist „Kaufen“ gesperrt und nennt den Fehlbetrag (bei der Erstellung wie im Spiel).
-5. **Kaufen:** Bericht, dann Buchung im Kassenbuch (je Posten eine Zeile) und Aufnahme in die Ausrüstung (Waffen mit Zustand, leerem Magazin und Trageort „Rucksack“ als Vorgabe).
+**Ware wählen.** Antippen klappt die Zeile auf (kein Fenster): **Zustand** A–D als Auswahlknöpfe („Zustand: gebraucht“) mit dem Preisrahmen seines Viertels; bei Verbrauchsware (Munition, Granaten, Geschosse) entfällt er, Rahmen ist die ganze Spanne (R43). Menge (Munition in Schuss, Schritte zu 10; sonst Stück). Knopf **In den Korb**. Zustand A–D gilt für alles Dauerhafte; außer bei Schusswaffen wirkt er nur auf den Preis (R42).
 
-**Verkaufen.** Gegenstand aus der eigenen Ausrüstung wählen; die App zeigt das Viertel nach seinem aktuellen Zustand, unbrauchbare Waffen bis zur Untergrenze. Preis wie beim Kauf (Verhandeln mit vertauschten Rollen). Bericht, Buchung, Gegenstand entfernt.
+**Vorratslevel.** Ware bis zum Vorratslevel der Klasse ist frei kaufbar. Darüber ist sie ausgegraut mit „nur über ⬢ Beschaffen“. Mit Beschaffen öffnet Antippen die Probe (Probenrechner, 2 Malsteps je Stufe darüber, höchstens 2 Stufen). Gelingt sie, kommt die Ware mit dem Preis der SL in den Korb (Krit: Untergrenze der Spanne) und verhandelt nicht mit. Schalter „◆ Kontakte einsetzen“ (Vorratslevel der Ware −1); die App zählt nicht, ob er im Auftrag schon benutzt wurde.
 
-**Bei der Erstellung** ist der Laden Schritt 7; der Korb bleibt bis zum Abschluss der Erstellung änderbar.
+**Korb und Kaufen.**
+1. Aufgeklappt zeigt der Korb die Posten mit Zustand und Rahmen, je mit Entfernen.
+2. **Verhandlung über den ganzen Korb** (R44): „Die Verhandlung: nicht verhandelt · gewonnen · verloren · unentschieden“, Schalter Krit; ein Knopf zeigt die Probe ■ Empathy + ⬢ Verhandeln (Würfelkomponente). Je Posten: gewonnen → Untergrenze des Viertels, verloren → Obergrenze, unentschieden oder nicht verhandelt → Mitte; Krit des Siegers: ein Viertel der Spanne weiter, höchstens bis zur Grenze der Spanne.
+3. Feld **Preis der SL** für die Summe (vorbelegt mit dem errechneten Betrag, änderbar).
+4. Hauptknopf **Kaufen**; reicht das Geld nicht, ist er gesperrt und nennt den Fehlbetrag.
+5. **Bericht** (Posten, Summe, Kontostand vorher → nachher), dann eine Buchung „Kauf“ mit allen Posten im Grund.
+
+**Wohin Gekauftes kommt.** Waffe mit Zustand, einem leeren Magazin und Trageort „Rucksack“. Munition zur losen Munition (Kaliber und Typ). Magazin zu den Magazinen der gewählten Waffe. Aufsatz zu den losen Aufsätzen. Granaten und Geschosse in den Vorrat. Rüstung, Schild, Nahkampfwaffen mit Zustand.
+
+**Verkaufen.** Gleich gebaut: Karten mit der eigenen Ausrüstung, Antippen legt in den Verkaufskorb; der Zustand steht fest. Eine Waffe zählt ihre angebrachten Aufsätze mit, jeden nach seinem Zustand (R45). Verhandlung über den ganzen Korb mit vertauschten Rollen. Unbrauchbare Waffen: Preis der SL, höchstens die Untergrenze. Bericht, eine Buchung „Verkauf“, Gegenstände entfernt.
+
+**Bei der Erstellung** (Schritt 7) bleibt der Korb bis „Abschließen“ änderbar und wird dann zusammen mit dem Startgeld gebucht.
+
+**Schreibmodus** bleibt: Ausrüstung frei eintragen, ohne Geld.
 
 ## 4. Regelkern
 

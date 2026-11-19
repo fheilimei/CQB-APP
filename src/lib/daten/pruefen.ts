@@ -41,6 +41,12 @@ export function pruefeDaten(d: Spieldaten): string[] {
       if (wert === undefined || wert === '') f(ort, `Pflichtfeld „${feld}“ fehlt`);
     }
   }
+  /** Vorratslevel 1–5 und Geldwertspanne mit min ≤ max (Laden, konzept.md § 3.14). */
+  function handelswerte(ort: string, vl: unknown, preis: { min?: unknown; max?: unknown } | undefined) {
+    if (typeof vl !== 'number' || !Number.isInteger(vl) || vl < 1 || vl > 5) f(ort, 'Vorratslevel fehlt oder liegt nicht bei 1–5');
+    if (!preis || typeof preis.min !== 'number' || typeof preis.max !== 'number' || preis.min < 0 || preis.min > preis.max)
+      f(ort, 'Geldwertspanne fehlt oder ist ungültig');
+  }
   function version(datei: string, obj: { version?: unknown }) {
     if (typeof obj?.version !== 'string' || obj.version === '') f(datei, 'Feld „version“ fehlt');
   }
@@ -296,6 +302,7 @@ export function pruefeDaten(d: Spieldaten): string[] {
       if (typeof t.mw !== 'number') f(ort, `${typ}: MW fehlt`);
       if (t.dk === null && !t.stumpf) f(ort, `${typ}: DK fehlt (nur stumpfe Munition hat keine DK)`);
       for (const b of Object.keys(t.schrotzahl ?? {})) if (!baender.has(b as never)) f(ort, `${typ}: unbekanntes Band „${b}“`);
+      handelswerte(`${ort} ${typ}`, t.vorratslevel, t.preis_10);
     }
   }
 
@@ -341,6 +348,9 @@ export function pruefeDaten(d: Spieldaten): string[] {
       if (!passt) f(ort, `kein Aufsatz für Magazingröße ${n}`);
     }
     for (const z of w.zubehoer ?? []) if (!zubehoerIds.has(z)) f(ort, `unbekanntes Zubehör „${z}“`);
+    handelswerte(ort, w.vorratslevel, w.preis);
+    if (w.ladeart === 'wechselmagazin') handelswerte(`${ort} ersatzmagazin`, w.vorratslevel, w.ersatzmagazin?.preis);
+    else if (w.ersatzmagazin) f(ort, 'ersatzmagazin nur bei Ladeart „wechselmagazin“');
   }
 
   // ---------- aufsaetze.json
@@ -355,6 +365,9 @@ export function pruefeDaten(d: Spieldaten): string[] {
     if (a.waffe && !waffenIds.has(a.waffe)) f(ort, `unbekannte Waffe „${a.waffe}“`);
     if (a.nahkampfwaffe && !nahkampfIds.has(a.nahkampfwaffe)) f(ort, `unbekannte Nahkampfwaffe „${a.nahkampfwaffe}“`);
     modifikatoren(ort, a.modifikatoren);
+    if (a.waffe || a.nahkampfwaffe) {
+      if (a.preis || a.vorratslevel !== undefined) f(ort, 'Preis und Vorratslevel kommen von der Waffe; nicht doppelt eintragen');
+    } else handelswerte(ort, a.vorratslevel, a.preis);
   }
   void aufsatzIds;
 

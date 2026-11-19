@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-16",
+  "version": "2026-11-19",
   "eintraege": [
     {
       "id": "reflexvisier",
@@ -29,7 +29,12 @@
         }
       ],
       "hinweis": null,
-      "vorlaeufig": true
+      "vorlaeufig": true,
+      "vorratslevel": 2,
+      "preis": {
+        "min": 100,
+        "max": 400
+      }
     },
     {
       "id": "zielfernrohr",
@@ -74,7 +79,12 @@
         }
       ],
       "hinweis": null,
-      "vorlaeufig": true
+      "vorlaeufig": true,
+      "vorratslevel": 2,
+      "preis": {
+        "min": 150,
+        "max": 600
+      }
     },
     {
       "id": "zweibein",
@@ -102,7 +112,12 @@
         "aufgelegt": true
       },
       "hinweis": null,
-      "vorlaeufig": true
+      "vorlaeufig": true,
+      "vorratslevel": 1,
+      "preis": {
+        "min": 30,
+        "max": 120
+      }
     },
     {
       "id": "vordergriff",
@@ -126,7 +141,12 @@
         }
       ],
       "hinweis": null,
-      "vorlaeufig": true
+      "vorlaeufig": true,
+      "vorratslevel": 1,
+      "preis": {
+        "min": 20,
+        "max": 80
+      }
     },
     {
       "id": "unterlaufwerfer_m203",
@@ -156,7 +176,12 @@
       "schalter_text": "Lampe eingeschaltet",
       "modifikatoren": [],
       "hinweis": "Ein Ziel in den Bändern bedrängt und nah, das du anleuchtest, siehst du mit Sichtstufe klar. Du selbst bist dabei für andere sichtbar, auch bei schlechter Sicht.",
-      "vorlaeufig": true
+      "vorlaeufig": true,
+      "vorratslevel": 1,
+      "preis": {
+        "min": 20,
+        "max": 100
+      }
     },
     {
       "id": "schalldaempfer_pistole",
@@ -169,7 +194,13 @@
       },
       "einsatz": "immer",
       "modifikatoren": [],
-      "hinweis": "Der Schuss ist 1 Stufe leiser."
+      "hinweis": "Der Schuss ist 1 Stufe leiser.",
+      "vorratslevel": 4,
+      "preis": {
+        "min": 200,
+        "max": 600
+      },
+      "vorlaeufig": true
     },
     {
       "id": "schalldaempfer_gewehr",
@@ -182,7 +213,13 @@
       },
       "einsatz": "immer",
       "modifikatoren": [],
-      "hinweis": "Der Schuss ist 1 Stufe leiser."
+      "hinweis": "Der Schuss ist 1 Stufe leiser.",
+      "vorratslevel": 4,
+      "preis": {
+        "min": 400,
+        "max": 1200
+      },
+      "vorlaeufig": true
     },
     {
       "id": "kompensator_pistole",
@@ -206,7 +243,12 @@
         }
       ],
       "hinweis": null,
-      "vorlaeufig": true
+      "vorlaeufig": true,
+      "vorratslevel": 2,
+      "preis": {
+        "min": 40,
+        "max": 120
+      }
     },
     {
       "id": "kompensator_gewehr",
@@ -230,7 +272,12 @@
         }
       ],
       "hinweis": null,
-      "vorlaeufig": true
+      "vorlaeufig": true,
+      "vorratslevel": 2,
+      "preis": {
+        "min": 60,
+        "max": 200
+      }
     },
     {
       "id": "bajonett",
@@ -262,7 +309,13 @@
         "magazin": 20
       },
       "modifikatoren": [],
-      "hinweis": null
+      "hinweis": null,
+      "vorratslevel": 5,
+      "preis": {
+        "min": 30,
+        "max": 80
+      },
+      "vorlaeufig": true
     },
     {
       "id": "magazin_five_seven_30",
@@ -280,7 +333,13 @@
         "magazin": 30
       },
       "modifikatoren": [],
-      "hinweis": null
+      "hinweis": null,
+      "vorratslevel": 5,
+      "preis": {
+        "min": 30,
+        "max": 80
+      },
+      "vorlaeufig": true
     },
     {
       "id": "trommel_ak47_75",
@@ -299,7 +358,13 @@
         "trommelmagazin": true
       },
       "modifikatoren": [],
-      "hinweis": null
+      "hinweis": null,
+      "vorratslevel": 4,
+      "preis": {
+        "min": 100,
+        "max": 300
+      },
+      "vorlaeufig": true
     },
     {
       "id": "magazin_m4_30",
@@ -317,7 +382,13 @@
         "magazin": 30
       },
       "modifikatoren": [],
-      "hinweis": null
+      "hinweis": null,
+      "vorratslevel": 4,
+      "preis": {
+        "min": 30,
+        "max": 80
+      },
+      "vorlaeufig": true
     },
     {
       "id": "trommel_m4_100",
@@ -336,7 +407,13 @@
         "trommelmagazin": true
       },
       "modifikatoren": [],
-      "hinweis": null
+      "hinweis": null,
+      "vorratslevel": 4,
+      "preis": {
+        "min": 100,
+        "max": 300
+      },
+      "vorlaeufig": true
     },
     {
       "id": "magazin_m16a4_30",
@@ -354,7 +431,13 @@
         "magazin": 30
       },
       "modifikatoren": [],
-      "hinweis": null
+      "hinweis": null,
+      "vorratslevel": 4,
+      "preis": {
+        "min": 30,
+        "max": 80
+      },
+      "vorlaeufig": true
     },
     {
       "id": "trommel_m16a4_100",
@@ -373,7 +456,13 @@
         "trommelmagazin": true
       },
       "modifikatoren": [],
-      "hinweis": null
+      "hinweis": null,
+      "vorratslevel": 4,
+      "preis": {
+        "min": 100,
+        "max": 300
+      },
+      "vorlaeufig": true
     },
     {
       "id": "magazin_scar_mk17_20",
@@ -391,7 +480,13 @@
         "magazin": 20
       },
       "modifikatoren": [],
-      "hinweis": null
+      "hinweis": null,
+      "vorratslevel": 5,
+      "preis": {
+        "min": 30,
+        "max": 80
+      },
+      "vorlaeufig": true
     },
     {
       "id": "magazin_saiga12_12",
@@ -409,7 +504,13 @@
         "magazin": 12
       },
       "modifikatoren": [],
-      "hinweis": null
+      "hinweis": null,
+      "vorratslevel": 4,
+      "preis": {
+        "min": 30,
+        "max": 80
+      },
+      "vorlaeufig": true
     },
     {
       "id": "trommel_saiga12_20",
@@ -428,7 +529,13 @@
         "trommelmagazin": true
       },
       "modifikatoren": [],
-      "hinweis": null
+      "hinweis": null,
+      "vorratslevel": 4,
+      "preis": {
+        "min": 100,
+        "max": 300
+      },
+      "vorlaeufig": true
     }
   ],
   "zubehoer": [
