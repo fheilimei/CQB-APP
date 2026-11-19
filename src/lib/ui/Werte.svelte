@@ -127,10 +127,6 @@
   }
   const wert = (e: Event) => (e.target as HTMLInputElement | HTMLTextAreaElement).value;
 
-  /** Notizen sind kein Wert des Charakters; sie bleiben in jedem Modus änderbar und werden nicht protokolliert. */
-  function notizen(text: string) {
-    if (text !== c.notizen) onaendern({ ...c, notizen: text, geaendert: new Date().toISOString() });
-  }
 </script>
 
 {#snippet modZeilen(mods: HerkunftModifikator[])}
@@ -153,7 +149,7 @@
 <section class="karte">
   <details bind:open={stammOffen}>
     <summary><h2>Stammdaten</h2><span class="hinweis">{klasse ? klasse.name : 'ohne Klasse'}</span><span class="klapppfeil" aria-hidden="true">›</span></summary>
-    <div class="stapel stamm">
+    <div class="stapel klappinhalt">
     {#if schreiben}
       <label class="feld">Name
   <input id="st-name" value={c.name} onchange={(e) => { const v = wert(e).trim(); if (v) k({ art: 'text', feld: 'name', wert: v }); }} /></label>
@@ -220,8 +216,6 @@
 
     </div>
 
-    <label class="feld">Notizen
-  <textarea id="st-notizen" rows="3" value={c.notizen} onchange={(e) => notizen(wert(e))}></textarea></label>
     </div>
   </details>
 </section>
@@ -416,10 +410,7 @@
 <style>
   /* Freie Punkte links, Klasse wechseln rechts in derselben Zeile. */
   .leiste { position: sticky; top: 56px; z-index: 4; padding: 10px; flex-direction: row; justify-content: space-between; align-items: center; gap: var(--abstand-2); }
-  summary { min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 8px; cursor: pointer; }
-  summary h2 { margin: 0; font-size: 1.1rem; }
   dl { display: grid; grid-template-columns: auto 1fr; gap: var(--abstand-2) var(--abstand-3); margin: 0; align-items: center; }
-  .stamm { padding-top: var(--abstand-2); }
   dt { color: var(--text-2); }
   dd { margin: 0; }
   .zahl { width: 90px; }

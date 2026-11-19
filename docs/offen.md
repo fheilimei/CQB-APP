@@ -416,3 +416,11 @@ Gefunden beim Übertragen des Regelwerks in die Spieldaten. Jeweils mit der vorl
 1. **Wechsel innerhalb der eigenen Laufbahn auf gleicher Stufe** (z. B. von einer Spezialisierung in eine andere, ohne Beförderung) bietet die App nicht an; das Konzept nennt nur Beförderung und Laufbahnwechsel. Die zweite Spezialisierung auf Stufe 4 geht.
 2. **Ohne Klasse:** Ein Charakter ohne Klasse kann über „Klasse wechseln“ in jede Klasse wechseln, wenn die Bedingungen erfüllt sind. Danach gilt der Zugang der Klasse.
 3. **Laufbahnwechsel** zeigt alle Klassen anderer Laufbahnen bis zur eigenen Stufe; ob der Weg passt (z. B. erweiterte Form ohne ihre Spezialisierung), steht in der Prüfung.
+
+## Offen aus dem Reiter Verlauf (19.11.2026)
+
+1. **Gefechtsprotokoll nur im laufenden Gefecht.** Es wird beim Gefechtsende gelöscht (datenformat.md); frühere Gefechte stehen deshalb nicht im Verlauf. Soll es eine Rückschau geben, braucht das ein neues Speicherfeld.
+2. **Rückgängig einzeln aus dem Gefechtsprotokoll** (Schritt 7, Punkt 4) fehlt weiter; der Verlauf zeigt die Einträge nur an.
+3. **Kontostand im Reiter Ausrüstung** (Konzept „Aufbau der App“) fehlt noch; er steht vorerst im Verlauf unter Geld. Kommt mit Laden, Auftrag abschließen und Rate zahlen (§ 3.13, § 3.14).
+4. **Notizen** sind aus den Stammdaten (Reiter Werte) in den Reiter Verlauf gezogen, wie im Aufbau der App beschrieben; sie stehen nicht mehr doppelt.
+

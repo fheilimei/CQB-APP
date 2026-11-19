@@ -27,6 +27,7 @@
   import LeiterProbe from './lib/ui/gefecht/LeiterProbe.svelte';
   import NaechsteRunde from './lib/ui/gefecht/NaechsteRunde.svelte';
   import Probenrechner from './lib/ui/probe/Probenrechner.svelte';
+  import Verlauf from './lib/ui/Verlauf.svelte';
   import Ausruestung from './lib/ui/ausruestung/Ausruestung.svelte';
   import Aktionsleiste from './lib/ui/gefecht/Aktionsleiste.svelte';
   import Aktionsmenue, { type Ablauf } from './lib/ui/gefecht/Aktionsmenue.svelte';
@@ -434,7 +435,7 @@
         <Ausruestung c={aktiv} d={daten} {modus} onaendern={aendern}
           onnachladen={(id) => (dialog = { art: 'nachladen', id, als: null })} onladehemmung={(id) => (dialog = { art: 'ladehemmung', id })} />
       {:else}
-        <section class="karte"><p class="hinweis">Dieser Reiter folgt in einer der nächsten Versionen.</p></section>
+        <Verlauf c={aktiv} d={daten} onaendern={aendern} />
       {/if}
     </main>
 

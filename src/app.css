@@ -110,6 +110,10 @@ label { display: block; font-weight: 400; margin: 16px 0 6px; }
 :where(button, summary):has(> .klapppfeil) > :first-child:not(.klapppfeil) { margin-right: auto; }
 summary { list-style: none; }
 summary::-webkit-details-marker { display: none; }
+/* Aufklappbare Karte (Stammdaten, Abschnitte im Reiter Verlauf): Überschrift, kurze Angabe, Pfeil in einer Zeile. */
+.karte > details > summary { min-height: var(--tipp); display: flex; align-items: center; justify-content: space-between; gap: var(--abstand-2); cursor: pointer; }
+.karte > details > summary h2 { margin: 0; font-size: 1.1rem; }
+.klappinhalt { padding-top: var(--abstand-2); }
 
 /* Listen im Bogen (Reiter Werte): Zeilen mit Name links und Wert rechts, aufklappbares Detail. */
 .karte > h2, .karte .kopf h2 { margin: 0; font-size: 1.1rem; }

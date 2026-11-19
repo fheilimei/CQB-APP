@@ -7,8 +7,9 @@
   import { gefechtVon, lebenslageDes } from '../regeln/probenrechner';
   import { ruestungswert } from '../regeln/schaden';
   import { deckungFuer, gehaltenerSchild } from '../regeln/wunden';
-  import { blutet, fristMinuten, fristVerlaengert, massnahmenFuer } from '../regeln/blutung';
-  import { heilt, nachsorgeMoeglich, restHeildauer } from '../regeln/heilung';
+  import { blutet, massnahmenFuer } from '../regeln/blutung';
+  import { nachsorgeMoeglich } from '../regeln/heilung';
+  import { wundStatus } from './verlauf';
   import type { Charakter, Wunde } from '../speicher/charakter';
   import Haltungsanzeige from './Haltungsanzeige.svelte';
   import Silhouette from './Silhouette.svelte';
@@ -62,18 +63,7 @@
   /** Nach dem Gefecht laufen die Fristen der blutenden Wunden. Regelfrage R29 (docs/offen.md): vorläufig auch bei Wunden aus einem Treffer in Ruhe sofort. */
   const blutend = $derived(imGefecht ? 0 : wunden.filter(blutet).length);
 
-  function status(w: Wunde): string {
-    const mit = w.versorgt ? (d.regeln.versorgen[w.versorgt]?.name ?? w.versorgt) : '';
-    if (blutet(w)) {
-      const frist = fristMinuten(w, d);
-      const fristText = frist === null ? '' : `, Frist ${frist} ${frist === 1 ? 'Minute' : 'Minuten'}${imGefecht ? ' ab Gefechtsende' : ''}`;
-      return `blutet${fristText}${fristVerlaengert(w, d) ? ` (${mit})` : ''}`;
-    }
-    if (w.versorgt) return `versorgt (${mit})${heilt(w, d) ? `, heilt: noch ${tage(restHeildauer(w, d))}${w.nachsorge === null ? ' ohne Nachsorge' : ''}` : ''}`;
-    if (w.blutung.status === 'gestoppt') return 'Blutung gestoppt';
-    return 'ausgeblutet, unversorgt';
-  }
-  const tage = (n: number) => `${n} ${n === 1 ? 'Ruhetag' : 'Ruhetage'}`;
+  const status = (w: Wunde) => wundStatus(w, d, imGefecht);
   function folge(w: Wunde): string {
     const z = d.koerperzonen.eintraege.find((x) => x.id === w.zone);
     return (w.kritisch ? z?.krit.text : z?.normal.text) ?? '';

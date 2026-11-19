@@ -109,7 +109,7 @@ Ein fertiger Charakter hat drei Modi. Umgeschaltet wird über das **Menü** ([§
 - Jede Änderung wird mit `art: korrektur` bzw. `anpassung` protokolliert (vorher, nachher).
 
 ### 3.1 Stammdaten (A, M)
-Name, Aussehen (Freitext), Klasse (aktuelle; antippen zeigt den Klassenweg), Laufbahn, Stufe, Vorratslevel und Gehalt (aus der Klasse), Hintergrund (Optionen und Freitext), freie Charakterpunkte (Zähler), Notizen.
+Name, Aussehen (Freitext), Klasse (aktuelle; antippen zeigt den Klassenweg), Laufbahn, Stufe, Vorratslevel und Gehalt (aus der Klasse), Hintergrund (Optionen und Freitext), freie Charakterpunkte (Zähler). Die Notizen stehen im Reiter Verlauf (19.11.2026).
 
 ### 3.0b Herkunft von Werten (A, R)
 Perks, Anpassungen der SL und Zustände verändern Werte automatisch. Damit das nachvollziehbar bleibt, zeigt die App bei jedem veränderten Wert, woher die Änderung kommt.
@@ -207,7 +207,7 @@ Die App hat vier Reiter in einer senkrechten Leiste am rechten Bildschirmrand, u
 
 **Ausrüstung:** Silhouette mit Trageorten ([§ 3.0f](#30f-körperbild-silhouette-a-r), Schicht Ausrüstung), darunter die Listen: Waffen mit Munition und Aufsätzen, Nahkampfwaffen, Vorrat, Rüstung, Schild, Zubehör, **Geld** (Kontostand, Schulden; [§ 3.13](#313-geld-und-aufträge-m-r)).
 
-**Verlauf:** Gefechtsprotokoll, Aufstiegsprotokoll, **Kassenbuch**, Wundliste mit Heildauer, Notizen.
+**Verlauf:** Gefechtsprotokoll, Aufstiegsprotokoll, **Kassenbuch**, Wundliste mit Heildauer, Notizen. Umsetzung (19.11.2026): Karten untereinander, neueste Einträge oben. **Gefecht** (nur im laufenden Gefecht, aufgeklappt; Einträge nach Runden, z. B. „Rundenende: Adrenalin 2 → Ruhepuls 1“, Schüsse, Aktionen, Treffer; das Protokoll wird beim Gefechtsende gelöscht). **Aufstieg** (zugeklappt; Sessions, Käufe mit freien Punkten, Statrank-Ups, Klassenwechsel, Änderungen im Schreibmodus, je mit Datum). **Geld** (zugeklappt, Kontostand in der Kopfzeile; Schulden mit Frist, Kassenbuch mit Betrag ±). **Wunden** (zugeklappt; Zone, Schaden, Blutung bzw. Versorgung und restliche Ruhetage; Versorgen und Nachsorge bleiben auf der Figur). **Notizen** (Textfeld, in jedem Modus änderbar).
 
 Dialoge (Treffer, Proben, Klassenwechsel …) öffnen sich über dem jeweiligen Reiter. Wo ein Dialog die Silhouette braucht, zeigt er eine **eigene Instanz** davon mit den Schichten, die er braucht; die Figur auf dem Startbildschirm ändert sich erst mit „Weiter“ im Bericht.
 
