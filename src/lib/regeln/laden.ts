@@ -143,11 +143,12 @@ export function stueckpreis(s: Spanne, zustand: string | null, v: Verhandlung, r
 
 export function teilRahmen(t: Preisteil, d: Spieldaten): Spanne {
   const r = preisrahmen(t.spanne, t.zustand, d);
-  return { min: r.min * t.einheiten, max: r.max * t.einheiten };
+  return { min: rund(r.min * t.einheiten), max: rund(r.max * t.einheiten) };
 }
 
 export function teilPreis(t: Preisteil, v: Verhandlung, rolle: 'kauf' | 'verkauf', d: Spieldaten): number {
-  return stueckpreis(t.spanne, t.zustand, v, rolle, d) * t.einheiten;
+  // Angebrochene Zehnerpackung Munition: anteilig, auf ganze Dollar gerundet.
+  return rund(stueckpreis(t.spanne, t.zustand, v, rolle, d) * t.einheiten);
 }
 
 function summe(r: Spanne[]): Spanne {

@@ -28,6 +28,9 @@
   import NaechsteRunde from './lib/ui/gefecht/NaechsteRunde.svelte';
   import Probenrechner from './lib/ui/probe/Probenrechner.svelte';
   import Verlauf from './lib/ui/Verlauf.svelte';
+  import Laden from './lib/ui/laden/Laden.svelte';
+  import KorbLeiste from './lib/ui/laden/KorbLeiste.svelte';
+  import { korb } from './lib/ui/laden/korb.svelte';
   import Ausruestung from './lib/ui/ausruestung/Ausruestung.svelte';
   import Aktionsleiste from './lib/ui/gefecht/Aktionsleiste.svelte';
   import Aktionsmenue, { type Ablauf } from './lib/ui/gefecht/Aktionsmenue.svelte';
@@ -63,7 +66,7 @@
   let einstellungen = $state<Einstellungen>(STANDARD_EINSTELLUNGEN);
   let menueOffen = $state(false);
   let meldung = $state('');
-  let reiter = $state<'figur' | 'werte' | 'ausruestung' | 'verlauf'>('figur');
+  let reiter = $state<'figur' | 'werte' | 'ausruestung' | 'laden' | 'verlauf'>('figur');
 
   let modus = $state<Modus>('lesen');
   let bericht = $state<{ titel: string; zeilen: Zeile[]; weiter: () => void; knopf?: string } | null>(null);
@@ -434,12 +437,15 @@
       {:else if reiter === 'ausruestung'}
         <Ausruestung c={aktiv} d={daten} {modus} onaendern={aendern}
           onnachladen={(id) => (dialog = { art: 'nachladen', id, als: null })} onladehemmung={(id) => (dialog = { art: 'ladehemmung', id })} />
+      {:else if reiter === 'laden'}
+        <Laden c={aktiv} d={daten} wuerfelModus={probeModus} onaendern={aendern} />
       {:else}
         <Verlauf c={aktiv} d={daten} onaendern={aendern} />
       {/if}
     </main>
 
-    <div class="unten" class:im-gefecht={!!gefecht && reiter === 'figur'}>
+    <div class="unten" class:im-gefecht={!!gefecht && reiter === 'figur'}
+      class:mit-leiste={reiter === 'laden' && !gefecht && (korb.art === 'kauf' ? korb.kauf.length : korb.verkauf.length) > 0}>
     {#if rueckgaengigText}
       <div class="toast karte rueck" role="status">
         <span>{rueckgaengigText}</span>
@@ -455,6 +461,7 @@
       <Adrenalinrad stand={gefecht.leiter} d={daten} onsetzen={leiterDrehen} ondetail={() => (dialog = { art: 'detail' })} />
       <Aktionsleiste c={aktiv} d={daten} {kampfunfaehig} onaendern={aendern} onoeffnen={aktionOeffnen} />
     {/if}
+    {#if reiter === 'laden' && !gefecht}<KorbLeiste c={aktiv} d={daten} />{/if}
     <Reiterleiste {reiter} eingeklappt={einstellungen.reiterEingeklappt} onwahl={(r) => (reiter = r)} onklappen={reiterKlappen}
       laschenHoehe={einstellungen.laschenHoehe} {kopfHoehe} onlasche={(h) => void einstellungenSetzen({ ...einstellungen, laschenHoehe: h })} />
     </div>

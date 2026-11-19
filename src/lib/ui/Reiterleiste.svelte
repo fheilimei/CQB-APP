@@ -1,12 +1,12 @@
 <script lang="ts">
   /**
    * Senkrechte Reiterleiste am rechten Bildschirmrand.
-   * Bildzeichen statt Text: Figur (Silhouette), Werte (Tabelle), Ausrüstung (Rucksack), Verlauf (aufgeschlagenes Buch).
+   * Bildzeichen statt Text: Figur (Silhouette), Werte (Tabelle), Ausrüstung (Rucksack), Laden (Einkaufstasche), Verlauf (aufgeschlagenes Buch).
    * Schwebt über dem Inhalt (der Inhalt läuft darunter durch). Lässt sich einklappen; dann bleibt eine Lasche am Rand.
    * Leiste und Lasche lassen sich mit senkrechtem Wischen am Rand hoch und runter schieben; beide teilen sich die
    * gemerkte Stelle, so geht die Leiste dort auf, wo die Lasche hängt.
    */
-  type Reiter = 'figur' | 'werte' | 'ausruestung' | 'verlauf';
+  type Reiter = 'figur' | 'werte' | 'ausruestung' | 'laden' | 'verlauf';
   let { reiter, eingeklappt, onwahl, onklappen, laschenHoehe, kopfHoehe, onlasche }: {
     reiter: Reiter; eingeklappt: boolean; onwahl: (r: Reiter) => void; onklappen: (zu: boolean) => void;
     /** 0 = ganz unten (über den unteren Leisten), 1 = ganz oben (unter der Kopfzeile). */
@@ -15,7 +15,7 @@
 
   const REITER: { id: Reiter; name: string }[] = [
     { id: 'figur', name: 'Figur' }, { id: 'werte', name: 'Werte' },
-    { id: 'ausruestung', name: 'Ausrüstung' }, { id: 'verlauf', name: 'Verlauf' },
+    { id: 'ausruestung', name: 'Ausrüstung' }, { id: 'laden', name: 'Laden' }, { id: 'verlauf', name: 'Verlauf' },
   ];
   const name = $derived(REITER.find((r) => r.id === reiter)?.name ?? '');
 
@@ -92,6 +92,9 @@
             <path d="M9.5 6.5V5a2.5 2.5 0 0 1 5 0v1.5" />
             <rect x="6" y="6.5" width="12" height="14" rx="3" />
             <path d="M6 11Q12 13.5 18 11M9.5 15h5v3h-5z" />
+          {:else if r.id === 'laden'}
+            <path d="M5.5 8.5H18.5L17.5 20.5H6.5Z" />
+            <path d="M9 11V7a3 3 0 0 1 6 0v4" />
           {:else}
             <path d="M12 7C10 5.5 7 5 3.5 5.5V18.5C7 18 10 18.5 12 20C14 18.5 17 18 20.5 18.5V5.5C17 5 14 5.5 12 7ZM12 7V20" />
           {/if}
@@ -110,7 +113,7 @@
   .schiebbar { --sockel: 100%; position: absolute; right: 0; z-index: 6; touch-action: none;
     bottom: calc(var(--sockel) + var(--abstand-2) + var(--hoehe) * (100dvh - var(--sockel) - var(--kopf, 0px) - var(--eigen) - 2 * var(--abstand-2))); }
   /* Ohne feste Leiste unten liegt alles über dem sicheren Bereich am unteren Bildschirmrand. */
-  :global(.unten:not(.im-gefecht)) .schiebbar { --sockel: env(safe-area-inset-bottom); }
+  :global(.unten:not(.im-gefecht):not(.mit-leiste)) .schiebbar { --sockel: env(safe-area-inset-bottom); }
 
   .leiste { width: var(--tipp);
     display: flex; flex-direction: column; background: var(--flaeche); border: 1px solid var(--linie); border-right: none;
