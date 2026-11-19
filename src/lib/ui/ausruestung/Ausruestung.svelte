@@ -212,9 +212,9 @@
   </select>
 {/snippet}
 
-{#snippet magInhalt(inhalt: number, groesse: number, typ: string, unter: string, e: WaffenEintrag | null = null)}
+{#snippet magInhalt(inhalt: number, groesse: number, typ: string, unter: string, sorteId: string | null, e: WaffenEintrag | null = null)}
   {@const werte = e && inhalt > 0 ? typWerte(e, typ) : null}
-  <Magazinsymbol {inhalt} {groesse} farbe={inhalt > 0 ? mfarbe(typ) : null} />
+  <Magazinsymbol {inhalt} {groesse} farbe={inhalt > 0 ? mfarbe(typ) : null} sorte={sorteId ? magazinSorte(sorteId, d) : null} />
   <span class="zahl">{inhalt}</span>
   <small>{inhalt > 0 ? typ : 'leer'}</small>
   {#if werte}<small class="zahl werte">{werte.stumpf || werte.dk === null ? 'stumpf' : `DK ${werte.dk}`}<br />MW {werte.mw}</small>{/if}
@@ -225,7 +225,7 @@
   {@const x = zielInhalt(e, z)}
   <button class="mag-kachel" class:eingesetzt={z.art === 'waffe'} aria-pressed={istGewaehlt(e, z)} onclick={() => antippen(e, z)}
     aria-label="{unter || 'Magazin'}: {x.inhalt > 0 ? `${x.inhalt} ${x.typ}` : 'leer'}">
-    {@render magInhalt(x.inhalt, groesse, x.typ, unter, e)}
+    {@render magInhalt(x.inhalt, groesse, x.typ, unter, z.art === 'waffe' ? (e.magazin?.id ?? null) : c.ausruestung.magazine[z.index]!.id, e)}
   </button>
 {/snippet}
 
@@ -279,7 +279,7 @@
         {#if e.ladehemmung}<span class="lh">Ladehemmung</span>{/if}
         {#if werfer}{e.munitionstyp ? (sprengwaffe(e.munitionstyp, d)?.name ?? e.munitionstyp) : 'leer'}{:else}
           <span class="stand-mag">
-            <Magazinsymbol klein inhalt={e.im_magazin} groesse={kapazitaet(e, d)} farbe={e.im_magazin > 0 ? mfarbe(e.munitionstyp) : null} />
+            <Magazinsymbol klein inhalt={e.im_magazin} groesse={kapazitaet(e, d)} farbe={e.im_magazin > 0 ? mfarbe(e.munitionstyp) : null} sorte={e.magazin ? magazinSorte(e.magazin.id, d) : null} />
             <span class="stand-text">{magazinText(e, d)}{#if e.im_magazin > 0 && e.munitionstyp}<span class="hinweis">{e.munitionstyp}</span>{/if}</span>
           </span>
         {/if}
@@ -316,11 +316,11 @@
             <h3 class="abschnitt-titel">Magazine <span class="hinweis">{kaliberName(w, d)}</span></h3>
             {#if schreiben}
               <div class="mag-reihe">
-                <div class="mag-kachel eingesetzt">{@render magInhalt(e.im_magazin, kapazitaet(e, d), e.munitionstyp, 'in der Waffe', e)}</div>
+                <div class="mag-kachel eingesetzt">{@render magInhalt(e.im_magazin, kapazitaet(e, d), e.munitionstyp, 'in der Waffe', e.magazin?.id ?? null, e)}</div>
               </div>
               {#each dabei as { m, index } (index)}
                 <div class="mag-bearbeiten">
-                  <Magazinsymbol inhalt={m.inhalt} groesse={magazinPlatz(m.id, d)} farbe={m.inhalt > 0 ? mfarbe(m.typ) : null} klein />
+                  <Magazinsymbol inhalt={m.inhalt} groesse={magazinPlatz(m.id, d)} farbe={m.inhalt > 0 ? mfarbe(m.typ) : null} sorte={magazinSorte(m.id, d)} klein />
                   <input type="number" inputmode="numeric" min="0" max={magazinPlatz(m.id, d)} value={m.inhalt} aria-label="Inhalt"
                     onchange={(ev) => magazinSetzen(index, { inhalt: zahl((ev.target as HTMLInputElement).value) })} />
                   {#if m.inhalt > 0}{@render typWahl(sorteTypen(m.id), m.typ, (t) => magazinSetzen(index, { typ: t }))}{:else}<span class="hinweis">leer</span>{/if}
@@ -482,7 +482,7 @@
     <div class="mag-reihe">
       {#each ohneWaffe as { m, index } (index)}
         <div class="mag-spalte">
-          <div class="mag-kachel">{@render magInhalt(m.inhalt, magazinPlatz(m.id, d), m.typ, sorteName(m.id))}</div>
+          <div class="mag-kachel">{@render magInhalt(m.inhalt, magazinPlatz(m.id, d), m.typ, sorteName(m.id), m.id)}</div>
           {#if schreiben}
             <button class="klein gefahr-text" aria-label="Magazin entfernen" onclick={() => ausr({ magazine: c.ausruestung.magazine.filter((_, j) => j !== index) })}>✕</button>
           {:else if !imGefecht && m.inhalt > 0}

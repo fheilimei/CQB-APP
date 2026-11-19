@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-19b",
+  "version": "2026-11-19c",
   "eintraege": [
     {
       "id": "magazin_makarov_8",
@@ -44,7 +44,8 @@
         "min": 30,
         "max": 80
       },
-      "vorlaeufig": true
+      "vorlaeufig": true,
+      "erweitert": true
     },
     {
       "id": "magazin_five_seven_30",
@@ -59,7 +60,8 @@
         "min": 30,
         "max": 80
       },
-      "vorlaeufig": true
+      "vorlaeufig": true,
+      "erweitert": true
     },
     {
       "id": "magazin_m1911_7",
@@ -204,7 +206,8 @@
       "alte_ids": [
         "magazin_m4_30",
         "magazin_m16a4_30"
-      ]
+      ],
+      "erweitert": true
     },
     {
       "id": "trommel_stanag_100",
@@ -255,7 +258,8 @@
         "min": 30,
         "max": 80
       },
-      "vorlaeufig": true
+      "vorlaeufig": true,
+      "erweitert": true
     },
     {
       "id": "ladestreifen_mosin_nagant",
@@ -303,7 +307,8 @@
         "min": 30,
         "max": 80
       },
-      "vorlaeufig": true
+      "vorlaeufig": true,
+      "erweitert": true
     },
     {
       "id": "trommel_saiga12_20",

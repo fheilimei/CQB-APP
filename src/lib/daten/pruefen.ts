@@ -382,6 +382,7 @@ export function pruefeDaten(d: Spieldaten): string[] {
     }
     if (kaliber.size > 1) f(ort, 'Waffen mit verschiedenem Kaliber');
     if (m.trommel && m.art !== 'magazin') f(ort, 'trommel nur bei art „magazin“');
+    if (m.erweitert && (m.art !== 'magazin' || m.trommel)) f(ort, 'erweitert nur bei art „magazin“ ohne trommel');
     for (const a of m.alte_ids ?? []) {
       if (magazinIds.has(a)) f(ort, `alte ID „${a}“ ist eine heutige ID`);
       if (alteIds.has(a) && m.art === 'magazin') f(ort, `alte ID „${a}“ doppelt`);

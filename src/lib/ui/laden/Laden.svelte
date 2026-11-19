@@ -246,7 +246,7 @@
   <h2>{erstellung ? 'Startgeld' : 'Geld'}</h2>
   <p class="kontostand zahl">{geld(stand)}</p>
   {#if erstellung}
-    <p class="hinweis">Was im Korb liegt, kaufst du mit „Abschließen“. Bis dahin kannst du den Korb ändern.</p>
+    <p class="hinweis">Was im Warenkorb liegt, kaufst du mit „Abschließen“. Bis dahin kannst du den Warenkorb ändern.</p>
   {/if}
   {#if c.schulden && c.schulden.rest > 0}
     <p class="hinweis">Schulden: noch <span class="zahl">{geld(c.schulden.rest)}</span>, Frist {c.schulden.frist_auftraege} {c.schulden.frist_auftraege === 1 ? 'Auftrag' : 'Aufträge'}</p>
@@ -267,7 +267,7 @@
     <div class="stapel">
       <label class="schalter"><input type="checkbox" bind:checked={nurPassend} /> Nur, was zu meinen Waffen passt</label>
       {#if nurPassend && !meineWaffen.length}
-        <p class="hinweis">Du hast noch keine Schusswaffe. Munition, Magazine und Aufsätze erscheinen, sobald eine im Korb liegt.</p>
+        <p class="hinweis">Du hast noch keine Schusswaffe. Munition, Magazine und Aufsätze erscheinen, sobald eine im Warenkorb liegt.</p>
       {/if}
       <label class="schalter"><input type="checkbox" bind:checked={nurErreichbar} /> Nur, was ich bekomme{#if vl !== null} (Vorratslevel {vl}){/if}</label>
       {#if kontakteMoeglich && kontaktePerk}
@@ -317,7 +317,7 @@
                       </div>
                       <p>Preis: <span class="zahl">{spanneText(postenRahmen(p, d))}</span></p>
                       {#if z.art === 'frei'}
-                        <button class="haupt" onclick={() => inDenKorb(p)}>In den Korb</button>
+                        <button class="haupt" onclick={() => inDenKorb(p)}>In den Warenkorb</button>
                       {:else if z.art === 'beschaffen'}
                         <p class="hinweis">{z.stufen} {z.stufen === 1 ? 'Stufe' : 'Stufen'} über deinem Vorratslevel: nur über <Farbtext text={mitZeichen('skill', d.regeln.laden.beschaffen.skill, d)} />, {z.stufen * d.regeln.laden.beschaffen.malsteps_je_stufe} Malsteps.</p>
                         <button class="betont" onclick={() => beschaffenOeffnen(w, z.stufen)}>Probe <Farbtext text={mitZeichen('skill', d.regeln.laden.beschaffen.skill, d)} /></button>
@@ -396,11 +396,11 @@
     {/if}
     {#snippet knoepfe()}
       <button onclick={() => (beschaffen = null)}>{beschaffenErgebnis && !beschaffenGelungen ? 'Schließen' : 'Abbrechen'}</button>
-      <button class="haupt" disabled={!beschaffenGelungen} onclick={() => { inDenKorb({ ...b.posten, preis_sl: beschaffenPreis ?? beschaffenVorschlag }); beschaffen = null; }}>In den Korb</button>
+      <button class="haupt" disabled={!beschaffenGelungen} onclick={() => { inDenKorb({ ...b.posten, preis_sl: beschaffenPreis ?? beschaffenVorschlag }); beschaffen = null; }}>In den Warenkorb</button>
     {/snippet}
   </Dialog>
 {:else if korb.offen && korbZeilen.length}
-  <Dialog titel={kauf ? 'Korb' : 'Verkaufskorb'}>
+  <Dialog titel={kauf ? 'Warenkorb' : 'Verkaufskorb'}>
     <div class="gruppe">
       <h3 class="gruppe-titel">{kauf ? 'Was du kaufst' : 'Was du verkaufst'}</h3>
       <ul class="zeilen">

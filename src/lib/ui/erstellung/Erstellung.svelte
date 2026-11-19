@@ -159,6 +159,7 @@
     border-top: 1px solid var(--linie); background: var(--flaeche); position: sticky; bottom: 0; z-index: 5; }
   /* Korbleiste über Zurück und Abschließen, über die ganze Breite (Ränder des footer ausgeglichen). */
   .korb { grid-column: 1 / -1; margin: -12px -16px 0; }
-  .korb :global(.korbleiste) { margin-bottom: 0; }
+  /* Im footer liegt der sichere Bereich unter Zurück und Abschließen, nicht unter der Leiste. */
+  .korb :global(.korbleiste) { padding-bottom: var(--abstand-2); }
   footer .fehlt { background: var(--flaeche-2); color: var(--text); font-weight: 400; }
 </style>

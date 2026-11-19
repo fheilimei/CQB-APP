@@ -112,7 +112,7 @@ export function fehltText(f: Fehlt, d: Spieldaten): string {
     case 'kaeufe_ungueltig': return f.anzahl === 1 ? '1 Kauf ist ungültig' : `${f.anzahl} Käufe sind ungültig`;
     case 'punkte_negativ': return 'Zu viele Punkte ausgegeben';
     case 'frist': return 'Frist der Schulden fehlt';
-    case 'korb': return `Korb: ${f.text.replace(/\.$/, '')}`;
+    case 'korb': return `Warenkorb: ${f.text.replace(/\.$/, '')}`;
   }
 }
 

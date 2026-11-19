@@ -726,6 +726,7 @@ Magazinsorten (19.11.2026, R49): Wechselmagazine (Standard, erweitert, Trommel) 
 - `art`: `magazin` (Wechselmagazin; passt nur an Waffen mit `ladeart: wechselmagazin`) oder `lader` (Schnelllader bzw. Ladestreifen; füllt eine Waffe ohne Wechselmagazin auf einmal, Nachladen wie mit Magazin; nur an Waffen ohne Wechselmagazin, `groesse` = `magazin` der Waffe).
 - `groesse`: Schuss ohne Patrone im Lauf. Steckt das Magazin in der Waffe, ist das ihre Magazingröße („ein erweitertes Magazin ersetzt die Magazingröße“).
 - `passt_an`: Waffen-IDs; alle mit demselben Kaliber. Mehrere Waffen = gemeinsame Magazine (M4 und M16A4).
+- `erweitert: true`: erweitertes Magazin (größer als das Standardmagazin). Wirkt nur auf das Bildzeichen im Reiter Ausrüstung; nur bei `art: magazin`, nicht zusammen mit `trommel`.
 - `trommel: true`: Trommelmagazin; solange es in der Waffe steckt, gilt der Zuschlag auf die Ladehemmungsrate aus `regeln.json` (`ladehemmung.trommelmagazin_zuschlag`).
 - `vorratslevel`, `preis` (je Stück): Pflicht, vorläufig (R18). Standardmagazin: Vorratslevel der Waffe (gemeinsame: das niedrigere); erweitert: Waffe +1.
 - `alte_ids`: frühere IDs (erweiterte Magazine als Aufsatz, Zubehör `schnelllader`/`ladestreifen`), nur für die Umstellung von Charakteren aus Schema 7.

@@ -400,6 +400,8 @@ export interface MagazinSorte {
   passt_an: string[];
   /** Trommelmagazin: Zuschlag auf die Ladehemmungsrate (regeln.json `ladehemmung.trommelmagazin_zuschlag`). */
   trommel?: boolean;
+  /** Erweitertes Magazin (größer als das Standardmagazin); nur für das Bildzeichen. */
+  erweitert?: boolean;
   vorratslevel: number;
   preis: Spanne;
   /** Frühere IDs (Aufsatz bzw. Zubehör bis Schema 7), nur für die Umstellung alter Charaktere. */
