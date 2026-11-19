@@ -565,16 +565,14 @@
   /* Gefecht: Kopfzeile und untere Leisten tragen einen Akzentrand. */
   .kopfzeile.im-gefecht { border-bottom: 2px solid var(--akzent); }
   .unten.im-gefecht { border-top: 2px solid var(--akzent); }
-  /* Schriftzug „IM GEFECHT“ klein in der Zahlenschrift genau auf der Linie, links auf Höhe der Figur (Wunsch 19.11.2026).
+  /* Schriftzug „IM GEFECHT“ klein in der Zahlenschrift genau auf der oberen Linie, links auf Höhe der Figur (Wunsch 19.11.2026).
      Die Fläche dahinter unterbricht die Linie; sie ist halb Kopfzeile, halb Seitengrund, damit nichts übersteht. */
-  .kopfzeile.im-gefecht, .unten.im-gefecht { position: sticky; }
-  .kopfzeile.im-gefecht::after, .unten.im-gefecht::before {
+  .kopfzeile.im-gefecht::after {
     content: 'IM GEFECHT'; position: absolute; left: var(--abstand-4); z-index: 2; pointer-events: none;
     padding: 0 var(--abstand-1); font-family: var(--schrift-zahl); font-size: 0.7rem; line-height: 1; letter-spacing: 0.12em;
     color: var(--akzent); }
   /* Mitte des Schriftzugs auf der Mitte der 2 px starken Linie. */
   .kopfzeile.im-gefecht::after { bottom: -1px; transform: translateY(50%); background: linear-gradient(var(--flaeche) 50%, var(--hg) 50%); }
-  .unten.im-gefecht::before { top: -1px; transform: translateY(-50%); background: linear-gradient(var(--hg) 50%, var(--flaeche) 50%); }
   .toast { position: absolute; left: 16px; right: 16px; bottom: calc(100% + 8px); z-index: 15; }
   .rueck { display: flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 8px; padding: 4px 4px 4px 16px; }
   .banner { background: var(--flaeche); color: var(--gefahr); border-top: 2px solid var(--gefahr); text-align: center; font-weight: 400; padding: var(--abstand-1); }
