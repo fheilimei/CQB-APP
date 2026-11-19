@@ -900,6 +900,20 @@
     },
     "vorlaeufig": true
   },
+  "laden": {
+    "verhandeln": {
+      "stat": "empathy",
+      "skill": "verhandeln"
+    },
+    "beschaffen": {
+      "stat": "empathy",
+      "skill": "beschaffen",
+      "malsteps_je_stufe": 2,
+      "stufen_max": 2
+    },
+    "munition_je": 10,
+    "trageort": "rucksack"
+  },
   "reizgas": {
     "probe": "grit",
     "wolke_baender": [
@@ -1008,6 +1022,12 @@
         "art": "konzentration_statt",
         "aktion": "erste_hilfe",
         "konzentration": "leicht"
+      }
+    ],
+    "kontakte": [
+      {
+        "art": "vorratslevel_weniger",
+        "stufen": 1
       }
     ]
   },

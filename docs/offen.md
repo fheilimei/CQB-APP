@@ -4,6 +4,22 @@
 
 Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. Die App arbeitet bis zur Entscheidung mit der genannten vorläufigen Lösung. Neue Einträge kommen beim Programmieren hinzu (Skill „regelfrage“). Die Regelpunkte aus den Schritten 1 bis 6 sind hierher übertragen (18.11.2026).
 
+### R48. Verkauf einer Waffe mit Magazinen und Zubehör (19.11.2026)
+- **Frage:** Wer eine Waffe verkauft, hat oft noch Ersatzmagazine, Schnelllader oder Ladestreifen dazu, und Patronen darin. Das Regelwerk sagt nicht, ob diese mitverkauft werden und was mit den Patronen geschieht.
+- **Stellen:** (Schusswaffen (tragbar), Zustand, Preis); Regelfrage R45
+- **Vorläufig:** Wie bei den Aufsätzen (R45): Die Waffe wird mit ihrem eingesetzten Magazin, allen Ersatzmagazinen und ihrem Zubehör verkauft, jedes Stück nach seinem Zustand. Die Patronen darin behält der Charakter als lose Munition (ein geladenes Geschoss kommt in den Vorrat). Einzelne Magazine lassen sich auch für sich verkaufen.
+- **Andere Möglichkeit:** Magazine und Zubehör bleiben beim Charakter und gehen nur mit, wenn man sie eigens in den Korb legt.
+- **Ändern:** Regelkern, Laden (Verkauf)
+- **Im Regelwerk klarstellen:** ja
+
+### R47. Rundung der Preise im Laden (19.11.2026)
+- **Frage:** Die Viertel einer Geldwertspanne und ihre Mitte sind oft keine ganzen Dollar (AK-47, 250–400: das dritte Viertel geht von 325 bis 362,50). Das Regelwerk sagt nicht, wie gerundet wird.
+- **Stellen:** (Schusswaffen (tragbar), Zustand, Preis)
+- **Vorläufig:** Jeder Stückpreis wird kaufmännisch auf ganze Dollar gerundet (362,50 → 363). Bei Munition gilt der Preis je 10 Schuss, gerundet, mal der Zahl der Zehnerpackungen. Die SL kann den Preis des ganzen Korbs ohnehin ändern.
+- **Andere Möglichkeit:** immer zugunsten des Spielers runden (beim Kauf ab, beim Verkauf auf), wie bei den Step-Faktoren (R1).
+- **Ändern:** Regelkern, Laden (eine Stelle)
+- **Im Regelwerk klarstellen:** nein
+
 ### R46. Patrone im Lauf beim Magazinwechsel mit anderem Munitionstyp (19.11.2026)
 - **Frage:** Wechselt man auf ein Magazin mit anderem Typ (z. B. von FMJ auf HP), bleibt die Patrone im Lauf vom alten Typ. Das Regelwerk sagt nicht, ob der nächste Schuss deshalb anders zu rechnen ist.
 - **Stellen:** (Kampfsystem, Nachladen); (Munitionstypen)

@@ -212,6 +212,13 @@ export function pruefeDaten(d: Spieldaten): string[] {
     if (!d.darstellung.informationen?.[k]) f('darstellung.json', `Information „${k}“ ohne Namen (informationen)`);
   const trageorte = Object.keys(r.waffe_wechseln.trageorte);
   for (const t of trageorte) if (!d.darstellung.trageorte?.[t]) f('darstellung.json', `Trageort „${t}“ ohne Namen (trageorte)`);
+  // Laden: Proben auf bekannte Stats und Skills, Trageort gekaufter Ware
+  for (const [name, p] of [['verhandeln', r.laden.verhandeln], ['beschaffen', r.laden.beschaffen]] as const) {
+    if (!statIds.has(p.stat)) f('regeln.json', `laden.${name}: unbekannter Stat „${p.stat}“`);
+    if (!skillIds.has(p.skill)) f('regeln.json', `laden.${name}: unbekannter Skill „${p.skill}“`);
+  }
+  if (!trageorte.includes(r.laden.trageort)) f('regeln.json', `laden.trageort: unbekannter Trageort „${r.laden.trageort}“`);
+  if (!(r.laden.munition_je > 0)) f('regeln.json', 'laden.munition_je muss größer als 0 sein');
   for (const [perk, liste] of Object.entries(r.perk_wirkungen)) {
     if (!perkIds.has(perk)) f('regeln.json', `perk_wirkungen: unbekannter Perk „${perk}“`);
     for (const w of liste) {

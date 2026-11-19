@@ -55,12 +55,13 @@ export type PerkWirkung =
   | { art: 'werfen_als_break' }
   | { art: 'eingreifen_als_break' }
   | { art: 'konzentration_statt'; aktion: string; konzentration: 'leicht' | 'voll' }
-  | { art: 'ausruestung_bewegung'; bewegung_max: string };
+  | { art: 'ausruestung_bewegung'; bewegung_max: string }
+  | { art: 'vorratslevel_weniger'; stufen: number };
 
 export const PERK_WIRKUNGEN: PerkWirkung['art'][] = [
   'reichweite_frei', 'eigene_bewegung_weniger', 'zielen_stepshields', 'zielen_ohne_reichweite', 'folgetreffer_zonen',
   'einzeln_patronen', 'nachladen_als_break', 'ziehen_ohne_aktion', 'werfen_als_break', 'eingreifen_als_break',
-  'konzentration_statt', 'ausruestung_bewegung'
+  'konzentration_statt', 'ausruestung_bewegung', 'vorratslevel_weniger'
 ];
 
 export interface Blutungsart {
@@ -237,6 +238,13 @@ export interface Regeln {
     richtungen: string[];
   };
   waffenzustand: { stufen: string[]; neu: string; namen: Record<string, string>; preis_viertel: Record<string, number> };
+  /** Laden (konzept.md § 3.14): Proben, Munition je Preisangabe, Trageort gekaufter Ware. */
+  laden: {
+    verhandeln: { stat: string; skill: string };
+    beschaffen: { stat: string; skill: string; malsteps_je_stufe: number; stufen_max: number };
+    munition_je: number;
+    trageort: string;
+  };
   ladehemmung: {
     zustand_zuschlag: Record<string, Record<string, number>>;
     trommelmagazin_zuschlag: number;
