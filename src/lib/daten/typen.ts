@@ -536,6 +536,8 @@ export interface Darstellung {
   trageorte: Record<string, string>;
   /** Piktogramm je Stand (regeln.json `staende`): SVG-Pfad in einem Feld 24 × 24, nur Linien. */
   stand_bilder: Record<string, string>;
+  /** Bildzeichen der Zustände neben der Figur (Schlüssel wie in regeln.json `zustaende`): SVG-Pfad in einem Feld 24 × 24, nur Linien. */
+  zustand_bilder?: Record<string, string>;
   /** Anzeige der Bewegung (regeln.json `bewegung.arten`, dazu Hechten): Zahl der Pfeile oder „sprung“ (Bogenpfeil). */
   bewegung_pfeile: Record<string, number | 'sprung'>;
   /** Überschrift einer Statgruppe, auf die Adrenalin und Ruhepuls nicht wirken (Schlüssel wie `gruppe` in stats.json). */

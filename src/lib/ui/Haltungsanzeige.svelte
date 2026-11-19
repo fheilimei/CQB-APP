@@ -54,9 +54,9 @@
 
 <style>
   /* Zwei Spalten: Beschriftung rechtsbündig, daneben das Feld. */
-  .anzeige { display: grid; grid-template-columns: auto auto; align-items: center; justify-items: start; gap: var(--abstand-1) var(--abstand-2); }
+  .anzeige { display: grid; grid-template-columns: auto auto; align-items: center; justify-items: end; gap: var(--abstand-1) var(--abstand-2); }
   .titel { justify-self: end; font-size: 0.7rem; color: var(--text-2); }
-  .feld { display: flex; align-items: center; justify-content: center; min-width: 44px; min-height: 40px; padding: var(--abstand-1); border-radius: 8px;
+  .feld { display: flex; align-items: center; justify-content: center; min-width: 52px; min-height: 40px; /* gleich breit wie die Felder der Zustände */ padding: var(--abstand-1); border-radius: 8px;
     background: var(--flaeche-2); border: 1px solid var(--linie); }
   /* Gleicher Stil wie die Zeichen auf Deckung und Getroffen: einfarbig in Textfarbe, dünne Linien (etwa 1,5 px). */
   .bild { width: 24px; height: 24px; display: block; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }

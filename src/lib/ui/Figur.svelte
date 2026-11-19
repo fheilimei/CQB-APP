@@ -1,7 +1,7 @@
 <script lang="ts">
   // Reiter Figur (konzept.md § Aufbau der App): HP, Silhouette mit Rüstung und Wunden. Antippen einer Zone zeigt darunter
   // ihre Übersicht (Rüstung, Deckung, Wunden mit Status, Frist und Folge; Versorgen und „Frist abgelaufen“).
-  // Rechts neben der Figur: oben Stand und Bewegung (Gefecht), unten Deckung, Ereignis (nur im Gefecht) und Getroffen (Deckung und Getroffen im Gefecht und in Ruhe). Verdeckte Zonen sind schraffiert.
+  // Rechts neben der Figur: oben Stand und Bewegung (Gefecht), darunter aktive Zustände (Zustandsanzeige), unten Deckung, Ereignis (nur im Gefecht) und Getroffen (Deckung und Getroffen im Gefecht und in Ruhe). Verdeckte Zonen sind schraffiert.
   import type { Spieldaten } from '../daten/typen';
   import { grundwerte, hpAktuell } from '../regeln/modifikatoren';
   import { gefechtVon, lebenslageDes } from '../regeln/probenrechner';
@@ -12,6 +12,7 @@
   import type { Charakter, Wunde } from '../speicher/charakter';
   import Haltungsanzeige from './Haltungsanzeige.svelte';
   import Silhouette from './Silhouette.svelte';
+  import Zustandsanzeige from './Zustandsanzeige.svelte';
 
   interface Props {
     c: Charakter;
@@ -29,8 +30,12 @@
     ongefechtstart: () => void;
     onnaechsteRunde: () => void;
     ongefechtende: () => void;
+    /** Antippen eines Zustands neben der Figur. */
+    onschock: () => void;
+    ongeblendet: () => void;
+    onreizgas: () => void;
   }
-  let { c, d, ongetroffen, ondeckung, onereignis, onversorgen, onfrist, onnachsorge, onruhe, kampfunfaehig, ongefechtstart, onnaechsteRunde, ongefechtende }: Props = $props();
+  let { c, d, ongetroffen, ondeckung, onereignis, onversorgen, onfrist, onnachsorge, onruhe, kampfunfaehig, ongefechtstart, onnaechsteRunde, ongefechtende, onschock, ongeblendet, onreizgas }: Props = $props();
 
   let zone = $state<string | null>(null);
   /** Bildzeichen Mauer (Deckung), auf dem Knopf Deckung und in der Übersicht der Zone. */
@@ -102,6 +107,7 @@
       {#if gefechtVon(c)}
         <Haltungsanzeige g={gefechtVon(c)!} {d} />
       {/if}
+      <Zustandsanzeige {c} {d} {onschock} {ongeblendet} {onreizgas} />
       {#if schild}
         <!-- Schild in der Hand: Zustand als Bildzeichen neben der Figur (Wappenschild, dünne Linie), wenig Text. -->
         <p class="schildmarke" title="{schild.name} in der Hand, Deckung {schild.deckung} von vorn">

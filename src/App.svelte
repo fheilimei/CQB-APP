@@ -18,7 +18,6 @@
   import Werte from './lib/ui/Werte.svelte';
   import { modusFuer } from './lib/wuerfel/wuerfel';
   import { adrenalinschockBeenden, geblendetBeenden, leiterSetzen, letzteLeiterAenderung, rueckgaengig } from './lib/regeln/gefecht';
-  import { geblendetRunden } from './lib/regeln/zustaende';
   import { overTheEdge } from './lib/regeln/leiter';
   import { gefechtVon, lebenslageDes } from './lib/regeln/probenrechner';
   import Adrenalinrad from './lib/ui/gefecht/Adrenalinrad.svelte';
@@ -405,15 +404,6 @@
       <button class="flach" aria-label="Menü öffnen" onclick={() => (menueOffen = true)}>☰</button>
       <div class="titel">
         <strong>{aktiv.name || 'ohne Namen'}</strong>
-        {#if aktiv.spielstand.adrenalinschock.aktiv}
-          <button class="chip-klein zustand" onclick={schockFrage}>Adrenalinschock</button>
-        {/if}
-        {#if gefecht && geblendetRunden(gefecht) > 0}
-          <button class="chip-klein zustand" onclick={geblendetFrage}>Geblendet {geblendetRunden(gefecht)}</button>
-        {/if}
-        {#if gefecht?.reizgas}
-          <button class="chip-klein zustand" onclick={() => (dialog = { art: 'reizgas' })}>{gefecht.reizgas.gereizt ? 'Gereizt' : 'in Reizgas'}</button>
-        {/if}
       </div>
       <div class="modus">
         {#if gefecht}
@@ -435,7 +425,8 @@
           onereignis={() => (dialog = { art: 'ereignis' })}
           onversorgen={(id) => (dialog = { art: 'versorgen', wundId: id })} onfrist={fristFrage}
           onnachsorge={(id) => (dialog = { art: 'nachsorge', wundId: id })} onruhe={() => (dialog = { art: 'ruhe' })}
-          {kampfunfaehig} ongefechtstart={gefechtStarten} onnaechsteRunde={() => (dialog = { art: 'runde' })} ongefechtende={gefechtEndeFrage} />
+          {kampfunfaehig} ongefechtstart={gefechtStarten} onnaechsteRunde={() => (dialog = { art: 'runde' })} ongefechtende={gefechtEndeFrage}
+          onschock={schockFrage} ongeblendet={geblendetFrage} onreizgas={() => (dialog = { art: 'reizgas' })} />
       {:else if reiter === 'werte'}
         <Werte c={aktiv} d={daten} {modus} {abweichungModus} onaendern={aendern}
           onprobe={(stat, skill) => (dialog = { art: 'probe', stat, skill })} />
@@ -578,8 +569,6 @@
   .banner { background: var(--flaeche); color: var(--gefahr); border-top: 2px solid var(--gefahr); text-align: center; font-weight: 400; padding: var(--abstand-1); }
   .kopfzeile { flex-wrap: wrap; }
   .titel { flex-wrap: wrap; }
-  .chip-klein { font-size: 0.8rem; padding: 2px 8px; border-radius: 999px; color: #fff; white-space: nowrap; min-height: 0; min-width: 0; }
-  .chip-klein.zustand { background: #7d3c98; border: none; min-height: 32px; }
   /* Runde und Initiative als Info oben rechts in der Kopfzeile; antippbar (öffnet die Initiative). */
   .initiative { padding: 0 var(--abstand-1); min-height: 40px; display: flex; flex-direction: column; align-items: flex-end; justify-content: center;
     line-height: 1.15; text-align: right; font-weight: 400; font-size: 0.9rem; }
