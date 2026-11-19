@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-19",
+  "version": "2026-11-19b",
   "eintraege": [
     {
       "id": "makarov",
@@ -33,13 +33,7 @@
       "zuverlaessigkeit": "zuverlaessig",
       "anschluesse": [],
       "besonderheiten": "ungenau, zuverlässig. Makarov PB: Schalldämpfer eingebaut.",
-      "ersatzmagazin": {
-        "preis": {
-          "min": 10,
-          "max": 40
-        },
-        "vorlaeufig": true
-      }
+      "standardmagazin": "magazin_makarov_8"
     },
     {
       "id": "five_seven",
@@ -73,21 +67,10 @@
       "zuverlaessigkeit": "zuverlaessig",
       "anschluesse": [
         "schiene_unten",
-        "muendung_pistole",
-        "magazin"
-      ],
-      "magazine": [
-        20,
-        30
+        "muendung_pistole"
       ],
       "besonderheiten": "genau, zuverlässig.",
-      "ersatzmagazin": {
-        "preis": {
-          "min": 30,
-          "max": 70
-        },
-        "vorlaeufig": true
-      }
+      "standardmagazin": "magazin_five_seven_10"
     },
     {
       "id": "m1911",
@@ -121,13 +104,7 @@
       "zuverlaessigkeit": "normal",
       "anschluesse": [],
       "besonderheiten": "",
-      "ersatzmagazin": {
-        "preis": {
-          "min": 10,
-          "max": 40
-        },
-        "vorlaeufig": true
-      }
+      "standardmagazin": "magazin_m1911_7"
     },
     {
       "id": "beretta_92",
@@ -164,13 +141,7 @@
         "muendung_pistole"
       ],
       "besonderheiten": "",
-      "ersatzmagazin": {
-        "preis": {
-          "min": 10,
-          "max": 40
-        },
-        "vorlaeufig": true
-      }
+      "standardmagazin": "magazin_beretta_92_15"
     },
     {
       "id": "sw_model_10",
@@ -204,9 +175,6 @@
       "zuverlaessigkeit": "zuverlaessig",
       "anschluesse": [],
       "besonderheiten": "alter Revolver, billig und überall zu haben. Trommel statt Magazin: einzeln laden oder mit Schnelllader.",
-      "zubehoer": [
-        "schnelllader"
-      ],
       "vorlaeufig": true
     },
     {
@@ -242,13 +210,7 @@
       "anschluesse": [],
       "besonderheiten": "billige Straßenpistole, schwer und klobig, neigt zu Ladehemmungen.",
       "vorlaeufig": true,
-      "ersatzmagazin": {
-        "preis": {
-          "min": 10,
-          "max": 40
-        },
-        "vorlaeufig": true
-      }
+      "standardmagazin": "magazin_hi_point_c9_8"
     },
     {
       "id": "beretta_93r",
@@ -290,13 +252,7 @@
         "muendung_pistole"
       ],
       "besonderheiten": "Maschinenpistole auf Basis der Beretta 92; klappbarer Vordergriff, sehr hohe Kadenz im Burst.",
-      "ersatzmagazin": {
-        "preis": {
-          "min": 10,
-          "max": 40
-        },
-        "vorlaeufig": true
-      }
+      "standardmagazin": "magazin_beretta_93r_20"
     },
     {
       "id": "ak47",
@@ -335,20 +291,10 @@
       "lh_beheben_mod": 0,
       "zuverlaessigkeit": "zuverlaessig",
       "anschluesse": [
-        "muendung_gewehr",
-        "magazin"
-      ],
-      "magazine": [
-        75
+        "muendung_gewehr"
       ],
       "besonderheiten": "ungenau, zuverlässig",
-      "ersatzmagazin": {
-        "preis": {
-          "min": 15,
-          "max": 50
-        },
-        "vorlaeufig": true
-      }
+      "standardmagazin": "magazin_ak47_30"
     },
     {
       "id": "m4",
@@ -390,21 +336,10 @@
         "schiene_oben",
         "schiene_unten",
         "schiene_seitlich",
-        "muendung_gewehr",
-        "magazin"
-      ],
-      "magazine": [
-        30,
-        100
+        "muendung_gewehr"
       ],
       "besonderheiten": "genau, etwas störanfälliger als die AK-47",
-      "ersatzmagazin": {
-        "preis": {
-          "min": 15,
-          "max": 50
-        },
-        "vorlaeufig": true
-      }
+      "standardmagazin": "magazin_stanag_20"
     },
     {
       "id": "m16a4",
@@ -446,21 +381,10 @@
         "schiene_oben",
         "schiene_unten",
         "schiene_seitlich",
-        "muendung_gewehr",
-        "magazin"
-      ],
-      "magazine": [
-        30,
-        100
+        "muendung_gewehr"
       ],
       "besonderheiten": "genau, langer Lauf; in engen Räumen unhandlicher als die M4.",
-      "ersatzmagazin": {
-        "preis": {
-          "min": 15,
-          "max": 50
-        },
-        "vorlaeufig": true
-      }
+      "standardmagazin": "magazin_stanag_20"
     },
     {
       "id": "scar_mk17",
@@ -496,20 +420,10 @@
         "schiene_oben",
         "schiene_unten",
         "schiene_seitlich",
-        "muendung_gewehr",
-        "magazin"
-      ],
-      "magazine": [
-        20
+        "muendung_gewehr"
       ],
       "besonderheiten": "",
-      "ersatzmagazin": {
-        "preis": {
-          "min": 15,
-          "max": 50
-        },
-        "vorlaeufig": true
-      }
+      "standardmagazin": "magazin_scar_mk17_10"
     },
     {
       "id": "mosin_nagant",
@@ -545,10 +459,7 @@
         "schiene_oben",
         "muendung_gewehr"
       ],
-      "besonderheiten": "festes Magazin: einzeln laden oder mit Ladestreifen.",
-      "zubehoer": [
-        "ladestreifen"
-      ]
+      "besonderheiten": "festes Magazin: einzeln laden oder mit Ladestreifen."
     },
     {
       "id": "ithaca_m37",
@@ -653,21 +564,9 @@
       },
       "lh_beheben_mod": 0,
       "zuverlaessigkeit": "normal",
-      "anschluesse": [
-        "magazin"
-      ],
-      "magazine": [
-        12,
-        20
-      ],
+      "anschluesse": [],
       "besonderheiten": "halbautomatisch, Bauweise der AK-47, schnelles Nachladen über Kastenmagazin. Wählerisch bei schwacher Munition. Sehr weit nur mit Slug.",
-      "ersatzmagazin": {
-        "preis": {
-          "min": 15,
-          "max": 50
-        },
-        "vorlaeufig": true
-      }
+      "standardmagazin": "magazin_saiga12_8"
     },
     {
       "id": "rpg7",

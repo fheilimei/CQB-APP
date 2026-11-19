@@ -3,7 +3,7 @@
 import { describe, expect, it } from 'vitest';
 import { kontostand } from '../src/lib/regeln/geld';
 import {
-  beschaffenAnfrage, kaufAnwenden, kaufPruefen, korbPreis, korbRahmen, NICHT_VERHANDELT, postenText, preisrahmen,
+  beschaffenAnfrage, eigeneWaffen, kaufAnwenden, passtZuWaffen, kaufPruefen, korbPreis, korbRahmen, NICHT_VERHANDELT, postenText, preisrahmen,
   sortiment, stueckpreis, verhandelnAnfrage, verkaufAnwenden, verkaufPreis, verkaufRahmen, verkaufTeile, wareVon, zugang,
   type KaufPosten, type Verhandlung
 } from '../src/lib/regeln/laden';
@@ -134,7 +134,7 @@ describe('Vorratslevel und Beschaffen', () => {
 
 describe('Kaufen', () => {
   const korb: KaufPosten[] = [
-    { ware: 'magazin:ak47', zustand: 'C', menge: 2 },
+    { ware: 'magazin:magazin_ak47_30', zustand: 'C', menge: 2 },
     { ware: 'waffe:ak47', zustand: 'B', menge: 1 },
     { ware: 'munition:762x39:HP', zustand: null, menge: 30 },
     { ware: 'aufsatz:reflexvisier', zustand: 'A', menge: 1 },
@@ -146,8 +146,9 @@ describe('Kaufen', () => {
     const a = c.ausruestung;
     expect(a.waffen).toHaveLength(1);
     const e = a.waffen[0]!;
-    expect(e).toMatchObject({ waffe: 'ak47', zustand: 'B', magazin_zustand: 'B', im_magazin: 0, munitionstyp: '', trageort: 'rucksack' });
-    expect(e.magazine).toEqual([{ inhalt: 0, typ: '', zustand: 'C' }, { inhalt: 0, typ: '', zustand: 'C' }]);
+    expect(e).toMatchObject({ waffe: 'ak47', zustand: 'B', magazin: { id: 'magazin_ak47_30', zustand: 'B' }, im_magazin: 0, munitionstyp: '', trageort: 'rucksack' });
+    const leer = { id: 'magazin_ak47_30', inhalt: 0, typ: '', zustand: 'C' };
+    expect(a.magazine).toEqual([leer, leer]);
     expect(a.munition).toEqual([{ kaliber: '762x39', typ: 'HP', anzahl: 30 }]);
     expect(a.aufsaetze).toEqual([{ id: 'reflexvisier', zustand: 'A' }]);
     expect(a.vorrat).toEqual([{ id: 'm67', anzahl: 2, trageort: 'rucksack' }]);
@@ -161,19 +162,42 @@ describe('Kaufen', () => {
     const c = kaufAnwenden({ ...c0, ausruestung: { ...c0.ausruestung, vorrat: [{ id: 'm67', anzahl: 1, trageort: 'weste' }] } }, [korb[4]!], 100, d, jetzt);
     expect(c.ausruestung.vorrat).toEqual([{ id: 'm67', anzahl: 3, trageort: 'weste' }]);
   });
-  it('prüft Geld, passende Waffe für Magazine und nur einen Schild', () => {
+  it('prüft Geld und nur einen Schild; Magazine gehen auch ohne Waffe', () => {
     expect(kaufPruefen(figur(), korb, 600, d)).toEqual([]);
     expect(kaufPruefen(figur(500), korb, 600, d)).toEqual(['Es fehlen 100 $.']);
-    expect(kaufPruefen(figur(), [korb[0]!], 30, d)).toHaveLength(1);
+    expect(kaufPruefen(figur(), [korb[0]!], 30, d)).toEqual([]);
     const schild: KaufPosten = { ware: 'schild:ballistischer_schild', zustand: 'A', menge: 1 };
     expect(kaufPruefen(figur(5000), [schild, schild], 0, d)).toEqual(['Du kannst nur einen Schild tragen.']);
   });
-  it('Magazin an eine vorhandene Waffe', () => {
+  it('Magazinsorten: Standard, erweitert, Trommel, Schnelllader und Ladestreifen stehen bei den Magazinen', () => {
+    const mags = sortiment(d).filter((w) => w.art === 'magazin');
+    expect(mags.map((w) => w.id)).toEqual(expect.arrayContaining(['magazin_stanag_20', 'magazin_stanag_30', 'trommel_stanag_100', 'schnelllader_sw_model_10', 'ladestreifen_mosin_nagant']));
+    expect(wareVon('magazin:magazin_stanag_30', d)?.name).toBe('Erweitertes Magazin (30) für Colt M4 Carbine, Colt M16A4');
+    expect(sortiment(d).some((w) => w.art === 'aufsatz' && w.id.includes('magazin'))).toBe(false);
+  });
+});
+
+describe('Filter: nur, was zu meinen Waffen passt', () => {
+  const w = (s: string) => wareVon(s, d)!;
+  it('Munition nach Kaliber und Typ der Waffe, Magazine und Aufsätze, die passen', () => {
+    expect(passtZuWaffen(w('munition:762x39:HP'), ['ak47'], d)).toBe(true);
+    expect(passtZuWaffen(w('munition:556x45:FMJ'), ['ak47'], d)).toBe(false);
+    expect(passtZuWaffen(w('magazin:magazin_stanag_30'), ['m16a4'], d)).toBe(true);
+    expect(passtZuWaffen(w('magazin:magazin_stanag_30'), ['ak47'], d)).toBe(false);
+    expect(passtZuWaffen(w('aufsatz:reflexvisier'), ['m4'], d)).toBe(true);
+    expect(passtZuWaffen(w('aufsatz:reflexvisier'), ['ak47'], d)).toBe(false);
+  });
+  it('Waffen, Handgranaten und Rüstung immer; Geschosse nur mit Werfer', () => {
+    expect(passtZuWaffen(w('waffe:m4'), [], d)).toBe(true);
+    expect(passtZuWaffen(w('spreng:m67'), [], d)).toBe(true);
+    expect(passtZuWaffen(w('spreng:m406_he'), [], d)).toBe(false);
+    expect(passtZuWaffen(w('spreng:m406_he'), ['m79'], d)).toBe(true);
+    expect(passtZuWaffen(w('ruestung:weste_einfach'), [], d)).toBe(true);
+  });
+  it('eigene Waffen: vorhandene und die im Korb', () => {
     const c0 = figur();
-    const e = neuerWaffenEintrag('ak47', d, 'wf1', 'schlinge');
-    const c1 = { ...c0, ausruestung: { ...c0.ausruestung, waffen: [e] } };
-    expect(kaufPruefen(c1, [korb[0]!], 30, d)).toEqual([]);
-    expect(kaufAnwenden(c1, [{ ...korb[0]!, ziel: 'wf1' }], 30, d, jetzt).ausruestung.waffen[0]!.magazine).toHaveLength(2);
+    const c = { ...c0, ausruestung: { ...c0.ausruestung, waffen: [neuerWaffenEintrag('ak47', d, 'wf1', 'schlinge')] } };
+    expect(eigeneWaffen(c, [{ ware: 'waffe:m4', zustand: 'A', menge: 1 }, { ware: 'spreng:m67', zustand: null, menge: 1 }], d)).toEqual(['ak47', 'm4']);
   });
 });
 
@@ -181,30 +205,31 @@ describe('Verkaufen', () => {
   function mitWaffe(): Charakter {
     const c = figur();
     const e = { ...neuerWaffenEintrag('ak47', d, 'wf1', 'schlinge'), zustand: 'C', im_magazin: 10, munitionstyp: 'FMJ',
-      aufsaetze: [{ id: 'reflexvisier', zustand: 'A' }], magazine: [{ inhalt: 30, typ: 'HP', zustand: 'B' }] };
-    return { ...c, ausruestung: { ...c.ausruestung, waffen: [e], aktive_waffe: 'wf1', munition: [{ kaliber: '762x39', typ: 'FMJ', anzahl: 5 }] } };
+      aufsaetze: [{ id: 'reflexvisier', zustand: 'A' }] };
+    return { ...c, ausruestung: { ...c.ausruestung, waffen: [e], aktive_waffe: 'wf1', munition: [{ kaliber: '762x39', typ: 'FMJ', anzahl: 5 }],
+      magazine: [{ id: 'magazin_ak47_30', inhalt: 30, typ: 'HP', zustand: 'B' }] } };
   }
-  it('R45/R48: Waffe zählt Aufsätze, eingesetztes Magazin und Ersatzmagazine mit, jedes nach seinem Zustand', () => {
+  it('R45/R48: Waffe zählt Aufsätze und das eingesetzte Magazin mit, jedes nach seinem Zustand; andere Magazine nicht', () => {
     const c = mitWaffe();
     const teile = verkaufTeile(c, { art: 'waffe', id: 'wf1' }, d);
-    expect(teile.map((t) => t.zustand)).toEqual(['C', 'A', 'A', 'B']);
+    expect(teile.map((t) => t.zustand)).toEqual(['C', 'A', 'A']);
     const r = verkaufRahmen(c, [{ art: 'waffe', id: 'wf1' }], d);
     expect(r.min).toBe(288 + preisrahmen(d.aufsaetze.eintraege.find((a) => a.id === 'reflexvisier')!.preis!, 'A', d).min
-      + preisrahmen(d.waffen.eintraege.find((w) => w.id === 'ak47')!.ersatzmagazin!.preis, 'A', d).min
-      + preisrahmen(d.waffen.eintraege.find((w) => w.id === 'ak47')!.ersatzmagazin!.preis, 'B', d).min);
+      + preisrahmen(d.magazine.eintraege.find((m) => m.id === 'magazin_ak47_30')!.preis, 'A', d).min);
     expect(verkaufPreis(c, [{ art: 'waffe', id: 'wf1' }], v('verloren'), d)).toBe(r.min);
   });
   it('nimmt die Waffe heraus, Patronen kommen zur losen Munition, bucht einmal „Verkauf“', () => {
     const c = verkaufAnwenden(mitWaffe(), [{ art: 'waffe', id: 'wf1' }], 500, d, jetzt);
     expect(c.ausruestung.waffen).toEqual([]);
     expect(c.ausruestung.aktive_waffe).toBeNull();
-    expect(c.ausruestung.munition).toEqual([{ kaliber: '762x39', typ: 'FMJ', anzahl: 15 }, { kaliber: '762x39', typ: 'HP', anzahl: 30 }]);
+    expect(c.ausruestung.munition).toEqual([{ kaliber: '762x39', typ: 'FMJ', anzahl: 15 }]);
+    expect(c.ausruestung.magazine).toHaveLength(1);
     expect(c.kassenbuch.at(-1)).toMatchObject({ betrag: 500, art: 'verkauf' });
     expect(c.kassenbuch.at(-1)!.grund).toContain('mit Reflexvisier');
   });
   it('einzelnes Magazin und lose Munition', () => {
-    const c = verkaufAnwenden(mitWaffe(), [{ art: 'magazin', waffe: 'wf1', index: 0 }, { art: 'munition', kaliber: '762x39', typ: 'FMJ', menge: 5 }], 20, d, jetzt);
-    expect(c.ausruestung.waffen[0]!.magazine).toEqual([]);
+    const c = verkaufAnwenden(mitWaffe(), [{ art: 'magazin', index: 0 }, { art: 'munition', kaliber: '762x39', typ: 'FMJ', menge: 5 }], 20, d, jetzt);
+    expect(c.ausruestung.magazine).toEqual([]);
     // 30 HP aus dem Magazin zurück, 5 FMJ verkauft
     expect(c.ausruestung.munition).toEqual([{ kaliber: '762x39', typ: 'HP', anzahl: 30 }]);
   });

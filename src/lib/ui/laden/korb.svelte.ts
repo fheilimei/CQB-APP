@@ -38,8 +38,7 @@ export function korbFuer(id: string) {
 export function verkaufSchluessel(p: VerkaufPosten): string {
   switch (p.art) {
     case 'waffe': return `waffe:${p.id}`;
-    case 'magazin': case 'zubehoer': return `${p.art}:${p.waffe}:${p.index}`;
-    case 'aufsatz': case 'ruestung': return `${p.art}:${p.index}`;
+    case 'magazin': case 'aufsatz': case 'ruestung': return `${p.art}:${p.index}`;
     case 'munition': return `munition:${p.kaliber}:${p.typ}`;
     case 'nahkampf': case 'spreng': return `${p.art}:${p.id}`;
     case 'schild': return 'schild';

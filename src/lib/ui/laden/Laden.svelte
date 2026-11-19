@@ -4,13 +4,13 @@
   import type { Spieldaten } from '../../daten/typen';
   import { kontostand } from '../../regeln/geld';
   import {
-    beschaffenAnfrage, kaufAnwenden, kaufPruefen, kontakteStufen, korbPreis, korbRahmen, NICHT_VERHANDELT, postenRahmen,
-    postenText, preisrahmen, sortiment, verkaufAnwenden, verkaufPreis, verkaufRahmen, verkaufTeile, verkaufText, wareVon,
-    zielWaffen, zugang, type KaufPosten, type Verhandlung, type VerkaufPosten, type Ware, type Warenart
+    beschaffenAnfrage, eigeneWaffen, kaufAnwenden, kaufPruefen, kontakteStufen, korbPreis, korbRahmen, NICHT_VERHANDELT,
+    passtZuWaffen, postenRahmen, postenText, preisrahmen, sortiment, verkaufAnwenden, verkaufPreis, verkaufRahmen,
+    verkaufTeile, verkaufText, wareVon, zugang, type KaufPosten, type Verhandlung, type VerkaufPosten, type Ware, type Warenart
   } from '../../regeln/laden';
   import { vorratslevel } from '../../regeln/aufstieg';
   import { gefechtVon } from '../../regeln/probenrechner';
-  import { kaliberName, waffeVon } from '../../regeln/waffen';
+  import { kaliberName, magazinName, magazinSorte } from '../../regeln/waffen';
   import type { Charakter, Quelle } from '../../speicher/charakter';
   import Bericht from '../Bericht.svelte';
   import Dialog from '../Dialog.svelte';
@@ -42,10 +42,13 @@
   const KATEGORIEN: { name: string; arten: Warenart[] }[] = [
     { name: 'Waffen', arten: ['waffe'] }, { name: 'Munition', arten: ['munition'] }, { name: 'Magazine', arten: ['magazin'] },
     { name: 'Nahkampf', arten: ['nahkampf'] }, { name: 'Sprengmittel', arten: ['spreng'] }, { name: 'Rüstung', arten: ['ruestung', 'schild'] },
-    { name: 'Aufsätze', arten: ['aufsatz'] }, { name: 'Zubehör', arten: ['zubehoer'] }
+    { name: 'Aufsätze', arten: ['aufsatz'] }
   ];
   const waren = $derived(sortiment(d));
   let nurErreichbar = $state(false);
+  /** Munition, Magazine, Aufsätze und Geschosse nur für Waffen, die man hat oder im Korb kauft (konzept.md § 3.14). */
+  let nurPassend = $state(true);
+  const meineWaffen = $derived(eigeneWaffen(c, korb.kauf, d));
   let kontakte = $state(false);
   const kontaktePerk = $derived(c.perks.find((p) => (d.regeln.perk_wirkungen[p] ?? []).some((w) => w.art === 'vorratslevel_weniger')) ?? null);
   const kontakteMoeglich = $derived(kontakteStufen(c, d) > 0);
@@ -59,7 +62,10 @@
       const t = d.munition.eintraege.find((m) => m.id === w.id)?.typen[w.typ!];
       return t ? dkMw(t.dk, t.mw, t.stumpf) : '';
     }
-    if (w.art === 'magazin') return `${d.waffen.eintraege.find((y) => y.id === w.id)?.magazin ?? '?'} Schuss`;
+    if (w.art === 'magazin') {
+      const m = magazinSorte(w.id, d);
+      return m ? `${m.groesse} Schuss${m.trommel ? ' · Trommel' : ''}${m.art === 'lader' ? ' · füllt auf einmal' : ''}` : '';
+    }
     return '';
   }
 
@@ -67,22 +73,19 @@
   let offen = $state<string | null>(null);
   let wahlZustand = $state('');
   let menge = $state(1);
-  let ziel = $state('');
 
   function aufklappen(w: Ware) {
     if (offen === w.schluessel) { offen = null; return; }
     offen = w.schluessel;
     wahlZustand = d.regeln.waffenzustand.neu;
     menge = w.art === 'munition' ? je : 1;
-    ziel = zielWaffen(c, w, d)[0]?.id ?? '';
   }
   const posten = (w: Ware, preis_sl?: number): KaufPosten => ({
     ware: w.schluessel, zustand: w.verbrauch ? null : wahlZustand, menge,
-    ...(ziel && (w.art === 'magazin' || w.art === 'zubehoer') ? { ziel } : {}),
     ...(preis_sl !== undefined ? { preis_sl } : {})
   });
   function inDenKorb(p: KaufPosten) {
-    const gleich = korb.kauf.findIndex((x) => x.ware === p.ware && x.zustand === p.zustand && x.ziel === p.ziel && x.preis_sl === undefined && p.preis_sl === undefined);
+    const gleich = korb.kauf.findIndex((x) => x.ware === p.ware && x.zustand === p.zustand && x.preis_sl === undefined && p.preis_sl === undefined);
     if (gleich >= 0) korb.kauf[gleich] = { ...korb.kauf[gleich]!, menge: korb.kauf[gleich]!.menge + p.menge };
     else korb.kauf.push(p);
     korb.preisSl = null;
@@ -123,20 +126,16 @@
     const a = c.ausruestung;
     const liste: Angebot[] = [];
     const zText = (z: string) => `Zustand ${z} (${zName(z)})`;
-    const waffeImKorb = (id: string) => imVerkaufskorb.has(`waffe:${id}`);
     for (const e of a.waffen) {
       const teile = verkaufTeile(c, { art: 'waffe', id: e.id }, d);
       liste.push({ kat: 'Waffen', p: { art: 'waffe', id: e.id }, name: teile[0]?.name ?? e.waffe,
         unter: teile.length > 1 ? `${zText(e.zustand)} · mit ${zusammen(teile.slice(1).map((t) => t.name))}` : zText(e.zustand), max: 1 });
     }
-    for (const e of a.waffen) {
-      if (waffeImKorb(e.id)) continue;
-      const w = waffeVon(e, d);
-      e.magazine.forEach((m, index) => liste.push({ kat: 'Magazine', p: { art: 'magazin', waffe: e.id, index }, name: `Magazin ${w.name}`,
-        unter: `${m.inhalt ? `${m.inhalt} ${m.typ}` : 'leer'} · ${zText(m.zustand)}`, max: 1 }));
-      e.zubehoer.forEach((z, index) => liste.push({ kat: 'Zubehör', p: { art: 'zubehoer', waffe: e.id, index },
-        name: d.aufsaetze.zubehoer.find((x) => x.id === z.art)?.name ?? z.art, unter: `für ${w.name} · ${z.inhalt ? `${z.inhalt} ${z.typ}` : 'leer'} · ${zText(z.zustand)}`, max: 1 }));
-    }
+    a.magazine.forEach((m, index) => {
+      const s = magazinSorte(m.id, d);
+      liste.push({ kat: 'Magazine', p: { art: 'magazin', index }, name: s ? magazinName(s, d) : m.id,
+        unter: `${m.inhalt ? `${m.inhalt} ${m.typ}` : 'leer'} · ${zText(m.zustand)}`, max: 1 });
+    });
     for (const m of a.munition)
       liste.push({ kat: 'Munition', p: { art: 'munition', kaliber: m.kaliber, typ: m.typ, menge: Math.min(je, m.anzahl) },
         name: `${d.munition.eintraege.find((x) => x.id === m.kaliber)?.name ?? m.kaliber} ${m.typ}`, unter: `${m.anzahl} Schuss lose`, max: m.anzahl });
@@ -152,7 +151,7 @@
     // Nur, was einen Preis hat und noch nicht im Korb liegt
     return liste.filter((x) => !imVerkaufskorb.has(verkaufSchluessel(x.p)) && verkaufTeile(c, x.p, d).length);
   });
-  const VERKAUF_KATEGORIEN = ['Waffen', 'Munition', 'Magazine', 'Nahkampf', 'Sprengmittel', 'Rüstung', 'Aufsätze', 'Zubehör'];
+  const VERKAUF_KATEGORIEN = ['Waffen', 'Munition', 'Magazine', 'Nahkampf', 'Sprengmittel', 'Rüstung', 'Aufsätze'];
 
   let offenV = $state<string | null>(null);
   let mengeV = $state(1);
@@ -197,13 +196,13 @@
       const nach = kaufAnwenden(c, korb.kauf, preis, d);
       zeilen.push({ text: `Du kaufst ${liste} für ${geld(preis)}.` });
       if (korb.kauf.some((p) => wareVon(p.ware, d)?.art === 'waffe'))
-        zeilen.push({ text: `Die Waffen liegen ungeladen im Trageort ${trageortName(d.regeln.laden.trageort, d)}; ihre Magazine sind leer.` });
+        zeilen.push({ text: `Die Waffen liegen ungeladen im Trageort ${trageortName(d.regeln.laden.trageort, d)}; das Magazin darin ist leer.` });
       zeilen.push({ text: `Dein Kontostand sinkt von ${geld(stand)} auf ${geld(nachher)}.` });
       bericht = { zeilen, nach };
     } else {
       const nach = verkaufAnwenden(c, korb.verkauf, preis, d);
       zeilen.push({ text: `Du verkaufst ${liste} für ${geld(preis)}.` });
-      if (korb.verkauf.some((p) => p.art === 'waffe' || p.art === 'magazin' || p.art === 'zubehoer'))
+      if (korb.verkauf.some((p) => p.art === 'waffe' || p.art === 'magazin'))
         zeilen.push({ text: 'Patronen darin behältst du als lose Munition.' });
       zeilen.push({ text: `Dein Kontostand steigt von ${geld(stand)} auf ${geld(nachher)}.` });
       bericht = { zeilen, nach };
@@ -247,13 +246,17 @@
 
   {#if kauf}
     <div class="stapel">
+      <label class="schalter"><input type="checkbox" bind:checked={nurPassend} /> Nur, was zu meinen Waffen passt</label>
+      {#if nurPassend && !meineWaffen.length}
+        <p class="hinweis">Du hast noch keine Schusswaffe. Munition, Magazine und Aufsätze erscheinen, sobald eine im Korb liegt.</p>
+      {/if}
       <label class="schalter"><input type="checkbox" bind:checked={nurErreichbar} /> Nur, was ich bekomme{#if vl !== null} (Vorratslevel {vl}){/if}</label>
       {#if kontakteMoeglich && kontaktePerk}
         <label class="schalter"><input type="checkbox" bind:checked={kontakte} /> <Farbtext text={`${mitZeichen('perk', kontaktePerk, d)} einsetzen`} /></label>
       {/if}
     </div>
     {#each KATEGORIEN as k (k.name)}
-      {@const liste = waren.filter((w) => k.arten.includes(w.art)).map((w) => ({ w, z: zugang(c, w, kontakte, d) })).filter((x) => !nurErreichbar || x.z.art === 'frei')}
+      {@const liste = waren.filter((w) => k.arten.includes(w.art) && (!nurPassend || passtZuWaffen(w, meineWaffen, d))).map((w) => ({ w, z: zugang(c, w, kontakte, d) })).filter((x) => !nurErreichbar || x.z.art === 'frei')}
       {#if liste.length}
         <section class="karte">
           <details>
@@ -271,7 +274,6 @@
                   </button>
                   {#if auf}
                     {@const p = posten(w)}
-                    {@const ziele = zielWaffen(c, w, d)}
                     <div class="detail">
                       {#if w.verbrauch}
                         <p class="hinweis">Verbrauchsware ist immer neu; der Preis liegt in der ganzen Spanne{#if w.art === 'munition'} (je {je} Schuss){/if}.</p>
@@ -294,15 +296,6 @@
                           <button aria-label="mehr" disabled={w.art === 'schild'} onclick={() => (menge += w.art === 'munition' ? je : 1)}>+</button>
                         </div>
                       </div>
-                      {#if (w.art === 'magazin' || w.art === 'zubehoer') && ziele.length > 1}
-                        <label class="feld">Für welche Waffe?
-                          <select bind:value={ziel}>
-                            {#each ziele as e (e.id)}<option value={e.id}>{waffeVon(e, d).name} ({trageortName(e.trageort, d)})</option>{/each}
-                          </select>
-                        </label>
-                      {:else if (w.art === 'magazin' || w.art === 'zubehoer') && !ziele.length}
-                        <p class="hinweis">Du hast keine passende Waffe. Kaufst du sie im selben Korb, kommt es an sie.</p>
-                      {/if}
                       <p>Preis: <span class="zahl">{spanneText(postenRahmen(p, d))}</span></p>
                       {#if z.art === 'frei'}
                         <button class="haupt" onclick={() => inDenKorb(p)}>In den Korb</button>

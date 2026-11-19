@@ -6,7 +6,7 @@ import { PERK_WIRKUNGEN, type Modifikator, type Spieldaten, type SymptomWirkung 
 
 const ID_MUSTER = /^[a-z0-9_]+$/;
 const RAENGE = ['S', 'A', 'B', 'C', 'D', 'E', 'F'];
-const ANSCHLUESSE = ['schiene_oben', 'schiene_unten', 'schiene_seitlich', 'muendung_pistole', 'muendung_gewehr', 'magazin'];
+const ANSCHLUESSE = ['schiene_oben', 'schiene_unten', 'schiene_seitlich', 'muendung_pistole', 'muendung_gewehr'];
 const SKILLGRUPPEN = ['waffen', 'kampf', 'koerper', 'technik', 'entscheidung', 'medizin', 'sozial', 'exklusiv'];
 const PERKGRUPPEN = ['grundwerte', 'kampfkunst', 'kampf', 'allgemein', 'exklusiv'];
 const HINWEIS_STELLEN = ['schiessen', 'probe', 'leiter', 'schaden', 'heilung', 'nahkampf', 'breakaction', 'initiative'];
@@ -62,7 +62,7 @@ export function pruefeDaten(d: Spieldaten): string[] {
   const munIds = ids('munition.json', d.munition.eintraege);
   const waffenIds = ids('waffen.json', d.waffen.eintraege);
   const aufsatzIds = ids('aufsaetze.json', d.aufsaetze.eintraege);
-  const zubehoerIds = ids('aufsaetze.json (zubehoer)', d.aufsaetze.zubehoer);
+  const magazinIds = ids('magazine.json', d.magazine.eintraege);
   const nahkampfIds = ids('nahkampfwaffen.json', d.nahkampfwaffen.eintraege);
   const sprengIds = ids('wurf_und_sprengwaffen.json', d.wurf_und_sprengwaffen.eintraege);
   ids('schutz.json (deckung)', d.schutz.deckung);
@@ -349,15 +349,45 @@ export function pruefeDaten(d: Spieldaten): string[] {
       }
     }
     for (const a of w.anschluesse ?? []) if (!ANSCHLUESSE.includes(a)) f(ort, `unbekannter Anschluss „${a}“`);
-    if (w.magazine?.length && !w.anschluesse.includes('magazin')) f(ort, 'magazine ohne Anschluss „magazin“');
-    for (const n of w.magazine ?? []) {
-      const passt = d.aufsaetze.eintraege.some((a) => a.passt_an.waffen.includes(w.id) && a.werte?.magazin === n);
-      if (!passt) f(ort, `kein Aufsatz für Magazingröße ${n}`);
-    }
-    for (const z of w.zubehoer ?? []) if (!zubehoerIds.has(z)) f(ort, `unbekanntes Zubehör „${z}“`);
     handelswerte(ort, w.vorratslevel, w.preis);
-    if (w.ladeart === 'wechselmagazin') handelswerte(`${ort} ersatzmagazin`, w.vorratslevel, w.ersatzmagazin?.preis);
-    else if (w.ersatzmagazin) f(ort, 'ersatzmagazin nur bei Ladeart „wechselmagazin“');
+    if (w.ladeart === 'wechselmagazin') {
+      const m = d.magazine.eintraege.find((x) => x.id === w.standardmagazin);
+      if (!m) f(ort, `Standardmagazin fehlt oder ist unbekannt („${w.standardmagazin ?? ''}“)`);
+      else {
+        if (!m.passt_an.includes(w.id)) f(ort, `Standardmagazin „${m.id}“ nennt die Waffe nicht in passt_an`);
+        if (m.groesse !== w.magazin) f(ort, `Standardmagazin „${m.id}“ hat ${m.groesse} statt ${w.magazin} Schuss`);
+        if (m.art !== 'magazin') f(ort, 'Standardmagazin muss art „magazin“ haben');
+      }
+    } else if (w.standardmagazin) f(ort, 'standardmagazin nur bei Ladeart „wechselmagazin“');
+  }
+
+  // ---------- magazine.json
+  const waffeMap = new Map(d.waffen.eintraege.map((w) => [w.id, w]));
+  const alteIds = new Set<string>();
+  for (const m of d.magazine.eintraege) {
+    const ort = `magazine.json ${m.id}`;
+    pflicht(ort, m, ['id', 'name', 'art', 'groesse', 'passt_an']);
+    if (!['magazin', 'lader'].includes(m.art)) f(ort, 'art muss „magazin“ oder „lader“ sein');
+    if (!(Number.isInteger(m.groesse) && m.groesse > 0)) f(ort, 'groesse muss eine ganze Zahl > 0 sein');
+    if (!m.passt_an.length) f(ort, 'passt an keine Waffe');
+    const kaliber = new Set<string>();
+    for (const id of m.passt_an) {
+      const w = waffeMap.get(id);
+      if (!w) { f(ort, `unbekannte Waffe „${id}“`); continue; }
+      if (Array.isArray(w.munition)) f(ort, `„${id}“ ist ein Werfer`);
+      else kaliber.add(w.munition);
+      if (m.art === 'magazin' && w.ladeart !== 'wechselmagazin') f(ort, `„${id}“ hat kein Wechselmagazin`);
+      if (m.art === 'lader' && w.ladeart === 'wechselmagazin') f(ort, `Schnelllader bzw. Ladestreifen passt nicht an „${id}“ (Wechselmagazin)`);
+      if (m.art === 'lader' && m.groesse !== w.magazin) f(ort, `groesse ${m.groesse} passt nicht zu „${id}“ (${w.magazin})`);
+    }
+    if (kaliber.size > 1) f(ort, 'Waffen mit verschiedenem Kaliber');
+    if (m.trommel && m.art !== 'magazin') f(ort, 'trommel nur bei art „magazin“');
+    for (const a of m.alte_ids ?? []) {
+      if (magazinIds.has(a)) f(ort, `alte ID „${a}“ ist eine heutige ID`);
+      if (alteIds.has(a) && m.art === 'magazin') f(ort, `alte ID „${a}“ doppelt`);
+      alteIds.add(a);
+    }
+    handelswerte(ort, m.vorratslevel, m.preis);
   }
 
   // ---------- aufsaetze.json

@@ -4,11 +4,19 @@
 
 Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. Die App arbeitet bis zur Entscheidung mit der genannten vorläufigen Lösung. Neue Einträge kommen beim Programmieren hinzu (Skill „regelfrage“). Die Regelpunkte aus den Schritten 1 bis 6 sind hierher übertragen (18.11.2026).
 
+### R49. Magazine als eigene Gegenstände, gemeinsame Magazine (19.11.2026)
+- **Entschieden (19.11.2026, Nutzer):** Magazine sind keine Aufsätze mehr. Erweiterte Magazine und Trommelmagazine stehen bei den Magazinen; Schnelllader und Ladestreifen gelten als Magazin. Waffen können dieselben Magazine nutzen, z. B. M4 und M16A4. Die App führt Magazine beim Charakter; jede passende Waffe kann sie laden.
+- **Frage:** Das Regelwerk führt erweiterte Magazine als Aufsatz am Anschluss „Magazin“ und Schnelllader und Ladestreifen als Zubehör; ob zwei Waffen dieselben Magazine nutzen, sagt es nicht.
+- **Stellen:** (Schusswaffen (tragbar), Aufsätze: Anschluss Magazin, Erweitertes Magazin; Zubehör); Colt M4 Carbine und Colt M16A4 (Anschlüsse: Magazin (30, Trommel 100))
+- **Umgesetzt:** Magazinsorten in magazine.json, jede mit den Waffen, an die sie passt (`passt_an`). Gemeinsam sind bisher nur die Magazine von M4 und M16A4 (20, erweitert 30, Trommel 100). Preise und Vorratslevel wie in R18; für die gemeinsamen Magazine gilt das niedrigere Vorratslevel der beiden Waffen.
+- **Ändern:** weitere gemeinsame Magazine: eine Waffe in `passt_an` der Sorte ergänzen (magazine.json)
+- **Im Regelwerk klarstellen:** ja (Magazine als eigene Ausrüstung statt Aufsatz; welche Waffen sich Magazine teilen)
+
 ### R48. Verkauf einer Waffe mit Magazinen und Zubehör (19.11.2026)
 - **Frage:** Wer eine Waffe verkauft, hat oft noch Ersatzmagazine, Schnelllader oder Ladestreifen dazu, und Patronen darin. Das Regelwerk sagt nicht, ob diese mitverkauft werden und was mit den Patronen geschieht.
 - **Stellen:** (Schusswaffen (tragbar), Zustand, Preis); Regelfrage R45
-- **Vorläufig:** Wie bei den Aufsätzen (R45): Die Waffe wird mit ihrem eingesetzten Magazin, allen Ersatzmagazinen und ihrem Zubehör verkauft, jedes Stück nach seinem Zustand. Die Patronen darin behält der Charakter als lose Munition (ein geladenes Geschoss kommt in den Vorrat). Einzelne Magazine lassen sich auch für sich verkaufen.
-- **Andere Möglichkeit:** Magazine und Zubehör bleiben beim Charakter und gehen nur mit, wenn man sie eigens in den Korb legt.
+- **Vorläufig:** Wie bei den Aufsätzen (R45): Die Waffe wird mit ihrem eingesetzten Magazin verkauft, jedes Stück nach seinem Zustand. Seit Magazine beim Charakter liegen (R49, 19.11.2026), bleiben die übrigen Magazine, Schnelllader und Ladestreifen beim Charakter (sie können zu einer anderen Waffe passen) und werden eigens in den Korb gelegt. Die Patronen in Waffe und verkauften Magazinen behält der Charakter als lose Munition (ein geladenes Geschoss kommt in den Vorrat).
+- **Andere Möglichkeit:** Alle Magazine, die nur an diese Waffe passen, gehen mit.
 - **Ändern:** Regelkern, Laden (Verkauf)
 - **Im Regelwerk klarstellen:** ja
 
@@ -197,7 +205,7 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 	- **Aufsätze (je Stück):** Reflexvisier 100–400 (VL 2), Zielfernrohr 150–600 (VL 2), Zweibein 30–120 (VL 1), Vordergriff 20–80 (VL 1), Lampe 20–100 (VL 1), Kompensator Pistole 40–120 / Gewehr 60–200 (VL 2), Schalldämpfer Pistole 200–600 / Gewehr 400–1200 (VL 4). Bajonett und Unterlaufwerfer M203 haben ihre Werte schon als Nahkampfwaffe bzw. Waffe.
 - **Frage:** Gewöhnliche Munition (FMJ, HP, AP, Buckshot, Slug, Unterschall), Ersatzmagazine und alle Aufsätze haben im Regelwerk keine Geldwertspanne und meist kein Vorratslevel. Der Laden braucht sie.
 - **Stellen:** (Munitionstypen); (Schusswaffen (tragbar), Aufsätze; Begriffserklärung)
-- **Ändern:** munition.json (`preis_10`, `vorratslevel` je Typ), waffen.json (`ersatzmagazin`), aufsaetze.json (`preis`, `vorratslevel`)
+- **Ändern:** munition.json (`preis_10`, `vorratslevel` je Typ), magazine.json (`preis`, `vorratslevel` je Sorte, seit R49), aufsaetze.json (`preis`, `vorratslevel`)
 - **Im Regelwerk klarstellen:** ja (Werte ergänzen)
 
 ### R42. Zustand für Ausrüstung außer Schusswaffen (19.11.2026)

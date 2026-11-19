@@ -1,8 +1,8 @@
 // Migration älterer Schemaversionen (docs/datenformat.md § Migration).
 // Für jeden Schritt n → n+1 steht hier eine Funktion; die Liste wird der Reihe nach angewandt.
 
-import type { Spieldaten } from '../daten/typen';
-import { leererKorb, neueErstellung, SCHEMA, type Charakter, type MunitionEintrag } from './charakter';
+import type { MagazinSorte, Spieldaten } from '../daten/typen';
+import { leererKorb, neueErstellung, SCHEMA, type Charakter, type Magazin, type MunitionEintrag, type Teil } from './charakter';
 
 type Roh = Record<string, unknown> & { schema?: unknown };
 
@@ -38,8 +38,70 @@ export const MIGRATIONEN: Record<number, (c: Roh, d?: Spieldaten) => Roh> = {
   6: (c) => {
     const e = c.erstellung as Record<string, unknown> | null | undefined;
     return e ? { ...c, erstellung: { ...e, korb: e.korb ?? leererKorb() } } : c;
-  }
+  },
+  // 7 → 8: Magazine als eigene Gegenstände beim Charakter (magazine.json; konzept.md § 3.8, R49).
+  7: (c, d) => auf8(c, d)
 };
+
+type Alt7Mag = { inhalt: number; typ: string; zustand: string };
+type Alt7Waffe = Record<string, unknown> & {
+  waffe: string; magazin_zustand?: string; magazine?: Alt7Mag[]; zubehoer?: (Alt7Mag & { art: string })[]; aufsaetze?: Teil[];
+};
+
+/** Magazinsorte zu einer früheren Aufsatz- bzw. Zubehör-ID (oder heutigen ID), bevorzugt eine, die an die Waffe passt. */
+function sorteZu(alt: string, waffe: string | null, d: Spieldaten): MagazinSorte | null {
+  const kandidaten = d.magazine.eintraege.filter((m) => m.id === alt || m.alte_ids?.includes(alt));
+  return kandidaten.find((m) => waffe && m.passt_an.includes(waffe)) ?? kandidaten[0] ?? null;
+}
+
+/**
+ * Schema 7 → 8. Erweiterte Magazine und Trommeln waren Aufsätze; Ersatzmagazine, Schnelllader und Ladestreifen hingen an
+ * einer Waffe. Jetzt steckt in einer Waffe mit Wechselmagazin ein Magazin einer Sorte (das angebrachte erweiterte
+ * Magazin, sonst das Standardmagazin); ihre Ersatzmagazine haben dieselbe Sorte, weil sie bisher dieselbe Größe hatten.
+ * Alle Ersatzmagazine, Schnelllader und Ladestreifen kommen zu `ausruestung.magazine`; lose erweiterte Magazine werden
+ * leere Magazine. Im Korb der Erstellung werden Magazine, Zubehör und erweiterte Magazine zu Magazinsorten.
+ */
+function auf8(c: Roh, d?: Spieldaten): Roh {
+  if (!d) throw new ImportFehler('Zum Umstellen dieses Charakters fehlen die Spieldaten.');
+  const neu = d.regeln.waffenzustand.neu;
+  const a = (c.ausruestung ?? {}) as Record<string, unknown>;
+  const magazine: Magazin[] = [];
+  const waffen = ((a.waffen ?? []) as Alt7Waffe[]).map((e) => {
+    const { magazin_zustand, magazine: ersatz = [], zubehoer = [], aufsaetze = [], ...rest } = e;
+    const w = d.waffen.eintraege.find((x) => x.id === e.waffe);
+    const magAufsatz = aufsaetze.map((t) => ({ t, s: d.aufsaetze.eintraege.some((x) => x.id === t.id) ? null : sorteZu(t.id, e.waffe, d) })).find((x) => x.s);
+    const bleiben = aufsaetze.filter((t) => t !== magAufsatz?.t);
+    const sorte = magAufsatz?.s?.id ?? w?.standardmagazin;
+    for (const m of ersatz) if (sorte) magazine.push({ id: sorte, inhalt: m.inhalt, typ: m.typ, zustand: m.zustand ?? neu });
+    for (const z of zubehoer) {
+      const s = sorteZu(z.art, e.waffe, d);
+      if (s) magazine.push({ id: s.id, inhalt: z.inhalt, typ: z.typ, zustand: z.zustand ?? neu });
+    }
+    const eintrag: Record<string, unknown> = { ...rest, aufsaetze: bleiben };
+    if (w?.ladeart === 'wechselmagazin' && sorte) eintrag.magazin = { id: sorte, zustand: magAufsatz?.t.zustand ?? magazin_zustand ?? neu };
+    return eintrag;
+  });
+  const lose: Teil[] = [];
+  for (const t of (a.aufsaetze ?? []) as Teil[]) {
+    const s = d.aufsaetze.eintraege.some((x) => x.id === t.id) ? null : sorteZu(t.id, null, d);
+    if (s) magazine.push({ id: s.id, inhalt: 0, typ: '', zustand: t.zustand });
+    else lose.push(t);
+  }
+  let erstellung = c.erstellung as (Record<string, unknown> & { korb?: { kauf?: Record<string, unknown>[] } }) | null | undefined;
+  if (erstellung?.korb?.kauf) {
+    const kauf = erstellung.korb.kauf.flatMap((p) => {
+      const { ziel: _ziel, ...rest } = p;
+      const [art, id = ''] = String(p.ware).split(':');
+      let sorte: string | null | undefined;
+      if (art === 'magazin') sorte = d.waffen.eintraege.find((w) => w.id === id)?.standardmagazin ?? sorteZu(id, null, d)?.id;
+      else if (art === 'zubehoer' || (art === 'aufsatz' && !d.aufsaetze.eintraege.some((x) => x.id === id))) sorte = sorteZu(id, null, d)?.id;
+      else return [rest];
+      return sorte ? [{ ...rest, ware: `magazin:${sorte}` }] : [];
+    });
+    erstellung = { ...erstellung, korb: { ...erstellung.korb, kauf } };
+  }
+  return { ...c, ...(erstellung ? { erstellung } : {}), ausruestung: { ...a, waffen, magazine, aufsaetze: lose } };
+}
 
 type Alt5Waffe = Record<string, unknown> & {
   waffe: string; munitionstyp?: string; reserve?: number[]; lose_patronen?: number; leere_magazine?: number;
@@ -66,8 +128,8 @@ function auf6(c: Roh, d?: Spieldaten): Roh {
       if (da) da.anzahl += lose_patronen;
       else munition.push({ kaliber, typ, anzahl: lose_patronen });
     }
-    const erweitert = aufsaetze.map((id) => d.aufsaetze.eintraege.find((x) => x.id === id)?.werte?.magazin).find((n) => n);
-    const groesse = erweitert ?? w?.magazin ?? 0;
+    // Schnelllader und Ladestreifen gibt es nur an Waffen ohne Wechselmagazin, also ohne erweitertes Magazin.
+    const groesse = w?.magazin ?? 0;
     return {
       ...rest,
       munitionstyp: typ,

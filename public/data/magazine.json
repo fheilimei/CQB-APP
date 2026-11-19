@@ -1,0 +1,325 @@
+{
+  "version": "2026-11-19b",
+  "eintraege": [
+    {
+      "id": "magazin_makarov_8",
+      "name": "Magazin (8)",
+      "art": "magazin",
+      "groesse": 8,
+      "passt_an": [
+        "makarov"
+      ],
+      "vorratslevel": 2,
+      "preis": {
+        "min": 10,
+        "max": 40
+      },
+      "vorlaeufig": true
+    },
+    {
+      "id": "magazin_five_seven_10",
+      "name": "Magazin (10)",
+      "art": "magazin",
+      "groesse": 10,
+      "passt_an": [
+        "five_seven"
+      ],
+      "vorratslevel": 4,
+      "preis": {
+        "min": 30,
+        "max": 70
+      },
+      "vorlaeufig": true
+    },
+    {
+      "id": "magazin_five_seven_20",
+      "name": "Erweitertes Magazin (20)",
+      "art": "magazin",
+      "groesse": 20,
+      "passt_an": [
+        "five_seven"
+      ],
+      "vorratslevel": 5,
+      "preis": {
+        "min": 30,
+        "max": 80
+      },
+      "vorlaeufig": true
+    },
+    {
+      "id": "magazin_five_seven_30",
+      "name": "Erweitertes Magazin (30)",
+      "art": "magazin",
+      "groesse": 30,
+      "passt_an": [
+        "five_seven"
+      ],
+      "vorratslevel": 5,
+      "preis": {
+        "min": 30,
+        "max": 80
+      },
+      "vorlaeufig": true
+    },
+    {
+      "id": "magazin_m1911_7",
+      "name": "Magazin (7)",
+      "art": "magazin",
+      "groesse": 7,
+      "passt_an": [
+        "m1911"
+      ],
+      "vorratslevel": 2,
+      "preis": {
+        "min": 10,
+        "max": 40
+      },
+      "vorlaeufig": true
+    },
+    {
+      "id": "magazin_beretta_92_15",
+      "name": "Magazin (15)",
+      "art": "magazin",
+      "groesse": 15,
+      "passt_an": [
+        "beretta_92"
+      ],
+      "vorratslevel": 2,
+      "preis": {
+        "min": 10,
+        "max": 40
+      },
+      "vorlaeufig": true
+    },
+    {
+      "id": "schnelllader_sw_model_10",
+      "name": "Schnelllader",
+      "art": "lader",
+      "groesse": 6,
+      "passt_an": [
+        "sw_model_10"
+      ],
+      "vorratslevel": 1,
+      "preis": {
+        "min": 5,
+        "max": 15
+      },
+      "alte_ids": [
+        "schnelllader"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "magazin_hi_point_c9_8",
+      "name": "Magazin (8)",
+      "art": "magazin",
+      "groesse": 8,
+      "passt_an": [
+        "hi_point_c9"
+      ],
+      "vorratslevel": 1,
+      "preis": {
+        "min": 10,
+        "max": 40
+      },
+      "vorlaeufig": true
+    },
+    {
+      "id": "magazin_beretta_93r_20",
+      "name": "Magazin (20)",
+      "art": "magazin",
+      "groesse": 20,
+      "passt_an": [
+        "beretta_93r"
+      ],
+      "vorratslevel": 4,
+      "preis": {
+        "min": 10,
+        "max": 40
+      },
+      "vorlaeufig": true
+    },
+    {
+      "id": "magazin_ak47_30",
+      "name": "Magazin (30)",
+      "art": "magazin",
+      "groesse": 30,
+      "passt_an": [
+        "ak47"
+      ],
+      "vorratslevel": 2,
+      "preis": {
+        "min": 15,
+        "max": 50
+      },
+      "vorlaeufig": true
+    },
+    {
+      "id": "trommel_ak47_75",
+      "name": "Trommelmagazin (75)",
+      "art": "magazin",
+      "groesse": 75,
+      "passt_an": [
+        "ak47"
+      ],
+      "vorratslevel": 4,
+      "preis": {
+        "min": 100,
+        "max": 300
+      },
+      "vorlaeufig": true,
+      "trommel": true
+    },
+    {
+      "id": "magazin_stanag_20",
+      "name": "Magazin (20)",
+      "art": "magazin",
+      "groesse": 20,
+      "passt_an": [
+        "m4",
+        "m16a4"
+      ],
+      "vorratslevel": 3,
+      "preis": {
+        "min": 15,
+        "max": 50
+      },
+      "vorlaeufig": true
+    },
+    {
+      "id": "magazin_stanag_30",
+      "name": "Erweitertes Magazin (30)",
+      "art": "magazin",
+      "groesse": 30,
+      "passt_an": [
+        "m4",
+        "m16a4"
+      ],
+      "vorratslevel": 4,
+      "preis": {
+        "min": 30,
+        "max": 80
+      },
+      "vorlaeufig": true,
+      "alte_ids": [
+        "magazin_m4_30",
+        "magazin_m16a4_30"
+      ]
+    },
+    {
+      "id": "trommel_stanag_100",
+      "name": "Trommelmagazin (100)",
+      "art": "magazin",
+      "groesse": 100,
+      "passt_an": [
+        "m4",
+        "m16a4"
+      ],
+      "vorratslevel": 4,
+      "preis": {
+        "min": 100,
+        "max": 300
+      },
+      "vorlaeufig": true,
+      "trommel": true,
+      "alte_ids": [
+        "trommel_m4_100",
+        "trommel_m16a4_100"
+      ]
+    },
+    {
+      "id": "magazin_scar_mk17_10",
+      "name": "Magazin (10)",
+      "art": "magazin",
+      "groesse": 10,
+      "passt_an": [
+        "scar_mk17"
+      ],
+      "vorratslevel": 4,
+      "preis": {
+        "min": 15,
+        "max": 50
+      },
+      "vorlaeufig": true
+    },
+    {
+      "id": "magazin_scar_mk17_20",
+      "name": "Erweitertes Magazin (20)",
+      "art": "magazin",
+      "groesse": 20,
+      "passt_an": [
+        "scar_mk17"
+      ],
+      "vorratslevel": 5,
+      "preis": {
+        "min": 30,
+        "max": 80
+      },
+      "vorlaeufig": true
+    },
+    {
+      "id": "ladestreifen_mosin_nagant",
+      "name": "Ladestreifen",
+      "art": "lader",
+      "groesse": 5,
+      "passt_an": [
+        "mosin_nagant"
+      ],
+      "vorratslevel": 1,
+      "preis": {
+        "min": 5,
+        "max": 15
+      },
+      "alte_ids": [
+        "ladestreifen"
+      ],
+      "vorlaeufig": true
+    },
+    {
+      "id": "magazin_saiga12_8",
+      "name": "Magazin (8)",
+      "art": "magazin",
+      "groesse": 8,
+      "passt_an": [
+        "saiga12"
+      ],
+      "vorratslevel": 3,
+      "preis": {
+        "min": 15,
+        "max": 50
+      },
+      "vorlaeufig": true
+    },
+    {
+      "id": "magazin_saiga12_12",
+      "name": "Erweitertes Magazin (12)",
+      "art": "magazin",
+      "groesse": 12,
+      "passt_an": [
+        "saiga12"
+      ],
+      "vorratslevel": 4,
+      "preis": {
+        "min": 30,
+        "max": 80
+      },
+      "vorlaeufig": true
+    },
+    {
+      "id": "trommel_saiga12_20",
+      "name": "Trommelmagazin (20)",
+      "art": "magazin",
+      "groesse": 20,
+      "passt_an": [
+        "saiga12"
+      ],
+      "vorratslevel": 4,
+      "preis": {
+        "min": 100,
+        "max": 300
+      },
+      "vorlaeufig": true,
+      "trommel": true
+    }
+  ]
+}

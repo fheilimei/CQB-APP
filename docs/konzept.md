@@ -205,7 +205,7 @@ Die App hat fünf Reiter in einer senkrechten Leiste am rechten Bildschirmrand, 
 
 **Werte:** Stammdaten (eingeklappt) · **Stats** · **Skills** · **Perks** · Grundwerte. Stats, Skills und Perks stehen direkt untereinander, weil sie beim Spielen zusammen gebraucht werden ([§ 3.1](#31-stammdaten-a-m) bis [§ 3.5](#35-perks-a-m)). Auch Aufstieg und Klassenwechsel finden hier statt.
 
-**Ausrüstung:** Silhouette mit Trageorten ([§ 3.0f](#30f-körperbild-silhouette-a-r), Schicht Ausrüstung), darunter die Listen: Waffen mit Munition und Aufsätzen, Nahkampfwaffen, Vorrat, Rüstung, Schild, Zubehör, lose Munition und lose Aufsätze. Kein Geld (19.11.2026: Kontostand und Schulden stehen im Reiter Laden).
+**Ausrüstung:** Silhouette mit Trageorten ([§ 3.0f](#30f-körperbild-silhouette-a-r), Schicht Ausrüstung), darunter die Listen: Waffen mit eingesetztem Magazin und Aufsätzen, lose Munition, Magazine (auch Schnelllader und Ladestreifen), lose Aufsätze, Nahkampfwaffen, Vorrat, Rüstung, Schild. Kein Geld (19.11.2026: Kontostand und Schulden stehen im Reiter Laden).
 
 **Laden:** Geld (Kontostand, Schulden; [§ 3.13](#313-geld-und-aufträge-m-r)), Kaufen und Verkaufen ([§ 3.14](#314-laden-kaufen-und-verkaufen-m-r)).
 
@@ -441,10 +441,10 @@ Alles, was Schaden austeilt oder einsteckt, läuft über **einen Dialog in zwei 
 
 **Waffen.** Je Waffe: Werte aus `waffen.json`, angebrachte Aufsätze, Zustand, Ladehemmung (keine / einfach / schwer) und der **Magazinstand**:
 - **in der Waffe:** aktueller Inhalt (inklusive Patrone im Lauf) und sein Munitionstyp (DK/MW). Jeder abgegebene Schuss wird abgezogen, auch Schüsse, die ins Leere gehen.
-- **Ersatzmagazine:** jedes mit Inhalt und Munitionstyp („30 FMJ · 12 HP · leer“), weil auch angebrochene und leere Magazine mitgeführt werden (siehe Munition je Magazin unten).
+- **Eingesetztes Magazin:** seine Sorte (z. B. „Erweitertes Magazin (30)“) bestimmt die Magazingröße; eine Trommel erhöht die Ladehemmungsrate. Darunter, wie viele passende Magazine gefüllt bzw. leer sind (siehe Magazine unten).
 - **Aktive Waffe:** Es ist immer genau eine Waffe aktiv. Sie steht oben im Waffenbereich; alle Rechner beziehen sich auf sie. Wechseln ist eine Aktion („Waffe wechseln“, [§ 3.7a](#37a-aktionsleiste-m-r)); dabei wählt der Spieler die neue Waffe aus seiner Ausrüstung. Außerhalb des Gefechts ist der Wechsel frei.
-- **Aufsätze** kommen aus `aufsaetze.json`; ihre Wirkung ist dort hinterlegt, nicht bei der Waffe, weil ein Aufsatz an mehrere Waffen passt ([datenformat.md § aufsaetze.json](datenformat.md#aufsaetzejson)). Ob ein Aufsatz an eine Waffe passt, ergibt sich aus den Anschlüssen der Waffe (Schiene oben/unten/seitlich, Mündung Pistole/Gewehr, Magazin).
-  - Manche Aufsätze wirken **immer**, solange sie angebracht sind (z. B. erweitertes Magazin).
+- **Aufsätze** kommen aus `aufsaetze.json`; ihre Wirkung ist dort hinterlegt, nicht bei der Waffe, weil ein Aufsatz an mehrere Waffen passt ([datenformat.md § aufsaetze.json](datenformat.md#aufsaetzejson)). Ob ein Aufsatz an eine Waffe passt, ergibt sich aus den Anschlüssen der Waffe (Schiene oben/unten/seitlich, Mündung Pistole/Gewehr). Magazine sind keine Aufsätze (seit 19.11.2026, siehe Magazine unten).
+  - Manche Aufsätze wirken **immer**, solange sie angebracht sind (z. B. Reflexvisier).
   - Andere wirken nur, wenn sie **im Einsatz** sind; das ergibt sich aus dem Spielfluss. Für sie zeigt der Schussablauf einen **Schalter**, aber nur, wenn die aktive Waffe den Aufsatz hat. Beispiel: **Zweibein aufgesetzt** → 1 Stepshield auf die Haltezahl ([§ 4.6](#46-schießen)).
 
 **Schießen** (Break → Schießen):
@@ -458,26 +458,32 @@ Alles, was Schaden austeilt oder einsteckt, läuft über **einen Dialog in zwei 
 6. **Weiter:** übernimmt; Break-Zähler −1; Eintrag im Gefechtsprotokoll.
 
 **Nachladen** (Main; Break nur mit Perk Schnell nachladen). Keine Probe. Der Ablauf hängt von der **Ladeart** der Waffe ab (Kampfsystem, Nachladen):
-- **Wechselmagazin:** Der Spieler tippt das neue Magazin aus den Ersatzmagazinen (mit Inhalt und Typ; vorgewählt: das vollste vom bisherigen Typ, sonst das vollste). Das eingesetzte Magazin geht mit Rest und Typ zu den Ersatzmagazinen (leer, wenn nichts mehr drin ist); eine Patrone im Lauf bleibt in der Waffe und zählt zum Typ des neuen Magazins (vereinfacht).
+- **Wechselmagazin:** Der Spieler tippt das neue Magazin aus den passenden Magazinen des Charakters (mit Inhalt und Typ, bei mehreren Sorten auch die Sorte; vorgewählt: das vollste vom bisherigen Typ, sonst das vollste). Ein passendes erweitertes Magazin oder eine Trommel lässt sich genauso einsetzen. Das eingesetzte Magazin geht mit Rest und Typ zu den Magazinen (leer, wenn nichts mehr drin ist); eine Patrone im Lauf bleibt in der Waffe und zählt zum Typ des neuen Magazins (vereinfacht).
 
-**Magazine füllen** (nur außerhalb des Gefechts, Knopf an der Waffe im Reiter Ausrüstung): Der Spieler tippt den Munitionstyp („Füllen mit: FMJ (40) · HP (15)“). Gefüllt wird aus der losen Munition dieses Typs, so weit sie reicht: zuerst die Waffe, dann angebrochene Ersatzmagazine desselben Typs, dann leere Magazine; bei Waffen ohne Wechselmagazin Schnelllader und Ladestreifen, nur ganz. Was schon einen anderen Typ enthält, bleibt, wie es ist. Vorher zeigt ein Bericht, was passiert. Jedes Magazin, jeder Schnelllader und Ladestreifen lässt sich außerhalb des Gefechts **leeren**; die Patronen kommen zur losen Munition.
+**Magazine füllen** (nur außerhalb des Gefechts, Knopf an der Waffe im Reiter Ausrüstung): Der Spieler tippt den Munitionstyp („Füllen mit: FMJ (40) · HP (15)“). Gefüllt wird aus der losen Munition dieses Typs, so weit sie reicht: zuerst die Waffe, dann angebrochene passende Magazine desselben Typs, dann leere passende Magazine; bei Waffen ohne Wechselmagazin passende Schnelllader und Ladestreifen, nur ganz. Was schon einen anderen Typ enthält, bleibt, wie es ist. Vorher zeigt ein Bericht, was passiert. Jedes Magazin, jeder Schnelllader und Ladestreifen lässt sich außerhalb des Gefechts **leeren**; die Patronen kommen zur losen Munition.
 - **Trommel, Röhrenmagazin, festes Magazin** ohne Zubehör: **einzeln laden**, Main mit leichter Konzentration, bis zu 2 Patronen (Perk Fingerfertig: 3) aus der losen Munition; der Spieler wählt den Typ. Nie als Break. Bei Unterbrechung bleiben bereits geladene Patronen drin; nur die der laufenden Runde fehlen.
-- **Mit Schnelllader oder Ladestreifen** (Zubehör im Charakter): füllt auf einmal wie ein Magazin. Leere Schnelllader und Ladestreifen werden einzeln gefüllt.
+- **Mit Schnelllader oder Ladestreifen** (bei den Magazinen des Charakters): füllt auf einmal wie ein Magazin und bleibt leer beim Charakter. Leere Schnelllader und Ladestreifen werden einzeln gefüllt.
 - **Werfer** (Magazingröße 1): Main mit voller Konzentration. Der Magazinstand ist das geladene Geschoss. Nachladen nimmt ein passendes Geschoss aus dem **Vorrat** (Anzahl −1, Auswahl nach Typ, z. B. OG-7V oder PG-7V); Schießen verbraucht es. Der Bericht nennt statt Zone den Landepunkt ([§ 3.8a](#38a-werfen-a-m-r)).
 
 **Munition je Magazin** (entschieden und umgesetzt 19.11.2026). Der Munitionstyp hängt am **Magazin**, nicht an der Waffe:
 - **Lose Munition** führt der Charakter nach Kaliber und Typ („9x19 · FMJ 40 · HP 15“), nicht je Waffe (eigene Karte Munition im Reiter Ausrüstung).
-- **Magazine** einer Waffe: jedes mit Füllstand und Typ („30 FMJ“, „12 HP“, „leer“); erweiterte und Trommelmagazine sind Magazinsorten.
+- **Magazine** (beim Charakter, siehe unten): jedes mit Füllstand und Typ („30 FMJ“, „12 HP“, „leer“); erweiterte und Trommelmagazine sind Magazinsorten.
 - **Magazine füllen** (außerhalb des Gefechts): je Magazin den Typ wählen; gefüllt wird aus der losen Munition.
 - **Nachladen** (Wechselmagazin): Der Spieler tippt das Magazin, das in die Waffe soll (mit Typ und Füllstand). Vorbelegt: das vollste vom bisherigen Typ.
 - **Ohne Wechselmagazin** (Trommel, Röhre, fest): nur **ein Typ je Ladung**; ein anderer Typ erst, wenn die Waffe leer ist. Schnelllader und Ladestreifen tragen ihren Typ wie ein Magazin.
 - Der Schuss nimmt DK und MW vom Typ der geladenen Munition.
 
-**Lose Aufsätze** (entschieden und umgesetzt 19.11.2026). Aufsätze gibt es auch lose (Karte Aufsätze im Reiter Ausrüstung, mit Zustand). In der aufgeklappten Waffe stehen unter „Aufsätze“ die angebrachten mit **abnehmen** und die losen passenden mit **anbringen**. Ein neues erweitertes Magazin bzw. eine Trommel ersetzt ein vorhandenes, das lose wird; Patronen über der neuen Kapazität kommen zur losen Munition. Außerhalb des Gefechts frei, im Gefecht Main → Aufsatz anbringen oder abnehmen (leichte Konzentration; Schusswaffen, Aufsätze).
+**Magazine** (entschieden vom Nutzer und umgesetzt 19.11.2026, R49). Magazine sind eigene Gegenstände **beim Charakter**, nicht an einer Waffe und keine Aufsätze:
+- **Magazinsorten** stehen in `magazine.json`: Standardmagazin, erweitertes Magazin, Trommelmagazin, dazu Schnelllader und Ladestreifen (sie gelten als Magazin für Waffen ohne Wechselmagazin). Jede Sorte nennt die Waffen, an die sie passt. **Mehrere Waffen können dieselben Magazine nutzen**, z. B. Colt M4 und Colt M16A4.
+- **Karte Magazine** im Reiter Ausrüstung: nach Sorte gruppiert („Magazin (20) · für Colt M4 Carbine, Colt M16A4 · 20 Schuss“), darunter jedes Stück mit Inhalt und Typ und **leeren**. Im Schreibmodus Inhalt, Typ, entfernen und neue Magazine hinzufügen.
+- **In der Waffe** steckt genau ein Magazin einer passenden Sorte; eine neue Waffe hat ihr Standardmagazin. Im Schreibmodus lässt sich die Sorte des eingesetzten Magazins wählen (Patronen über der neuen Kapazität werden lose).
+- Nachladen und Magazine füllen nehmen alle passenden Magazine des Charakters.
+
+**Lose Aufsätze** (entschieden und umgesetzt 19.11.2026). Aufsätze gibt es auch lose (Karte Aufsätze im Reiter Ausrüstung, mit Zustand). In der aufgeklappten Waffe stehen unter „Aufsätze“ die angebrachten mit **abnehmen** und die losen passenden mit **anbringen**. Außerhalb des Gefechts frei, im Gefecht Main → Aufsatz anbringen oder abnehmen (leichte Konzentration; Schusswaffen, Aufsätze).
 
 **Vorrat.** Granaten und Geschosse werden als Anzahl geführt. Sie sinkt automatisch beim Werfen und beim Laden eines Werfers. Von Hand lässt sie sich jederzeit wieder erhöhen. Nahkampfwaffen tragen ebenfalls eine Anzahl (meist 1); eine geworfene Nahkampfwaffe zieht 1 ab, eingesammelte Wurfmesser nach dem Gefecht werden von Hand wieder dazugezählt.
 
-**Ausrüstung eintragen.** Gekauft wird im Laden ([§ 3.14](#314-laden-kaufen-und-verkaufen-m-r)); frei, ohne Geld, trägt der Spieler Waffen, Munition, Aufsätze, Nahkampfwaffen, Vorrat und Rüstung im **Schreibmodus** im Reiter Ausrüstung ein. Außerhalb des Gefechts sind dort aktive Waffe, Nachladen und Ladehemmung beheben frei (ohne Aktion).
+**Ausrüstung eintragen.** Gekauft wird im Laden ([§ 3.14](#314-laden-kaufen-und-verkaufen-m-r)); frei, ohne Geld, trägt der Spieler Waffen, Munition, Magazine, Aufsätze, Nahkampfwaffen, Vorrat und Rüstung im **Schreibmodus** im Reiter Ausrüstung ein. Außerhalb des Gefechts sind dort aktive Waffe, Nachladen und Ladehemmung beheben frei (ohne Aktion).
 
 **Ladehemmung beheben** (Main): einfache Ladehemmung per Probe auf Control mit Waffenskill, Malsteps LH-Behebenmod. + Sichtstufe + Leiter (Krit: Main nicht verbraucht); schwere Ladehemmung ist im Gefecht nicht behebbar (nur Hinweis; außerhalb: Intellect-Probe, Zustand −1).
 
@@ -649,7 +655,9 @@ Regeln: Schusswaffen (Begriffserklärung: Geldwertspanne, Vorratslevel; Zustand:
 **Aufbau** (von oben nach unten):
 - **Geld:** Kontostand groß, Schulden mit Restschuld und Frist. Das Kassenbuch bleibt im Verlauf. Geld steht nicht im Reiter Ausrüstung.
 - Umschalter **Kaufen · Verkaufen**.
-- **Kategorien als Karten** zum Auf- und Zuklappen wie im Reiter Verlauf: **Waffen · Munition · Magazine · Nahkampf · Sprengmittel · Rüstung · Aufsätze · Zubehör**. Je Ware eine Zeile: Name, ein bis zwei Kernwerte, Vorratslevel, Geldwertspanne. Oben ein Schalter „Nur, was ich bekomme“ (Vorratslevel der Klasse).
+- **Kategorien als Karten** zum Auf- und Zuklappen wie im Reiter Verlauf: **Waffen · Munition · Magazine · Nahkampf · Sprengmittel · Rüstung · Aufsätze**. Magazine umfassen Standard-, erweiterte und Trommelmagazine sowie Schnelllader und Ladestreifen, jedes mit den Waffen, an die es passt (19.11.2026). Je Ware eine Zeile: Name, ein bis zwei Kernwerte, Vorratslevel, Geldwertspanne. Oben zwei Schalter:
+  - **„Nur, was zu meinen Waffen passt“** (an, wenn der Laden öffnet; 19.11.2026): Munition (Kaliber und Typ einer eigenen Waffe), Magazine, Aufsätze und Geschosse für Werfer nur für Waffen, die der Charakter hat oder im Korb kauft. Waffen, Handgranaten, Nahkampfwaffen und Rüstung immer. Ohne Schusswaffe sagt ein Hinweis, dass das Passende erscheint, sobald eine im Korb liegt.
+  - „Nur, was ich bekomme“ (Vorratslevel der Klasse).
 - **Korb:** feste Leiste unten im Daumenbereich („Korb · 3 Posten · 610–720 $“), erscheint, sobald etwas im Korb liegt; antippen öffnet das Fenster Korb. Der Korb bleibt beim Wechsel der Reiter erhalten, wird aber nicht gespeichert.
 
 **Ware wählen.** Antippen klappt die Zeile auf (kein Fenster): **Zustand** A–D als Auswahlknöpfe („Zustand: gebraucht“) mit dem Preisrahmen seines Viertels; bei Verbrauchsware (Munition, Granaten, Geschosse) entfällt er, Rahmen ist die ganze Spanne (R43). Menge (Munition in Schuss, Schritte zu 10; sonst Stück). Knopf **In den Korb**. Zustand A–D gilt für alles Dauerhafte; außer bei Schusswaffen wirkt er nur auf den Preis (R42).
@@ -663,9 +671,9 @@ Regeln: Schusswaffen (Begriffserklärung: Geldwertspanne, Vorratslevel; Zustand:
 4. Hauptknopf **Kaufen**; reicht das Geld nicht, ist er gesperrt und nennt den Fehlbetrag.
 5. **Bericht** (Posten, Summe, Kontostand vorher → nachher), dann eine Buchung „Kauf“ mit allen Posten im Grund.
 
-**Wohin Gekauftes kommt.** Waffe mit Zustand, einem leeren Magazin und Trageort „Rucksack“. Munition zur losen Munition (Kaliber und Typ). Magazin zu den Magazinen der gewählten Waffe. Aufsatz zu den losen Aufsätzen. Granaten und Geschosse in den Vorrat. Rüstung, Schild, Nahkampfwaffen mit Zustand.
+**Wohin Gekauftes kommt.** Waffe mit Zustand, ihrem leeren Standardmagazin (gleicher Zustand) und Trageort „Rucksack“. Munition zur losen Munition (Kaliber und Typ). Magazine, Schnelllader und Ladestreifen leer zu den Magazinen des Charakters (auch ohne passende Waffe). Aufsatz zu den losen Aufsätzen. Granaten und Geschosse in den Vorrat. Rüstung, Schild, Nahkampfwaffen mit Zustand.
 
-**Verkaufen.** Gleich gebaut: Karten mit der eigenen Ausrüstung, Antippen legt in den Verkaufskorb; der Zustand steht fest. Eine Waffe zählt ihre angebrachten Aufsätze mit, jeden nach seinem Zustand (R45), ebenso ihre Magazine und ihr Zubehör (R48); Patronen darin bleiben als lose Munition beim Charakter. Magazine, Zubehör, lose Munition, Granaten und Nahkampfwaffen lassen sich auch einzeln verkaufen, mit Menge. Verhandlung über den ganzen Korb mit vertauschten Rollen. Unbrauchbare Waffen: Preis der SL, höchstens die Untergrenze. Bericht, eine Buchung „Verkauf“, Gegenstände entfernt.
+**Verkaufen.** Gleich gebaut: Karten mit der eigenen Ausrüstung, Antippen legt in den Verkaufskorb; der Zustand steht fest. Eine Waffe zählt ihre angebrachten Aufsätze mit, jeden nach seinem Zustand (R45), ebenso das eingesetzte Magazin (R48); Patronen darin bleiben als lose Munition beim Charakter. Magazine (auch Schnelllader und Ladestreifen), lose Munition, Granaten und Nahkampfwaffen lassen sich auch einzeln verkaufen, mit Menge. Verhandlung über den ganzen Korb mit vertauschten Rollen. Unbrauchbare Waffen: Preis der SL, höchstens die Untergrenze. Bericht, eine Buchung „Verkauf“, Gegenstände entfernt.
 
 **Bei der Erstellung** (Schritt 7) bleibt der Korb bis „Abschließen“ änderbar und wird dann zusammen mit dem Startgeld gebucht.
 

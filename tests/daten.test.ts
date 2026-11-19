@@ -83,15 +83,26 @@ describe('Datenprüfung erkennt Fehler', () => {
     expect(fehler).toContain('Garbenfaktor 3 passt nicht');
   });
 
+  it('Magazine: Standardmagazin und passende Waffen', () => {
+    const d = kopie();
+    d.waffen.eintraege.find((w) => w.id === 'ak47')!.standardmagazin = 'magazin_stanag_20';
+    d.magazine.eintraege.find((m) => m.id === 'magazin_stanag_30')!.passt_an.push('ak47');
+    d.magazine.eintraege.find((m) => m.id === 'schnelllader_sw_model_10')!.passt_an.push('makarov');
+    const fehler = pruefeDaten(d).join('\n');
+    expect(fehler).toContain('Standardmagazin „magazin_stanag_20“ nennt die Waffe nicht');
+    expect(fehler).toContain('magazine.json magazin_stanag_30: Waffen mit verschiedenem Kaliber');
+    expect(fehler).toContain('passt nicht an „makarov“ (Wechselmagazin)');
+  });
+
   it('fehlende Preise und Vorratslevel für den Laden', () => {
     const d = kopie();
     delete d.munition.eintraege.find((m) => m.id === '9x19')!.typen.FMJ!.preis_10;
-    delete d.waffen.eintraege.find((w) => w.id === 'ak47')!.ersatzmagazin;
+    delete (d.magazine.eintraege.find((m) => m.id === 'magazin_ak47_30') as { preis?: unknown }).preis;
     d.aufsaetze.eintraege.find((a) => a.id === 'zweibein')!.vorratslevel = 6;
     d.aufsaetze.eintraege.find((a) => a.id === 'bajonett')!.preis = { min: 1, max: 2 };
     const fehler = pruefeDaten(d).join('\n');
     expect(fehler).toContain('munition.json 9x19 FMJ: Geldwertspanne fehlt');
-    expect(fehler).toContain('waffen.json ak47 ersatzmagazin: Geldwertspanne fehlt');
+    expect(fehler).toContain('magazine.json magazin_ak47_30: Geldwertspanne fehlt');
     expect(fehler).toContain('aufsaetze.json zweibein: Vorratslevel fehlt oder liegt nicht bei 1–5');
     expect(fehler).toContain('aufsaetze.json bajonett: Preis und Vorratslevel kommen von der Waffe');
   });

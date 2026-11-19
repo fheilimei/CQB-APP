@@ -357,16 +357,14 @@ export interface Waffe {
   magazin: number;
   patrone_im_lauf: boolean;
   ladeart: 'wechselmagazin' | 'trommel' | 'roehrenmagazin' | 'fest' | 'einzelschuss';
-  zubehoer?: string[];
-  /** Ersatzmagazin in Standardgröße (nur Ladeart wechselmagazin); Vorratslevel wie die Waffe. */
-  ersatzmagazin?: { preis: Spanne; vorlaeufig?: boolean };
+  /** Nur Ladeart wechselmagazin: ID des Standardmagazins aus magazine.json (steckt in einer neuen Waffe). */
+  standardmagazin?: string;
   feuermodi: Partial<Record<'EF' | 'Burst' | 'VA', Feuermodus>>;
   betriebsarten?: Record<string, { name: string; feuerrate?: number; lh_prozent?: number }>;
   reichweite: Record<BandId, number | null>;
   lh_beheben_mod: number;
   zuverlaessigkeit: 'zuverlaessig' | 'normal';
   anschluesse: string[];
-  magazine?: number[];
   lauter?: number;
   leiser?: number;
   besonderheiten: string;
@@ -380,7 +378,6 @@ export interface Aufsatz {
   einsatz: 'immer' | 'schalter';
   schalter_text?: string;
   modifikatoren: Modifikator[];
-  werte?: { magazin?: number; trommelmagazin?: boolean };
   setzt?: { aufgelegt?: boolean };
   waffe?: string;
   nahkampfwaffe?: string;
@@ -391,18 +388,23 @@ export interface Aufsatz {
   vorlaeufig?: boolean;
 }
 
-export interface Zubehoer {
+/**
+ * Magazinsorte (magazine.json): Wechselmagazin (Standard, erweitert, Trommel) oder Schnelllader bzw. Ladestreifen
+ * (`art: lader`, füllt eine Waffe ohne Wechselmagazin auf einmal). Passt an alle Waffen in `passt_an`.
+ */
+export interface MagazinSorte {
   id: string;
   name: string;
-  passt_zu: string;
+  art: 'magazin' | 'lader';
+  groesse: number;
+  passt_an: string[];
+  /** Trommelmagazin: Zuschlag auf die Ladehemmungsrate (regeln.json `ladehemmung.trommelmagazin_zuschlag`). */
+  trommel?: boolean;
   vorratslevel: number;
   preis: Spanne;
-  wirkung: string;
+  /** Frühere IDs (Aufsatz bzw. Zubehör bis Schema 7), nur für die Umstellung alter Charaktere. */
+  alte_ids?: string[];
   vorlaeufig?: boolean;
-}
-
-export interface Aufsaetze extends Liste<Aufsatz> {
-  zubehoer: Zubehoer[];
 }
 
 export type Haende = 1 | 2 | [1, 2] | null;
@@ -566,7 +568,8 @@ export interface Spieldaten {
   koerperzonen: Liste<Koerperzone>;
   munition: Liste<Munition>;
   waffen: Liste<Waffe>;
-  aufsaetze: Aufsaetze;
+  aufsaetze: Liste<Aufsatz>;
+  magazine: Liste<MagazinSorte>;
   nahkampfwaffen: Liste<Nahkampfwaffe>;
   wurf_und_sprengwaffen: Liste<Sprengwaffe>;
   schutz: Schutz;
@@ -583,6 +586,7 @@ export const DATEIEN = [
   'munition',
   'waffen',
   'aufsaetze',
+  'magazine',
   'nahkampfwaffen',
   'wurf_und_sprengwaffen',
   'schutz',

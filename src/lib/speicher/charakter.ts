@@ -5,7 +5,7 @@ import type { Modifikator, Rang } from '../daten/typen';
 import type { KaufPosten, Verhandlung } from '../regeln/laden';
 
 /** Aktuelle Schemaversion. Bei jeder inkompatiblen Änderung erhöhen und eine Migration ergänzen (migration.ts). */
-export const SCHEMA = 7;
+export const SCHEMA = 8;
 
 export type Quelle = 'app' | 'hand';
 
@@ -219,22 +219,19 @@ export interface Deckung {
   getippt?: string[];
 }
 
-/** Ersatzmagazin, Schnelllader oder Ladestreifen: Inhalt und Munitionstyp darin; leer = inhalt 0, typ ''. Zustand nur für den Preis (R42). */
-export interface Magazin {
-  inhalt: number;
-  typ: string;
-  zustand: string;
-}
-
-/** Schnelllader bzw. Ladestreifen (art: ID aus aufsaetze.json `zubehoer`), jedes Stück einzeln. */
-export interface ZubehoerEintrag extends Magazin {
-  art: string;
-}
-
-/** Gegenstand mit Zustand ohne eigene Werte im Charakter: Aufsatz, Rüstungsteil, Schild. */
+/** Gegenstand mit Zustand ohne eigene Werte im Charakter: Aufsatz, Rüstungsteil, Schild, eingesetztes Magazin. */
 export interface Teil {
   id: string;
   zustand: string;
+}
+
+/**
+ * Magazin, Schnelllader oder Ladestreifen beim Charakter (id: Sorte aus magazine.json), jedes Stück einzeln, mit
+ * Inhalt und Munitionstyp; leer = inhalt 0, typ ''. Zustand nur für den Preis (R42).
+ */
+export interface Magazin extends Teil {
+  inhalt: number;
+  typ: string;
 }
 
 /** Lose Munition nach Kaliber (ID aus munition.json) und Typ. */
@@ -253,12 +250,8 @@ export interface WaffenEintrag {
   munitionstyp: string;
   /** Inhalt inklusive Patrone im Lauf. */
   im_magazin: number;
-  /** Nur Wechselmagazin: Zustand des eingesetzten Magazins. */
-  magazin_zustand?: string;
-  /** Ersatzmagazine mit Inhalt und Typ, auch leere (nur Wechselmagazin; sonst leer). */
-  magazine: Magazin[];
-  /** Schnelllader bzw. Ladestreifen, jedes Stück einzeln. */
-  zubehoer: ZubehoerEintrag[];
+  /** Nur Wechselmagazin: eingesetztes Magazin (Sorte aus magazine.json und Zustand); sein Inhalt ist `im_magazin`. */
+  magazin?: Teil;
   zustand: string;
   /** Angebrachte Aufsätze (ID aus aufsaetze.json). */
   aufsaetze: Teil[];
@@ -327,6 +320,8 @@ export interface Charakter {
     vorrat: VorratEintrag[];
     /** Lose Munition nach Kaliber und Typ. */
     munition: MunitionEintrag[];
+    /** Magazine, Schnelllader und Ladestreifen, die nicht in einer Waffe stecken; jede passende Waffe kann sie nutzen. */
+    magazine: Magazin[];
     /** Lose Aufsätze (nicht an einer Waffe). */
     aufsaetze: Teil[];
     ruestung: Teil[];
@@ -384,7 +379,7 @@ export function neuerCharakter(statIds: string[], jetzt: Date = new Date()): Cha
     grundwerte_manuell: {},
     anpassungen: [],
     protokoll: [],
-    ausruestung: { waffen: [], nahkampfwaffen: [], aktive_waffe: null, vorrat: [], munition: [], aufsaetze: [], ruestung: [], schild: null, sonstiges: '' },
+    ausruestung: { waffen: [], nahkampfwaffen: [], aktive_waffe: null, vorrat: [], munition: [], magazine: [], aufsaetze: [], ruestung: [], schild: null, sonstiges: '' },
     spielstand: {
       gefecht: { aktiv: false },
       hp_verlust_wunden: 0,

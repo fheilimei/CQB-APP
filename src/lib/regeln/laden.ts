@@ -3,24 +3,27 @@
 // Alle Funktionen sind rein. Preise, Proben und Grenzen kommen aus den Spieldaten (regeln.json `laden`,
 // `waffenzustand.preis_viertel`; Geldwertspannen und Vorratslevel der Ausrüstungsdateien).
 
-import type { Spanne, Spieldaten } from '../daten/typen';
+import type { Spanne, Spieldaten, Waffe } from '../daten/typen';
 import type { Charakter, Magazin, WaffenEintrag } from '../speicher/charakter';
 import { perkWirkungen } from './aktionen';
 import { vorratslevel } from './aufstieg';
 import { kontostand } from './geld';
 import type { StepQuelle } from './probe';
 import type { ProbenAnfrage } from './probenrechner';
-import { freieId, istWerfer, kaliberVon, munitionAendern, neuerWaffenEintrag, waffeVon } from './waffen';
+import {
+  freieId, istWerfer, kaliberVon, magazinKaliber, magazinName, magazinSorte, munitionAendern, munitionstypen, neuerWaffenEintrag,
+  passendeAufsaetze, waffeVon
+} from './waffen';
 
 // ---------- Sortiment
 
-export type Warenart = 'waffe' | 'munition' | 'magazin' | 'nahkampf' | 'spreng' | 'ruestung' | 'schild' | 'aufsatz' | 'zubehoer';
+export type Warenart = 'waffe' | 'munition' | 'magazin' | 'nahkampf' | 'spreng' | 'ruestung' | 'schild' | 'aufsatz';
 
 export interface Ware {
   art: Warenart;
   /** Eindeutiger Schlüssel im Laden: `art:id`, bei Munition `munition:kaliber:typ`. */
   schluessel: string;
-  /** ID in den Daten (Waffe, Nahkampfwaffe …); Munition: Kaliber; Magazin: Waffe, zu der es gehört. */
+  /** ID in den Daten (Waffe, Nahkampfwaffe, Magazinsorte …); Munition: Kaliber. */
   id: string;
   /** Nur Munition: Typ (FMJ, HP …). */
   typ?: string;
@@ -51,9 +54,8 @@ export function sortiment(d: Spieldaten): Ware[] {
     for (const [typ, t] of Object.entries(m.typen))
       if (t.preis_10 && t.vorratslevel)
         add({ art: 'munition', id: m.id, typ, name: `${m.name} ${typ}`, vorratslevel: t.vorratslevel, preis: t.preis_10, verbrauch: true, vorlaeufig: !!(t.vorlaeufig || m.vorlaeufig) });
-  for (const w of d.waffen.eintraege)
-    if (w.ersatzmagazin)
-      add({ art: 'magazin', id: w.id, name: `Magazin ${w.name}`, vorratslevel: w.vorratslevel, preis: w.ersatzmagazin.preis, verbrauch: false, vorlaeufig: !!w.ersatzmagazin.vorlaeufig });
+  for (const m of d.magazine.eintraege)
+    add({ art: 'magazin', id: m.id, name: magazinName(m, d), vorratslevel: m.vorratslevel, preis: m.preis, verbrauch: false, vorlaeufig: !!m.vorlaeufig });
   for (const n of d.nahkampfwaffen.eintraege) {
     if (alsAufsatzN.has(n.id) || !n.preis || !n.vorratslevel) continue;
     add({ art: 'nahkampf', id: n.id, name: n.name, vorratslevel: n.vorratslevel, preis: n.preis, verbrauch: false, vorlaeufig: !!n.vorlaeufig });
@@ -69,9 +71,36 @@ export function sortiment(d: Spieldaten): Ware[] {
     const h = aufsatzHandel(a.id, d);
     if (h) add({ art: 'aufsatz', id: a.id, name: a.name, vorratslevel: h.vorratslevel, preis: h.preis, verbrauch: false, vorlaeufig: !!a.vorlaeufig });
   }
-  for (const z of d.aufsaetze.zubehoer)
-    add({ art: 'zubehoer', id: z.id, name: z.name, vorratslevel: z.vorratslevel, preis: z.preis, verbrauch: false, vorlaeufig: !!z.vorlaeufig });
   return liste;
+}
+
+/**
+ * Passt die Ware zu einer dieser Waffen (IDs aus waffen.json)? Munition: Kaliber und Typ, den eine der Waffen
+ * verschießt; Magazine: passen an eine; Aufsätze: passen an eine; Geschosse für Werfer: ein passender Werfer.
+ * Alles andere (Waffen, Handgranaten, Rüstung …) passt immer (konzept.md § 3.14, Filter).
+ */
+export function passtZuWaffen(w: Ware, waffen: string[], d: Spieldaten): boolean {
+  const daten = waffen.map((id) => d.waffen.eintraege.find((x) => x.id === id)).filter((x): x is Waffe => !!x);
+  switch (w.art) {
+    case 'munition':
+      return daten.some((x) => kaliberVon(x) === w.id && munitionstypen(x, d).includes(w.typ!));
+    case 'magazin':
+      return !!magazinSorte(w.id, d)?.passt_an.some((id) => waffen.includes(id));
+    case 'aufsatz':
+      return daten.some((x) => passendeAufsaetze(x, d).some((a) => a.id === w.id));
+    case 'spreng': {
+      const werfer = d.waffen.eintraege.filter((x) => Array.isArray(x.munition) && x.munition.includes(w.id));
+      return !werfer.length || werfer.some((x) => waffen.includes(x.id));
+    }
+    default:
+      return true;
+  }
+}
+
+/** Waffen (IDs aus waffen.json), die der Charakter hat oder im Korb kauft: Grundlage für den Filter. */
+export function eigeneWaffen(c: Charakter, korb: KaufPosten[], d: Spieldaten): string[] {
+  const imKorb = korb.map((p) => wareVon(p.ware, d)).filter((w): w is Ware => w?.art === 'waffe').map((w) => w.id);
+  return [...new Set([...c.ausruestung.waffen.map((e) => e.waffe), ...imKorb])];
 }
 
 export function wareVon(schluessel: string, d: Spieldaten): Ware | null {
@@ -205,8 +234,6 @@ export interface KaufPosten {
   zustand: string | null;
   /** Stück; Munition in Schuss (Vielfache von munition_je). */
   menge: number;
-  /** Magazin, Schnelllader, Ladestreifen: Waffe in der Ausrüstung (ID); fehlt = erste passende Waffe. */
-  ziel?: string;
   /** Über Beschaffen besorgt: Preis der SL für den ganzen Posten; verhandelt nicht mit (R44). */
   preis_sl?: number;
 }
@@ -243,14 +270,7 @@ export function korbPreis(korb: KaufPosten[], v: Verhandlung, d: Spieldaten): nu
   return korb.reduce((s, p) => s + postenPreis(p, v, d), 0);
 }
 
-/** Waffen, zu denen ein Magazin bzw. Zubehör aus dem Laden passt (Ziel eines Postens). */
-export function zielWaffen(c: Charakter, w: Ware, d: Spieldaten): WaffenEintrag[] {
-  if (w.art === 'magazin') return c.ausruestung.waffen.filter((e) => e.waffe === w.id);
-  if (w.art === 'zubehoer') return c.ausruestung.waffen.filter((e) => waffeVon(e, d).zubehoer?.includes(w.id));
-  return [];
-}
-
-/** Was gegen den Kauf spricht (leer = kaufbar): Geld reicht nicht, Magazin ohne Waffe, zweiter Schild. */
+/** Was gegen den Kauf spricht (leer = kaufbar): Geld reicht nicht, zweiter Schild, unbekannte Ware. */
 export function kaufPruefen(c: Charakter, korb: KaufPosten[], preis: number, d: Spieldaten): string[] {
   const fehler: string[] = [];
   const fehlt = preis - kontostand(c);
@@ -258,15 +278,7 @@ export function kaufPruefen(c: Charakter, korb: KaufPosten[], preis: number, d: 
   const kaeufe = korb.map((p) => wareVon(p.ware, d));
   const schilde = kaeufe.filter((w) => w?.art === 'schild').length;
   if (schilde > 1 || (schilde === 1 && c.ausruestung.schild)) fehler.push('Du kannst nur einen Schild tragen.');
-  for (const [i, p] of korb.entries()) {
-    const w = kaeufe[i];
-    if (!w) { fehler.push(`Unbekannte Ware „${p.ware}“.`); continue; }
-    if (w.art !== 'magazin' && w.art !== 'zubehoer') continue;
-    // Eine Waffe aus demselben Korb zählt mit.
-    const imKorb = kaeufe.some((k) => k?.art === 'waffe' && (w.art === 'magazin' ? k.id === w.id : d.waffen.eintraege.find((x) => x.id === k.id)?.zubehoer?.includes(w.id)));
-    const ziele = zielWaffen(c, w, d);
-    if (p.ziel ? !ziele.some((e) => e.id === p.ziel) : !ziele.length && !imKorb) fehler.push(`${w.name}: Dazu fehlt die passende Waffe.`);
-  }
+  for (const [i, p] of korb.entries()) if (!kaeufe[i]) fehler.push(`Unbekannte Ware „${p.ware}“.`);
   return fehler;
 }
 
@@ -281,8 +293,8 @@ export function postenText(p: KaufPosten, d: Spieldaten): string {
 
 /**
  * Bucht den Kauf (eine Buchung „Kauf“ mit allen Posten im Grund) und legt die Ware in die Ausrüstung:
- * Waffe mit Zustand, leerem Magazin, Trageort aus regeln.json; Munition lose; Magazin und Zubehör leer an die
- * Zielwaffe; Aufsatz lose; Granaten und Geschosse in den Vorrat; Rüstung, Schild, Nahkampfwaffe mit Zustand.
+ * Waffe mit Zustand, leerem Standardmagazin (gleicher Zustand), Trageort aus regeln.json; Munition lose; Magazine,
+ * Schnelllader und Ladestreifen leer beim Charakter; Aufsatz lose; Granaten und Geschosse in den Vorrat; Rüstung, Schild, Nahkampfwaffe mit Zustand.
  */
 export function kaufAnwenden(c: Charakter, korb: KaufPosten[], preis: number, d: Spieldaten, jetzt: Date = new Date()): Charakter {
   const ort = d.regeln.laden.trageort;
@@ -298,23 +310,16 @@ export function kaufAnwenden(c: Charakter, korb: KaufPosten[], preis: number, d:
       case 'waffe':
         for (let i = 0; i < p.menge; i++) {
           const e = neuerWaffenEintrag(w.id, d, freieId(x, 'wf'), ort, false);
-          const mitZ: WaffenEintrag = { ...e, zustand, ...(e.magazin_zustand ? { magazin_zustand: zustand } : {}) };
+          const mitZ: WaffenEintrag = { ...e, zustand, ...(e.magazin ? { magazin: { ...e.magazin, zustand } } : {}) };
           x = { ...x, ausruestung: { ...x.ausruestung, waffen: [...x.ausruestung.waffen, mitZ] } };
         }
         break;
       case 'munition':
         x = munitionAendern(x, w.id, w.typ!, p.menge);
         break;
-      case 'magazin':
-      case 'zubehoer': {
-        const ziel = (p.ziel && a.waffen.find((e) => e.id === p.ziel)) || zielWaffen(x, w, d)[0];
-        if (!ziel) break;
-        const leer: Magazin = { inhalt: 0, typ: '', zustand };
-        const stuecke = Array.from({ length: p.menge }, () => ({ ...leer }));
-        const e: WaffenEintrag = w.art === 'magazin'
-          ? { ...ziel, magazine: [...ziel.magazine, ...stuecke] }
-          : { ...ziel, zubehoer: [...ziel.zubehoer, ...stuecke.map((m) => ({ ...m, art: w.id }))] };
-        x = { ...x, ausruestung: { ...a, waffen: a.waffen.map((y) => (y.id === e.id ? e : y)) } };
+      case 'magazin': {
+        const stuecke: Magazin[] = Array.from({ length: p.menge }, () => ({ id: w.id, inhalt: 0, typ: '', zustand }));
+        x = { ...x, ausruestung: { ...a, magazine: [...a.magazine, ...stuecke] } };
         break;
       }
       case 'aufsatz':
@@ -350,8 +355,8 @@ export function kaufAnwenden(c: Charakter, korb: KaufPosten[], preis: number, d:
 /** Ein Gegenstand aus der eigenen Ausrüstung im Verkaufskorb. */
 export type VerkaufPosten =
   | { art: 'waffe'; id: string }
-  | { art: 'magazin'; waffe: string; index: number }
-  | { art: 'zubehoer'; waffe: string; index: number }
+  /** Magazin, Schnelllader oder Ladestreifen beim Charakter (Index in `ausruestung.magazine`). */
+  | { art: 'magazin'; index: number }
   | { art: 'aufsatz'; index: number }
   | { art: 'munition'; kaliber: string; typ: string; menge: number }
   | { art: 'nahkampf'; id: string; menge: number }
@@ -363,14 +368,9 @@ function zustandName(z: string, d: Spieldaten): string {
   return d.regeln.waffenzustand.namen[z] ?? z;
 }
 
-function magazinTeil(e: WaffenEintrag, zustand: string, d: Spieldaten): Preisteil | null {
-  const w = waffeVon(e, d);
-  return w.ersatzmagazin ? { name: `Magazin ${w.name}`, spanne: w.ersatzmagazin.preis, zustand, einheiten: 1 } : null;
-}
-
-function zubehoerTeil(art: string, zustand: string, d: Spieldaten): Preisteil | null {
-  const z = d.aufsaetze.zubehoer.find((x) => x.id === art);
-  return z ? { name: z.name, spanne: z.preis, zustand, einheiten: 1 } : null;
+function magazinTeil(sorte: string, zustand: string, d: Spieldaten): Preisteil | null {
+  const m = magazinSorte(sorte, d);
+  return m ? { name: m.name, spanne: m.preis, zustand, einheiten: 1 } : null;
 }
 
 function aufsatzTeil(id: string, zustand: string, d: Spieldaten): Preisteil | null {
@@ -380,8 +380,8 @@ function aufsatzTeil(id: string, zustand: string, d: Spieldaten): Preisteil | nu
 }
 
 /**
- * Was ein Verkaufsposten wert ist, Stück für Stück. Eine Waffe zählt ihre angebrachten Aufsätze (R45), ihre
- * Ersatzmagazine, das eingesetzte Magazin und ihr Zubehör mit (R48), jedes nach seinem Zustand.
+ * Was ein Verkaufsposten wert ist, Stück für Stück. Eine Waffe zählt ihre angebrachten Aufsätze (R45) und das
+ * eingesetzte Magazin (R48) mit, jedes nach seinem Zustand; die übrigen Magazine verkauft man einzeln.
  */
 export function verkaufTeile(c: Charakter, p: VerkaufPosten, d: Spieldaten): Preisteil[] {
   const a = c.ausruestung;
@@ -393,20 +393,12 @@ export function verkaufTeile(c: Charakter, p: VerkaufPosten, d: Spieldaten): Pre
       const w = waffeVon(e, d);
       teile.push({ name: w.name, spanne: w.preis, zustand: e.zustand, einheiten: 1 });
       for (const t of e.aufsaetze) teile.push(aufsatzTeil(t.id, t.zustand, d));
-      if (e.magazin_zustand) teile.push(magazinTeil(e, e.magazin_zustand, d));
-      for (const m of e.magazine) teile.push(magazinTeil(e, m.zustand, d));
-      for (const z of e.zubehoer) teile.push(zubehoerTeil(z.art, z.zustand, d));
+      if (e.magazin) teile.push(magazinTeil(e.magazin.id, e.magazin.zustand, d));
       break;
     }
     case 'magazin': {
-      const e = a.waffen.find((x) => x.id === p.waffe);
-      const m = e?.magazine[p.index];
-      if (e && m) teile.push(magazinTeil(e, m.zustand, d));
-      break;
-    }
-    case 'zubehoer': {
-      const z = a.waffen.find((x) => x.id === p.waffe)?.zubehoer[p.index];
-      if (z) teile.push(zubehoerTeil(z.art, z.zustand, d));
+      const m = a.magazine[p.index];
+      if (m) teile.push(magazinTeil(m.id, m.zustand, d));
       break;
     }
     case 'aufsatz': {
@@ -468,7 +460,7 @@ export function verkaufText(c: Charakter, p: VerkaufPosten, d: Spieldaten): stri
 
 /**
  * Bucht den Verkauf (eine Buchung „Verkauf“) und nimmt die Gegenstände aus der Ausrüstung. Patronen in einer
- * verkauften Waffe, ihren Magazinen und ihrem Zubehör kommen zur losen Munition, ein geladenes Geschoss in den Vorrat.
+ * verkauften Waffe oder einem verkauften Magazin kommen zur losen Munition, ein geladenes Geschoss in den Vorrat.
  */
 export function verkaufAnwenden(c: Charakter, korb: VerkaufPosten[], preis: number, d: Spieldaten, jetzt: Date = new Date()): Charakter {
   const grund = korb.map((p) => verkaufText(c, p, d)).filter(Boolean).join(', ');
@@ -477,6 +469,7 @@ export function verkaufAnwenden(c: Charakter, korb: VerkaufPosten[], preis: numb
   const waffenWeg = new Set(korb.flatMap((p) => (p.art === 'waffe' ? [p.id] : [])));
   const aufsaetzeWeg = korb.flatMap((p) => (p.art === 'aufsatz' ? [p.index] : []));
   const ruestungWeg = korb.flatMap((p) => (p.art === 'ruestung' ? [p.index] : []));
+  const magazineWeg = korb.flatMap((p) => (p.art === 'magazin' ? [p.index] : []));
   let x: Charakter = { ...c };
 
   // Munition aus verkauften Waffen zurück in die lose Munition bzw. den Vorrat
@@ -487,18 +480,15 @@ export function verkaufAnwenden(c: Charakter, korb: VerkaufPosten[], preis: numb
       if (e.munitionstyp && e.im_magazin > 0) x = vorratAendern(x, e.munitionstyp, e.im_magazin, d);
     } else if (k) {
       x = munitionAendern(x, k, e.munitionstyp, e.im_magazin);
-      for (const m of [...e.magazine, ...e.zubehoer]) x = munitionAendern(x, k, m.typ, m.inhalt);
     }
   }
-  // Einzelne Magazine und Zubehör: Patronen darin zurück, Stück entfernen
-  const waffen = x.ausruestung.waffen.filter((w) => !waffenWeg.has(w.id)).map((e) => {
-    const mags = korb.flatMap((p) => (p.art === 'magazin' && p.waffe === e.id ? [p.index] : []));
-    const zub = korb.flatMap((p) => (p.art === 'zubehoer' && p.waffe === e.id ? [p.index] : []));
-    if (!mags.length && !zub.length) return e;
-    const k = kaliberVon(waffeVon(e, d));
-    if (k) for (const m of [...e.magazine.filter((_, i) => mags.includes(i)), ...e.zubehoer.filter((_, i) => zub.includes(i))]) x = munitionAendern(x, k, m.typ, m.inhalt);
-    return { ...e, magazine: weg(e.magazine, mags), zubehoer: weg(e.zubehoer, zub) };
-  });
+  // Einzelne Magazine: Patronen darin zurück
+  for (const i of magazineWeg) {
+    const m = a.magazine[i];
+    const k = m && magazinKaliber(m.id, d);
+    if (m && k) x = munitionAendern(x, k, m.typ, m.inhalt);
+  }
+  const waffen = x.ausruestung.waffen.filter((w) => !waffenWeg.has(w.id));
   let munition = x.ausruestung.munition;
   let nahkampfwaffen = x.ausruestung.nahkampfwaffen;
   let vorrat = x.ausruestung.vorrat;
@@ -518,6 +508,7 @@ export function verkaufAnwenden(c: Charakter, korb: VerkaufPosten[], preis: numb
       waffen,
       aktive_waffe: x.ausruestung.aktive_waffe && waffenWeg.has(x.ausruestung.aktive_waffe) ? null : x.ausruestung.aktive_waffe,
       aufsaetze: weg(x.ausruestung.aufsaetze, aufsaetzeWeg),
+      magazine: weg(x.ausruestung.magazine, magazineWeg),
       ruestung: weg(x.ausruestung.ruestung, ruestungWeg),
       schild: korb.some((p) => p.art === 'schild') ? null : x.ausruestung.schild,
       munition,

@@ -8,7 +8,7 @@ import { gefechtStarten, initiativeEintragen, leiterSetzen, naechsteRunde, senke
 import { gefechtVon } from '../src/lib/regeln/probenrechner';
 import { lageAuswahl, schussAuswerten, schussStellen, schussUebernehmen, type Schusseinstellung } from '../src/lib/regeln/schuss';
 import {
-  aufsatzAbnehmen, aufsatzAnbringen, einzelnLaden, einzelnProAktion, einzelnTypen, loseAufsaetzeFuer, magazineFuellen, kapazitaet, zielLeeren, ladehemmungBeheben, lhBehebenAnfrage, magazinWechseln, mitZubehoerLaden, nachladearten,
+  aufsatzAbnehmen, aufsatzAnbringen, einzelnLaden, einzelnProAktion, einzelnTypen, loseAufsaetzeFuer, magazineFuellen, magazineFuer, kapazitaet, magazinLeeren, magazinsorteSetzen, ladehemmungBeheben, lhBehebenAnfrage, magazinWechseln, mitLaderLaden, nachladearten, trommelmagazin,
   nachladenAlsBreak, neuerWaffenEintrag, passendeAufsaetze, waffenskill, wechselkosten, werferLaden
 } from '../src/lib/regeln/waffen';
 import { neuerCharakter, type Charakter, type Gefecht, type WaffenEintrag } from '../src/lib/speicher/charakter';
@@ -26,7 +26,9 @@ function fertig(extra: Partial<Charakter> = {}): Charakter {
 const g = (c: Charakter) => gefechtVon(c) as Gefecht;
 const imGefecht = (stand = 0, extra: Partial<Charakter> = {}) => leiterSetzen(gefechtStarten(fertig(extra), false, 'erfolg', d), stand, d);
 const auf = (...ids: string[]) => ids.map((id) => ({ id, zustand: 'A' }));
-const mag = (inhalt: number, typ = 'FMJ') => ({ inhalt, typ: inhalt ? typ : '', zustand: 'A' });
+const mag = (inhalt: number, typ = 'FMJ', id = 'magazin_ak47_30') => ({ id, inhalt, typ: inhalt ? typ : '', zustand: 'A' });
+/** Charakter mit diesen Waffen und Magazinen. */
+const mitAusr = (c: Charakter, waffen: WaffenEintrag[], magazine: ReturnType<typeof mag>[] = []): Charakter => ({ ...c, ausruestung: { ...c.ausruestung, waffen, magazine } });
 const mitMunition = (c: Charakter, ...m: { kaliber: string; typ: string; anzahl: number }[]): Charakter => ({ ...c, ausruestung: { ...c.ausruestung, munition: m } });
 const waffe = (id: string, mehr: Partial<WaffenEintrag> = {}): WaffenEintrag => ({ ...neuerWaffenEintrag(id, d, `w_${id}`, 'schlinge'), ...mehr });
 function bewaffnet(e: WaffenEintrag, extra: Partial<Charakter> = {}, stand = 0): Charakter {
@@ -178,18 +180,27 @@ describe('Zielen', () => {
 });
 
 describe('Waffen', () => {
-  it('Kapazität mit Patrone im Lauf; erweitertes Magazin ersetzt die Größe', () => {
+  it('Kapazität mit Patrone im Lauf; das eingesetzte Magazin bestimmt die Größe; Trommel', () => {
+    expect(waffe('m4').magazin).toEqual({ id: 'magazin_stanag_20', zustand: 'A' });
     expect(kapazitaet(waffe('m4'), d)).toBe(21);
-    expect(kapazitaet(waffe('m4', { aufsaetze: auf('magazin_m4_30') }), d)).toBe(31);
+    expect(kapazitaet(waffe('m4', { magazin: { id: 'magazin_stanag_30', zustand: 'A' } }), d)).toBe(31);
+    expect(trommelmagazin(waffe('m4', { magazin: { id: 'trommel_stanag_100', zustand: 'A' } }), d)).toBe(true);
+    expect(trommelmagazin(waffe('m4'), d)).toBe(false);
     expect(kapazitaet(waffe('sw_model_10'), d)).toBe(6);
   });
 
-  it('passende Aufsätze nach Anschlüssen; Magazine nur für ihre Waffe', () => {
+  it('passende Aufsätze nach Anschlüssen; Magazine sind keine Aufsätze', () => {
     const ids = passendeAufsaetze(d.waffen.eintraege.find((w) => w.id === 'm4')!, d).map((a) => a.id);
     expect(ids).toContain('reflexvisier');
-    expect(ids).toContain('magazin_m4_30');
-    expect(ids).not.toContain('magazin_five_seven_20');
+    expect(ids.some((id) => id.includes('magazin'))).toBe(false);
     expect(passendeAufsaetze(d.waffen.eintraege.find((w) => w.id === 'makarov')!, d)).toEqual([]);
+  });
+
+  it('M4 und M16A4 teilen sich ihre Magazine (R49)', () => {
+    const c = mitAusr(fertig(), [], [mag(20, 'FMJ', 'magazin_stanag_20'), mag(30, 'FMJ', 'magazin_stanag_30'), mag(30)]);
+    expect(magazineFuer(c, waffe('m4'), d).map((x) => x.index)).toEqual([0, 1]);
+    expect(magazineFuer(c, waffe('m16a4'), d).map((x) => x.index)).toEqual([0, 1]);
+    expect(magazineFuer(c, waffe('ak47'), d).map((x) => x.index)).toEqual([2]);
   });
 
   it('Waffenskill aus der Kategorie', () => {
@@ -197,46 +208,72 @@ describe('Waffen', () => {
     expect(waffenskill(d.waffen.eintraege.find((w) => w.id === 'mosin_nagant')!, d)).toBe('waffe_praezision');
   });
 
-  it('Magazin wechseln: Rest mit Typ zu den Ersatzmagazinen, Patrone im Lauf bleibt; R46: Waffe trägt den Typ des neuen Magazins', () => {
-    const e = waffe('ak47', { im_magazin: 26, munitionstyp: 'FMJ', magazine: [mag(30, 'HP'), mag(30), mag(12)] });
-    expect(magazinWechseln(e, 0, d)).toMatchObject({ im_magazin: 31, munitionstyp: 'HP', magazine: [mag(30), mag(12), mag(25)] });
-    expect(magazinWechseln(waffe('ak47', { im_magazin: 0, magazine: [mag(30)] }), 0, d)).toMatchObject({ im_magazin: 30, magazine: [mag(0)] });
+  it('Magazin wechseln: Rest mit Typ zu den Magazinen, Patrone im Lauf bleibt; R46: Waffe trägt den Typ des neuen Magazins', () => {
+    const e = waffe('ak47', { im_magazin: 26, munitionstyp: 'FMJ' });
+    const c = magazinWechseln(mitAusr(fertig(), [e], [mag(30, 'HP'), mag(30), mag(12)]), e, 0, d);
+    expect(c.ausruestung.waffen[0]).toMatchObject({ im_magazin: 31, munitionstyp: 'HP', magazin: { id: 'magazin_ak47_30', zustand: 'A' } });
+    expect(c.ausruestung.magazine).toEqual([mag(30), mag(12), mag(25)]);
+    const leer = waffe('ak47', { im_magazin: 0 });
+    expect(magazinWechseln(mitAusr(fertig(), [leer], [mag(30)]), leer, 0, d).ausruestung).toMatchObject({ waffen: [{ im_magazin: 30 }], magazine: [mag(0)] });
   });
 
-  it('Magazin wechseln: ein leeres altes Magazin bleibt als leeres Magazin', () => {
-    expect(magazinWechseln(waffe('ak47', { im_magazin: 1, magazine: [mag(30)] }), 0, d).magazine).toEqual([mag(0)]);
+  it('Magazin wechseln: ein leeres altes Magazin bleibt als leeres Magazin; eine Trommel ersetzt das Standardmagazin', () => {
+    const e = waffe('ak47', { im_magazin: 1 });
+    expect(magazinWechseln(mitAusr(fertig(), [e], [mag(30)]), e, 0, d).ausruestung.magazine).toEqual([mag(0)]);
+    const t = magazinWechseln(mitAusr(fertig(), [e], [mag(75, 'FMJ', 'trommel_ak47_75')]), e, 0, d);
+    expect(t.ausruestung.waffen[0]).toMatchObject({ im_magazin: 76, magazin: { id: 'trommel_ak47_75' } });
+    expect(kapazitaet(t.ausruestung.waffen[0]!, d)).toBe(76);
+    expect(t.ausruestung.magazine).toEqual([mag(0)]);
   });
 
-  it('Magazine füllen mit einem Typ: erst die Waffe, dann angebrochene, dann leere Magazine; anderer Typ bleibt', () => {
-    const e = waffe('ak47', { im_magazin: 20, munitionstyp: 'FMJ', magazine: [mag(12, 'HP'), mag(0), mag(10), mag(0)] });
-    const c = mitMunition(fertig(), { kaliber: '762x39', typ: 'FMJ', anzahl: 50 }, { kaliber: '762x39', typ: 'HP', anzahl: 5 });
+  it('Magazin wechseln: ein Magazin, das nicht passt, ändert nichts', () => {
+    const e = waffe('ak47', { im_magazin: 5 });
+    const c = mitAusr(fertig(), [e], [mag(20, 'FMJ', 'magazin_stanag_20')]);
+    expect(magazinWechseln(c, e, 0, d)).toBe(c);
+  });
+
+  it('Magazine füllen mit einem Typ: erst die Waffe, dann angebrochene, dann leere passende Magazine; anderer Typ bleibt', () => {
+    const e = waffe('ak47', { im_magazin: 20, munitionstyp: 'FMJ' });
+    const c = mitMunition(mitAusr(fertig(), [e], [mag(12, 'HP'), mag(0), mag(10), mag(0, 'FMJ', 'magazin_stanag_20'), mag(0)]),
+      { kaliber: '762x39', typ: 'FMJ', anzahl: 50 }, { kaliber: '762x39', typ: 'HP', anzahl: 5 });
     const f = magazineFuellen(c, e, 'FMJ', d);
     expect(f.schritte.map((s) => [s.ziel, s.vorher, s.nachher])).toEqual([
       [{ art: 'waffe' }, 20, 31], [{ art: 'magazin', index: 2 }, 10, 30], [{ art: 'magazin', index: 1 }, 0, 19]]);
-    expect(f.eintrag.magazine).toEqual([mag(12, 'HP'), mag(19), mag(30), mag(0)]);
+    expect(f.nach.ausruestung.magazine).toEqual([mag(12, 'HP'), mag(19), mag(30), mag(0, 'FMJ', 'magazin_stanag_20'), mag(0)]);
+    expect(f.nach.ausruestung.waffen[0]!.im_magazin).toBe(31);
     expect(f.patronen).toBe(50);
     expect(f.nach.ausruestung.munition).toEqual([{ kaliber: '762x39', typ: 'HP', anzahl: 5 }]);
   });
 
   it('Magazine füllen ohne Wechselmagazin: Schnelllader nur ganz', () => {
-    const z = (inhalt: number) => ({ art: 'schnelllader', ...mag(inhalt) });
-    const e = waffe('sw_model_10', { zubehoer: [z(0), z(0), z(0)] });
-    const f = magazineFuellen(mitMunition(fertig(), { kaliber: '38spc', typ: 'FMJ', anzahl: 14 }), e, 'FMJ', d);
-    expect(f.eintrag.zubehoer).toEqual([z(6), z(6), z(0)]);
+    const z = (inhalt: number) => mag(inhalt, 'FMJ', 'schnelllader_sw_model_10');
+    const e = waffe('sw_model_10');
+    const f = magazineFuellen(mitMunition(mitAusr(fertig(), [e], [z(0), z(0), z(0)]), { kaliber: '38spc', typ: 'FMJ', anzahl: 14 }), e, 'FMJ', d);
+    expect(f.nach.ausruestung.magazine).toEqual([z(6), z(6), z(0)]);
     expect(f.nach.ausruestung.munition).toEqual([{ kaliber: '38spc', typ: 'FMJ', anzahl: 2 }]);
   });
 
   it('Leeren: Patronen kommen zur losen Munition ihres Typs', () => {
-    const e = waffe('ak47', { magazine: [mag(12, 'HP')] });
-    const c = zielLeeren(mitMunition(fertig(), { kaliber: '762x39', typ: 'HP', anzahl: 3 }), e, { art: 'magazin', index: 0 }, d);
+    const c = magazinLeeren(mitMunition(mitAusr(fertig(), [], [mag(12, 'HP')]), { kaliber: '762x39', typ: 'HP', anzahl: 3 }), 0, d);
     expect(c.ausruestung.munition).toEqual([{ kaliber: '762x39', typ: 'HP', anzahl: 15 }]);
+    expect(c.ausruestung.magazine).toEqual([mag(0)]);
   });
 
-  it('Nachladearten: Vorwahl ist das vollste Magazin vom bisherigen Typ, sonst das vollste', () => {
-    const c = fertig();
-    expect(nachladearten(c, waffe('ak47', { im_magazin: 3, munitionstyp: 'FMJ', magazine: [mag(12), mag(30, 'HP'), mag(20)] }), d)).toEqual([{ art: 'magazin', vorwahl: 2 }]);
-    expect(nachladearten(c, waffe('ak47', { im_magazin: 3, munitionstyp: 'AP', magazine: [mag(12), mag(30, 'HP'), mag(20)] }), d)).toEqual([{ art: 'magazin', vorwahl: 1 }]);
-    expect(nachladearten(c, waffe('ak47', { magazine: [mag(0)] }), d)).toEqual([]);
+  it('Nachladearten: Vorwahl ist das vollste passende Magazin vom bisherigen Typ, sonst das vollste', () => {
+    const mags = [mag(12), mag(30, 'HP'), mag(20), mag(30, 'FMJ', 'magazin_stanag_30')];
+    const fmj = waffe('ak47', { im_magazin: 3, munitionstyp: 'FMJ' });
+    expect(nachladearten(mitAusr(fertig(), [fmj], mags), fmj, d)).toEqual([{ art: 'magazin', vorwahl: 2 }]);
+    const ap = waffe('ak47', { im_magazin: 3, munitionstyp: 'AP' });
+    expect(nachladearten(mitAusr(fertig(), [ap], mags), ap, d)).toEqual([{ art: 'magazin', vorwahl: 1 }]);
+    expect(nachladearten(mitAusr(fertig(), [ap], [mag(0), mag(30, 'FMJ', 'magazin_stanag_30')]), ap, d)).toEqual([]);
+  });
+
+  it('Schreibmodus: Sorte des eingesetzten Magazins ändern; überzählige Patronen werden lose', () => {
+    const e = waffe('m4', { im_magazin: 31, munitionstyp: 'FMJ', magazin: { id: 'magazin_stanag_30', zustand: 'B' } });
+    const c = magazinsorteSetzen(mitAusr(fertig(), [e]), e, 'magazin_stanag_20', d);
+    expect(c.ausruestung.waffen[0]).toMatchObject({ im_magazin: 21, magazin: { id: 'magazin_stanag_20', zustand: 'B' } });
+    expect(c.ausruestung.munition).toEqual([{ kaliber: '556x45', typ: 'FMJ', anzahl: 10 }]);
+    expect(magazinsorteSetzen(c, c.ausruestung.waffen[0]!, 'magazin_ak47_30', d)).toBe(c);
   });
 
   it('einzeln laden: 2 Patronen, mit Fingerfertig 3; nie über die Kapazität', () => {
@@ -262,30 +299,30 @@ describe('Waffen', () => {
     expect(nachladearten(c, leer, d)).toEqual([{ art: 'einzeln', patronen: 2, typen: [{ typ: 'FMJ', anzahl: 10 }, { typ: 'HP', anzahl: 4 }] }]);
   });
 
-  it('Schnelllader füllt die Trommel mit seinem Typ; Reste kommen zur losen Munition', () => {
-    const z = (inhalt: number, typ = 'HP') => ({ art: 'schnelllader', ...mag(inhalt, typ) });
-    const e = waffe('sw_model_10', { im_magazin: 1, munitionstyp: 'FMJ', zubehoer: [z(6), z(6)] });
-    const c = { ...fertig(), ausruestung: { ...fertig().ausruestung, waffen: [e] } };
-    expect(nachladearten(c, e, d)).toEqual([{ art: 'zubehoer', zubehoer: 'schnelllader', typ: 'HP', gefuellt: 2 }]);
-    const nach = mitZubehoerLaden(c, e, 'schnelllader', 'HP', d);
-    expect(nach.ausruestung.waffen[0]).toMatchObject({ im_magazin: 6, munitionstyp: 'HP', zubehoer: [z(0), z(6)] });
+  it('Schnelllader füllt die Trommel mit seinem Typ und bleibt leer zurück; Reste kommen zur losen Munition', () => {
+    const z = (inhalt: number, typ = 'HP') => mag(inhalt, typ, 'schnelllader_sw_model_10');
+    const e = waffe('sw_model_10', { im_magazin: 1, munitionstyp: 'FMJ' });
+    const c = mitAusr(fertig(), [e], [z(6), z(6)]);
+    expect(nachladearten(c, e, d)).toEqual([{ art: 'lader', sorte: 'schnelllader_sw_model_10', typ: 'HP', gefuellt: 2 }]);
+    const nach = mitLaderLaden(c, e, 'schnelllader_sw_model_10', 'HP', d);
+    expect(nach.ausruestung.waffen[0]).toMatchObject({ im_magazin: 6, munitionstyp: 'HP' });
+    expect(nach.ausruestung.magazine).toEqual([z(0), z(6)]);
     expect(nach.ausruestung.munition).toEqual([{ kaliber: '38spc', typ: 'FMJ', anzahl: 1 }]);
-    expect(nachladenAlsBreak(fertig({ perks: ['schnell_nachladen'] }), 'zubehoer', d)).toBe(true);
+    expect(nachladenAlsBreak(fertig({ perks: ['schnell_nachladen'] }), 'lader', d)).toBe(true);
     expect(nachladenAlsBreak(fertig({ perks: ['schnell_nachladen'] }), 'einzeln', d)).toBe(false);
   });
 
-  it('Aufsatz anbringen und abnehmen: lose ↔ an der Waffe; ein neues Magazin ersetzt das alte, überzählige Patronen werden lose', () => {
-    const e = waffe('m4', { im_magazin: 31, munitionstyp: 'FMJ', aufsaetze: auf('magazin_m4_30') });
+  it('Aufsatz anbringen und abnehmen: lose ↔ an der Waffe', () => {
+    const e = waffe('m4', { im_magazin: 21, munitionstyp: 'FMJ', aufsaetze: auf('lampe') });
     let c = fertig();
     c = { ...c, ausruestung: { ...c.ausruestung, waffen: [e], aufsaetze: auf('reflexvisier', 'zweibein') } };
     expect(loseAufsaetzeFuer(c, e, d).map((l) => l.aufsatz.id)).toEqual(['reflexvisier', 'zweibein']);
     c = aufsatzAnbringen(c, e, 0, d);
-    expect(c.ausruestung.waffen[0]!.aufsaetze).toEqual(auf('magazin_m4_30', 'reflexvisier'));
+    expect(c.ausruestung.waffen[0]!.aufsaetze).toEqual(auf('lampe', 'reflexvisier'));
     expect(c.ausruestung.aufsaetze).toEqual(auf('zweibein'));
-    c = aufsatzAbnehmen(c, c.ausruestung.waffen[0]!, 'magazin_m4_30', d);
+    c = aufsatzAbnehmen(c, c.ausruestung.waffen[0]!, 'lampe', d);
     expect(c.ausruestung.waffen[0]).toMatchObject({ im_magazin: 21, aufsaetze: auf('reflexvisier') });
-    expect(c.ausruestung.munition).toEqual([{ kaliber: '556x45', typ: 'FMJ', anzahl: 10 }]);
-    expect(c.ausruestung.aufsaetze).toEqual(auf('zweibein', 'magazin_m4_30'));
+    expect(c.ausruestung.aufsaetze).toEqual(auf('zweibein', 'lampe'));
   });
 
   it('Werfer laden nimmt ein Geschoss aus dem Vorrat', () => {

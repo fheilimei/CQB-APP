@@ -27,7 +27,8 @@ Alle Spieldaten liegen als JSON unter `public/data/`. Geprüft werden sie von `s
 | `munition.json` | Kaliber und Munitionstypen mit DK/MW |
 | `waffen.json` | Waffen |
 | `schutz.json` | Deckung und Rüstung |
-| `aufsaetze.json` | Waffenaufsätze mit Anschluss und Wirkung; Zubehör (Schnelllader, Ladestreifen) |
+| `aufsaetze.json` | Waffenaufsätze mit Anschluss und Wirkung |
+| `magazine.json` | Magazinsorten (Standard, erweitert, Trommel, Schnelllader, Ladestreifen) mit passenden Waffen |
 | `nahkampfwaffen.json` | Nahkampfwaffen mit Art, Länge, MW, DK |
 | `wurf_und_sprengwaffen.json` | Wurfwaffen, Granaten und Geschosse (Vorratsgegenstände) |
 | `klassen.json` | Stufen, Laufbahnen und Klassen mit Mindestskills, Zugang, Vorratslevel und Gehalt |
@@ -589,9 +590,9 @@ Die **Quelle** steht nicht im Modifikator; sie ergibt sich aus dem Ort (Perk, An
       "reichweite": { "bedraengt": 2, "nah": 1, "mittel": 2, "weit": 3, "sehr_weit": 4, "fern": 5 },
       "lh_beheben_mod": 0,
       "zuverlaessigkeit": "zuverlaessig",
-      "anschluesse": ["muendung_gewehr", "magazin"],
-      "magazine": [75],
+      "anschluesse": ["muendung_gewehr"],
       "ladeart": "wechselmagazin",
+      "standardmagazin": "magazin_ak47_30",
       "besonderheiten": "ungenau, zuverlässig"
     },
     {
@@ -616,11 +617,11 @@ Die **Quelle** steht nicht im Modifikator; sie ergibt sich aus dem Ort (Perk, An
 - `feuermodi`: Schlüssel `EF`, `Burst`, `VA`. Halbautomatik, Pump-Action und Repetieren sind `EF`. `garbenfaktor` nur bei `VA`. `Burst` hat zusätzlich `burst_laenge`; seine `feuerrate` ist ein Vielfaches davon, `rueckstoss` wie bei `EF`.
 - `zuverlaessigkeit`: `zuverlaessig` oder `normal`. Die Zuschläge je Zustand (A–D) stehen in `regeln.json`.
 - `patrone_im_lauf`: Magazingröße „30+1“ → `magazin: 30`, `patrone_im_lauf: true`.
-- `ladeart`: `wechselmagazin`, `trommel`, `roehrenmagazin`, `fest` oder `einzelschuss` (Werfer). Bestimmt den Ablauf beim Nachladen (Regelwerk: Kampfsystem, Nachladen). `zubehoer`: passendes Zubehör (`schnelllader`, `ladestreifen`), falls die Ladeart es erlaubt.
+- `ladeart`: `wechselmagazin`, `trommel`, `roehrenmagazin`, `fest` oder `einzelschuss` (Werfer). Bestimmt den Ablauf beim Nachladen (Regelwerk: Kampfsystem, Nachladen). Passende Magazine, Schnelllader und Ladestreifen stehen in [`magazine.json`](#magazinejson) (`passt_an`).
 - `betriebsarten`: umschaltbare Bauart ohne eigenen Feuermodus (SPAS-12: Pump-Action). Überschreibt `feuerrate` und `lh_prozent` des Modus `EF`, solange sie gewählt ist; Umschalten ohne Aktion.
 - `lauter`, `leiser`: Abweichung der Lautstärke in Bändern, wenn die Waffe lauter oder leiser als üblich ist (Regelwerk: Wahrnehmung, Lautstärken). Sonst fehlt das Feld.
-- `ersatzmagazin`: nur bei `ladeart: wechselmagazin`, Pflicht. `preis`: Geldwertspanne eines Ersatzmagazins in Standardgröße; Vorratslevel wie die Waffe. Vorläufig (R18). Erweiterte Magazine stehen mit eigenem Preis in `aufsaetze.json`.
-- `anschluesse`: `schiene_oben`, `schiene_unten`, `schiene_seitlich`, `muendung_pistole`, `muendung_gewehr`, `magazin` (Regelwerk: Schusswaffen, Aufsätze). `magazine`: Größen der erweiterten Magazine, wenn `magazin` angegeben ist. Ein Aufsatz passt, wenn sein Anschluss hier steht oder er die Waffe ausdrücklich nennt ([§ aufsaetze.json](#aufsaetzejson)).
+- `standardmagazin`: nur bei `ladeart: wechselmagazin`, Pflicht. ID der Magazinsorte in `magazine.json`, die in einer neuen Waffe steckt; ihre `groesse` ist `magazin`, sie nennt die Waffe in `passt_an` (seit 19.11.2026, R49; vorher `ersatzmagazin` mit Preis).
+- `anschluesse`: `schiene_oben`, `schiene_unten`, `schiene_seitlich`, `muendung_pistole`, `muendung_gewehr` (Regelwerk: Schusswaffen, Aufsätze). Den Anschluss „Magazin“ des Regelwerks bilden die Magazinsorten in `magazine.json` ab (R49). Ein Aufsatz passt, wenn sein Anschluss hier steht oder er die Waffe ausdrücklich nennt ([§ aufsaetze.json](#aufsaetzejson)).
 
 ---
 
@@ -681,15 +682,6 @@ Die Wirkung eines Aufsatzes steht hier, nicht bei der Waffe, weil ein Aufsatz an
       "vorlaeufig": true
     },
     {
-      "id": "magazin_five_seven_20",
-      "name": "Erweitertes Magazin (20)",
-      "passt_an": { "anschluss": ["magazin"], "waffen": ["five_seven"] },
-      "einsatz": "immer",
-      "werte": { "magazin": 20 },
-      "modifikatoren": [],
-      "hinweis": null
-    },
-    {
       "id": "schalldaempfer_pistole",
       "name": "Schalldämpfer",
       "passt_an": { "anschluss": ["muendung_pistole"], "waffen": [] },
@@ -701,16 +693,43 @@ Die Wirkung eines Aufsatzes steht hier, nicht bei der Waffe, weil ein Aufsatz an
 }
 ```
 
-- `passt_an.anschluss`: Liste der Anschlüsse, an die der Aufsatz passt (Lampe: Schiene unten oder seitlich). `passt_an.waffen`: nur diese Waffen (erweiterte Magazine).
+- `passt_an.anschluss`: Liste der Anschlüsse, an die der Aufsatz passt (Lampe: Schiene unten oder seitlich). `passt_an.waffen`: nur diese Waffen (leer = alle mit dem Anschluss).
 - `einsatz`: `immer` (wirkt, solange angebracht) oder `schalter` (wirkt nur, wenn im Schussablauf eingeschaltet; Text des Schalters in `schalter_text`).
 - `modifikatoren`: [Modifikatoren](#modifikator); Quelle in der Herkunftsanzeige ist der Aufsatz (Zeichen wie Perk oder eigenes, siehe `darstellung.json`).
-- `werte`: ersetzt Werte der Waffe, solange der Aufsatz angebracht ist (z. B. `magazin`). `trommelmagazin: true`: Zuschlag auf die Ladehemmungsrate aus `regeln.json` (`ladehemmung.trommelmagazin_zuschlag`).
 - `waffe`: Aufsatz, der selbst eine Waffe ist (Unterlaufwerfer M203 → `waffen.json`). `nahkampfwaffe`: Aufsatz, der eine Nahkampfwaffe ist (Bajonett → `nahkampfwaffen.json`).
-- Mündungsaufsätze gibt es je Kaliberklasse (`schalldaempfer_pistole`, `schalldaempfer_gewehr`, `kompensator_pistole`, `kompensator_gewehr`; Kompensator für beide Klassen entschieden 16.11.2026). Erweiterte Magazine heißen `magazin_<waffe>_<größe>` bzw. `trommel_<waffe>_<größe>`.
-- **`zubehoer`** (zweite Liste in der Datei): mitgeführtes Zubehör mit `id`, `name`, `passt_zu` (Text), `vorratslevel`, `preis`, `wirkung`. Waffen nennen passendes Zubehör im Feld `zubehoer`.
+- Mündungsaufsätze gibt es je Kaliberklasse (`schalldaempfer_pistole`, `schalldaempfer_gewehr`, `kompensator_pistole`, `kompensator_gewehr`; Kompensator für beide Klassen entschieden 16.11.2026).
+- Magazine sind keine Aufsätze mehr; Schnelllader und Ladestreifen stehen nicht mehr hier (beides seit 19.11.2026 in [`magazine.json`](#magazinejson)).
 - `vorratslevel`, `preis` (Geldwertspanne je Stück): Pflicht, vorläufig (R18). Ausnahme: Aufsätze mit `waffe` oder `nahkampfwaffe` tragen keine eigenen Werte; es gelten die der Waffe (M203: `waffen.json`, Bajonett: `nahkampfwaffen.json`).
 - `setzt`: Umstand der Lage, den der eingeschaltete Aufsatz auslöst (Zweibein: Waffe gilt als aufgelegt).
 - `hinweis`: Text für Wirkungen, die die App nicht rechnet.
+
+---
+
+## magazine.json
+
+Magazinsorten (19.11.2026, R49): Wechselmagazine (Standard, erweitert, Trommel) und Schnelllader bzw. Ladestreifen. Der Charakter führt Magazine als eigene Gegenstände ([`ausruestung.magazine`](#felder-im-spielstand)); jede Waffe in `passt_an` kann sie laden. Regelwerk: Schusswaffen (tragbar), Aufsätze (Anschluss Magazin) und Zubehör.
+
+```json
+{
+  "version": "2026-11-19b",
+  "eintraege": [
+    { "id": "magazin_stanag_20", "name": "Magazin (20)", "art": "magazin", "groesse": 20, "passt_an": ["m4", "m16a4"],
+      "vorratslevel": 3, "preis": { "min": 15, "max": 50 }, "vorlaeufig": true },
+    { "id": "trommel_stanag_100", "name": "Trommelmagazin (100)", "art": "magazin", "groesse": 100, "passt_an": ["m4", "m16a4"], "trommel": true,
+      "vorratslevel": 4, "preis": { "min": 100, "max": 300 }, "alte_ids": ["trommel_m4_100", "trommel_m16a4_100"], "vorlaeufig": true },
+    { "id": "schnelllader_sw_model_10", "name": "Schnelllader", "art": "lader", "groesse": 6, "passt_an": ["sw_model_10"],
+      "vorratslevel": 1, "preis": { "min": 5, "max": 15 }, "alte_ids": ["schnelllader"], "vorlaeufig": true }
+  ]
+}
+```
+
+- `art`: `magazin` (Wechselmagazin; passt nur an Waffen mit `ladeart: wechselmagazin`) oder `lader` (Schnelllader bzw. Ladestreifen; füllt eine Waffe ohne Wechselmagazin auf einmal, Nachladen wie mit Magazin; nur an Waffen ohne Wechselmagazin, `groesse` = `magazin` der Waffe).
+- `groesse`: Schuss ohne Patrone im Lauf. Steckt das Magazin in der Waffe, ist das ihre Magazingröße („ein erweitertes Magazin ersetzt die Magazingröße“).
+- `passt_an`: Waffen-IDs; alle mit demselben Kaliber. Mehrere Waffen = gemeinsame Magazine (M4 und M16A4).
+- `trommel: true`: Trommelmagazin; solange es in der Waffe steckt, gilt der Zuschlag auf die Ladehemmungsrate aus `regeln.json` (`ladehemmung.trommelmagazin_zuschlag`).
+- `vorratslevel`, `preis` (je Stück): Pflicht, vorläufig (R18). Standardmagazin: Vorratslevel der Waffe (gemeinsame: das niedrigere); erweitert: Waffe +1.
+- `alte_ids`: frühere IDs (erweiterte Magazine als Aufsatz, Zubehör `schnelllader`/`ladestreifen`), nur für die Umstellung von Charakteren aus Schema 7.
+- IDs: `magazin_<waffe>_<größe>`, `trommel_<waffe>_<größe>`, `schnelllader_<waffe>`, `ladestreifen_<waffe>`; gemeinsame Magazine statt `<waffe>` mit einem Namen für die Bauart (`stanag`).
 
 ---
 
@@ -1038,17 +1057,18 @@ Speicherformat eines Charakters, lokal und als Exportdatei (`<name>.cqb.json`). 
 
   "ausruestung": {
     "waffen": [
-      { "id": "wf1", "waffe": "ak47", "munitionstyp": "FMJ", "im_magazin": 26, "magazin_zustand": "A",
-        "magazine": [ { "inhalt": 30, "typ": "FMJ", "zustand": "A" }, { "inhalt": 12, "typ": "HP", "zustand": "B" }, { "inhalt": 0, "typ": "", "zustand": "A" } ],
-        "zubehoer": [], "zustand": "B", "aufsaetze": [ { "id": "reflexvisier", "zustand": "A" } ], "ladehemmung": null, "trageort": "schlinge" },
-      { "id": "wf2", "waffe": "sw_model_10", "munitionstyp": "FMJ", "im_magazin": 6, "magazine": [],
-        "zubehoer": [ { "art": "schnelllader", "inhalt": 6, "typ": "HP", "zustand": "A" }, { "art": "schnelllader", "inhalt": 0, "typ": "", "zustand": "A" } ],
+      { "id": "wf1", "waffe": "ak47", "munitionstyp": "FMJ", "im_magazin": 26, "magazin": { "id": "magazin_ak47_30", "zustand": "A" },
+        "zustand": "B", "aufsaetze": [ { "id": "reflexvisier", "zustand": "A" } ], "ladehemmung": null, "trageort": "schlinge" },
+      { "id": "wf2", "waffe": "sw_model_10", "munitionstyp": "FMJ", "im_magazin": 6,
         "zustand": "A", "aufsaetze": [], "ladehemmung": null, "trageort": "holster" }
     ],
     "nahkampfwaffen": [ { "id": "nk1", "waffe": "kampfmesser", "trageort": "weste", "zustand": "A" } ],
     "aktive_waffe": "wf1",
     "vorrat": [ { "id": "m67", "anzahl": 2, "trageort": "weste" } ],
     "munition": [ { "kaliber": "762x39", "typ": "FMJ", "anzahl": 40 }, { "kaliber": "38spc", "typ": "FMJ", "anzahl": 18 } ],
+    "magazine": [ { "id": "magazin_ak47_30", "inhalt": 30, "typ": "FMJ", "zustand": "A" }, { "id": "magazin_ak47_30", "inhalt": 12, "typ": "HP", "zustand": "B" },
+      { "id": "trommel_ak47_75", "inhalt": 0, "typ": "", "zustand": "A" },
+      { "id": "schnelllader_sw_model_10", "inhalt": 6, "typ": "HP", "zustand": "A" }, { "id": "schnelllader_sw_model_10", "inhalt": 0, "typ": "", "zustand": "A" } ],
     "aufsaetze": [ { "id": "zweibein", "zustand": "C" } ],
     "ruestung": [ { "id": "weste_einfach", "zustand": "A" } ],
     "schild": null,
@@ -1115,7 +1135,7 @@ IndexedDB-Datenbank `cqb` mit zwei Speichern: `charaktere` (ein Datensatz je Cha
 ### Felder außerhalb des Spielstands
 
 - **`status`:** `erstellung` (Erstellung läuft, alle Schritte änderbar) oder `fertig`.
-- **`erstellung`:** nur während der Erstellung gesetzt, sonst `null`. Felder: `schritt` (zuletzt geöffneter Schritt 1–7), `ohne_klasse`, `klasse` (ID), `stufe4` (nur Meister: Stufe-4-Klasse), `meister_skills` (nur Meister: gewählte Skills auf 5), `freie_punkte_start` (nur ohne Klasse), `kaeufe` (Käufe mit freien Punkten der Reihe nach: `{ "art": "skill" | "perk", "id" }` oder `{ "art": "statrank_up", "id", "wurf" }`), `korb` (Schritt 7, Laden: `{ "kauf": [Posten], "verhandlung": { "ergebnis": "keine" | "gewonnen" | "verloren" | "unentschieden", "krit" }, "preis_sl": Zahl oder null }`; ein Posten ist `{ "ware": "art:id[:typ]", "zustand": "A"–"D" oder null, "menge", "ziel"?, "preis_sl"? }` wie im Korb des Ladens). Beim Abschluss wird nach dem Startgeld der Korb gekauft (eine Buchung `kauf`). Solange die Erstellung läuft, bleiben `klassenweg`, `skills`, `perks` und `freie_punkte` leer; `stats` enthält die verteilten Ränge und die ersten Würfe. Beim Abschluss rechnet die App daraus die fertigen Werte und setzt `erstellung` auf `null`.
+- **`erstellung`:** nur während der Erstellung gesetzt, sonst `null`. Felder: `schritt` (zuletzt geöffneter Schritt 1–7), `ohne_klasse`, `klasse` (ID), `stufe4` (nur Meister: Stufe-4-Klasse), `meister_skills` (nur Meister: gewählte Skills auf 5), `freie_punkte_start` (nur ohne Klasse), `kaeufe` (Käufe mit freien Punkten der Reihe nach: `{ "art": "skill" | "perk", "id" }` oder `{ "art": "statrank_up", "id", "wurf" }`), `korb` (Schritt 7, Laden: `{ "kauf": [Posten], "verhandlung": { "ergebnis": "keine" | "gewonnen" | "verloren" | "unentschieden", "krit" }, "preis_sl": Zahl oder null }`; ein Posten ist `{ "ware": "art:id[:typ]", "zustand": "A"–"D" oder null, "menge", "preis_sl"? }` wie im Korb des Ladens). Beim Abschluss wird nach dem Startgeld der Korb gekauft (eine Buchung `kauf`). Solange die Erstellung läuft, bleiben `klassenweg`, `skills`, `perks` und `freie_punkte` leer; `stats` enthält die verteilten Ränge und die ersten Würfe. Beim Abschluss rechnet die App daraus die fertigen Werte und setzt `erstellung` auf `null`.
 - **`vorratslevel_manuell`:** von Hand gesetztes Vorratslevel (ohne Klasse oder im Schreibmodus); `null` = aus der aktuellen Klasse.
 - **Stats:** gespeichert werden Rang und **Wurf** (Positiv- und Negativwürfel, je 1–10; Quelle `app` oder `hand`). Abweichung = positiv − negativ und Statwert = Rang + Abweichung werden berechnet, nicht gespeichert.
 - **Während der Erstellung** kann der Charakter unvollständig sein: Stats ohne Rang (`"rang": null`, `"wurf": null`). Die Zuordnung des Rank-Sets ergibt sich aus den Rängen der Stats. Beim Tauschen von Rängen bleibt `wurf` beim Stat.
@@ -1140,12 +1160,12 @@ IndexedDB-Datenbank `cqb` mit zwei Speichern: `charaktere` (ein Datensatz je Cha
 - **HP aktuell** = HP-Höchstwert − `hp_verlust_wunden` − `prellungen`. `hp_verlust_wunden` sinkt nur durch Erholungsproben, `prellungen` nur durch eine Nacht Ruhe.
 - **`ausruestung.aktive_waffe`:** `id` der aktiven Waffe (genau eine). Waffen in der Ausrüstung haben eine eigene `id`, weil ein Charakter dieselbe Waffe mehrmals besitzen kann.
 - **Waffe `im_magazin`:** aktueller Inhalt inklusive Patrone im Lauf. Jeder abgegebene Schuss wird abgezogen.
-- **Waffe `magazine`** (nur Wechselmagazin, sonst leer): Ersatzmagazine mit `inhalt`, `typ` (Munitionstyp; leer = `""` bei Inhalt 0) und `zustand`. Beim Nachladen wandert das eingesetzte Magazin mit Rest und Typ hierher (leer, wenn nichts mehr drin ist); die Waffe übernimmt `typ` und `zustand` des neuen. **`magazin_zustand`:** Zustand des eingesetzten Magazins. Die Patrone im Lauf zählt zum Typ des eingesetzten Magazins (vereinfacht).
-- **Waffe `zubehoer`:** Schnelllader bzw. Ladestreifen, jedes Stück einzeln mit `art` (ID aus `aufsaetze.json` `zubehoer`), `inhalt`, `typ`, `zustand`. Gefüllt wird nur ganz.
+- **Waffe `magazin`** (nur Wechselmagazin, sonst fehlt das Feld): eingesetztes Magazin mit `id` (Sorte aus `magazine.json`) und `zustand`; sein Inhalt ist `im_magazin`, seine `groesse` die Magazingröße der Waffe. Die Patrone im Lauf zählt zum Typ des eingesetzten Magazins (vereinfacht).
+- **`ausruestung.magazine`:** Magazine, Schnelllader und Ladestreifen, die nicht in einer Waffe stecken, jedes Stück einzeln mit `id` (Sorte aus `magazine.json`), `inhalt`, `typ` (Munitionstyp; `""` bei Inhalt 0) und `zustand`. Jede Waffe aus `passt_an` der Sorte kann sie laden. Beim Magazinwechsel wandert das eingesetzte Magazin mit Rest und Typ hierher; die Waffe übernimmt Sorte, Zustand und Typ des neuen. Schnelllader und Ladestreifen bleiben nach dem Laden leer hier; gefüllt werden sie nur ganz.
 - **Waffe `aufsaetze`:** angebrachte Aufsätze mit `id` (aus `aufsaetze.json`) und `zustand`. Ob ein Schalter-Aufsatz gerade im Einsatz ist, wird nicht gespeichert; er wird je Schuss eingeschaltet.
 - **`ausruestung.munition`:** lose Munition nach `kaliber` (ID aus `munition.json`) und `typ` mit `anzahl`, für einzeln laden und zum Füllen von Magazinen, Schnellladern und Ladestreifen. Einträge mit 0 entfallen.
 - **`ausruestung.aufsaetze`:** lose Aufsätze mit `id` und `zustand`. Anbringen nimmt den Eintrag hier weg, Abnehmen legt ihn zurück.
-- **`zustand`** (Waffen, Magazine, Zubehör, Aufsätze, Nahkampfwaffen, Rüstung, Schild): Stufe aus `regeln.json` `waffenzustand.stufen`. Außer bei Schusswaffen wirkt er nur auf den Preis (Regelfrage R42).
+- **`zustand`** (Waffen, Magazine, Aufsätze, Nahkampfwaffen, Rüstung, Schild): Stufe aus `regeln.json` `waffenzustand.stufen`. Außer bei Schusswaffen wirkt er nur auf den Preis (Regelfrage R42).
 - **`ausruestung.vorrat`:** Granaten und Geschosse mit Anzahl. Jeder Wurf und jedes Laden eines Werfers zieht 1 ab. Die Anzahl ist jederzeit von Hand erhöhbar. Bei 0 bleibt der Eintrag stehen (zum Auffüllen).
 - **`trageort`** (Waffen, Nahkampfwaffen, Vorrat): `schlinge`, `weste` (Rig oder Weste), `holster`, `guertel` (auch Scheide), `ruecken`, `rucksack`. Bestimmt die Kosten des Wechsels; die Tabelle steht in `regeln.json` (Regelwerk: Kampfsystem, Waffe wechseln).
 - **`ausruestung.nahkampfwaffen`:** eigene Nahkampfwaffen, je Eintrag mit `anzahl` (fehlt das Feld: 1). Ein Wurf zieht 1 ab; bei 0 bleibt der Eintrag stehen, eingesammelte Waffen werden von Hand wieder dazugezählt. Körperwaffen und Einsätze mit der Schusswaffe (Kolben, Lauf, Pistolengriff) bietet die App ohne Eintrag an.
@@ -1183,7 +1203,7 @@ IndexedDB-Datenbank `cqb` mit zwei Speichern: `charaktere` (ein Datensatz je Cha
 - **2 → 3:** `gefecht.deckung` wandert nach `spielstand.deckung` (ohne laufendes Gefecht `null`).
 - **3 → 4:** Die Deckungskante entfällt: `deckung.kante` wird gelöscht, alle verdeckten Zonen kommen zu `deckung.getippt` hinzu. Die Figur zeigt danach dieselbe Deckung.
 
-`schema` wird bei jeder inkompatiblen Änderung erhöht. Beim Laden prüft die App die Version und migriert schrittweise (1 → 2 → 3 …). Schritt 4 → 5: Stat-ID `decisiveness` wird zu `decision` (als Schlüssel und als Wert). Schritt 5 → 6 (Munition je Magazin, 19.11.2026; braucht die Spieldaten für das Kaliber jeder Waffe): `reserve` und `leere_magazine` werden zu `magazine` mit dem bisherigen `munitionstyp` der Waffe; `lose_patronen` aller Waffen wandern nach `ausruestung.munition` (nach Kaliber und Typ zusammengefasst); `zubehoer` `{ art, gefuellt, leer }` wird zu einzelnen Stücken; Aufsätze, Rüstung und Schild werden `{ id, zustand }`; Nahkampfwaffen bekommen `zustand`; neu `ausruestung.munition` und `ausruestung.aufsaetze`. Neuer Zustand überall „neu“ (`waffenzustand.neu`). Schritt 6 → 7 (19.11.2026): Ein Entwurf bekommt `erstellung.korb`, anfangs leer. Import einer Datei mit höherer Version als bekannt: Fehlermeldung, nichts überschreiben.
+`schema` wird bei jeder inkompatiblen Änderung erhöht. Beim Laden prüft die App die Version und migriert schrittweise (1 → 2 → 3 …). Schritt 4 → 5: Stat-ID `decisiveness` wird zu `decision` (als Schlüssel und als Wert). Schritt 5 → 6 (Munition je Magazin, 19.11.2026; braucht die Spieldaten für das Kaliber jeder Waffe): `reserve` und `leere_magazine` werden zu `magazine` mit dem bisherigen `munitionstyp` der Waffe; `lose_patronen` aller Waffen wandern nach `ausruestung.munition` (nach Kaliber und Typ zusammengefasst); `zubehoer` `{ art, gefuellt, leer }` wird zu einzelnen Stücken; Aufsätze, Rüstung und Schild werden `{ id, zustand }`; Nahkampfwaffen bekommen `zustand`; neu `ausruestung.munition` und `ausruestung.aufsaetze`. Neuer Zustand überall „neu“ (`waffenzustand.neu`). Schritt 6 → 7 (19.11.2026): Ein Entwurf bekommt `erstellung.korb`, anfangs leer. Schritt 7 → 8 (19.11.2026, R49; braucht die Spieldaten): Eine Waffe mit Wechselmagazin bekommt `magazin` mit der Sorte des angebrachten erweiterten Magazins bzw. Trommel (Aufsatz entfällt) oder sonst ihrem Standardmagazin und dem bisherigen `magazin_zustand`; ihre Ersatzmagazine (`magazine`) kommen mit derselben Sorte nach `ausruestung.magazine`, ebenso `zubehoer` (Sorte über `alte_ids`); lose erweiterte Magazine in `ausruestung.aufsaetze` werden leere Magazine. Im Korb der Erstellung werden `magazin:<waffe>`, `zubehoer:<id>` und erweiterte Magazine als `aufsatz:<id>` zu `magazin:<sorte>`; `ziel` entfällt. Import einer Datei mit höherer Version als bekannt: Fehlermeldung, nichts überschreiben.
 
 ---
 

@@ -157,7 +157,8 @@ describe('Migration', () => {
     delete (alt as Record<string, unknown>).aufsaetze;
     const c = migriere({ ...b, schema: 5, ausruestung: alt }, d, 6);
     expect(c.schema).toBe(6);
-    const [ak, ak2, revolver, rpg] = c.ausruestung.waffen;
+    // Form von Schema 6 (Ersatzmagazine noch an der Waffe)
+    const [ak, ak2, revolver, rpg] = c.ausruestung.waffen as unknown as Record<string, unknown>[];
     expect(ak).toEqual({ id: 'wf1', waffe: 'ak47', munitionstyp: 'HP', im_magazin: 26, magazin_zustand: 'A', zustand: 'B',
       magazine: [{ inhalt: 30, typ: 'HP', zustand: 'A' }, { inhalt: 12, typ: 'HP', zustand: 'A' }, { inhalt: 0, typ: '', zustand: 'A' }],
       zubehoer: [], aufsaetze: [{ id: 'reflexvisier', zustand: 'A' }], ladehemmung: null, trageort: 'schlinge' });
@@ -182,6 +183,55 @@ describe('Migration', () => {
     expect(entwurf.erstellung!.korb).toEqual({ kauf: [], verhandlung: { ergebnis: 'keine', krit: false }, preis_sl: null });
     const fertig = migriere({ ...b, schema: 6 }, d, 7);
     expect(fertig).toEqual({ ...b, schema: 7 });
+  });
+
+  it('Schema 7 → 8: Magazine werden eigene Gegenstände; erweitertes Magazin steckt in der Waffe; M4-Magazine passen auch an die M16A4', () => {
+    const b = beispiel();
+    const alt = {
+      ...b.ausruestung,
+      waffen: [
+        { id: 'wf1', waffe: 'm4', munitionstyp: 'FMJ', im_magazin: 31, magazin_zustand: 'B', zustand: 'A', ladehemmung: null, trageort: 'schlinge',
+          magazine: [{ inhalt: 30, typ: 'HP', zustand: 'A' }, { inhalt: 0, typ: '', zustand: 'C' }], zubehoer: [],
+          aufsaetze: [{ id: 'magazin_m4_30', zustand: 'D' }, { id: 'reflexvisier', zustand: 'A' }] },
+        { id: 'wf2', waffe: 'ak47', munitionstyp: 'FMJ', im_magazin: 10, magazin_zustand: 'A', zustand: 'A', ladehemmung: null, trageort: 'schlinge',
+          magazine: [{ inhalt: 30, typ: 'FMJ', zustand: 'A' }], zubehoer: [], aufsaetze: [] },
+        { id: 'wf3', waffe: 'sw_model_10', munitionstyp: 'FMJ', im_magazin: 6, zustand: 'A', ladehemmung: null, trageort: 'holster',
+          magazine: [], zubehoer: [{ art: 'schnelllader', inhalt: 6, typ: 'HP', zustand: 'B' }], aufsaetze: [] }
+      ],
+      aufsaetze: [{ id: 'trommel_m16a4_100', zustand: 'A' }, { id: 'zweibein', zustand: 'B' }]
+    };
+    delete (alt as Record<string, unknown>).magazine;
+    const korb = { kauf: [
+      { ware: 'magazin:ak47', zustand: 'A', menge: 2, ziel: 'wf2' }, { ware: 'zubehoer:ladestreifen', zustand: 'A', menge: 1 },
+      { ware: 'aufsatz:magazin_m16a4_30', zustand: 'B', menge: 1 }, { ware: 'aufsatz:lampe', zustand: 'A', menge: 1 }
+    ], verhandlung: { ergebnis: 'keine', krit: false }, preis_sl: null };
+    const entwurf = { ...b, schema: 7, status: 'erstellung', erstellung: { ...neueErstellung(), korb }, ausruestung: alt };
+    const c = migriere(entwurf, d, 8);
+    const [m4, ak, revolver] = c.ausruestung.waffen;
+    expect(m4).toEqual({ id: 'wf1', waffe: 'm4', munitionstyp: 'FMJ', im_magazin: 31, zustand: 'A', ladehemmung: null, trageort: 'schlinge',
+      magazin: { id: 'magazin_stanag_30', zustand: 'D' }, aufsaetze: [{ id: 'reflexvisier', zustand: 'A' }] });
+    expect(ak!.magazin).toEqual({ id: 'magazin_ak47_30', zustand: 'A' });
+    expect(revolver!.magazin).toBeUndefined();
+    expect(c.ausruestung.magazine).toEqual([
+      { id: 'magazin_stanag_30', inhalt: 30, typ: 'HP', zustand: 'A' }, { id: 'magazin_stanag_30', inhalt: 0, typ: '', zustand: 'C' },
+      { id: 'magazin_ak47_30', inhalt: 30, typ: 'FMJ', zustand: 'A' },
+      { id: 'schnelllader_sw_model_10', inhalt: 6, typ: 'HP', zustand: 'B' },
+      { id: 'trommel_stanag_100', inhalt: 0, typ: '', zustand: 'A' }]);
+    expect(c.ausruestung.aufsaetze).toEqual([{ id: 'zweibein', zustand: 'B' }]);
+    expect(c.erstellung!.korb.kauf).toEqual([
+      { ware: 'magazin:magazin_ak47_30', zustand: 'A', menge: 2 }, { ware: 'magazin:ladestreifen_mosin_nagant', zustand: 'A', menge: 1 },
+      { ware: 'magazin:magazin_stanag_30', zustand: 'B', menge: 1 }, { ware: 'aufsatz:lampe', zustand: 'A', menge: 1 }]);
+    expect(JSON.stringify(c)).not.toMatch(/magazin_zustand|zubehoer/);
+  });
+
+  it('von Schema 5 bis heute ohne Verlust: Ersatzmagazine bleiben erhalten', () => {
+    const b = beispiel();
+    const alt = { ...b.ausruestung, waffen: [{ id: 'wf1', waffe: 'ak47', munitionstyp: 'HP', im_magazin: 26, reserve: [30], lose_patronen: 0,
+      zustand: 'B', aufsaetze: ['trommel_ak47_75'], ladehemmung: null, trageort: 'schlinge' }] };
+    const c = migriere({ ...b, schema: 5, ausruestung: alt }, d);
+    expect(c.schema).toBe(SCHEMA);
+    expect(c.ausruestung.waffen[0]!.magazin).toEqual({ id: 'trommel_ak47_75', zustand: 'A' });
+    expect(c.ausruestung.magazine).toEqual([{ id: 'trommel_ak47_75', inhalt: 30, typ: 'HP', zustand: 'A' }]);
   });
 
   it('Schema 5 → 6 braucht die Spieldaten', () => {
