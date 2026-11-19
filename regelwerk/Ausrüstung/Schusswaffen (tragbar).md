@@ -4,7 +4,7 @@ Die tragbaren Schusswaffen werden hier aufgelistet. Erklärung der Begriffe:
 **Waffenskill** = Mit welchem Skill die Waffe benutzt wird: Treffen und einfache Ladehemmung beheben ([[Stats, Skills und Perks#Waffenskills]]).
 **Rückstoß** = Malsteps je Feuermodus, unabhängig von der Munition. Sie erschweren die Haltezahl bei Folgeschüssen ([[Kampfsystem#Treffen]]). Spanne 0–4; Burst hat denselben Rückstoß wie Einzelfeuer, Vollautomatik 1 Malstep mehr. Schreibweise bei zwei Modi: EF / VA.
 **Munition** / **Kaliber** = Kaliber und Munitionstypen, die die Waffe verschießt ([[Munitionstypen]]).
-**Magazingröße** = Schüsse pro Magazin; hängt vom verwendeten Magazin ab, „+1“ ist die Patrone im Lauf. Steht „Trommel“, „Röhrenmagazin“ oder „fest“ dahinter, hat die Waffe kein Wechselmagazin: Sie wird einzeln oder mit Zubehör geladen ([[Kampfsystem#Nachladen]], [[#Zubehör]]).
+**Magazingröße** = Schüsse pro Magazin; hängt vom verwendeten Magazin ab, „+1“ ist die Patrone im Lauf. Dahinter stehen weitere passende Magazine (erweitert, Trommel) und mit welchen Waffen die Waffe ihre Magazine teilt ([[#Magazine]]). Steht „Trommel“, „Röhrenmagazin“ oder „fest“ dahinter, hat die Waffe kein Wechselmagazin: Sie wird einzeln oder mit Schnelllader bzw. Ladestreifen geladen ([[Kampfsystem#Nachladen]], [[#Magazine]]).
 **Durchschlagskraft und Mannstoppwirkung** = DK/MW je Munitionstyp ([[Schaden, Blutung und Verletzungen]]).
 **Feuermodus** = Einzelfeuer (EF), Burst oder Vollautomatik (VA) ([[Kampfsystem#Treffen]], Folgeschüsse). **Burst** gibt zusätzlich die Burst-Länge an (Schüsse je Burst, z. B. 3). Halbautomatik, Pump-Action und Repetieren sind keine eigenen Feuermodi, sondern Einzelfeuer; die Bauart wirkt nur über Feuerrate und Ladehemmungsrate.
 **Feuerrate** = Wie viele Schüsse höchstens pro Runde abgegeben werden können, je Feuermodus. Bei Burst ein Vielfaches der Burst-Länge (z. B. 2 Bursts à 3 = 6).
@@ -75,10 +75,8 @@ Sinkt der Zustand unter D, ist die Waffe unbrauchbar.
 | Schiene unten | Zweibein, Vordergriff, Unterlaufwerfer, Lampe |
 | Schiene seitlich | Lampe |
 | Mündung | Schalldämpfer, Kompensator, Bajonett |
-| Magazin | erweiterte Magazine |
 
 - **Mündung:** Sie gehört zu einer Kaliberklasse: **Pistole** oder **Gewehr**. Ein Mündungsaufsatz passt nur an seine Klasse, z. B. „Schalldämpfer (Pistole)“.
-- **Magazin:** Die Waffe nennt die passenden Magazine mit ihrer Größe (z. B. „Magazin (30, Trommel 100)“). Ein erweitertes Magazin ersetzt die Magazingröße.
 - **Schienen** sind einheitlich: Jeder Schienenaufsatz passt an jede Schiene seiner Lage.
 
 **Wirkungen.** *Vorläufige Werte.*
@@ -94,18 +92,25 @@ Sinkt der Zustand unter D, ist die Waffe unbrauchbar.
 | Schalldämpfer | Mündung | Der Schuss ist 1 Stufe leiser ([[Wahrnehmung#Lautstärken]]). |
 | Kompensator | Mündung | 1 Stepshield auf die Haltezahl. |
 | Bajonett | Mündung (Gewehr) | Nahkampfwaffe am Gewehr ([[Nahkampfwaffen]]). |
-| Erweitertes Magazin | Magazin | Größere Magazingröße. Trommelmagazine: +2 auf die Ladehemmungsrate ([[Kampfsystem#Ladehemmung]]). |
 
 **Anbringen und Abnehmen.**
 - **Außerhalb des Gefechts:** frei.
 - **Im Gefecht:** Mainaction mit leichter Konzentration ([[Kampfsystem#Konzentration]]).
 - **Ohne Aktion:** Zweibein aufsetzen, Lampe ein- oder ausschalten.
 
-# Zubehör
+# Magazine
 
-Zubehör wird nicht an die Waffe angebracht, sondern mitgeführt. Es gelten Geldwertspanne und Vorratslevel wie bei Waffen ([[#Begriffserklärung]]).
+Magazine sind keine Aufsätze, sondern eigene Ausrüstung: Sie werden mitgeführt, jedes mit seinem Inhalt. Ein Magazin passt an jede Waffe, die es nennt; manche Waffen teilen sich ihre Magazine (z. B. [[#M4 Carbine]] und [[#M16A4]]). In einer Waffe mit Wechselmagazin steckt genau ein Magazin; seine Größe ist die Magazingröße der Waffe. Es gelten Geldwertspanne und Vorratslevel wie bei Waffen ([[#Begriffserklärung]]).
 
-| Zubehör | Passt zu | Vorratslevel | Geldwertspanne | Wirkung |
+| Magazin | Passt zu | Wirkung |
+| --- | --- | --- |
+| Magazin | Waffen mit Wechselmagazin | Standardgröße der Waffe. |
+| Erweitertes Magazin | Waffen, die es nennen | Größere Magazingröße. |
+| Trommelmagazin | Waffen, die es nennen | Größere Magazingröße; +2 auf die Ladehemmungsrate, solange es in der Waffe steckt ([[Kampfsystem#Ladehemmung]]). |
+
+Schnelllader und Ladestreifen gelten als Magazin für Waffen ohne Wechselmagazin:
+
+| Magazin | Passt zu | Vorratslevel | Geldwertspanne | Wirkung |
 | --- | --- | --- | --- | --- |
 | Schnelllader | Revolver (je Modell) | 1 | 5–15 | Füllt die Trommel auf einmal; Nachladen wie mit Magazin ([[Kampfsystem#Nachladen]]). |
 | Ladestreifen | Repetiergewehre mit festem Magazin (je Kaliber) | 1 | 5–15 | Füllt das Magazin auf einmal; Nachladen wie mit Magazin ([[Kampfsystem#Nachladen]]). |
@@ -119,7 +124,7 @@ Ein leerer Schnelllader oder Ladestreifen wird einzeln gefüllt ([[Kampfsystem#N
 **Ladehemmungsrate** (LH): XX / XX / XX | **LH-Behebenmod.**: x
 **Zuverlässigkeit**: zuverlässig / normal
 **Reichweite**: bedrängt: XX / nah: XX / mittel: XX / weit: XX / sehr weit: XX / fern: XX
-**Magazingröße**: XX+1 | **Feuerrate**: XX | **Rückstoß**: X bzw. EF X / VA X | **Garbenfaktor**: ×X (nur VA)
+**Magazingröße**: XX+1 (erweitert XX, Trommel XX; Magazine wie XX) | **Feuerrate**: XX | **Rückstoß**: X bzw. EF X / VA X | **Garbenfaktor**: ×X (nur VA)
 **Durchschlagskraft und Mannstoppwirkung**: X/X
 **Waffenperks/Besonderheiten**: Xxxxx…
 
@@ -139,11 +144,11 @@ Waffenperks/Besonderheiten: ungenau, zuverlässig.
 # FN Five-seveN
 Name: FN Five-seveN | Waffenskill: Pistole | Vorratslevel: 4 | Geldwertspanne: 500-950 | Zustand: X
 Kaliber: 5,7x28mm FMJ / 5,7x28mm HP / 5,7x28mm AP
-Feuermodus: Einzelfeuer (EF) | Anschlüsse: Schiene unten, Mündung (Pistole), Magazin (20, 30)
+Feuermodus: Einzelfeuer (EF) | Anschlüsse: Schiene unten, Mündung (Pistole)
 Ladehemmungsrate (LH): bei EF: 0 % | LH-Behebenmod.: 2
 Zuverlässigkeit: zuverlässig
 Reichweite: bedrängt: -1 / nah: +0 / mittel: -1 / weit: -3 / sehr weit: -4 / fern: n/A
-Magazingröße: 10+1 | Feuerrate: 4 | Rückstoß: 0
+Magazingröße: 10+1 (erweitert 20, 30) | Feuerrate: 4 | Rückstoß: 0
 Durchschlagskraft und Mannstoppwirkung: FMJ 1/1 / HP 0/2 / AP 2/1   
 Waffenperks/Besonderheiten: genau, zuverlässig.
 
@@ -178,7 +183,7 @@ Zuverlässigkeit: zuverlässig
 Reichweite: bedrängt: -1 / nah: +0 / mittel: -2 / weit: -4 / sehr weit: n/A / fern: n/A
 Magazingröße: 6 (Trommel) | Feuerrate: 3 | Rückstoß: 1
 Durchschlagskraft und Mannstoppwirkung: FMJ 0/1 / HP 0/2
-Waffenperks/Besonderheiten: alter Revolver, billig und überall zu haben. Trommel statt Magazin: einzeln laden oder mit Schnelllader ([[Kampfsystem#Nachladen]], [[#Zubehör]]). *Vorläufige Werte.*
+Waffenperks/Besonderheiten: alter Revolver, billig und überall zu haben. Trommel statt Magazin: einzeln laden oder mit Schnelllader ([[Kampfsystem#Nachladen]], [[#Magazine]]). *Vorläufige Werte.*
 
 # Hi-Point C9
 Name: Hi-Point C9 | Waffenskill: Pistole | Vorratslevel: 1 | Geldwertspanne: 40-150 | Zustand: X
@@ -205,44 +210,44 @@ Waffenperks/Besonderheiten: Maschinenpistole auf Basis der Beretta 92; klappbare
 # Ak-47
 Name: Kalashnikov Ak-47 | Waffenskill: Sturmgewehr | Vorratslevel: 2 | Geldwertspanne: 250 - 400 | Zustand: X
 Kaliber: 7.62x39mm FMJ, 7.62x39mm HP, 7.62x39mm AP
-Feuermodus: Einzelfeuer (EF), Vollauto. (VA) | Anschlüsse: Mündung (Gewehr), Magazin (Trommel 75)
+Feuermodus: Einzelfeuer (EF), Vollauto. (VA) | Anschlüsse: Mündung (Gewehr)
 Ladehemmungsrate: bei EF: 1% / bei VA: 3% | LH-Behebenmod.: 0
 Zuverlässigkeit: zuverlässig
 Reichweite: bedrängt: -2 / nah: -1 / mittel: -2 / weit: -3 / sehr weit: -4 / fern: -5
-Magazingröße: 30+1 | Feuerrate: bei EF: 4 / bei VA: 15 | Rückstoß: EF 2 / VA 3 | Garbenfaktor: ×2
+Magazingröße: 30+1 (Trommel 75) | Feuerrate: bei EF: 4 / bei VA: 15 | Rückstoß: EF 2 / VA 3 | Garbenfaktor: ×2
 Durchschlagskraft und Mannstoppwirkung: FMJ 2/3 / HP 1/4 / AP 3/3
 Waffenperks/Besonderheiten: ungenau, zuverlässig
 
 # M4 Carbine
 Name: Colt M4 Carbine | Waffenskill: Sturmgewehr | Vorratslevel: 3 | Geldwertspanne: 300 - 500 | Zustand: X
 Kaliber: 5.56x45mm FMJ, 5.56x45mm HP, 5.56x45mm AP 
-Feuermodus: Einzelfeuer (EF), Vollauto. (VA) | Anschlüsse: Schiene oben, Schiene unten, Schiene seitlich, Mündung (Gewehr), Magazin (30, Trommel 100)
+Feuermodus: Einzelfeuer (EF), Vollauto. (VA) | Anschlüsse: Schiene oben, Schiene unten, Schiene seitlich, Mündung (Gewehr)
 Ladehemmungsrate: bei EF: 4% / bei VA: 6% | LH-Behebenmod.: 1
 Zuverlässigkeit: normal
 Reichweite: bedrängt: -2 / nah: +0 / mittel: -1 / weit: -2 / sehr weit: -3 / fern: -5
-Magazingröße: 20+1 | Feuerrate: bei EF: 4 / bei VA: 15 | Rückstoß: EF 1 / VA 2 | Garbenfaktor: ×2
+Magazingröße: 20+1 (erweitert 30, Trommel 100; Magazine wie M16A4) | Feuerrate: bei EF: 4 / bei VA: 15 | Rückstoß: EF 1 / VA 2 | Garbenfaktor: ×2
 Durchschlagskraft und Mannstoppwirkung: FMJ 2/2 / HP 1/3 / AP 3/2
 Waffenperks/Besonderheiten: genau, etwas störanfälliger als die AK-47
 
 # M16A4
 Name: Colt M16A4 | Waffenskill: Sturmgewehr | Vorratslevel: 3 | Geldwertspanne: 350 - 600 | Zustand: X
 Kaliber: 5.56x45mm FMJ, 5.56x45mm HP, 5.56x45mm AP
-Feuermodus: Einzelfeuer (EF), Burst (3) | Anschlüsse: Schiene oben, Schiene unten, Schiene seitlich, Mündung (Gewehr), Magazin (30, Trommel 100)
+Feuermodus: Einzelfeuer (EF), Burst (3) | Anschlüsse: Schiene oben, Schiene unten, Schiene seitlich, Mündung (Gewehr)
 Ladehemmungsrate: bei EF: 3% / bei Burst: 4% | LH-Behebenmod.: 1
 Zuverlässigkeit: normal
 Reichweite: bedrängt: -3 / nah: +0 / mittel: +0 / weit: -1 / sehr weit: -3 / fern: -4
-Magazingröße: 20+1 | Feuerrate: bei EF: 4 / bei Burst: 6 (2 × 3) | Rückstoß: EF 1 / Burst 1
+Magazingröße: 20+1 (erweitert 30, Trommel 100; Magazine wie M4) | Feuerrate: bei EF: 4 / bei Burst: 6 (2 × 3) | Rückstoß: EF 1 / Burst 1
 Durchschlagskraft und Mannstoppwirkung: FMJ 2/2 / HP 1/3 / AP 3/2
 Waffenperks/Besonderheiten: genau, langer Lauf; in engen Räumen unhandlicher als die M4.
 
 # SCAR Mk 17 Mod 0
 Name: SCAR Mk 17 Mod 0 | Waffenskill: Sturmgewehr | Vorratslevel: 4 | Geldwertspanne: 600 - 1200 | Zustand: X
 Kaliber: 7.62x51mm FMJ / 7.62x51mm AP
-Feuermodus: Einzelfeuer (EF) | Anschlüsse: Schiene oben, Schiene unten, Schiene seitlich, Mündung (Gewehr), Magazin (20)
+Feuermodus: Einzelfeuer (EF) | Anschlüsse: Schiene oben, Schiene unten, Schiene seitlich, Mündung (Gewehr)
 Ladehemmungsrate (LH): bei EF: 4 % | LH-Behebenmod.: 2
 Zuverlässigkeit: normal
 Reichweite: bedrängt: -2 / nah: -1 / mittel: +0 / weit: -1 / sehr weit: -2 / fern: -4
-Magazingröße: 10+1 | Feuerrate: 2 | Rückstoß: 3
+Magazingröße: 10+1 (erweitert 20) | Feuerrate: 2 | Rückstoß: 3
 Durchschlagskraft und Mannstoppwirkung: FMJ 2/3 / AP 3/3   
 Waffenperks/Besonderheiten:
 
@@ -256,7 +261,7 @@ Zuverlässigkeit: normal
 Reichweite: bedrängt: -3 / nah: -1 / mittel: +0 / weit: -1 / sehr weit: -2 / fern: -3
 Magazingröße: 5 (fest) | Feuerrate: 1 | Rückstoß: 4
 Durchschlagskraft und Mannstoppwirkung: FMJ 3/2 / AP 4/2   
-Waffenperks/Besonderheiten: festes Magazin: einzeln laden oder mit Ladestreifen ([[Kampfsystem#Nachladen]], [[#Zubehör]]).
+Waffenperks/Besonderheiten: festes Magazin: einzeln laden oder mit Ladestreifen ([[Kampfsystem#Nachladen]], [[#Magazine]]).
 
 # Ithaca M37
 Name: Ithaca M37 | Waffenskill: Schrotflinte | Vorratslevel: 2 | Geldwertspanne: 150 - 350 | Zustand: X
@@ -283,11 +288,11 @@ Waffenperks/Besonderheiten: schwer. Halbautomatisch; umschaltbar auf Pump-Action
 # Saiga 12
 Name: Saiga 12 | Waffenskill: Schrotflinte | Vorratslevel: 3 | Geldwertspanne: 400 - 800 | Zustand: X
 Kaliber: 12 Gauge Buckshot / 12 Gauge Slug
-Feuermodus: Einzelfeuer (EF) | Anschlüsse: Magazin (12, Trommel 20)
+Feuermodus: Einzelfeuer (EF) | Anschlüsse: –
 Ladehemmungsrate (LH): bei EF: 5 % | LH-Behebenmod.: 0
 Zuverlässigkeit: normal
 Reichweite: bedrängt: -2 / nah: +0 / mittel: -2 / weit: -3 / sehr weit: -5 (nur Slug) / fern: n/A
-Magazingröße: 8+1 (Kastenmagazin) | Feuerrate: 3 | Rückstoß: 2
+Magazingröße: 8+1 (Kastenmagazin; erweitert 12, Trommel 20) | Feuerrate: 3 | Rückstoß: 2
 Durchschlagskraft und Mannstoppwirkung: Buckshot 0/1 je Kugel / Slug 2/4 ([[Munitionstypen#Schrotflinten]])
 Waffenperks/Besonderheiten: halbautomatisch, Bauweise der AK-47, schnelles Nachladen über Kastenmagazin. Wählerisch bei schwacher Munition.
 

@@ -707,7 +707,7 @@ Die Wirkung eines Aufsatzes steht hier, nicht bei der Waffe, weil ein Aufsatz an
 
 ## magazine.json
 
-Magazinsorten (19.11.2026, R49): Wechselmagazine (Standard, erweitert, Trommel) und Schnelllader bzw. Ladestreifen. Der Charakter führt Magazine als eigene Gegenstände ([`ausruestung.magazine`](#felder-im-spielstand)); jede Waffe in `passt_an` kann sie laden. Regelwerk: Schusswaffen (tragbar), Aufsätze (Anschluss Magazin) und Zubehör.
+Magazinsorten (19.11.2026, R49): Wechselmagazine (Standard, erweitert, Trommel) und Schnelllader bzw. Ladestreifen. Der Charakter führt Magazine als eigene Gegenstände ([`ausruestung.magazine`](#felder-im-spielstand)); jede Waffe in `passt_an` kann sie laden. Regelwerk: Schusswaffen (tragbar), Magazine; Magazingröße der einzelnen Waffen.
 
 ```json
 {

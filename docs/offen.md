@@ -7,10 +7,10 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 ### R49. Magazine als eigene Gegenstände, gemeinsame Magazine (19.11.2026)
 - **Entschieden (19.11.2026, Nutzer):** Magazine sind keine Aufsätze mehr. Erweiterte Magazine und Trommelmagazine stehen bei den Magazinen; Schnelllader und Ladestreifen gelten als Magazin. Waffen können dieselben Magazine nutzen, z. B. M4 und M16A4. Die App führt Magazine beim Charakter; jede passende Waffe kann sie laden.
 - **Frage:** Das Regelwerk führt erweiterte Magazine als Aufsatz am Anschluss „Magazin“ und Schnelllader und Ladestreifen als Zubehör; ob zwei Waffen dieselben Magazine nutzen, sagt es nicht.
-- **Stellen:** (Schusswaffen (tragbar), Aufsätze: Anschluss Magazin, Erweitertes Magazin; Zubehör); Colt M4 Carbine und Colt M16A4 (Anschlüsse: Magazin (30, Trommel 100))
+- **Stellen:** (Schusswaffen (tragbar), Aufsätze: Anschluss Magazin, Erweitertes Magazin; Zubehör, jetzt Abschnitt Magazine); Colt M4 Carbine und Colt M16A4 (Anschlüsse: Magazin (30, Trommel 100))
 - **Umgesetzt:** Magazinsorten in magazine.json, jede mit den Waffen, an die sie passt (`passt_an`). Gemeinsam sind bisher nur die Magazine von M4 und M16A4 (20, erweitert 30, Trommel 100). Preise und Vorratslevel wie in R18; für die gemeinsamen Magazine gilt das niedrigere Vorratslevel der beiden Waffen.
 - **Ändern:** weitere gemeinsame Magazine: eine Waffe in `passt_an` der Sorte ergänzen (magazine.json)
-- **Im Regelwerk klarstellen:** ja (Magazine als eigene Ausrüstung statt Aufsatz; welche Waffen sich Magazine teilen)
+- **Im Regelwerk klarstellen:** ja, eingetragen (19.11.2026): (Schusswaffen (tragbar), Magazine) und Magazingröße der Waffen
 
 ### R48. Verkauf einer Waffe mit Magazinen und Zubehör (19.11.2026)
 - **Frage:** Wer eine Waffe verkauft, hat oft noch Ersatzmagazine, Schnelllader oder Ladestreifen dazu, und Patronen darin. Das Regelwerk sagt nicht, ob diese mitverkauft werden und was mit den Patronen geschieht.

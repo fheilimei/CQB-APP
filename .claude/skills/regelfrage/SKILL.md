@@ -135,7 +135,7 @@ Hauptstellen; weitere Stellen immer per grep suchen (Schritt 2). Dateien in `reg
 - Deckung, Rüstung (Westen, Helme, Schutzanzug), ballistischer Schild: `Ausrüstung/Deckung und Rüstung`
 
 **Ausrüstung**
-- Schusswaffen: Begriffe, Zustand, Aufsätze, Zubehör, Blaupause, einzelne Waffen, Werfer: `Ausrüstung/Schusswaffen (tragbar)`
+- Schusswaffen: Begriffe, Zustand, Aufsätze, Magazine (auch Schnelllader, Ladestreifen), Blaupause, einzelne Waffen, Werfer: `Ausrüstung/Schusswaffen (tragbar)`
 - Munition: Unterschall, Schrot, Gummi: `Ausrüstung/Munitionstypen`
 - Nahkampfwaffen (auch Wurfmesser, Wurfaxt; Wurf-Reichweite): `Ausrüstung/Nahkampfwaffen`
 - Granaten und Geschosse: `Ausrüstung/Sprengwaffen`

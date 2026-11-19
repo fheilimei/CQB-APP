@@ -82,9 +82,9 @@ Nachladen mit Magazin, Schnelllader oder Ladestreifen braucht keine Konzentratio
 
 Nachladen ist eine Mainaction ([[#Mainaction]]). Wie lange es dauert, hängt davon ab, womit geladen wird.
 
-**Magazin, Schnelllader, Ladestreifen.** Eine Mainaction ohne Konzentration füllt die Waffe auf ihre volle Magazingröße ([[Schusswaffen (tragbar)#Begriffserklärung]]). Schnelllader und Ladestreifen sind Zubehör für Waffen ohne Wechselmagazin ([[Schusswaffen (tragbar)#Zubehör]]). Mit dem Perk Schnell nachladen geht das auch als Breakaction ([[Stats, Skills und Perks#Kampfperks]]).
+**Magazin, Schnelllader, Ladestreifen.** Eine Mainaction ohne Konzentration füllt die Waffe auf ihre volle Magazingröße ([[Schusswaffen (tragbar)#Begriffserklärung]]). Schnelllader und Ladestreifen gelten als Magazin für Waffen ohne Wechselmagazin ([[Schusswaffen (tragbar)#Magazine]]). Mit dem Perk Schnell nachladen geht das auch als Breakaction ([[Stats, Skills und Perks#Kampfperks]]).
 
-**Einzeln laden.** Waffen ohne Wechselmagazin (Trommel, Röhrenmagazin, festes Magazin) lädst du ohne Zubehör Patrone für Patrone. Eine Mainaction mit leichter Konzentration ([[#Konzentration]]) lädt **bis zu 2 Patronen**, mit dem Perk Fingerfertig bis zu 3 ([[Stats, Skills und Perks#Kampfperks]]). Für weitere Patronen wiederholst du die Aktion in den folgenden Runden. Abweichend von der Unterbrechungsregel ([[#Konzentration]]) bleiben Patronen, die schon geladen sind, in der Waffe; nur die Patronen der unterbrochenen Runde fehlen. Einzeln laden ist nie eine Breakaction.
+**Einzeln laden.** Waffen ohne Wechselmagazin (Trommel, Röhrenmagazin, festes Magazin) lädst du ohne Schnelllader oder Ladestreifen Patrone für Patrone. Eine Mainaction mit leichter Konzentration ([[#Konzentration]]) lädt **bis zu 2 Patronen**, mit dem Perk Fingerfertig bis zu 3 ([[Stats, Skills und Perks#Kampfperks]]). Für weitere Patronen wiederholst du die Aktion in den folgenden Runden. Abweichend von der Unterbrechungsregel ([[#Konzentration]]) bleiben Patronen, die schon geladen sind, in der Waffe; nur die Patronen der unterbrochenen Runde fehlen. Einzeln laden ist nie eine Breakaction.
 
 **Schnelllader und Ladestreifen füllen.** Ein leerer Schnelllader oder Ladestreifen wird wie eine Waffe einzeln geladen.
 
