@@ -57,7 +57,7 @@ export interface DeckungsArten {
 /** Schild in der Hand (spielstand.schild_gehalten) aus schutz.json, oder null. */
 export function gehaltenerSchild(c: Charakter, d: Spieldaten): Schild | null {
   if (!c.spielstand.schild_gehalten || !c.ausruestung.schild) return null;
-  return d.schutz.schilde.find((s) => s.id === c.ausruestung.schild) ?? null;
+  return d.schutz.schilde.find((s) => s.id === c.ausruestung.schild!.id) ?? null;
 }
 
 /** Stagger ohne Treffer (z. B. Blendgranate im Kern): Breakaction weg, Konzentration unterbrochen, Auslöser Stagger. Schmerz ignorieren verhindert ihn. */
@@ -96,7 +96,7 @@ function hpAktuellRoh(c: Charakter, d: Spieldaten): number {
 export function ausgang(c: Charakter, e: Eingang, d: Spieldaten): Ausgang {
   const zone = d.koerperzonen.eintraege.find((z) => z.id === e.zone);
   if (!zone) throw new Error(`unbekannte Zone „${e.zone}“`);
-  const ruestung = ruestungswert(e.zone, c.ausruestung.ruestung, d);
+  const ruestung = ruestungswert(e.zone, c.ausruestung.ruestung.map((t) => t.id), d);
   const folge = treffer(
     { zone: e.zone, dk: e.dk, mw: e.mw, kugeln: e.kugeln, krit: e.krit, deckung: e.deckung, ruestung,
       schmerzresistenz: grundwerte(c, d).schmerzresistenz, stagger_regel: staggerRegel(c, d) },

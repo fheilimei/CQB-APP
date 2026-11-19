@@ -439,9 +439,9 @@ Alles, was Schaden austeilt oder einsteckt, läuft über **einen Dialog in zwei 
 
 ### 3.8 Waffen und Schießen (A, M, R)
 
-**Waffen.** Je Waffe: Werte aus `waffen.json`, angebrachte Aufsätze, gewählter Munitionstyp (DK/MW), Zustand, Ladehemmung (keine / einfach / schwer) und der **Magazinstand**:
-- **im Magazin:** aktueller Inhalt des eingesetzten Magazins (inklusive Patrone im Lauf). Jeder abgegebene Schuss wird abgezogen, auch Schüsse, die ins Leere gehen.
-- **Reserve:** Liste der Ersatzmagazine mit ihrem Inhalt (z. B. 30, 30, 12), weil auch angebrochene Magazine mitgeführt werden.
+**Waffen.** Je Waffe: Werte aus `waffen.json`, angebrachte Aufsätze, Zustand, Ladehemmung (keine / einfach / schwer) und der **Magazinstand**:
+- **in der Waffe:** aktueller Inhalt (inklusive Patrone im Lauf) und sein Munitionstyp (DK/MW). Jeder abgegebene Schuss wird abgezogen, auch Schüsse, die ins Leere gehen.
+- **Ersatzmagazine:** jedes mit Inhalt und Munitionstyp („30 FMJ · 12 HP · leer“), weil auch angebrochene und leere Magazine mitgeführt werden (siehe Munition je Magazin unten).
 - **Aktive Waffe:** Es ist immer genau eine Waffe aktiv. Sie steht oben im Waffenbereich; alle Rechner beziehen sich auf sie. Wechseln ist eine Aktion („Waffe wechseln“, [§ 3.7a](#37a-aktionsleiste-m-r)); dabei wählt der Spieler die neue Waffe aus seiner Ausrüstung. Außerhalb des Gefechts ist der Wechsel frei.
 - **Aufsätze** kommen aus `aufsaetze.json`; ihre Wirkung ist dort hinterlegt, nicht bei der Waffe, weil ein Aufsatz an mehrere Waffen passt ([datenformat.md § aufsaetze.json](datenformat.md#aufsaetzejson)). Ob ein Aufsatz an eine Waffe passt, ergibt sich aus den Anschlüssen der Waffe (Schiene oben/unten/seitlich, Mündung Pistole/Gewehr, Magazin).
   - Manche Aufsätze wirken **immer**, solange sie angebracht sind (z. B. erweitertes Magazin).
@@ -458,22 +458,22 @@ Alles, was Schaden austeilt oder einsteckt, läuft über **einen Dialog in zwei 
 6. **Weiter:** übernimmt; Break-Zähler −1; Eintrag im Gefechtsprotokoll.
 
 **Nachladen** (Main; Break nur mit Perk Schnell nachladen). Keine Probe. Der Ablauf hängt von der **Ladeart** der Waffe ab (Kampfsystem, Nachladen):
-- **Wechselmagazin:** Der Spieler wählt das neue Magazin aus der Reserve (vorgewählt: das vollste). Das eingesetzte Magazin geht mit seinem Rest in die Reserve; eine Patrone im Lauf bleibt in der Waffe. Ein leeres Magazin zählt als leeres Magazin.
+- **Wechselmagazin:** Der Spieler tippt das neue Magazin aus den Ersatzmagazinen (mit Inhalt und Typ; vorgewählt: das vollste vom bisherigen Typ, sonst das vollste). Das eingesetzte Magazin geht mit Rest und Typ zu den Ersatzmagazinen (leer, wenn nichts mehr drin ist); eine Patrone im Lauf bleibt in der Waffe und zählt zum Typ des neuen Magazins (vereinfacht).
 
-**Magazine füllen** (nur außerhalb des Gefechts, Knopf an der Waffe im Reiter Ausrüstung): füllt aus den losen Patronen, so weit sie reichen, zuerst die Waffe, dann angebrochene Ersatzmagazine, dann leere Magazine; bei Waffen ohne Wechselmagazin leere Schnelllader und Ladestreifen. Vorher zeigt ein Bericht, was passiert.
-- **Trommel, Röhrenmagazin, festes Magazin** ohne Zubehör: **einzeln laden**, Main mit leichter Konzentration, bis zu 2 Patronen (Perk Fingerfertig: 3) aus der losen Munition. Nie als Break. Bei Unterbrechung bleiben bereits geladene Patronen drin; nur die der laufenden Runde fehlen.
+**Magazine füllen** (nur außerhalb des Gefechts, Knopf an der Waffe im Reiter Ausrüstung): Der Spieler tippt den Munitionstyp („Füllen mit: FMJ (40) · HP (15)“). Gefüllt wird aus der losen Munition dieses Typs, so weit sie reicht: zuerst die Waffe, dann angebrochene Ersatzmagazine desselben Typs, dann leere Magazine; bei Waffen ohne Wechselmagazin Schnelllader und Ladestreifen, nur ganz. Was schon einen anderen Typ enthält, bleibt, wie es ist. Vorher zeigt ein Bericht, was passiert. Jedes Magazin, jeder Schnelllader und Ladestreifen lässt sich außerhalb des Gefechts **leeren**; die Patronen kommen zur losen Munition.
+- **Trommel, Röhrenmagazin, festes Magazin** ohne Zubehör: **einzeln laden**, Main mit leichter Konzentration, bis zu 2 Patronen (Perk Fingerfertig: 3) aus der losen Munition; der Spieler wählt den Typ. Nie als Break. Bei Unterbrechung bleiben bereits geladene Patronen drin; nur die der laufenden Runde fehlen.
 - **Mit Schnelllader oder Ladestreifen** (Zubehör im Charakter): füllt auf einmal wie ein Magazin. Leere Schnelllader und Ladestreifen werden einzeln gefüllt.
 - **Werfer** (Magazingröße 1): Main mit voller Konzentration. Der Magazinstand ist das geladene Geschoss. Nachladen nimmt ein passendes Geschoss aus dem **Vorrat** (Anzahl −1, Auswahl nach Typ, z. B. OG-7V oder PG-7V); Schießen verbraucht es. Der Bericht nennt statt Zone den Landepunkt ([§ 3.8a](#38a-werfen-a-m-r)).
 
-**Munition je Magazin** (entschieden 19.11.2026, Umsetzung mit dem Laden, [§ 3.14](#314-laden-kaufen-und-verkaufen-m-r)). Der Munitionstyp hängt am **Magazin**, nicht an der Waffe:
-- **Lose Munition** führt der Charakter nach Kaliber und Typ („9x19 · FMJ 40 · HP 15“), nicht je Waffe.
+**Munition je Magazin** (entschieden und umgesetzt 19.11.2026). Der Munitionstyp hängt am **Magazin**, nicht an der Waffe:
+- **Lose Munition** führt der Charakter nach Kaliber und Typ („9x19 · FMJ 40 · HP 15“), nicht je Waffe (eigene Karte Munition im Reiter Ausrüstung).
 - **Magazine** einer Waffe: jedes mit Füllstand und Typ („30 FMJ“, „12 HP“, „leer“); erweiterte und Trommelmagazine sind Magazinsorten.
 - **Magazine füllen** (außerhalb des Gefechts): je Magazin den Typ wählen; gefüllt wird aus der losen Munition.
 - **Nachladen** (Wechselmagazin): Der Spieler tippt das Magazin, das in die Waffe soll (mit Typ und Füllstand). Vorbelegt: das vollste vom bisherigen Typ.
 - **Ohne Wechselmagazin** (Trommel, Röhre, fest): nur **ein Typ je Ladung**; ein anderer Typ erst, wenn die Waffe leer ist. Schnelllader und Ladestreifen tragen ihren Typ wie ein Magazin.
 - Der Schuss nimmt DK und MW vom Typ der geladenen Munition.
 
-**Lose Aufsätze** (entschieden 19.11.2026, Umsetzung mit dem Laden). Aufsätze gibt es auch lose (Abschnitt Aufsätze im Reiter Ausrüstung, mit Zustand). Bei jeder Waffe je Anschluss: angebrachter Aufsatz mit **Abnehmen**, freier Anschluss mit **Anbringen** (Auswahl aus den losen passenden Aufsätzen). Außerhalb des Gefechts frei, im Gefecht Mainaction mit leichter Konzentration (Schusswaffen, Aufsätze).
+**Lose Aufsätze** (entschieden und umgesetzt 19.11.2026). Aufsätze gibt es auch lose (Karte Aufsätze im Reiter Ausrüstung, mit Zustand). In der aufgeklappten Waffe stehen unter „Aufsätze“ die angebrachten mit **abnehmen** und die losen passenden mit **anbringen**. Ein neues erweitertes Magazin bzw. eine Trommel ersetzt ein vorhandenes, das lose wird; Patronen über der neuen Kapazität kommen zur losen Munition. Außerhalb des Gefechts frei, im Gefecht Main → Aufsatz anbringen oder abnehmen (leichte Konzentration; Schusswaffen, Aufsätze).
 
 **Vorrat.** Granaten und Geschosse werden als Anzahl geführt. Sie sinkt automatisch beim Werfen und beim Laden eines Werfers. Von Hand lässt sie sich jederzeit wieder erhöhen. Nahkampfwaffen tragen ebenfalls eine Anzahl (meist 1); eine geworfene Nahkampfwaffe zieht 1 ab, eingesammelte Wurfmesser nach dem Gefecht werden von Hand wieder dazugezählt.
 

@@ -110,7 +110,7 @@
       datenFehler = geladen.fehler;
       ablage = await Ablage.oeffnen();
       einstellungen = await ablage.einstellungen();
-      const alle = await ablage.alle();
+      const alle = await ablage.alle(geladen.daten);
       charaktere = alle.charaktere;
       if (alle.fehler.length) meldung = `Nicht lesbar: ${alle.fehler.join('; ')}`;
       const zuletzt = await ablage.zuletztGeoeffnet();
@@ -340,7 +340,7 @@
     const text = await dateiOeffnen();
     if (text === null) return;
     try {
-      const c = importiereText(text);
+      const c = importiereText(text, daten!);
       const vorhanden = charaktere.find((x) => x.id === c.id);
       if (vorhanden && !confirm(`„${vorhanden.name}“ ist schon auf diesem Gerät. Mit der Datei überschreiben?`)) return;
       await speichern(c);

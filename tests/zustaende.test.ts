@@ -24,7 +24,7 @@ function fertig(extra: Partial<Charakter> = {}): Charakter {
 const g = (c: Charakter) => gefechtVon(c) as Gefecht;
 const imGefecht = (stand = 0, extra: Partial<Charakter> = {}) => leiterSetzen(gefechtStarten(fertig(extra), false, 'erfolg', d), stand, d);
 const runde = (c: Charakter) => naechsteRunde(c, { ausloeser: [], probe: null }, d);
-const mitSchild = (c: Charakter, gehalten = true) => schildHalten({ ...c, ausruestung: { ...c.ausruestung, schild: 'ballistischer_schild' } }, gehalten);
+const mitSchild = (c: Charakter, gehalten = true) => schildHalten({ ...c, ausruestung: { ...c.ausruestung, schild: { id: 'ballistischer_schild', zustand: 'A' } } }, gehalten);
 const waffe = (id: string): WaffenEintrag => ({ ...neuerWaffenEintrag(id, d, `w_${id}`, 'holster') });
 const einstellung = (): Schusseinstellung => ({
   modus: 'EF', anzahl: 1, ansage: 'keine', ansage_zone: null, schalter: [], ausgeschaltet: [], sl: { malsteps: 0, stepshields: 0, grund: '' }
@@ -153,7 +153,7 @@ describe('Ballistischer Schild', () => {
 
   it('Rüstungsträger: mit Schutzanzug Laufen statt nur Gehen', () => {
     const c = imGefecht(0, { perks: ['ruestungstraeger'] });
-    const anzug = { ...c, ausruestung: { ...c.ausruestung, ruestung: ['schutzanzug'] } };
+    const anzug = { ...c, ausruestung: { ...c.ausruestung, ruestung: [{ id: 'schutzanzug', zustand: 'A' }] } };
     expect(bewegungsarten(anzug, d).filter((b) => b.erlaubt).map((b) => b.id)).toEqual(['gehen', 'laufen']);
   });
 

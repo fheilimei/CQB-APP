@@ -17,7 +17,7 @@ const d = ladeTestdaten();
 function fertig(ruestung: string[] = []): Charakter {
   const c = neuerCharakter(d.stats.eintraege.map((s) => s.id));
   for (const id of Object.keys(c.stats)) c.stats[id] = { rang: 'C', wurf: { positiv: 5, negativ: 5, quelle: 'app' } };
-  return { ...c, status: 'fertig', erstellung: null, name: 'Mara', ausruestung: { ...c.ausruestung, ruestung } };
+  return { ...c, status: 'fertig', erstellung: null, name: 'Mara', ausruestung: { ...c.ausruestung, ruestung: ruestung.map((id) => ({ id, zustand: 'A' })) } };
 }
 const imGefecht = (c: Charakter, stand = 0) => leiterSetzen(gefechtStarten(c, false, 'erfolg', d), stand, d);
 const g = (c: Charakter) => gefechtVon(c) as Gefecht;

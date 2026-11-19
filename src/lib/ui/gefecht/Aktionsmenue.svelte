@@ -29,7 +29,7 @@
   import { geblendetRunden } from '../../regeln/zustaende';
   import { schildBeimSchiessen } from '../../regeln/schuss';
   import { gehaltenerSchild } from '../../regeln/wunden';
-  import { aktiverEintrag, eintragErsetzen, istWerfer, kapazitaet, nachladearten, nachladenAlsBreak, passendeAufsaetze, waffeVon } from '../../regeln/waffen';
+  import { aktiverEintrag, aufsaetzeVon, aufsatzAbnehmen, aufsatzAnbringen, istWerfer, kapazitaet, loseAufsaetzeFuer, nachladearten, nachladenAlsBreak, waffeVon } from '../../regeln/waffen';
   import type { Aktion, Charakter, Quelle } from '../../speicher/charakter';
   import Dialog from '../Dialog.svelte';
   import ProbeKern, { type ProbenErgebnis } from '../probe/ProbeKern.svelte';
@@ -86,7 +86,7 @@
   });
 
   /** Ballistischer Schild der Ausrüstung (Deckung und Rüstung, Ballistischer Schild); Aufnehmen und Ablegen ist eine Mainaction. */
-  const schild = $derived(c.ausruestung.schild ? (d.schutz.schilde.find((s) => s.id === c.ausruestung.schild) ?? null) : null);
+  const schild = $derived(c.ausruestung.schild ? (d.schutz.schilde.find((s) => s.id === c.ausruestung.schild!.id) ?? null) : null);
   const schildInHand = $derived(!!gehaltenerSchild(c, d));
 
   const mainOptionen = $derived.by<Option[]>(() => {
@@ -96,7 +96,7 @@
         los: () => onablauf({ art: 'nachladen', als: 'main' }) },
       { text: 'Ladehemmung beheben', sperre: !e?.ladehemmung ? 'keine Ladehemmung' : null, los: () => onablauf({ art: 'ladehemmung' }) },
       { text: 'Waffe wechseln', sperre: c.ausruestung.waffen.length < 2 && e ? 'keine weitere Schusswaffe' : !c.ausruestung.waffen.length ? 'keine Schusswaffe' : null, los: () => onablauf({ art: 'wechseln' }) },
-      { text: 'Aufsatz anbringen oder abnehmen', info: 'mit leichter Konzentration', sperre: !e || !passendeAufsaetze(waffeVon(e, d), d).length ? 'kein passender Aufsatz' : !konzentrationMoeglich(c) ? 'schon Breakaction eingesetzt' : null,
+      { text: 'Aufsatz anbringen oder abnehmen', info: 'mit leichter Konzentration', sperre: !e || (!e.aufsaetze.length && !loseAufsaetzeFuer(c, e, d).length) ? 'kein passender Aufsatz dabei' : !konzentrationMoeglich(c) ? 'schon Breakaction eingesetzt' : null,
         los: () => { ansicht = { art: 'aufsatz' }; } },
       { text: 'Adrenalin senken', info: 'Nerve-Probe', los: () => onablauf({ art: 'senken' }) },
       { text: 'Verbündete verschieben', info: 'Empathy-Probe mit Führung', los: () => onablauf({ art: 'verschieben' }) },
@@ -301,11 +301,14 @@
 
   {:else if ansicht.art === 'aufsatz' && e}
     {@const w = waffeVon(e, d)}
-    <p>Mainaction mit leichter Konzentration. Hake an, was danach an {w.name} angebracht ist. Wähle nur Aufsätze, die du dabeihast.</p>
-    {#each passendeAufsaetze(w, d) as a (a.id)}
-      <label class="schalter"><input type="checkbox" checked={e.aufsaetze.includes(a.id)}
-        onchange={(ev) => { const an = (ev.target as HTMLInputElement).checked; onaendern(eintragErsetzen(c, { ...e, aufsaetze: an ? [...e.aufsaetze, a.id] : e.aufsaetze.filter((x) => x !== a.id) })); }} /> {a.name}</label>
+    <p>Mainaction mit leichter Konzentration. Hake an, was danach an {w.name} angebracht ist.</p>
+    {#each aufsaetzeVon(e, d) as a (a.id)}
+      <label class="schalter"><input type="checkbox" checked onchange={() => onaendern(aufsatzAbnehmen(c, e, a.id, d))} /> {a.name}</label>
     {/each}
+    {#each loseAufsaetzeFuer(c, e, d) as l (l.index)}
+      <label class="schalter"><input type="checkbox" checked={false} onchange={() => onaendern(aufsatzAnbringen(c, e, l.index, d))} /> {l.aufsatz.name}</label>
+    {/each}
+    {#if !e.aufsaetze.length && !loseAufsaetzeFuer(c, e, d).length}<p class="hinweis">Du hast keine passenden Aufsätze dabei.</p>{/if}
     <p class="hinweis">Ausführen: Main −1, Konzentration (leicht).</p>
   {/if}
 

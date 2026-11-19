@@ -20,9 +20,9 @@ function fertig(perks: string[] = []): Charakter {
     ausruestung: {
       ...c.ausruestung,
       nahkampfwaffen: [
-        { id: 'n1', waffe: 'wurfmesser', trageort: 'guertel', anzahl: 2 },
-        { id: 'n2', waffe: 'bajonett', trageort: 'guertel' },
-        { id: 'n3', waffe: 'schlagring', trageort: 'tasche' }
+        { id: 'n1', waffe: 'wurfmesser', trageort: 'guertel', anzahl: 2, zustand: 'A' },
+        { id: 'n2', waffe: 'bajonett', trageort: 'guertel', zustand: 'A' },
+        { id: 'n3', waffe: 'schlagring', trageort: 'tasche', zustand: 'A' }
       ],
       vorrat: [{ id: 'm67', anzahl: 1, trageort: 'weste' }, { id: 'm406_he', anzahl: 3, trageort: 'weste' }]
     }

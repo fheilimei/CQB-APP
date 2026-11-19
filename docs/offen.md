@@ -4,6 +4,14 @@
 
 Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. Die App arbeitet bis zur Entscheidung mit der genannten vorläufigen Lösung. Neue Einträge kommen beim Programmieren hinzu (Skill „regelfrage“). Die Regelpunkte aus den Schritten 1 bis 6 sind hierher übertragen (18.11.2026).
 
+### R46. Patrone im Lauf beim Magazinwechsel mit anderem Munitionstyp (19.11.2026)
+- **Frage:** Wechselt man auf ein Magazin mit anderem Typ (z. B. von FMJ auf HP), bleibt die Patrone im Lauf vom alten Typ. Das Regelwerk sagt nicht, ob der nächste Schuss deshalb anders zu rechnen ist.
+- **Stellen:** (Kampfsystem, Nachladen); (Munitionstypen)
+- **Vorläufig:** Die Patrone im Lauf zählt zum Typ des neuen Magazins. Die App merkt sich je Waffe nur einen Typ.
+- **Andere Möglichkeit:** Der erste Schuss nach dem Wechsel hat DK/MW des alten Typs.
+- **Ändern:** Regelkern, Waffen (Magazin wechseln) und Speicherformat (Typ der Patrone im Lauf)
+- **Im Regelwerk klarstellen:** nein
+
 ### R41. Welche Spezialisierungen gelten als „zweite“? (18.11.2026)
 - **Frage:** Die zweite Spezialisierung ist eine andere Spezialisierung der eigenen Laufbahn. Darf es eine sein, die der Charakter früher schon hatte (z. B. nach einem Laufbahnwechsel zurück)?
 - **Stellen:** (Klassen, Zweite Spezialisierung)
@@ -93,7 +101,7 @@ Stellen, an denen das Regelwerk eine Frage offen lässt oder sich widerspricht. 
 - **Im Regelwerk klarstellen:** ja
 
 ### R12. Magazine nach dem Gefecht füllen: Dauer und Reihenfolge (18.11.2026)
-- **Frage:** Das Regelwerk sagt nicht, wie lange das Füllen von Magazinen dauert und was zuerst gefüllt wird. (Entschieden ist schon: Knopf „Magazine füllen“ außerhalb des Gefechts; leere Magazine werden gezählt statt verworfen.)
+- **Frage:** Das Regelwerk sagt nicht, wie lange das Füllen von Magazinen dauert und was zuerst gefüllt wird. (Entschieden ist schon: Knopf „Magazine füllen“ außerhalb des Gefechts; leere Magazine werden gezählt statt verworfen; seit 19.11.2026 wählt man den Munitionstyp, und gefüllt wird nur, was leer ist oder schon diesen Typ enthält.)
 - **Stellen:** (Kampfsystem, Nachladen)
 - **Vorläufig:** Kostet keine Zeit. Reihenfolge: Waffe, angebrochene Magazine, leere Magazine.
 - **Andere Möglichkeit:** eine feste Dauer je Magazin.

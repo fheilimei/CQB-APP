@@ -1,6 +1,7 @@
 <script lang="ts">
-  // Nachladen (konzept.md § 3.8; Regelwerk: Kampfsystem, Nachladen). Ablauf nach Ladeart: Magazin aus der Reserve
-  // (vorgewählt das vollste), Schnelllader/Ladestreifen, einzeln laden (leichte Konzentration), Werfer (volle Konzentration).
+  // Nachladen (konzept.md § 3.8; Regelwerk: Kampfsystem, Nachladen). Ablauf nach Ladeart: Magazin aus den Ersatzmagazinen
+  // (vorgewählt das vollste vom bisherigen Typ), Schnelllader/Ladestreifen, einzeln laden (leichte Konzentration; nur ein
+  // Typ je Ladung), Werfer (volle Konzentration).
   // Im Gefecht kostet es die Main (mit Perk auch Break), außerhalb des Gefechts nichts.
   import type { Spieldaten } from '../../daten/typen';
   import { konzentrationMoeglich, konzentrationSetzen, protokolliere, verbrauchen } from '../../regeln/aktionen';
@@ -30,6 +31,7 @@
   let gewaehlt = $state<number>(0);
   let magazin = $state<number | null>(null);
   let einzeln = $state<number | null>(null);
+  let typ = $state<string | null>(null);
   let geschoss = $state<string | null>(null);
   let bericht = $state<{ zeilen: Zeile[]; nach: Charakter } | null>(null);
 
@@ -38,6 +40,12 @@
   const gesperrt = $derived(!!konz && !konzentrationMoeglich(c));
   const artName: Record<Nachladeart['art'], string> = { magazin: 'Magazin wechseln', zubehoer: '', einzeln: 'Einzeln laden', werfer: 'Werfer laden' };
   const zubehoerName = (id: string) => d.aufsaetze.zubehoer.find((z) => z.id === id)?.name ?? id;
+  const magText = (inhalt: number, t: string) => (inhalt > 0 ? `${inhalt} ${t}` : 'leer');
+  const ersatzText = (n: Charakter) => {
+    const m = n.ausruestung.waffen.find((x) => x.id === eintragId)!.magazine;
+    return m.length ? m.map((x) => magText(x.inhalt, x.typ)).join(' · ') : 'keine';
+  };
+  const einzelnTyp = $derived(art?.art === 'einzeln' ? (art.typen.find((t) => t.typ === typ) ?? art.typen[0]!) : null);
 
   function weiter() {
     if (!art) return;
@@ -47,30 +55,32 @@
     switch (art.art) {
       case 'magazin': {
         const i = magazin ?? art.vorwahl;
+        const m = e.magazine[i]!;
         const neu = magazinWechseln(e, i, d);
         nach = eintragErsetzen(c, neu);
-        zeilen.push({ text: `Du setzt ein Magazin mit ${patronenText(e.reserve[i]!)} ein.`, fett: true });
+        zeilen.push({ text: `Du setzt ein Magazin mit ${patronenText(m.inhalt)} ${m.typ} ein.`, fett: true });
         zeilen.push({ text: `In der Waffe: ${vorher} → ${neu.im_magazin}.` });
         const imLauf = w.patrone_im_lauf && vorher > 0 ? 1 : 0;
-        if (vorher - imLauf > 0) zeilen.push({ text: `Das alte Magazin kommt mit ${patronenText(vorher - imLauf)} in die Reserve.` });
-        else if (vorher > 0) zeilen.push({ text: 'Das alte Magazin war leer; die Patrone im Lauf bleibt in der Waffe.' });
-        zeilen.push({ text: `Ersatzmagazine: ${neu.reserve.length ? neu.reserve.join(' · ') : 'keine mehr'}.` });
+        if (vorher - imLauf > 0) zeilen.push({ text: `Das alte Magazin kommt mit ${patronenText(vorher - imLauf)} ${e.munitionstyp} zu den Ersatzmagazinen.` });
+        else if (vorher > 0) zeilen.push({ text: `Das alte Magazin war leer; die Patrone im Lauf bleibt in der Waffe${e.munitionstyp !== m.typ ? ` (${e.munitionstyp})` : ''}.` });
+        zeilen.push({ text: `Ersatzmagazine: ${ersatzText(nach)}.` });
         break;
       }
       case 'zubehoer': {
-        const neu = mitZubehoerLaden(e, art.zubehoer, d);
-        nach = eintragErsetzen(c, neu);
-        zeilen.push({ text: `Du lädst mit ${zubehoerName(art.zubehoer)}.`, fett: true });
+        nach = mitZubehoerLaden(c, e, art.zubehoer, art.typ, d);
+        const neu = nach.ausruestung.waffen.find((x) => x.id === e.id)!;
+        zeilen.push({ text: `Du lädst mit ${zubehoerName(art.zubehoer)} (${art.typ}).`, fett: true });
         zeilen.push({ text: `In der Waffe: ${vorher} → ${neu.im_magazin}.` });
-        if (vorher) zeilen.push({ text: `${patronenText(vorher)} aus der Waffe kommen zu den losen Patronen.` });
+        if (vorher) zeilen.push({ text: `${patronenText(vorher)} ${e.munitionstyp} aus der Waffe kommen zur losen Munition.` });
         break;
       }
       case 'einzeln': {
         const n = einzeln ?? art.patronen;
-        const neu = einzelnLaden(e, n, d);
-        nach = eintragErsetzen(c, neu);
-        zeilen.push({ text: `Du lädst ${patronenText(neu.im_magazin - vorher)} einzeln.`, fett: true });
-        zeilen.push({ text: `In der Waffe: ${vorher} → ${neu.im_magazin} von ${kapazitaet(e, d)}. Lose Patronen: ${neu.lose_patronen}.` });
+        const t = einzelnTyp!.typ;
+        nach = einzelnLaden(c, e, n, t, d);
+        const neu = nach.ausruestung.waffen.find((x) => x.id === e.id)!;
+        zeilen.push({ text: `Du lädst ${patronenText(neu.im_magazin - vorher)} ${t} einzeln.`, fett: true });
+        zeilen.push({ text: `In der Waffe: ${vorher} → ${neu.im_magazin} von ${kapazitaet(e, d)}. Lose ${t}: ${einzelnTyp!.anzahl} → ${einzelnTyp!.anzahl - (neu.im_magazin - vorher)}.` });
         if (als) zeilen.push({ text: 'Wirst du unterbrochen, fehlen nur die Patronen dieser Runde.' });
         break;
       }
@@ -101,13 +111,13 @@
   <Dialog titel="Nachladen: {w.name}">
     {#if !arten.length}
       <p class="fehler">Nichts zum Nachladen da{als === 'break' ? ' (als Breakaction nur mit Magazin, Schnelllader oder Ladestreifen)' : ''}.</p>
-      <p class="hinweis">Ersatzmagazine, lose Patronen und Geschosse trägst du im Reiter Ausrüstung ein.</p>
+      <p class="hinweis">Ersatzmagazine, lose Munition und Geschosse trägst du im Reiter Ausrüstung ein.</p>
     {:else}
       {#if arten.length > 1}
         <div class="auswahlreihe" role="group" aria-label="Art">
           {#each arten as a, i (i)}
             <button aria-pressed={gewaehlt === i} onclick={() => (gewaehlt = i)}>
-              {a.art === 'zubehoer' ? zubehoerName(a.zubehoer) : artName[a.art]}</button>
+              {a.art === 'zubehoer' ? `${zubehoerName(a.zubehoer)} ${a.typ}` : artName[a.art]}</button>
           {/each}
         </div>
       {/if}
@@ -115,12 +125,26 @@
         <div class="gruppe" role="group" aria-label="Magazin">
         <span class="gruppe-titel">Welches Magazin?</span>
         <div class="auswahlreihe">
-          {#each e.reserve as n, i (i)}
-            <button aria-pressed={(magazin ?? art.vorwahl) === i} onclick={() => (magazin = i)}>{n}</button>
+          {#each e.magazine as m, i (i)}
+            {#if m.inhalt > 0}
+              <button aria-pressed={(magazin ?? art.vorwahl) === i} onclick={() => (magazin = i)}>{m.inhalt} {m.typ}</button>
+            {/if}
           {/each}
         </div>
         </div>
       {:else if art?.art === 'einzeln'}
+        <div class="gruppe" role="group" aria-label="Munitionstyp">
+        <span class="gruppe-titel">Munition: {einzelnTyp?.typ}</span>
+        {#if art.typen.length > 1}
+          <div class="auswahlreihe">
+            {#each art.typen as t (t.typ)}
+              <button aria-pressed={einzelnTyp?.typ === t.typ} onclick={() => (typ = t.typ)}>{t.typ} ({t.anzahl})</button>
+            {/each}
+          </div>
+        {:else if e.im_magazin > 0}
+          <p class="hinweis">In der Waffe steckt {e.munitionstyp}; einen anderen Typ lädst du erst, wenn sie leer ist.</p>
+        {/if}
+        </div>
         <div class="gruppe" role="group" aria-label="Patronen">
         <span class="gruppe-titel">Wie viele Patronen? (höchstens {art.patronen} pro Mainaction)</span>
         <div class="auswahlreihe">
@@ -140,7 +164,7 @@
         </div>
         </div>
       {:else if art?.art === 'zubehoer'}
-        <p>{zubehoerName(art.zubehoer)}: {art.gefuellt} gefüllt. Füllt die Waffe auf einmal.</p>
+        <p>{zubehoerName(art.zubehoer)} mit {art.typ}: {art.gefuellt} gefüllt. Füllt die Waffe auf einmal.</p>
       {/if}
       {#if als}
         <p class="hinweis">Kostet {AKTION_NAME[als]}{konz ? ` mit Konzentration (${konz})` : ''}.</p>

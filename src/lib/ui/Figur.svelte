@@ -46,7 +46,7 @@
   const hpMax = $derived(grundwerte(c, d).hp);
   const lage = $derived(lebenslageDes(c, d));
   const imGefecht = $derived(!!gefechtVon(c));
-  const ruestung = $derived(Object.fromEntries(d.koerperzonen.eintraege.map((z) => [z.id, ruestungswert(z.id, c.ausruestung.ruestung, d)])));
+  const ruestung = $derived(Object.fromEntries(d.koerperzonen.eintraege.map((z) => [z.id, ruestungswert(z.id, c.ausruestung.ruestung.map((t) => t.id), d)])));
   const wunden = $derived(c.spielstand.wunden);
   const prellungen = $derived(c.spielstand.prellungen);
   const gewaehlt = $derived(d.koerperzonen.eintraege.find((z) => z.id === zone) ?? null);

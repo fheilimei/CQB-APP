@@ -3,7 +3,7 @@
 // Ladehemmung beheben. Alle Funktionen sind rein; sie geben neue Einträge bzw. einen neuen Charakter zurück.
 
 import type { Aufsatz, Munitionstyp, Spieldaten, Sprengwaffe, Waffe, Wechselkosten } from '../daten/typen';
-import type { Charakter, WaffenEintrag } from '../speicher/charakter';
+import type { Charakter, Magazin, WaffenEintrag, ZubehoerEintrag } from '../speicher/charakter';
 import { perkMitWirkung, perkWirkungen } from './aktionen';
 import type { Ergebnisstufe, StepQuelle } from './probe';
 import type { ProbenAnfrage } from './probenrechner';
@@ -24,7 +24,12 @@ export function istWerfer(w: Waffe): boolean {
 }
 
 export function aufsaetzeVon(e: WaffenEintrag, d: Spieldaten): Aufsatz[] {
-  return e.aufsaetze.map((id) => d.aufsaetze.eintraege.find((a) => a.id === id)).filter((a): a is Aufsatz => !!a);
+  return e.aufsaetze.map((t) => d.aufsaetze.eintraege.find((a) => a.id === t.id)).filter((a): a is Aufsatz => !!a);
+}
+
+/** Kaliber (ID aus munition.json) der Waffe; null bei Werfern. */
+export function kaliberVon(w: Waffe): string | null {
+  return Array.isArray(w.munition) ? null : w.munition;
 }
 
 /** Magazingröße ohne Patrone im Lauf; ein erweitertes Magazin oder eine Trommel ersetzt sie. */
@@ -78,26 +83,51 @@ export function kaliberName(w: Waffe, d: Spieldaten): string {
   return d.munition.eintraege.find((m) => m.id === w.munition)?.name ?? w.munition;
 }
 
-/** Neue Waffe für die Ausrüstung: voll geladen, ohne Ersatzmagazine, Zustand neuwertig. Werfer sind leer. */
-export function neuerWaffenEintrag(waffeId: string, d: Spieldaten, id: string, trageort: string): WaffenEintrag {
+/**
+ * Neue Waffe für die Ausrüstung, Zustand neuwertig, ohne Ersatzmagazine. `geladen`: voll mit dem ersten Munitionstyp
+ * (Schreibmodus); sonst leer (Kauf im Laden). Werfer sind immer leer.
+ */
+export function neuerWaffenEintrag(waffeId: string, d: Spieldaten, id: string, trageort: string, geladen = true): WaffenEintrag {
   const w = d.waffen.eintraege.find((x) => x.id === waffeId);
   if (!w) throw new Error(`Unbekannte Waffe „${waffeId}“`);
   const typen = munitionstypen(w, d);
-  const werfer = istWerfer(w);
+  const voll = geladen && !istWerfer(w);
   return {
     id,
     waffe: w.id,
-    munitionstyp: werfer ? '' : (typen[0] ?? ''),
-    im_magazin: werfer ? 0 : w.magazin + (w.patrone_im_lauf ? 1 : 0),
-    reserve: [],
-    ...(werfer ? {} : { lose_patronen: 0 }),
-    ...(w.ladeart === 'wechselmagazin' ? { leere_magazine: 0 } : {}),
-    ...(w.zubehoer?.length ? { zubehoer: w.zubehoer.map((art) => ({ art, gefuellt: 0, leer: 0 })) } : {}),
+    munitionstyp: voll ? (typen[0] ?? '') : '',
+    im_magazin: voll ? w.magazin + (w.patrone_im_lauf ? 1 : 0) : 0,
+    ...(w.ladeart === 'wechselmagazin' ? { magazin_zustand: d.regeln.waffenzustand.neu } : {}),
+    magazine: [],
+    zubehoer: [],
     zustand: d.regeln.waffenzustand.neu,
     aufsaetze: [],
     ladehemmung: null,
     trageort
   };
+}
+
+// ---------- Lose Munition (nach Kaliber und Typ beim Charakter)
+
+export function loseMunition(c: Charakter, kaliber: string, typ: string): number {
+  return c.ausruestung.munition.find((m) => m.kaliber === kaliber && m.typ === typ)?.anzahl ?? 0;
+}
+
+/** Lose Munition um `delta` ändern; Einträge mit 0 verschwinden. */
+export function munitionAendern(c: Charakter, kaliber: string, typ: string, delta: number): Charakter {
+  if (!delta || !typ) return c;
+  const da = c.ausruestung.munition.some((m) => m.kaliber === kaliber && m.typ === typ);
+  const liste = da
+    ? c.ausruestung.munition.map((m) => (m.kaliber === kaliber && m.typ === typ ? { ...m, anzahl: m.anzahl + delta } : m))
+    : [...c.ausruestung.munition, { kaliber, typ, anzahl: delta }];
+  return { ...c, geaendert: new Date().toISOString(), ausruestung: { ...c.ausruestung, munition: liste.filter((m) => m.anzahl > 0) } };
+}
+
+/** Wählbare Munitionstypen der Waffe mit der losen Munition, die davon da ist. */
+export function loseTypen(c: Charakter, w: Waffe, d: Spieldaten): { typ: string; anzahl: number }[] {
+  const k = kaliberVon(w);
+  if (!k) return [];
+  return munitionstypen(w, d).map((typ) => ({ typ, anzahl: loseMunition(c, k, typ) }));
 }
 
 /** Freie ID mit Präfix (wf, nk …), die im Charakter noch nicht vorkommt. */
@@ -112,12 +142,19 @@ export function eintragErsetzen(c: Charakter, e: WaffenEintrag): Charakter {
   return { ...c, geaendert: new Date().toISOString(), ausruestung: { ...c.ausruestung, waffen: c.ausruestung.waffen.map((x) => (x.id === e.id ? e : x)) } };
 }
 
+/** Waffe ersetzen und lose Munition ändern (z. B. Patronen aus der losen Munition in die Waffe). */
+function mitMunition(c: Charakter, e: WaffenEintrag, w: Waffe, typ: string, delta: number): Charakter {
+  const k = kaliberVon(w);
+  const neu = eintragErsetzen(c, e);
+  return k ? munitionAendern(neu, k, typ, delta) : neu;
+}
+
 // ---------- Nachladen (Kampfsystem, Nachladen)
 
 export type Nachladeart =
-  | { art: 'magazin'; /** Reserve-Index des vollsten Magazins (Vorwahl). */ vorwahl: number }
-  | { art: 'zubehoer'; zubehoer: string; gefuellt: number }
-  | { art: 'einzeln'; patronen: number }
+  | { art: 'magazin'; /** Index in `magazine` der Vorwahl: das vollste vom bisherigen Typ, sonst das vollste. */ vorwahl: number }
+  | { art: 'zubehoer'; zubehoer: string; typ: string; gefuellt: number }
+  | { art: 'einzeln'; patronen: number; /** Wählbare Typen mit loser Munition; ist die Waffe nicht leer, nur ihr Typ. */ typen: { typ: string; anzahl: number }[] }
   | { art: 'werfer'; geschosse: { id: string; anzahl: number }[] };
 
 /** Wie die Waffe nachgeladen werden kann, mit dem, was gerade da ist. Leer = nichts zum Nachladen da. */
@@ -130,19 +167,41 @@ export function nachladearten(c: Charakter, e: WaffenEintrag, d: Spieldaten): Na
     return arten;
   }
   if (w.ladeart === 'wechselmagazin') {
-    if (e.reserve.some((n) => n > 0)) arten.push({ art: 'magazin', vorwahl: vollstes(e.reserve) });
+    if (e.magazine.some((m) => m.inhalt > 0)) arten.push({ art: 'magazin', vorwahl: vorwahlMagazin(e) });
     return arten;
   }
-  for (const z of e.zubehoer ?? []) if (z.gefuellt > 0) arten.push({ art: 'zubehoer', zubehoer: z.art, gefuellt: z.gefuellt });
+  const gruppen = new Map<string, { art: string; typ: string; n: number }>();
+  for (const z of e.zubehoer) {
+    if (z.inhalt <= 0) continue;
+    const k = `${z.art}|${z.typ}`;
+    const g = gruppen.get(k) ?? { art: z.art, typ: z.typ, n: 0 };
+    g.n++;
+    gruppen.set(k, g);
+  }
+  for (const g of gruppen.values()) arten.push({ art: 'zubehoer', zubehoer: g.art, typ: g.typ, gefuellt: g.n });
   const frei = kapazitaet(e, d) - e.im_magazin;
-  if (frei > 0 && (e.lose_patronen ?? 0) > 0) arten.push({ art: 'einzeln', patronen: Math.min(frei, e.lose_patronen ?? 0, einzelnProAktion(c, d)) });
+  const typen = einzelnTypen(c, e, d);
+  if (frei > 0 && typen.length) arten.push({ art: 'einzeln', patronen: Math.min(frei, einzelnProAktion(c, d)), typen });
   return arten;
 }
 
-function vollstes(reserve: number[]): number {
-  let best = 0;
-  reserve.forEach((n, i) => { if (n > reserve[best]!) best = i; });
-  return best;
+/**
+ * Typen, die man einzeln laden kann: nur einer je Ladung. Ist noch Munition in der Waffe, nur deren Typ
+ * (konzept.md § 3.8, Munition je Magazin, entschieden 19.11.2026).
+ */
+export function einzelnTypen(c: Charakter, e: WaffenEintrag, d: Spieldaten): { typ: string; anzahl: number }[] {
+  return loseTypen(c, waffeVon(e, d), d).filter((t) => t.anzahl > 0 && (e.im_magazin <= 0 || !e.munitionstyp || t.typ === e.munitionstyp));
+}
+
+/** Vollstes Magazin vom bisherigen Typ der Waffe; gibt es keins, das vollste überhaupt. */
+export function vorwahlMagazin(e: WaffenEintrag): number {
+  const vollstes = (pruef: (m: Magazin) => boolean) => {
+    let best = -1;
+    e.magazine.forEach((m, i) => { if (m.inhalt > 0 && pruef(m) && (best < 0 || m.inhalt > e.magazine[best]!.inhalt)) best = i; });
+    return best;
+  };
+  const gleich = e.munitionstyp ? vollstes((m) => m.typ === e.munitionstyp) : -1;
+  return gleich >= 0 ? gleich : Math.max(0, vollstes(() => true));
 }
 
 /** Patronen pro Mainaction beim einzeln Laden; Perks mit „einzeln_patronen“ erhöhen sie. */
@@ -151,41 +210,53 @@ export function einzelnProAktion(c: Charakter, d: Spieldaten): number {
 }
 
 /**
- * Magazin wechseln: Das eingesetzte Magazin geht mit seinem Rest in die Reserve, eine Patrone im Lauf bleibt in der Waffe.
- * Ein leeres altes Magazin zählt zu den leeren Magazinen (zum Füllen nach dem Gefecht).
+ * Magazin wechseln: Das eingesetzte Magazin geht mit seinem Rest und Typ zu den Ersatzmagazinen (leer, wenn nichts
+ * mehr drin ist); eine Patrone im Lauf bleibt in der Waffe. Die Waffe trägt danach den Typ des neuen Magazins;
+ * die Patrone im Lauf zählt mit dazu. Regelfrage R46 (docs/offen.md): vorläufig.
  */
 export function magazinWechseln(e: WaffenEintrag, index: number, d: Spieldaten): WaffenEintrag {
   const w = waffeVon(e, d);
-  const neu = e.reserve[index];
-  if (neu === undefined) return e;
+  const neu = e.magazine[index];
+  if (!neu) return e;
   const imLauf = w.patrone_im_lauf && e.im_magazin > 0 ? 1 : 0;
   const rest = e.im_magazin - imLauf;
-  const reserve = e.reserve.filter((_, i) => i !== index);
-  if (rest > 0) reserve.push(rest);
+  const alt: Magazin = { inhalt: rest, typ: rest > 0 ? e.munitionstyp : '', zustand: e.magazin_zustand ?? d.regeln.waffenzustand.neu };
   return {
     ...e,
-    im_magazin: neu + imLauf,
-    reserve: reserve.filter((n) => n > 0),
-    ...(rest > 0 ? {} : { leere_magazine: (e.leere_magazine ?? 0) + 1 })
+    munitionstyp: neu.typ,
+    im_magazin: neu.inhalt + imLauf,
+    magazin_zustand: neu.zustand,
+    magazine: [...e.magazine.filter((_, i) => i !== index), alt]
   };
 }
 
-/** Schnelllader bzw. Ladestreifen: füllt auf einmal; Patronen, die noch drin waren, kommen zu den losen Patronen (Regelfrage R11, vorläufig). */
-export function mitZubehoerLaden(e: WaffenEintrag, art: string, d: Spieldaten): WaffenEintrag {
-  const z = e.zubehoer?.find((x) => x.art === art);
-  if (!z || z.gefuellt <= 0) return e;
-  return {
+/**
+ * Schnelllader bzw. Ladestreifen mit diesem Typ: füllt auf einmal; Patronen, die noch drin waren, kommen zur losen
+ * Munition (Regelfrage R11, vorläufig).
+ */
+export function mitZubehoerLaden(c: Charakter, e: WaffenEintrag, art: string, typ: string, d: Spieldaten): Charakter {
+  const i = e.zubehoer.findIndex((z) => z.art === art && z.typ === typ && z.inhalt > 0);
+  if (i < 0) return c;
+  const z = e.zubehoer[i]!;
+  const w = waffeVon(e, d);
+  const raus = e.im_magazin;
+  const nach: WaffenEintrag = {
     ...e,
-    im_magazin: magazinGroesse(e, d),
-    lose_patronen: (e.lose_patronen ?? 0) + e.im_magazin,
-    zubehoer: e.zubehoer!.map((x) => (x.art === art ? { ...x, gefuellt: x.gefuellt - 1, leer: x.leer + 1 } : x))
+    munitionstyp: typ,
+    im_magazin: Math.min(kapazitaet(e, d), z.inhalt),
+    zubehoer: e.zubehoer.map((x, j) => (j === i ? { ...x, inhalt: 0, typ: '' } : x))
   };
+  return mitMunition(c, nach, w, e.munitionstyp, raus);
 }
 
-/** Einzeln laden: bis zu n Patronen aus den losen Patronen, höchstens bis zur Kapazität. */
-export function einzelnLaden(e: WaffenEintrag, n: number, d: Spieldaten): WaffenEintrag {
-  const k = Math.max(0, Math.min(n, kapazitaet(e, d) - e.im_magazin, e.lose_patronen ?? 0));
-  return { ...e, im_magazin: e.im_magazin + k, lose_patronen: (e.lose_patronen ?? 0) - k };
+/** Einzeln laden: bis zu n Patronen eines Typs aus der losen Munition, höchstens bis zur Kapazität; nur ein Typ je Ladung. */
+export function einzelnLaden(c: Charakter, e: WaffenEintrag, n: number, typ: string, d: Spieldaten): Charakter {
+  const w = waffeVon(e, d);
+  const k = kaliberVon(w);
+  if (!k || (e.im_magazin > 0 && e.munitionstyp && typ !== e.munitionstyp)) return c;
+  const x = Math.max(0, Math.min(n, kapazitaet(e, d) - e.im_magazin, loseMunition(c, k, typ)));
+  if (!x) return c;
+  return mitMunition(c, { ...e, munitionstyp: typ, im_magazin: e.im_magazin + x }, w, typ, -x);
 }
 
 /** Werfer laden: ein Geschoss aus dem Vorrat (Anzahl −1) wird der Inhalt der Waffe. */
@@ -278,61 +349,127 @@ export function ladehemmungBeheben(e: WaffenEintrag, stufe: Ergebnisstufe, d: Sp
   return { ...e, ladehemmung: null, zustand };
 }
 
-// ---------- Magazine füllen (außerhalb des Gefechts)
+// ---------- Magazine füllen und leeren (außerhalb des Gefechts)
+
+/** Was gefüllt oder geleert wird: die Waffe selbst, ein Ersatzmagazin, ein Schnelllader/Ladestreifen (Index). */
+export type Fuellziel = { art: 'waffe' } | { art: 'magazin'; index: number } | { art: 'zubehoer'; index: number };
 
 export interface Fuellung {
+  nach: Charakter;
   eintrag: WaffenEintrag;
+  typ: string;
   /** Verbrauchte lose Patronen. */
   patronen: number;
-  /** Was gefüllt wurde, in Reihenfolge: Waffe, angebrochene Magazine, leere Magazine bzw. Schnelllader/Ladestreifen. */
-  waffe: [number, number] | null;
-  reserve: { vorher: number; nachher: number }[];
-  leere: number;
-  zubehoer: { art: string; anzahl: number }[];
+  /** Was gefüllt wurde, in Reihenfolge, mit Inhalt vorher und nachher. */
+  schritte: { ziel: Fuellziel; vorher: number; nachher: number }[];
+}
+
+function zielInhalt(e: WaffenEintrag, z: Fuellziel): { inhalt: number; typ: string } | null {
+  if (z.art === 'waffe') return { inhalt: e.im_magazin, typ: e.munitionstyp };
+  const m = z.art === 'magazin' ? e.magazine[z.index] : e.zubehoer[z.index];
+  return m ? { inhalt: m.inhalt, typ: m.typ } : null;
+}
+
+/** Platz im Ziel für diesen Typ: 0, wenn schon ein anderer Typ darin ist (ein Typ je Magazin bzw. Ladung). */
+export function platzFuer(e: WaffenEintrag, z: Fuellziel, typ: string, d: Spieldaten): number {
+  const x = zielInhalt(e, z);
+  if (!x || (x.inhalt > 0 && x.typ && x.typ !== typ)) return 0;
+  const groesse = z.art === 'waffe' ? kapazitaet(e, d) : magazinGroesse(e, d);
+  return Math.max(0, groesse - x.inhalt);
 }
 
 /**
- * Füllt aus den losen Patronen, so weit sie reichen: zuerst die Waffe (Wechselmagazin bis zur Kapazität), dann
- * angebrochene Ersatzmagazine, dann leere Magazine; bei Waffen ohne Wechselmagazin leere Schnelllader und Ladestreifen
- * (je Magazingröße). Einzeln laden in die Waffe selbst bleibt beim Nachladen.
- * Regelfrage R12 (docs/offen.md): Reihenfolge und „kostet keine Zeit“ vorläufig.
+ * Ziele, die „Magazine füllen“ der Reihe nach füllt: bei Wechselmagazin zuerst die Waffe, dann angebrochene, dann leere
+ * Ersatzmagazine; sonst Schnelllader und Ladestreifen (die Waffe selbst lädt man einzeln). Regelfrage R12 (docs/offen.md).
  */
-export function magazineFuellen(e: WaffenEintrag, d: Spieldaten): Fuellung {
+export function fuellziele(e: WaffenEintrag, d: Spieldaten): Fuellziel[] {
   const w = waffeVon(e, d);
-  const groesse = magazinGroesse(e, d);
-  let lose = e.lose_patronen ?? 0;
-  const start = lose;
-  const f: Fuellung = { eintrag: e, patronen: 0, waffe: null, reserve: [], leere: 0, zubehoer: [] };
+  if (istWerfer(w)) return [];
   if (w.ladeart === 'wechselmagazin') {
-    let im = e.im_magazin;
-    const k = Math.min(lose, kapazitaet(e, d) - im);
-    if (k > 0) { f.waffe = [im, im + k]; im += k; lose -= k; }
-    const reserve = e.reserve.map((n) => {
-      const x = Math.min(lose, groesse - n);
-      if (x <= 0) return n;
-      lose -= x;
-      f.reserve.push({ vorher: n, nachher: n + x });
-      return n + x;
-    });
-    let leere = e.leere_magazine ?? 0;
-    while (leere > 0 && lose > 0) {
-      const x = Math.min(lose, groesse);
-      reserve.push(x);
-      lose -= x;
-      leere--;
-      f.leere++;
-    }
-    f.eintrag = { ...e, im_magazin: im, reserve, leere_magazine: leere, lose_patronen: lose };
-  } else if (e.zubehoer?.length) {
-    const zubehoer = e.zubehoer.map((z) => {
-      const n = Math.min(z.leer, Math.floor(lose / groesse));
-      if (n <= 0) return z;
-      lose -= n * groesse;
-      f.zubehoer.push({ art: z.art, anzahl: n });
-      return { ...z, gefuellt: z.gefuellt + n, leer: z.leer - n };
-    });
-    f.eintrag = { ...e, zubehoer, lose_patronen: lose };
+    const idx = e.magazine.map((_, i) => i);
+    return [
+      { art: 'waffe' },
+      ...idx.filter((i) => e.magazine[i]!.inhalt > 0).map((index) => ({ art: 'magazin' as const, index })),
+      ...idx.filter((i) => e.magazine[i]!.inhalt <= 0).map((index) => ({ art: 'magazin' as const, index }))
+    ];
   }
-  f.patronen = start - lose;
-  return f;
+  return e.zubehoer.map((_, index) => ({ art: 'zubehoer' as const, index }));
+}
+
+/**
+ * Füllt die Ziele mit einem Munitionstyp aus der losen Munition, so weit sie reicht. Ziele mit einem anderen Typ
+ * bleiben, wie sie sind. Schnelllader und Ladestreifen werden nur ganz gefüllt.
+ */
+export function magazineFuellen(c: Charakter, e: WaffenEintrag, typ: string, d: Spieldaten, ziele: Fuellziel[] = fuellziele(e, d)): Fuellung {
+  const w = waffeVon(e, d);
+  const k = kaliberVon(w);
+  const start = k ? loseMunition(c, k, typ) : 0;
+  let lose = start;
+  let neu: WaffenEintrag = { ...e, magazine: [...e.magazine], zubehoer: [...e.zubehoer] };
+  const schritte: Fuellung['schritte'] = [];
+  for (const z of ziele) {
+    const platz = platzFuer(neu, z, typ, d);
+    let x = Math.min(lose, platz);
+    if (z.art === 'zubehoer' && x < platz) x = 0;
+    if (x <= 0) continue;
+    const vorher = zielInhalt(neu, z)!.inhalt;
+    if (z.art === 'waffe') neu = { ...neu, im_magazin: vorher + x, munitionstyp: typ };
+    else if (z.art === 'magazin') neu.magazine[z.index] = { ...neu.magazine[z.index]!, inhalt: vorher + x, typ };
+    else neu.zubehoer[z.index] = { ...neu.zubehoer[z.index]!, inhalt: vorher + x, typ };
+    lose -= x;
+    schritte.push({ ziel: z, vorher, nachher: vorher + x });
+  }
+  const patronen = start - lose;
+  return { nach: mitMunition(c, neu, w, typ, -patronen), eintrag: neu, typ, patronen, schritte };
+}
+
+/** Leert ein Ziel; die Patronen kommen zur losen Munition (z. B. um einen anderen Typ zu laden). */
+export function zielLeeren(c: Charakter, e: WaffenEintrag, z: Fuellziel, d: Spieldaten): Charakter {
+  const x = zielInhalt(e, z);
+  if (!x || x.inhalt <= 0) return c;
+  let neu: WaffenEintrag;
+  if (z.art === 'waffe') neu = { ...e, im_magazin: 0 };
+  else if (z.art === 'magazin') neu = { ...e, magazine: e.magazine.map((m, i) => (i === z.index ? { ...m, inhalt: 0, typ: '' } : m)) };
+  else neu = { ...e, zubehoer: e.zubehoer.map((m, i): ZubehoerEintrag => (i === z.index ? { ...m, inhalt: 0, typ: '' } : m)) };
+  return mitMunition(c, neu, waffeVon(e, d), x.typ, x.inhalt);
+}
+
+// ---------- Lose Aufsätze anbringen und abnehmen (konzept.md § 3.8, Lose Aufsätze)
+
+/** Passt auf die Kapazität an: Patronen über der neuen Kapazität kommen zur losen Munition. */
+function kapazitaetAnpassen(c: Charakter, e: WaffenEintrag, d: Spieldaten): Charakter {
+  const kap = kapazitaet(e, d);
+  const ueber = Math.max(0, e.im_magazin - kap);
+  return mitMunition(c, { ...e, im_magazin: e.im_magazin - ueber }, waffeVon(e, d), e.munitionstyp, ueber);
+}
+
+/** Lose Aufsätze, die an die Waffe passen, mit ihrem Index in `ausruestung.aufsaetze`. */
+export function loseAufsaetzeFuer(c: Charakter, e: WaffenEintrag, d: Spieldaten): { index: number; aufsatz: Aufsatz; zustand: string }[] {
+  const passend = passendeAufsaetze(waffeVon(e, d), d);
+  return c.ausruestung.aufsaetze.flatMap((t, index) => {
+    const aufsatz = passend.find((a) => a.id === t.id);
+    return aufsatz ? [{ index, aufsatz, zustand: t.zustand }] : [];
+  });
+}
+
+/**
+ * Bringt einen losen Aufsatz an. Es passt nur ein Magazin: ein neues erweitertes Magazin bzw. eine Trommel ersetzt
+ * ein vorhandenes, das zu den losen Aufsätzen kommt.
+ */
+export function aufsatzAnbringen(c: Charakter, e: WaffenEintrag, index: number, d: Spieldaten): Charakter {
+  const t = c.ausruestung.aufsaetze[index];
+  const a = t && d.aufsaetze.eintraege.find((x) => x.id === t.id);
+  if (!t || !a) return c;
+  const ersetzt = a.werte?.magazin ? e.aufsaetze.filter((x) => d.aufsaetze.eintraege.find((y) => y.id === x.id)?.werte?.magazin) : [];
+  const lose = [...c.ausruestung.aufsaetze.filter((_, i) => i !== index), ...ersetzt];
+  const neu: WaffenEintrag = { ...e, aufsaetze: [...e.aufsaetze.filter((x) => !ersetzt.includes(x)), t] };
+  return kapazitaetAnpassen({ ...c, ausruestung: { ...c.ausruestung, aufsaetze: lose } }, neu, d);
+}
+
+/** Nimmt einen Aufsatz ab; er kommt zu den losen Aufsätzen. */
+export function aufsatzAbnehmen(c: Charakter, e: WaffenEintrag, id: string, d: Spieldaten): Charakter {
+  const t = e.aufsaetze.find((x) => x.id === id);
+  if (!t) return c;
+  const neu: WaffenEintrag = { ...e, aufsaetze: e.aufsaetze.filter((x) => x !== t) };
+  return kapazitaetAnpassen({ ...c, ausruestung: { ...c.ausruestung, aufsaetze: [...c.ausruestung.aufsaetze, t] } }, neu, d);
 }

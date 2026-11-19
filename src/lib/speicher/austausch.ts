@@ -1,5 +1,6 @@
 // Export und Import einzelner Charaktere als JSON-Datei (<name>.cqb.json).
 
+import type { Spieldaten } from '../daten/typen';
 import type { Charakter } from './charakter';
 import { ImportFehler, migriere } from './migration';
 
@@ -18,12 +19,12 @@ export function dateiname(c: Charakter): string {
 }
 
 /** Liest eine Exportdatei; wirft ImportFehler mit lesbarer Meldung. */
-export function importiereText(text: string): Charakter {
+export function importiereText(text: string, d: Spieldaten): Charakter {
   let roh: unknown;
   try {
     roh = JSON.parse(text);
   } catch {
     throw new ImportFehler('Die Datei ist keine gültige Charakterdatei (kein JSON).');
   }
-  return migriere(roh);
+  return migriere(roh, d);
 }

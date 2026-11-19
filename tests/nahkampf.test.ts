@@ -184,7 +184,7 @@ function mitSchusswaffe(c: Charakter, id: string): Charakter {
   return { ...c, ausruestung: { ...c.ausruestung, waffen: [e], aktive_waffe: e.id } };
 }
 const mitNahkampf = (c: Charakter, ...ids: string[]): Charakter =>
-  ({ ...c, ausruestung: { ...c.ausruestung, nahkampfwaffen: ids.map((w, i) => ({ id: `n${i}`, waffe: w, trageort: 'guertel' })) } });
+  ({ ...c, ausruestung: { ...c.ausruestung, nahkampfwaffen: ids.map((w, i) => ({ id: `n${i}`, waffe: w, trageort: 'guertel', zustand: 'A' })) } });
 const alage = (eigen: string, gegner: string, mehr: Partial<{ langeWaffeInArmeslaenge: boolean; ansage: 'keine' | 'rumpf' | 'zone' }> = {}) =>
   ({ eigenerStand: eigen, gegnerStand: gegner, langeWaffeInArmeslaenge: false, ansage: 'keine' as const, ...mehr });
 
@@ -196,7 +196,7 @@ describe('Nahkampfangriff: Waffen', () => {
   it('eigene Nahkampfwaffen erscheinen, Varianten einzeln; Waffen mit Anzahl 0 nicht', () => {
     const c = mitNahkampf(fertig(), 'kampfmesser', 'klappspaten');
     expect(angriffsWaffen(c, d).map((w) => w.id)).toEqual(['koerper', 'kampfmesser', 'klappspaten:kante', 'klappspaten:flaeche']);
-    const leer = { ...c, ausruestung: { ...c.ausruestung, nahkampfwaffen: [{ id: 'n0', waffe: 'kampfmesser', trageort: 'guertel', anzahl: 0 }] } };
+    const leer = { ...c, ausruestung: { ...c.ausruestung, nahkampfwaffen: [{ id: 'n0', waffe: 'kampfmesser', trageort: 'guertel', anzahl: 0, zustand: 'A' }] } };
     expect(angriffsWaffen(leer, d).map((w) => w.id)).toEqual(['koerper']);
   });
 

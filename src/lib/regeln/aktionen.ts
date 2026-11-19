@@ -128,8 +128,8 @@ function tempo(id: string, d: Spieldaten): number {
 export function bewegungMaxAusruestung(c: Charakter, d: Spieldaten): string | null {
   const s = d.schutz;
   // Der Schild schränkt nur ein, solange er gehalten wird (Deckung und Rüstung, Ballistischer Schild).
-  const schild = c.ausruestung.schild && c.spielstand.schild_gehalten ? s.schilde.find((x) => x.id === c.ausruestung.schild) : undefined;
-  const teile = [...c.ausruestung.ruestung.map((id) => s.ruestung.find((x) => x.id === id)?.einschraenkung), schild?.einschraenkung];
+  const schild = c.ausruestung.schild && c.spielstand.schild_gehalten ? s.schilde.find((x) => x.id === c.ausruestung.schild!.id) : undefined;
+  const teile = [...c.ausruestung.ruestung.map((t) => s.ruestung.find((x) => x.id === t.id)?.einschraenkung), schild?.einschraenkung];
   let max: string | null = null;
   for (const e of teile) {
     const b = e?.bewegung_max;

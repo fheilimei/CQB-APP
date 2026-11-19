@@ -1,6 +1,7 @@
 // Ablage auf dem Gerät (IndexedDB): Charaktere einzeln, dazu „zuletzt geöffnet“ und Einstellungen.
 
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb';
+import type { Spieldaten } from '../daten/typen';
 import type { Charakter } from './charakter';
 import { migriere } from './migration';
 
@@ -38,13 +39,13 @@ export class Ablage {
   }
 
   /** Alle Charaktere, auf das aktuelle Schema gebracht. Nicht lesbare werden übersprungen und gemeldet. */
-  async alle(): Promise<{ charaktere: Charakter[]; fehler: string[] }> {
+  async alle(d: Spieldaten): Promise<{ charaktere: Charakter[]; fehler: string[] }> {
     const roh = await this.db.getAll('charaktere');
     const charaktere: Charakter[] = [];
     const fehler: string[] = [];
     for (const r of roh) {
       try {
-        charaktere.push(migriere(r));
+        charaktere.push(migriere(r, d));
       } catch (e) {
         fehler.push(`${(r as { name?: string }).name ?? r.id}: ${(e as Error).message}`);
       }
@@ -52,9 +53,9 @@ export class Ablage {
     return { charaktere, fehler };
   }
 
-  async holen(id: string): Promise<Charakter | undefined> {
+  async holen(id: string, d: Spieldaten): Promise<Charakter | undefined> {
     const r = await this.db.get('charaktere', id);
-    return r ? migriere(r) : undefined;
+    return r ? migriere(r, d) : undefined;
   }
 
   async speichern(c: Charakter): Promise<void> {

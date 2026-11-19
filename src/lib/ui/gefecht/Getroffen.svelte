@@ -199,7 +199,7 @@
     if (jeZone.size) return Object.fromEntries([...jeZone].map(([z, v]) => [z, `${v.kugeln}×${zeichenFuer(v.a) ? ` ${zeichenFuer(v.a)}` : ''}`]));
     return Object.fromEntries(Object.entries(vor).map(([z, a]) => [z, zeichenFuer(a)]).filter(([, t]) => t));
   });
-  const ruestung = $derived(Object.fromEntries(d.koerperzonen.eintraege.map((z) => [z.id, ruestungswert(z.id, c.ausruestung.ruestung, d)])));
+  const ruestung = $derived(Object.fromEntries(d.koerperzonen.eintraege.map((z) => [z.id, ruestungswert(z.id, c.ausruestung.ruestung.map((t) => t.id), d)])));
   const eingang = $derived<Eingang | null>(zone ? { ...geschoss, kugeln: anzahl, krit, zone, deckung: deckungJeZone(zone) } : null);
   const gewaehlt = $derived<Ausgang | null>(eingang && mitVorschau && !mehrfach ? ausgang(c, eingang, d) : null);
   /** HP vor und nach allen Treffern zusammen (Schrot, Explosion). */

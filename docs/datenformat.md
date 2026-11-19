@@ -979,7 +979,7 @@ Speicherformat eines Charakters, lokal und als Exportdatei (`<name>.cqb.json`). 
 
 ```json
 {
-  "schema": 5,
+  "schema": 6,
   "id": "c7f1e2a0-3b5d-4a8e-9f10-2c4d6e8a1b3c",
   "geaendert": "2026-11-13T17:20:00+01:00",
 
@@ -1038,14 +1038,19 @@ Speicherformat eines Charakters, lokal und als Exportdatei (`<name>.cqb.json`). 
 
   "ausruestung": {
     "waffen": [
-      { "id": "wf1", "waffe": "ak47", "munitionstyp": "FMJ", "im_magazin": 26, "reserve": [30, 30, 12], "zustand": "B", "aufsaetze": [], "ladehemmung": null, "trageort": "schlinge" },
-      { "id": "wf2", "waffe": "sw_model_10", "munitionstyp": "FMJ", "im_magazin": 6, "reserve": [], "lose_patronen": 18,
-        "zubehoer": [ { "art": "schnelllader", "gefuellt": 2, "leer": 1 } ], "zustand": "A", "aufsaetze": [], "ladehemmung": null, "trageort": "holster" }
+      { "id": "wf1", "waffe": "ak47", "munitionstyp": "FMJ", "im_magazin": 26, "magazin_zustand": "A",
+        "magazine": [ { "inhalt": 30, "typ": "FMJ", "zustand": "A" }, { "inhalt": 12, "typ": "HP", "zustand": "B" }, { "inhalt": 0, "typ": "", "zustand": "A" } ],
+        "zubehoer": [], "zustand": "B", "aufsaetze": [ { "id": "reflexvisier", "zustand": "A" } ], "ladehemmung": null, "trageort": "schlinge" },
+      { "id": "wf2", "waffe": "sw_model_10", "munitionstyp": "FMJ", "im_magazin": 6, "magazine": [],
+        "zubehoer": [ { "art": "schnelllader", "inhalt": 6, "typ": "HP", "zustand": "A" }, { "art": "schnelllader", "inhalt": 0, "typ": "", "zustand": "A" } ],
+        "zustand": "A", "aufsaetze": [], "ladehemmung": null, "trageort": "holster" }
     ],
-    "nahkampfwaffen": [ { "id": "nk1", "waffe": "kampfmesser", "trageort": "weste" } ],
+    "nahkampfwaffen": [ { "id": "nk1", "waffe": "kampfmesser", "trageort": "weste", "zustand": "A" } ],
     "aktive_waffe": "wf1",
     "vorrat": [ { "id": "m67", "anzahl": 2, "trageort": "weste" } ],
-    "ruestung": [ "weste_einfach" ],
+    "munition": [ { "kaliber": "762x39", "typ": "FMJ", "anzahl": 40 }, { "kaliber": "38spc", "typ": "FMJ", "anzahl": 18 } ],
+    "aufsaetze": [ { "id": "zweibein", "zustand": "C" } ],
+    "ruestung": [ { "id": "weste_einfach", "zustand": "A" } ],
     "schild": null,
     "sonstiges": "2 Druckverbände, 1 Tourniquet"
   },
@@ -1135,15 +1140,18 @@ IndexedDB-Datenbank `cqb` mit zwei Speichern: `charaktere` (ein Datensatz je Cha
 - **HP aktuell** = HP-Höchstwert − `hp_verlust_wunden` − `prellungen`. `hp_verlust_wunden` sinkt nur durch Erholungsproben, `prellungen` nur durch eine Nacht Ruhe.
 - **`ausruestung.aktive_waffe`:** `id` der aktiven Waffe (genau eine). Waffen in der Ausrüstung haben eine eigene `id`, weil ein Charakter dieselbe Waffe mehrmals besitzen kann.
 - **Waffe `im_magazin`:** aktueller Inhalt inklusive Patrone im Lauf. Jeder abgegebene Schuss wird abgezogen.
-- **Waffe `reserve`:** Inhalt jedes Ersatzmagazins (angebrochene Magazine möglich). Beim Nachladen wandert der Rest des eingesetzten Magazins hierher; ein leeres zählt zu `leere_magazine`.
-- **Waffe `aufsaetze`:** IDs der angebrachten Aufsätze aus `aufsaetze.json`. Ob ein Schalter-Aufsatz gerade im Einsatz ist, wird nicht gespeichert; er wird je Schuss eingeschaltet.
+- **Waffe `magazine`** (nur Wechselmagazin, sonst leer): Ersatzmagazine mit `inhalt`, `typ` (Munitionstyp; leer = `""` bei Inhalt 0) und `zustand`. Beim Nachladen wandert das eingesetzte Magazin mit Rest und Typ hierher (leer, wenn nichts mehr drin ist); die Waffe übernimmt `typ` und `zustand` des neuen. **`magazin_zustand`:** Zustand des eingesetzten Magazins. Die Patrone im Lauf zählt zum Typ des eingesetzten Magazins (vereinfacht).
+- **Waffe `zubehoer`:** Schnelllader bzw. Ladestreifen, jedes Stück einzeln mit `art` (ID aus `aufsaetze.json` `zubehoer`), `inhalt`, `typ`, `zustand`. Gefüllt wird nur ganz.
+- **Waffe `aufsaetze`:** angebrachte Aufsätze mit `id` (aus `aufsaetze.json`) und `zustand`. Ob ein Schalter-Aufsatz gerade im Einsatz ist, wird nicht gespeichert; er wird je Schuss eingeschaltet.
+- **`ausruestung.munition`:** lose Munition nach `kaliber` (ID aus `munition.json`) und `typ` mit `anzahl`, für einzeln laden und zum Füllen von Magazinen, Schnellladern und Ladestreifen. Einträge mit 0 entfallen.
+- **`ausruestung.aufsaetze`:** lose Aufsätze mit `id` und `zustand`. Anbringen nimmt den Eintrag hier weg, Abnehmen legt ihn zurück.
+- **`zustand`** (Waffen, Magazine, Zubehör, Aufsätze, Nahkampfwaffen, Rüstung, Schild): Stufe aus `regeln.json` `waffenzustand.stufen`. Außer bei Schusswaffen wirkt er nur auf den Preis (Regelfrage R42).
 - **`ausruestung.vorrat`:** Granaten und Geschosse mit Anzahl. Jeder Wurf und jedes Laden eines Werfers zieht 1 ab. Die Anzahl ist jederzeit von Hand erhöhbar. Bei 0 bleibt der Eintrag stehen (zum Auffüllen).
 - **`trageort`** (Waffen, Nahkampfwaffen, Vorrat): `schlinge`, `weste` (Rig oder Weste), `holster`, `guertel` (auch Scheide), `ruecken`, `rucksack`. Bestimmt die Kosten des Wechsels; die Tabelle steht in `regeln.json` (Regelwerk: Kampfsystem, Waffe wechseln).
-- **`lose_patronen`:** Munition ohne Magazin, für einzeln laden und zum Füllen von Magazinen, Schnellladern und Ladestreifen (alle Waffen außer Werfern). **`leere_magazine`** (nur Wechselmagazin): leere Ersatzmagazine; ein leeres Magazin wandert beim Nachladen hierher statt zu entfallen. **`zubehoer`:** Schnelllader bzw. Ladestreifen der Waffe mit Zahl gefüllt und leer.
 - **`ausruestung.nahkampfwaffen`:** eigene Nahkampfwaffen, je Eintrag mit `anzahl` (fehlt das Feld: 1). Ein Wurf zieht 1 ab; bei 0 bleibt der Eintrag stehen, eingesammelte Waffen werden von Hand wieder dazugezählt. Körperwaffen und Einsätze mit der Schusswaffe (Kolben, Lauf, Pistolengriff) bietet die App ohne Eintrag an.
-- **`ausruestung.schild`:** `null` oder ID aus `schutz.json` (`schilde`). **`spielstand.schild_gehalten`:** Schild in der Hand (fehlt = nein); nur dann zählt er als Deckung und schränkt ein (18.11.2026).
+- **`ausruestung.ruestung`:** getragene Rüstungsteile mit `id` (aus `schutz.json` `ruestung`) und `zustand`. **`ausruestung.schild`:** `null` oder `{ "id", "zustand" }` mit ID aus `schutz.json` (`schilde`). **`spielstand.schild_gehalten`:** Schild in der Hand (fehlt = nein); nur dann zählt er als Deckung und schränkt ein (18.11.2026).
 - **Waffe `ladehemmung`:** `null`, `einfach` oder `schwer`. Blockiert das Schießen.
-- **Waffe `munitionstyp`:** Typ des Kalibers (Schlüssel in `munition.json` `typen`); bei Werfern die ID des geladenen Geschosses, leer = ungeladen.
+- **Waffe `munitionstyp`:** Typ der Munition, die gerade in der Waffe steckt (Schlüssel in `munition.json` `typen`); bei Werfern die ID des geladenen Geschosses, leer = ungeladen. Ohne Wechselmagazin gibt es nur einen Typ je Ladung: Einzeln laden mit einem anderen Typ geht erst, wenn die Waffe leer ist.
 - **`gefecht.stand`:** Stand-ID aus `regeln.json` (`staende`). **`gefecht.bewegt`:** `null` oder die schnellste Bewegung dieser Runde (`bewegung.arten`); **`bewegungen`**: Zahl der Bewegungen dieser Runde (Sprint). **`gehechtet`**: in dieser Runde gehechtet (zählt als eigene Bewegung für die Lage; es zählt die mit mehr Malsteps).
 - **`gefecht.zielen`:** Merker aus Zielen: gilt nur für einen Schuss in Runde `runde` (Break-Zielen: nächste Runde; Main-Zielen mit Ruhige Hand: dieselbe Runde). `stepshields` für den Schuss, `ohne_reichweite` (Gezielter Schuss), `gezielt_in`: Runde des Zielens; bewegt sich der Charakter danach in dieser Runde, entfällt `ohne_reichweite` und es gilt der Stepshield. Jeder Schuss und „Neues Ziel“ löschen den Merker.
 - **`gefecht.konzentration`:** `null`, `leicht` oder `voll` für diese Runde (Break 0; Bewegung bzw. Standwechsel beschränkt).
@@ -1175,7 +1183,7 @@ IndexedDB-Datenbank `cqb` mit zwei Speichern: `charaktere` (ein Datensatz je Cha
 - **2 → 3:** `gefecht.deckung` wandert nach `spielstand.deckung` (ohne laufendes Gefecht `null`).
 - **3 → 4:** Die Deckungskante entfällt: `deckung.kante` wird gelöscht, alle verdeckten Zonen kommen zu `deckung.getippt` hinzu. Die Figur zeigt danach dieselbe Deckung.
 
-`schema` wird bei jeder inkompatiblen Änderung erhöht. Beim Laden prüft die App die Version und migriert schrittweise (1 → 2 → 3 …). Schritt 4 → 5: Stat-ID `decisiveness` wird zu `decision` (als Schlüssel und als Wert). Import einer Datei mit höherer Version als bekannt: Fehlermeldung, nichts überschreiben.
+`schema` wird bei jeder inkompatiblen Änderung erhöht. Beim Laden prüft die App die Version und migriert schrittweise (1 → 2 → 3 …). Schritt 4 → 5: Stat-ID `decisiveness` wird zu `decision` (als Schlüssel und als Wert). Schritt 5 → 6 (Munition je Magazin, 19.11.2026; braucht die Spieldaten für das Kaliber jeder Waffe): `reserve` und `leere_magazine` werden zu `magazine` mit dem bisherigen `munitionstyp` der Waffe; `lose_patronen` aller Waffen wandern nach `ausruestung.munition` (nach Kaliber und Typ zusammengefasst); `zubehoer` `{ art, gefuellt, leer }` wird zu einzelnen Stücken; Aufsätze, Rüstung und Schild werden `{ id, zustand }`; Nahkampfwaffen bekommen `zustand`; neu `ausruestung.munition` und `ausruestung.aufsaetze`. Neuer Zustand überall „neu“ (`waffenzustand.neu`). Import einer Datei mit höherer Version als bekannt: Fehlermeldung, nichts überschreiben.
 
 ---
 

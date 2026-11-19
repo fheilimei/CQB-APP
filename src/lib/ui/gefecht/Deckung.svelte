@@ -33,7 +33,7 @@
 
   // Ballistischer Schild: mitgeführte Deckung (Deckung und Rüstung, Ballistischer Schild). Außerhalb des Gefechts hier
   // umschaltbar; im Gefecht kostet Aufnehmen und Ablegen eine Mainaction und läuft über Main (Jede Aktion über ihren Knopf).
-  const schild = $derived(c.ausruestung.schild ? (d.schutz.schilde.find((x) => x.id === c.ausruestung.schild) ?? null) : null);
+  const schild = $derived(c.ausruestung.schild ? (d.schutz.schilde.find((x) => x.id === c.ausruestung.schild!.id) ?? null) : null);
   const imGefecht = $derived(!!gefechtVon(c));
   let inHand = $state(untrack(() => !!c.spielstand.schild_gehalten));
 
