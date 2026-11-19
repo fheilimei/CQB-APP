@@ -8,13 +8,13 @@
   import {
     aufsatzAbnehmen, aufsatzAnbringen, eintragErsetzen, freieId, istWerfer, kaliberName, kaliberVon,
     kapazitaet, loseAufsaetzeFuer, loseTypen, magazineFuellen, magazineFuer, magazinLeeren, magazinPlatz, magazinSorte,
-    magazinHerausnehmen, magazinsorteSetzen, magazinWechseln, mitLaderLaden, munitionstypen, munitionswerte, nachladearten, neuerWaffenEintrag,
+    magazinHerausnehmen, magazinsorteSetzen, magazinWechseln, mitLaderLaden, munitionstypen, nachladearten, neuerWaffenEintrag,
     passendeAufsaetze, passendeMagazine, platzFuer, sprengwaffe, waffeAktivieren, waffeLeeren, waffeVon, type Fuellziel
   } from '../../regeln/waffen';
   import Bericht from '../Bericht.svelte';
   import Magazinsymbol from './Magazinsymbol.svelte';
   import type { Charakter, Magazin, WaffenEintrag } from '../../speicher/charakter';
-  import { dkMw, patronenText, trageortName, zustandName, type Modus, type Zeile } from '../texte';
+  import { patronenText, trageortName, zustandName, type Modus, type Zeile } from '../texte';
 
   interface Props {
     c: Charakter;
@@ -63,6 +63,20 @@
   /** Farbe des Munitionstyps im Magazinsymbol (darstellung.json `munitionsfarben`). */
   const mfarbe = (typ: string) => d.darstellung.munitionsfarben?.[typ] ?? null;
   const kaliberText = (id: string) => d.munition.eintraege.find((m) => m.id === id)?.name ?? id;
+  /** DK und MW eines Munitionstyps im Kaliber der Waffe (für die Magazinkachel). */
+  function typWerte(e: WaffenEintrag, typ: string) {
+    const k = kaliberVon(waffeVon(e, d));
+    return k ? (d.munition.eintraege.find((m) => m.id === k)?.typen[typ] ?? null) : null;
+  }
+  /** Angebrachte und lose passende Aufsätze in fester Reihenfolge (Reihenfolge der Daten), damit sich beim
+   *  Anbringen oder Abnehmen nichts verschiebt (Wunsch 19.11.2026). */
+  function aufsatzListe(e: WaffenEintrag) {
+    const rang = (id: string) => d.aufsaetze.eintraege.findIndex((a) => a.id === id);
+    return [
+      ...e.aufsaetze.map((t) => ({ id: t.id, an: true as const, zustand: t.zustand, index: -1 })),
+      ...loseAufsaetzeFuer(c, e, d).map((l) => ({ id: l.aufsatz.id, an: false as const, zustand: l.zustand, index: l.index }))
+    ].sort((a, b) => rang(a.id) - rang(b.id) || Number(b.an) - Number(a.an));
+  }
 
   function zielName(z: Fuellziel): string {
     if (z.art === 'waffe') return 'In der Waffe';
@@ -198,10 +212,12 @@
   </select>
 {/snippet}
 
-{#snippet magInhalt(inhalt: number, groesse: number, typ: string, unter: string)}
+{#snippet magInhalt(inhalt: number, groesse: number, typ: string, unter: string, e: WaffenEintrag | null = null)}
+  {@const werte = e && inhalt > 0 ? typWerte(e, typ) : null}
   <Magazinsymbol {inhalt} {groesse} farbe={inhalt > 0 ? mfarbe(typ) : null} />
   <span class="zahl">{inhalt}</span>
   <small>{inhalt > 0 ? typ : 'leer'}</small>
+  {#if werte}<small class="zahl werte">{werte.stumpf || werte.dk === null ? 'stumpf' : `DK ${werte.dk}`}<br />MW {werte.mw}</small>{/if}
   {#if unter}<small class="unter">{unter}</small>{/if}
 {/snippet}
 
@@ -209,7 +225,7 @@
   {@const x = zielInhalt(e, z)}
   <button class="mag-kachel" class:eingesetzt={z.art === 'waffe'} aria-pressed={istGewaehlt(e, z)} onclick={() => antippen(e, z)}
     aria-label="{unter || 'Magazin'}: {x.inhalt > 0 ? `${x.inhalt} ${x.typ}` : 'leer'}">
-    {@render magInhalt(x.inhalt, groesse, x.typ, unter)}
+    {@render magInhalt(x.inhalt, groesse, x.typ, unter, e)}
   </button>
 {/snippet}
 
@@ -247,7 +263,6 @@
 
 {#snippet waffe(e: WaffenEintrag)}
   {@const w = waffeVon(e, d)}
-  {@const mun = munitionswerte(e, d)}
   {@const aktiv = c.ausruestung.aktive_waffe === e.id}
   {@const auf = offen === e.id}
   {@const wechsel = w.ladeart === 'wechselmagazin'}
@@ -276,8 +291,6 @@
         <section class="abschnitt">
           {#if werfer}
             <p>Geschosse: {kaliberName(w, d)}. Geladen wird aus dem Vorrat.</p>
-          {:else}
-            <p>{kaliberName(w, d)}{#if e.im_magazin > 0}, geladen {e.munitionstyp}{#if mun}: {dkMw(mun.dk, mun.mw, mun.stumpf)}{/if}{:else}, leer{/if}</p>
           {/if}
           <p>Zustand {zustandName(e.zustand, d)}</p>
           {#if e.ladehemmung}<p class="fehler">{e.ladehemmung === 'schwer' ? 'Schwere Ladehemmung: nur außerhalb des Gefechts behebbar.' : 'Einfache Ladehemmung: Die Waffe ist blockiert.'}</p>{/if}
@@ -300,10 +313,10 @@
 
         {#if !werfer}
           <section class="abschnitt teil">
-            <h3 class="abschnitt-titel">Magazine</h3>
+            <h3 class="abschnitt-titel">Magazine <span class="hinweis">{kaliberName(w, d)}</span></h3>
             {#if schreiben}
               <div class="mag-reihe">
-                <div class="mag-kachel eingesetzt">{@render magInhalt(e.im_magazin, kapazitaet(e, d), e.munitionstyp, 'in der Waffe')}</div>
+                <div class="mag-kachel eingesetzt">{@render magInhalt(e.im_magazin, kapazitaet(e, d), e.munitionstyp, 'in der Waffe', e)}</div>
               </div>
               {#each dabei as { m, index } (index)}
                 <div class="mag-bearbeiten">
@@ -375,22 +388,15 @@
                   onchange={(ev) => aufsatzUmschalten(e, a.id, (ev.target as HTMLInputElement).checked)} /> {a.name}</label>
               {/each}
             {:else}
-              {#each e.aufsaetze as t (t.id)}
-                <div class="mag-zeile"><span>{aufsatzName(t.id)} <span class="hinweis">· Zustand {zustandName(t.zustand, d)}</span></span>
-                  {#if !imGefecht}<button class="klein" aria-label="{aufsatzName(t.id)} abnehmen" onclick={() => onaendern(aufsatzAbnehmen(c, e, t.id, d))}>✕</button>{/if}
+              {#each aufsatzListe(e).filter((a) => a.an || !imGefecht) as a (`${a.an}|${a.id}|${a.index}`)}
+                <div class="mag-zeile"><span class:angebracht={a.an}>{aufsatzName(a.id)} <span class="hinweis">· {a.an ? `Zustand ${zustandName(a.zustand, d)}` : 'lose'}</span></span>
+                  {#if !imGefecht}
+                    {#if a.an}<button class="klein" aria-label="{aufsatzName(a.id)} abnehmen" onclick={() => onaendern(aufsatzAbnehmen(c, e, a.id, d))}>✕</button>
+                    {:else}<button class="klein" aria-label="{aufsatzName(a.id)} anbringen" onclick={() => onaendern(aufsatzAnbringen(c, e, a.index, d))}>✓</button>{/if}
+                  {/if}
                 </div>
-              {:else}
-                <p class="hinweis">Kein Aufsatz angebracht.</p>
               {/each}
-              {#if !imGefecht}
-                {#each loseAufsaetzeFuer(c, e, d) as l (l.index)}
-                  <div class="mag-zeile"><span class="hinweis">{l.aufsatz.name} (lose)</span>
-                    <button class="klein" aria-label="{l.aufsatz.name} anbringen" onclick={() => onaendern(aufsatzAnbringen(c, e, l.index, d))}>✓</button>
-                  </div>
-                {/each}
-              {:else}
-                <p class="hinweis">Im Gefecht: Main → Aufsatz anbringen oder abnehmen.</p>
-              {/if}
+              {#if imGefecht}<p class="hinweis">Im Gefecht: Main → Aufsatz anbringen oder abnehmen.</p>{/if}
             {/if}
           </section>
         {/if}
@@ -665,6 +671,8 @@
   .mag-kachel .zahl { font-size: 1.1rem; line-height: 1; }
   .mag-kachel small { font-size: 0.75rem; color: var(--text-2); line-height: 1.1; text-align: center; }
   .mag-kachel .unter { color: var(--akzent); }
+  .mag-kachel .werte { font-family: var(--schrift-zahl); }
+  .angebracht { color: var(--akzent); }
   .stand-mag { display: flex; align-items: center; gap: var(--abstand-2); }
   .stand-text { display: flex; flex-direction: column; align-items: flex-end; }
   .typpunkt { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--mfarbe); margin-right: var(--abstand-1); vertical-align: middle; }
