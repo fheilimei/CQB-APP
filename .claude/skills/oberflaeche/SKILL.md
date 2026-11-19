@@ -52,6 +52,8 @@ Rückmeldung des Nutzers vom 17.11.2026:
 - **Silhouette nur mit W8-Zahl** (18.11.2026): Zonen zeigen statt Namen ihre W8-Zahl, umrandet (`.zonenzahl` in `app.css`, in der Figur gleich gezeichnet), damit sie nicht mit Rüstung ⛨ oder Deckung (Mauer) verwechselt wird. Die Übersicht beim Antippen nennt Zahl und ausgeschriebenen Namen („Rechter Arm“, Feld `titel`) und zeigt Rüstung und Deckung mit ihren Zeichen.
 - **Rückmeldung nur, solange sie stimmt** (18.11.2026, Reiterleiste): Der Akzentrahmen beim Verschieben verschwindet beim Loslassen.
 - **Nicht nach dem Offensichtlichen fragen** (19.11.2026, Reizgas): Wer ein Fenster für eine Lage öffnet, steckt in dieser Lage (Reizgas → in der Wolke). Eine Gegenfrage („außerhalb“) nur dort, wo sie etwas ändert, und erst, wenn der Zustand schon besteht.
+- **Nichts ragt über den Rand** (19.11.2026, Laden): Zahlenspannen („1.125–1.500 $“) dürfen nach dem Strich umbrechen; nie langen Zahlentext ohne Umbruch in eine schmale Spalte oder einen gleich breiten Knopf setzen.
+- **Waren mit ihren Kernwerten** (19.11.2026, Laden): Alles, was Schaden macht (Munition, Nahkampfwaffen, Sprengmittel, Werfergeschosse), nennt DK und MW in der Zeile.
 - Besonders aufgefallen: **Waffe wechseln** (`gefecht/WaffeWechseln.svelte`) und **Schießen** (`gefecht/Schiessen.svelte`).
 
 Jede Arbeit an der Oberfläche muss diese Punkte verbessern oder darf sie zumindest nicht verschlimmern.
